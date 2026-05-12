@@ -1,0 +1,3578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Base Camp</title>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --canvas:    #1a1a14;
+  --canvas-2:  #22221a;
+  --canvas-3:  #2c2c22;
+  --border:    #3a3a2e;
+  --border-l:  #4a4a3a;
+  --amber:     #d4902a;
+  --amber-l:   #e8a83a;
+  --amber-d:   #9a6820;
+  --sage:      #6b8c5a;
+  --sage-l:    #85a870;
+  --rust:      #b85c3a;
+  --blue:      #5a7ab8;
+  --purple:    #8a6ab8;
+  --teal:      #5a9a8a;
+  --gold:      #c8a84a;
+  --text:      #e8e4d8;
+  --text-d:    #9a9488;
+  --text-m:    #6a6860;
+}
+/* ── LIGHT MODE OVERRIDES ── */
+body.light {
+  --canvas:    #f5f2ea;
+  --canvas-2:  #edeadf;
+  --canvas-3:  #e4e0d3;
+  --border:    #ccc8b8;
+  --border-l:  #b8b4a4;
+  --amber:     #9a5f10;
+  --amber-l:   #b87020;
+  --amber-d:   #7a4808;
+  --sage:      #4a6b3a;
+  --sage-l:    #5a8048;
+  --rust:      #9a3c1e;
+  --blue:      #3a5a98;
+  --purple:    #6a4a98;
+  --teal:      #3a7a6a;
+  --gold:      #9a7820;
+  --text:      #1a1a12;
+  --text-d:    #4a4840;
+  --text-m:    #6a6858;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:var(--canvas);color:var(--text);min-height:100vh;font-size:14px}
+
+/* ── HEADER */
+.hdr{background:var(--canvas-2);border-bottom:2px solid var(--amber-d);padding:0 18px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:200}
+.logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:19px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber)}
+.logo sup{font-size:9px;color:var(--text-m);font-weight:400;letter-spacing:.15em;margin-left:5px;vertical-align:middle}
+.hdr-r{display:flex;gap:5px;align-items:center}
+
+/* ── MAIN TABS */
+.mtabs{display:flex;background:var(--canvas-2);border-bottom:1px solid var(--border);padding:0 18px}
+.mtab{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:10px 15px;border:none;background:transparent;color:var(--text-m);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;white-space:nowrap}
+.mtab:hover{color:var(--text)}
+.mtab.on{color:var(--amber);border-bottom-color:var(--amber)}
+.tbadge{display:inline-flex;align-items:center;justify-content:center;background:var(--rust);color:#fff;font-size:9px;font-weight:700;width:15px;height:15px;border-radius:50%;margin-left:5px;vertical-align:middle}
+
+/* ── PAGE */
+.page{max-width:1080px;margin:0 auto;padding:18px 18px 80px}
+
+/* ── BUTTONS */
+.btn{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;padding:6px 12px;border-radius:2px;transition:all .15s;white-space:nowrap}
+.btn-p{background:var(--amber);color:var(--canvas)}.btn-p:hover{background:var(--amber-l)}
+.btn-g{background:var(--sage);color:#fff}.btn-g:hover{background:var(--sage-l)}
+.btn-o{background:transparent;color:var(--text-d);border:1px solid var(--border)}.btn-o:hover{border-color:var(--border-l);color:var(--text)}
+.btn-x{background:transparent;color:var(--rust);border:1px solid transparent;padding:3px 7px;font-size:10px}.btn-x:hover{border-color:var(--rust)}
+.btn-ic{background:transparent;border:none;color:var(--text-m);cursor:pointer;padding:2px 5px;font-size:14px;border-radius:2px;transition:color .15s}.btn-ic:hover{color:var(--amber)}
+.btn-sm{padding:4px 9px;font-size:10px}
+
+/* ── STATS */
+.stats{display:flex;gap:2px;margin-bottom:18px;background:var(--canvas-3);border:1px solid var(--border);border-radius:3px;overflow:hidden}
+.stat{flex:1;padding:9px 12px;border-right:1px solid var(--border)}.stat:last-child{border-right:none}
+.stat-v{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;color:var(--amber);line-height:1}
+.stat-l{font-size:9px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
+
+/* ── CONTROLS */
+.ctrls{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.sw{flex:1;min-width:160px;position:relative}
+.sw input{width:100%;background:var(--canvas-2);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:6px 9px 6px 28px;border-radius:2px;outline:none;transition:border-color .15s}
+.sw input:focus{border-color:var(--amber-d)}
+.sw input::placeholder{color:var(--text-m)}
+.sw-ic{position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--text-m);font-size:12px;pointer-events:none}
+.fgrp{display:flex;gap:3px;flex-wrap:wrap}
+.fb{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:5px 9px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-m);cursor:pointer;transition:all .15s}
+.fb:hover{color:var(--text);border-color:var(--border-l)}
+.fb.on{background:var(--canvas-3);color:var(--amber);border-color:var(--amber-d)}
+select{background:var(--canvas-2);border:1px solid var(--border);color:var(--text-d);font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:5px 8px;border-radius:2px;outline:none;cursor:pointer}
+select:focus{border-color:var(--amber-d)}
+
+/* ── LEGEND */
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;padding:8px 12px;background:var(--canvas-3);border:1px solid var(--border);border-radius:2px}
+.li{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-m);font-family:'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase}
+.ld{width:7px;height:7px;border-radius:50%}
+
+/* ── CATEGORY GROUP */
+.cg{margin-bottom:18px}
+.cg-hdr{display:flex;align-items:center;gap:7px;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+.cg-hdr:hover .cg-title{color:var(--text)}
+.cg-toggle{font-size:10px;color:var(--text-m);transition:transform .2s;display:inline-block;width:14px}
+.cg-toggle.open{transform:rotate(0deg)}
+.cg-toggle.closed{transform:rotate(-90deg)}
+.cg-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;transition:color .15s}
+.cg-count{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);background:var(--canvas-3);padding:1px 5px;border-radius:2px}
+.cg-body{overflow:hidden;transition:all .2s}
+
+/* ── CAT COLOURS */
+.cat-shelter .cg-title{color:#85a870}
+.cat-sleep   .cg-title{color:#7a9ab8}
+.cat-kitchen .cg-title{color:#c8823a}
+.cat-clothing .cg-title{color:#9a8ab8}
+.cat-hygiene .cg-title{color:#7ab8a8}
+.cat-dog     .cg-title{color:#b8a87a}
+.cat-other   .cg-title{color:var(--text-d)}
+.cat-wishlist .cg-title{color:var(--gold)}
+
+/* ── ITEM TABLE */
+.itbl{width:100%;border-collapse:collapse}
+.itbl th{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);text-align:left;padding:4px 8px;background:var(--canvas-3);border-bottom:1px solid var(--border)}
+.irow{border-bottom:1px solid var(--border);transition:background .1s}
+.irow:hover{background:var(--canvas-2)}
+.irow td{padding:7px 8px;vertical-align:middle}
+.irow.sub-row td:first-child{padding-left:28px}
+.irow.sub-row{background:rgba(0,0,0,0.04)}
+.irow.sub-row:hover{background:rgba(0,0,0,0.07)}
+.iname{font-size:13px;font-weight:500;color:var(--text)}
+.inotes{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:1px}
+.iacts{display:flex;gap:3px;opacity:0;transition:opacity .15s}
+.irow:hover .iacts{opacity:1}
+.tpill{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:2px 6px;border-radius:2px;white-space:nowrap}
+.tp-always{background:rgba(107,140,90,.15);color:var(--sage);border:1px solid rgba(107,140,90,.3)}
+.tp-house{background:rgba(90,122,184,.15);color:var(--blue);border:1px solid rgba(90,122,184,.3)}
+.tp-consumable{background:rgba(184,92,58,.15);color:var(--rust);border:1px solid rgba(184,92,58,.3)}
+.tp-seasonal{background:rgba(138,106,184,.15);color:var(--purple);border:1px solid rgba(138,106,184,.3)}
+.tp-wishlist{background:rgba(200,168,74,.15);color:var(--gold);border:1px solid rgba(200,168,74,.3)}
+.lbadge{font-family:'DM Mono',monospace;font-size:9px;padding:1px 5px;border-radius:2px;text-transform:uppercase;letter-spacing:.05em;border:1px solid}
+.lb-shed{color:#8a7a5a;border-color:#5a4a2a;background:rgba(138,122,90,.1)}
+.lb-duffle{color:#6a9a7a;border-color:#2a5a3a;background:rgba(90,154,122,.1)}
+.lb-house{color:#6a8ab8;border-color:#2a4a7a;background:rgba(90,122,184,.1)}
+.lb-car{color:#9a8a6a;border-color:#5a4a2a;background:rgba(154,138,106,.1)}
+.qc{display:flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:12px}
+.qbtn{background:var(--canvas-3);border:1px solid var(--border);color:var(--text-d);width:19px;height:19px;border-radius:2px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .1s}
+.qbtn:hover{border-color:var(--amber-d);color:var(--amber)}
+.rflag{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--rust)}
+.add-sub-row td{padding:3px 8px 7px 28px}
+.add-sub-btn{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);background:transparent;border:1px dashed var(--border);padding:3px 10px;border-radius:2px;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;transition:all .15s}
+.add-sub-btn:hover{border-color:var(--amber-d);color:var(--amber)}
+.wishlist-item{opacity:.7}
+.wishlist-badge{font-size:12px;margin-right:3px}
+
+/* ── EMPTY */
+.empty{text-align:center;padding:36px 18px;color:var(--text-m);font-family:'DM Mono',monospace;font-size:12px;border:1px dashed var(--border);border-radius:2px;margin-top:6px}
+
+/* ── MODAL */
+.mover{display:none;position:fixed;inset:0;background:rgba(10,10,8,.88);z-index:1000;align-items:center;justify-content:center}
+.mover.on{display:flex}
+.modal{background:var(--canvas-2);border:1px solid var(--border-l);border-top:3px solid var(--amber);width:500px;max-width:95vw;max-height:92vh;overflow-y:auto;border-radius:3px;padding:20px}
+.modal-wide{width:560px}
+.mtitle{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:16px}
+.fg{margin-bottom:11px}
+.fl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--text-m);display:block;margin-bottom:3px}
+.fi,.fs,.fta{width:100%;background:var(--canvas);border:1px solid var(--border);color:var(--text);font-family:'Nunito',sans-serif;font-size:13px;padding:6px 8px;border-radius:2px;outline:none;transition:border-color .15s}
+.fi:focus,.fs:focus,.fta:focus{border-color:var(--amber-d)}
+.fta{resize:vertical;min-height:50px;font-size:12px}
+.frow{display:flex;gap:9px}.frow .fg{flex:1}
+.factions{display:flex;gap:7px;justify-content:flex-end;margin-top:16px;padding-top:12px;border-top:1px solid var(--border)}
+.ck{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--text-d)}
+.ck input{accent-color:var(--amber);width:13px;height:13px;cursor:pointer}
+
+/* ── TRIP LIST */
+.trip-none{text-align:center;padding:44px 20px}
+.tn-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-d);margin-bottom:8px}
+.tn-sub{font-size:12px;color:var(--text-m);margin-bottom:20px;font-family:'DM Mono',monospace}
+.tlist{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.tcard{background:var(--canvas-2);border:1px solid var(--border);border-radius:3px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:border-color .15s}
+.tcard:hover{border-color:var(--amber-d)}
+.tcard-name{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.06em;color:var(--text)}
+.tcard-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:2px}
+.tcard-r{display:flex;gap:7px;align-items:center}
+.tstatus{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:2px}
+.ts-planning{background:rgba(90,122,184,.15);color:var(--blue);border:1px solid rgba(90,122,184,.3)}
+.ts-packing{background:rgba(212,144,42,.15);color:var(--amber);border:1px solid rgba(212,144,42,.3)}
+.ts-complete{background:rgba(107,140,90,.15);color:var(--sage);border:1px solid rgba(107,140,90,.3)}
+.ts-post-trip{background:rgba(184,92,58,.15);color:var(--rust);border:1px solid rgba(184,92,58,.3)}
+
+/* ── TRIP DETAIL */
+.tdetail{background:var(--canvas-2);border:1px solid var(--border);border-radius:3px;overflow:hidden}
+.tdhdr{background:var(--canvas-3);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.tdname{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:.08em;color:var(--amber)}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.chip{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-d);background:var(--canvas);border:1px solid var(--border);padding:1px 7px;border-radius:2px}
+.ttabs{display:flex;border-bottom:1px solid var(--border);background:var(--canvas-3)}
+.ttab{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:8px 13px;border:none;background:transparent;color:var(--text-m);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.ttab:hover{color:var(--text)}
+.ttab.on{color:var(--amber);border-bottom-color:var(--amber)}
+.tbody{padding:14px 16px}
+
+/* ── CHECKLIST PROGRESS */
+.cprog{background:var(--canvas-3);border:1px solid var(--border);border-radius:2px;padding:10px 14px;margin-bottom:14px}
+.cprog-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px}
+.cprog-label{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-d)}
+.cprog-pcts{display:flex;gap:10px}
+.cprog-pct{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;line-height:1}
+.pct-ready{color:var(--amber)}
+.pct-packed{color:var(--sage)}
+.pbar-wrap{height:8px;background:var(--border);border-radius:4px;overflow:hidden;display:flex}
+.pbar-ready{height:100%;background:var(--amber);transition:width .3s}
+.pbar-packed{height:100%;background:var(--sage);transition:width .3s}
+.cprog-hint{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);margin-top:5px;letter-spacing:.05em}
+
+/* ── CHECKLIST ITEMS */
+.cloc-group{margin-bottom:18px}
+.cloc-hdr{display:flex;align-items:center;gap:7px;padding:5px 0;margin-bottom:5px;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+.cloc-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--text-m)}
+.ci{display:flex;align-items:flex-start;gap:8px;padding:6px 5px;border-radius:2px;transition:background .1s;border-bottom:1px solid rgba(58,58,46,.4)}
+.ci:hover{background:var(--canvas-3)}
+.ci.hl{background:rgba(212,144,42,.07);border-left:2px solid var(--amber-d);padding-left:7px}
+.ci.sub-ci{padding-left:22px}
+.ci.sub-ci.hl{padding-left:24px}
+.ci-state{width:22px;height:22px;border-radius:3px;border:1px solid var(--border);background:var(--canvas-3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:1px;transition:all .15s;user-select:none}
+.ci-state:hover{border-color:var(--amber-d)}
+.ci-state.ready{background:rgba(212,144,42,.2);border-color:var(--amber);color:var(--amber)}
+.ci-state.packed{background:rgba(107,140,90,.25);border-color:var(--sage);color:var(--sage)}
+.ci-body{flex:1}
+.ci-name{font-size:12px;font-weight:500;transition:opacity .15s}
+.ci-name.packed{text-decoration:line-through;opacity:.4}
+.ci-name.ready{opacity:.75}
+.ci-meta{display:flex;gap:4px;align-items:center;margin-top:2px;flex-wrap:wrap}
+.ci-qty{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)}
+.ci-note{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)}
+.hl-tag{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);background:rgba(212,144,42,.12);border:1px solid rgba(212,144,42,.3);padding:1px 4px;border-radius:2px}
+
+/* ── POST TRIP */
+.pt-banner{background:rgba(184,92,58,.07);border:1px solid rgba(184,92,58,.3);border-left:3px solid var(--rust);border-radius:2px;padding:12px 14px;margin-bottom:14px}
+.pt-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--rust);margin-bottom:3px}
+.pt-sub{font-size:11px;color:var(--text-m);font-family:'DM Mono',monospace}
+
+/* ── TRIP NOTES */
+.tnotes-area{width:100%;background:var(--canvas);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:9px 11px;border-radius:2px;outline:none;resize:vertical;min-height:80px;transition:border-color .15s}
+.tnotes-area:focus{border-color:var(--amber-d)}
+
+/* ── RESTOCK */
+.rs-panel{background:var(--canvas-2);border:1px solid var(--border);border-radius:3px;padding:14px}
+
+/* ── ACTIVITIES GRID */
+.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:5px;margin-top:3px}
+.atog{display:flex;align-items:center;gap:5px;padding:5px 8px;background:var(--canvas);border:1px solid var(--border);border-radius:2px;cursor:pointer;font-size:11px;color:var(--text-d);transition:all .15s;user-select:none}
+.atog:hover{border-color:var(--border-l);color:var(--text)}
+.atog.on{background:rgba(212,144,42,.1);border-color:var(--amber-d);color:var(--amber)}
+.atog input{accent-color:var(--amber);cursor:pointer}
+.cfg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* ── PRINT ── */
+@media print{
+  body{background:#fff!important;color:#000!important;font-size:11pt}
+  .hdr,.mtabs,.ctrls,.legend,.stats,.no-print{display:none!important}
+  .page{display:none!important}
+  #printView{display:block!important;max-width:100%;padding:0}
+  .print-title{font-family:'Barlow Condensed',sans-serif;font-size:18pt;font-weight:700;text-transform:uppercase;margin-bottom:4pt;letter-spacing:.1em}
+  .print-sub{font-size:9pt;color:#666;margin-bottom:12pt}
+  .print-group{margin-bottom:14pt;break-inside:avoid}
+  .print-group-title{font-family:'Barlow Condensed',sans-serif;font-size:11pt;font-weight:700;text-transform:uppercase;letter-spacing:.12em;border-bottom:1pt solid #000;padding-bottom:3pt;margin-bottom:6pt}
+  .print-item{display:flex;align-items:flex-start;gap:8pt;padding:3pt 0;border-bottom:.5pt solid #ddd;break-inside:avoid}
+  .print-cb{width:12pt;height:12pt;border:1pt solid #000;flex-shrink:0;margin-top:1pt}
+  .print-item-name{font-size:10pt;font-weight:600;flex:1}
+  .print-item-meta{font-size:8pt;color:#555;margin-top:1pt}
+  .print-action{display:flex;align-items:center;gap:6pt;padding:2pt 0 2pt 20pt;border-bottom:.5pt solid #eee}
+  .print-action-cb{width:9pt;height:9pt;border:.5pt solid #999;flex-shrink:0}
+  .print-action-label{font-size:9pt;color:#333}
+  .print-action-stage{font-size:8pt;color:#777;min-width:60pt}
+  @page{margin:15mm}
+}
+#printView{display:none}
+
+/* ── SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--canvas)}
+::-webkit-scrollbar-thumb{background:var(--border-l);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--amber-d)}
+
+@media(max-width:640px){
+  .hdr{padding:0 11px}
+  .page{padding:12px 11px 80px}
+  .stats{flex-wrap:wrap}
+  .stat{min-width:45%}
+  .cfg-grid{grid-template-columns:1fr}
+  .itbl th:nth-child(3),.itbl td:nth-child(3){display:none}
+  .logo sup{display:none}
+  .mtab{padding:9px 10px;font-size:11px}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="logo">Base Camp <sup>v3</sup></div>
+  <div class="hdr-r">
+    <button class="btn btn-o btn-sm" onclick="toggleLightMode()" id="lightBtn">☀️</button>
+    <button class="btn btn-o btn-sm" onclick="exportData()">↓ Backup</button>
+    <button class="btn btn-o btn-sm" onclick="shareBackup()">📤 Share</button>
+    <label class="btn btn-o btn-sm" for="fileImport" style="cursor:pointer">↑ Restore</label><input type="file" id="fileImport" accept=".json" style="position:absolute;width:1px;height:1px;opacity:0.01;top:0;left:0">
+    <button class="btn btn-p btn-sm" onclick="openAddItemModal()">+ Item</button>
+  </div>
+</header>
+
+<div class="mtabs">
+  <button class="mtab on"  onclick="setTab('trips',this)" id="tripsBtn">My Trips</button>
+  <button class="mtab"     onclick="setTab('inv',this)">My Kit</button>
+  <button class="mtab"     onclick="setTab('wishlist',this)" id="wishBtn">Want List</button>
+  <button class="mtab"     onclick="setTab('people',this)" id="peopleBtn">People</button>
+  <button class="mtab"     onclick="setTab('settings',this)">Settings</button>
+</div>
+
+<!-- INVENTORY -->
+<div id="demoBanner" style="display:none;background:linear-gradient(135deg,#d4902a,#9a6820);color:#1a1a14;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+  <span style="font-size:16px">🏕</span>
+  <div style="flex:1;min-width:200px">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Demo Mode</div>
+    <div style="font-size:11px;opacity:.85">This is sample data so you can explore all features. Clear it when you're ready to add your own kit.</div>
+  </div>
+  <div style="display:flex;gap:7px;flex-shrink:0">
+    <button class="btn" style="background:rgba(0,0,0,.2);color:#1a1a14;font-size:10px;border:1px solid rgba(0,0,0,.2)" onclick="clearDemoData()">🗑 Clear demo data</button>
+    <button class="btn" style="background:transparent;color:#1a1a14;font-size:16px;border:none;padding:2px 6px;line-height:1" onclick="dismissDemoBanner()" title="Dismiss">✕</button>
+  </div>
+</div>
+
+<div class="page" id="pg-inv" style="display:none">
+  <div class="stats" id="statsBar"></div>
+  <!-- Search always visible; filters hidden by default -->
+  <div style="display:flex;gap:7px;margin-bottom:10px;align-items:center">
+    <div class="sw" style="flex:1"><span class="sw-ic">⌕</span><input type="text" id="srch" placeholder="Search your kit…" oninput="renderInv()"></div>
+    <button class="btn btn-o btn-sm" id="filterToggleBtn" onclick="toggleKitFilters()">⚙ Filter</button>
+  </div>
+  <div id="kitFilters" style="display:none">
+    <div class="ctrls" style="margin-bottom:8px">
+      <div class="fgrp">
+        <button class="fb on" onclick="setTF('all',this)">All</button>
+        <button class="fb"    onclick="setTF('always',this)">Always in kit</button>
+        <button class="fb"    onclick="setTF('house',this)">From home</button>
+        <button class="fb"    onclick="setTF('consumable',this)">Needs restocking</button>
+        <button class="fb"    onclick="setTF('seasonal',this)">Seasonal</button>
+      </div>
+      <select id="locF" onchange="renderInv()">
+        <option value="all">All Locations</option>
+      </select>
+      <select id="sortS" onchange="renderInv()">
+        <option value="category">By Category</option>
+        <option value="name">By Name</option>
+        <option value="location">By Location</option>
+        <option value="restock">Restocking first</option>
+      </select>
+      <select id="personF" onchange="setPersonFilter(this.value)" style="display:none">
+        <option value="all">All People</option>
+      </select>
+    </div>
+    <div class="legend" style="margin-bottom:12px">
+      <div class="li"><div class="ld" style="background:var(--sage)"></div>Always in kit</div>
+      <div class="li"><div class="ld" style="background:var(--blue)"></div>Bring from home</div>
+      <div class="li"><div class="ld" style="background:var(--rust)"></div>Needs restocking</div>
+      <div class="li"><div class="ld" style="background:var(--purple)"></div>Seasonal</div>
+    </div>
+  </div>
+  <div id="invContent"></div>
+</div>
+
+<!-- TRIPS -->
+<div class="page" id="pg-trips"><div id="tripsContent"></div></div>
+
+<!-- RESTOCK -->
+<div class="page" id="pg-restock" style="display:none"><div id="restockContent"></div></div>
+
+<!-- WISH LIST -->
+<div class="page" id="pg-wishlist" style="display:none"><div id="wishContent"></div></div>
+
+<!-- PEOPLE -->
+<div class="page" id="pg-people" style="display:none"><div id="peopleContent"></div></div>
+
+<!-- SETTINGS -->
+<div class="page" id="pg-settings" style="display:none"><div id="settingsContent"></div></div>
+
+<!-- ═══ ITEM MODAL ═══ -->
+<div class="mover" id="itemModal" onclick="closeMOver(event,'itemModal')">
+ <div class="modal">
+  <div class="mtitle" id="imt">Add Item</div>
+  <div class="fg"><label class="fl">Name *</label><input class="fi" id="iName" placeholder="e.g. Camping stove"></div>
+  <div class="fg"><label class="fl">Group under (optional)</label>
+    <select class="fs" id="iParent"><option value="">— Top-level item —</option></select>
+  </div>
+  <div class="frow">
+    <div class="fg"><label class="fl">Type *</label>
+      <select class="fs" id="iType">
+        <option value="always">Always in kit</option>
+        <option value="house">From House</option>
+        <option value="consumable">Consumable</option>
+        <option value="seasonal">Seasonal</option>
+        <option value="wishlist">Want list</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">Category</label>
+      <select class="fs" id="iCat"></select>
+    </div>
+  </div>
+  <div class="frow">
+    <div class="fg"><label class="fl">Location</label>
+      <select class="fs" id="iLoc"></select>
+    </div>
+    <div class="fg"><label class="fl">Quantity</label><input class="fi" id="iQty" type="number" min="0" value="1"></div>
+  </div>
+  <div class="frow">
+    <div class="fg"><label class="fl">Season</label>
+      <select class="fs" id="iSeason">
+        <option value="all">All seasons</option>
+        <option value="summer">Summer only</option>
+        <option value="winter">Winter / cold</option>
+        <option value="shoulder">Shoulder season</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">Activity tag</label>
+      <select class="fs" id="iActivity"></select>
+    </div>
+  </div>
+  <div class="fg">
+    <label class="fl">Packs into (optional)</label>
+    <select class="fs" id="iPacksInto">
+      <option value="">— Same as storage location —</option>
+    </select>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:3px">Where this item ends up when packed for a trip (e.g. Shed → Duffle Bag)</div>
+  </div>
+  <div class="fg" style="display:flex;gap:14px">
+    <label class="ck"><input type="checkbox" id="iRestock"> Flag as needs restocking</label>
+    <label class="ck"><input type="checkbox" id="iContainer"> Group — pack the items inside, not this</label>
+  </div>
+  <div class="fg" id="iPersonGroup" style="display:none">
+    <label class="fl">Assign to person(s)</label>
+    <div id="iPersonBtns" style="display:flex;gap:5px;flex-wrap:wrap;margin-top:3px"></div>
+  </div>
+  <div class="fg"><label class="fl">Notes</label><textarea class="fta" id="iNotes" placeholder="e.g. Check gas level, stored in blue bin…"></textarea></div>
+  <div class="fg">
+    <label class="fl">Actions <span style="font-weight:400;color:var(--text-m);text-transform:none;letter-spacing:0">— tasks to do at each stage</span></label>
+    <div id="iActionsList" style="margin-bottom:6px"></div>
+    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+      <input class="fi" id="iActionLabel" placeholder="e.g. Charge batteries" style="flex:1;min-width:120px">
+      <select class="fs" id="iActionStage">
+        <option value="pre-trip">Pre-trip</option>
+        <option value="during">During trip</option>
+        <option value="before-pack-away">Before pack away</option>
+        <option value="post-trip">Back home</option>
+      </select>
+      <button class="btn btn-o btn-sm" type="button" onclick="addItemAction()">+ Add</button>
+    </div>
+  </div>
+  <div class="factions">
+    <button class="btn btn-o" onclick="closeM('itemModal')">Cancel</button>
+    <button class="btn btn-p" onclick="saveItem()">Save Item</button>
+  </div>
+ </div>
+</div>
+
+<!-- ═══ TRIP MODAL ═══ -->
+<div class="mover" id="tripModal" onclick="closeMOver(event,'tripModal')">
+ <div class="modal modal-wide">
+  <div class="mtitle" id="tmt">New Trip</div>
+  <div class="fg"><label class="fl">Trip Name *</label><input class="fi" id="tName" placeholder="e.g. Lake District May Bank Holiday"></div>
+  <div class="frow">
+    <div class="fg"><label class="fl">Departure Date</label><input class="fi" id="tDate" type="date"></div>
+    <div class="fg"><label class="fl">Duration (nights)</label><input class="fi" id="tNights" type="number" min="1" max="30" value="3"></div>
+  </div>
+  <div class="cfg-grid">
+    <div class="fg"><label class="fl">Season / Weather</label>
+      <select class="fs" id="tSeason"><option value="summer">Summer (warm)</option><option value="shoulder">Shoulder (mixed)</option><option value="winter">Winter (cold)</option></select>
+    </div>
+    <div class="fg"><label class="fl">Site Type</label>
+      <select class="fs" id="tSite"><option value="hookup">Full hookup</option><option value="basic">Basic / no hookup</option><option value="wild">Wild camping</option></select>
+    </div>
+    <div class="fg"><label class="fl">Extra People</label><input class="fi" id="tExtra" type="number" min="0" max="20" value="0"></div>
+    <div class="fg"><label class="fl">Distance from Home</label>
+      <select class="fs" id="tDist"><option value="local">Local (&lt;1hr)</option><option value="regional">Regional (1–2hr)</option><option value="remote">Remote (2hr+)</option></select>
+    </div>
+  </div>
+  <div class="fg"><label class="fl" style="margin-bottom:5px">Dog coming?</label><label class="ck"><input type="checkbox" id="tDog" checked> Yes, include dog kit</label></div>
+  <div class="fg"><label class="fl">Activities</label>
+    <div class="agrid" id="tActGrid"></div>
+  </div>
+  <div class="fg"><label class="fl">Trip Notes</label><textarea class="fta" id="tNotes" placeholder="Site address, booking ref…"></textarea></div>
+  <div class="factions">
+    <button class="btn btn-o" onclick="closeM('tripModal')">Cancel</button>
+    <button class="btn btn-p" onclick="saveTrip()">Save Trip</button>
+  </div>
+ </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
+const SK = 'basecamp_v3';
+let S = { items:[], trips:[] };
+let editItemId = null, editTripId = null;
+let tf = 'all', mainTab = 'trips';
+let activeTripId = null, activeTripTab = 'checklist';
+let collapsedCats = new Set();   // inventory
+let collapsedLocs = new Set();   // checklist locations
+let personFilter = 'all';        // inventory person filter
+let checklistPersonFilter = 'all'; // checklist person filter
+let checklistLocFilter = 'all';    // checklist location filter
+let checklistSort = 'location';    // checklist sort order
+let checklistHidePacked = false;   // hide packed items
+let checklistFiltersOpen = false;  // filter panel open state
+
+const CATS    = ['shelter','sleep','kitchen','clothing','hygiene','dog','other'];
+const CLAB    = { shelter:'⛺ Shelter', sleep:'🛌 Sleep', kitchen:'🍳 Kitchen', clothing:'🧥 Clothing', hygiene:'🪥 Hygiene', dog:'🐕 Dog', other:'📦 Other' };
+const TLAB    = { always:'Always in kit', house:'Bring from home', consumable:'Needs restocking', seasonal:'Seasonal', wishlist:'Want list' };
+const LLAB    = { shed:'Shed', duffle:'Duffle Bag', house:'House', car:'Car' };
+const SELAB   = { summer:'Summer', shoulder:'Shoulder', winter:'Winter', all:'All' };
+const SITELAB = { hookup:'Full hookup', basic:'Basic', wild:'Wild' };
+const DISTLAB = { local:'Local', regional:'Regional', remote:'Remote' };
+const STLAB   = { planning:'Planning', packing:'Packing', 'pack-up':'Pack up camp', 'pack-away':'Unpack at home', 'post-trip':'Back home', complete:'Done' };
+const PERSON_COLORS = ['#d4902a','#6b8c5a','#5a7ab8','#b85c3a','#8a6ab8','#5a9a8a','#c8a84a','#b8a87a'];
+
+// ══════════════════════════════════════════════════
+// SETTINGS DEFAULTS & HELPERS
+// ══════════════════════════════════════════════════
+function defaultSettings(){
+  return {
+    categories:[
+      {id:'shelter', label:'Shelter', emoji:'⛺'},
+      {id:'sleep',   label:'Sleep',   emoji:'🛌'},
+      {id:'kitchen', label:'Kitchen', emoji:'🍳'},
+      {id:'clothing',label:'Clothing',emoji:'🧥'},
+      {id:'hygiene', label:'Hygiene', emoji:'🪥'},
+      {id:'dog',     label:'Dog',     emoji:'🐕'},
+      {id:'other',   label:'Other',   emoji:'📦'},
+    ],
+    locations:[
+      {id:'shed',   label:'Shed',       isStorageLoc:true, isPackInto:false},
+      {id:'duffle', label:'Duffle Bag', isStorageLoc:true, isPackInto:true},
+      {id:'house',  label:'House',      isStorageLoc:true, isPackInto:false},
+      {id:'car',    label:'Car',        isStorageLoc:true, isPackInto:true},
+    ],
+    activities:[
+      {id:'hiking',   label:'Hiking',   emoji:'🥾'},
+      {id:'beach',    label:'Beach',    emoji:'🏖'},
+      {id:'cycling',  label:'Cycling',  emoji:'🚴'},
+      {id:'fishing',  label:'Fishing',  emoji:'🎣'},
+      {id:'swimming', label:'Swimming', emoji:'🏊'},
+      {id:'climbing', label:'Climbing', emoji:'🧗'},
+    ]
+  };
+}
+
+// Live accessors — always read from S.settings so changes are instant
+// Defensive: fall back to defaults if settings not yet loaded
+function showToast(msg){
+  // Remove any existing toast
+  const existing=document.getElementById('bcToast');
+  if(existing) existing.remove();
+  const t=document.createElement('div');
+  t.id='bcToast';
+  t.textContent=msg;
+  t.style.cssText="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--canvas-3);color:var(--text);border:1px solid var(--rust);border-left:3px solid var(--rust);padding:10px 16px;border-radius:3px;font-size:12px;font-family:Nunito,sans-serif;z-index:9999;max-width:90vw;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.3)";
+  document.body.appendChild(t);
+  setTimeout(()=>{ t.style.transition='opacity .4s'; t.style.opacity='0'; setTimeout(()=>t.remove(),400); },3000);
+}
+
+function getCats(){ return (S.settings&&S.settings.categories)||defaultSettings().categories; }
+function getLocs(){ return (S.settings&&S.settings.locations)||defaultSettings().locations; }
+function getActs(){ return (S.settings&&S.settings.activities)||defaultSettings().activities; }
+// Storage locations (shown in inventory location dropdown + checklist grouping)
+function getStorageLocs(){ return getLocs().filter(l=>l.isStorageLoc!==false); }
+// Pack-into locations (shown in packs-into dropdown)
+function getPackIntoLocs(){ return getLocs().filter(l=>l.isPackInto===true); }
+
+// Build a label map from a settings array
+function labMap(arr){ const m={}; arr.forEach(x=>m[x.id]=x.label); return m; }
+// Build an emoji+label map
+function emojiLabMap(arr){ const m={}; arr.forEach(x=>m[x.id]=(x.emoji?x.emoji+' ':'')+x.label); return m; }
+
+// ══════════════════════════════════════════════════
+// PERSISTENCE
+// ══════════════════════════════════════════════════
+function load(){
+  try{
+    const r=localStorage.getItem(SK);
+    if(r){
+      S=JSON.parse(r);
+    } else {
+      // First launch — load demo data and flag it
+      const demo=demoData();
+      S={ items:demo.items, trips:demo.trips, people:demo.people, settings:demo.settings };
+      localStorage.setItem('basecamp_demo','1');
+      save();
+    }
+    if(!S.items) S.items=[];
+    if(!S.trips) S.trips=[];
+    if(!S.people) S.people=[];
+    if(!S.settings) S.settings=defaultSettings();
+    else {
+      if(!S.settings.categories||!S.settings.categories.length) S.settings.categories=defaultSettings().categories;
+      if(!S.settings.locations||!S.settings.locations.length)   S.settings.locations=defaultSettings().locations;
+      else S.settings.locations=S.settings.locations.map(l=>({isStorageLoc:true,...l}));
+      if(!S.settings.activities||!S.settings.activities.length) S.settings.activities=defaultSettings().activities;
+    }
+  }catch(e){
+    const demo=demoData();
+    S={ items:demo.items, trips:demo.trips, people:demo.people, settings:demo.settings };
+  }
+}
+
+function initDemoBanner(){
+  if(localStorage.getItem('basecamp_demo')==='1'){
+    const b=document.getElementById('demoBanner');
+    if(b) b.style.display='flex';
+  }
+}
+
+function dismissDemoBanner(){
+  const b=document.getElementById('demoBanner');
+  if(b) b.style.display='none';
+}
+
+function clearDemoData(){
+  if(!confirm('Clear all demo data and start fresh? This cannot be undone.')) return;
+  resetAllData();
+}
+
+function resetAllData(){
+  // Clear all user data — preserve theme and backup timestamp
+  const theme=localStorage.getItem('basecamp_theme');
+  const lastExport=localStorage.getItem('basecamp_last_export');
+  localStorage.clear();
+  if(theme) localStorage.setItem('basecamp_theme',theme);
+  if(lastExport) localStorage.setItem('basecamp_last_export',lastExport);
+  S={ items:[], trips:[], people:[], settings:defaultSettings() };
+  save();
+  dismissDemoBanner();
+  renderAll();
+  alert('\u2713 All data cleared. You\'re starting fresh.');
+}
+
+function loadDemoDataAgain(){
+  if(!confirm('Load demo data? This will replace your current data.')) return;
+  const demo=demoData();
+  S={ items:demo.items, trips:demo.trips, people:demo.people, settings:demo.settings };
+  localStorage.setItem('basecamp_demo','1');
+  save();
+  const b=document.getElementById('demoBanner');
+  if(b) b.style.display='flex';
+  renderAll();
+}
+function save(){ localStorage.setItem(SK,JSON.stringify(S)); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDate(d){ if(!d)return''; try{return new Date(d+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}catch(e){return d;} }
+
+// ══════════════════════════════════════════════════
+// ITEM HELPERS
+// ══════════════════════════════════════════════════
+function topItems(){ return S.items.filter(i=>!i.parentId && i.type!=='wishlist'); }
+function subItems(parentId){ return S.items.filter(i=>i.parentId===parentId); }
+function wishItems(){ return S.items.filter(i=>i.type==='wishlist'); }
+
+function isExcluded(item, trip){
+  if(item.type==='wishlist') return true;
+  if(item.category==='dog' && !trip.dog) return true;
+  if(item.season && item.season!=='all'){
+    if(item.season==='summer' && trip.season!=='summer') return true;
+    if(item.season==='winter' && trip.season!=='winter') return true;
+    if(item.season==='shoulder' && trip.season==='summer') return true;
+  }
+  if(item.activity && (!trip.activities||!trip.activities.includes(item.activity))) return true;
+  return false;
+}
+
+function getHL(trip){
+  const h={};
+  S.items.forEach(item=>{
+    const r=[];
+    if(item.activity && trip.activities && trip.activities.includes(item.activity)) r.push(item.activity);
+    if(trip.distance==='remote'){
+      if(/first.aid|spare/i.test(item.name+(item.notes||''))) r.push('remote');
+      if(item.type==='consumable' && item.category==='hygiene') r.push('remote');
+    }
+    if(trip.site==='wild' && /water|toilet|trowel/i.test(item.name)) r.push('wild');
+    if(r.length) h[item.id]=r;
+  });
+  return h;
+}
+
+function adjQty(item, trip){
+  if(item.type!=='consumable') return item.qty;
+  const n=trip.nights||3;
+  if(/toilet.roll/i.test(item.name)) return Math.ceil(n/2)+(trip.distance==='remote'?1:0);
+  if(/gas/i.test(item.name)) return Math.max(1,Math.ceil(n/3))+(trip.distance==='remote'?1:0);
+  if(/dog.food/i.test(item.name)) return n+1;
+  return item.qty;
+}
+
+// ══════════════════════════════════════════════════
+// STATS
+// ══════════════════════════════════════════════════
+function renderStats(){
+  const top=topItems();
+  const rc=top.filter(i=>i.restock||i.qty===0).length;
+  const ac=S.trips.filter(t=>t.status==='packing'||t.status==='planning').length;
+  const wc=wishItems().length;
+  document.getElementById('statsBar').innerHTML=`
+    <div class="stat"><div class="stat-v">${top.length}</div><div class="stat-l">Items</div></div>
+    <div class="stat"><div class="stat-v">${top.filter(i=>i.type==='always').length}</div><div class="stat-l">Always in kit</div></div>
+    <div class="stat"><div class="stat-v">${top.filter(i=>i.type==='house').length}</div><div class="stat-l">From home</div></div>
+    <div class="stat"><div class="stat-v" style="${rc>0?'color:var(--rust)':''}">${rc}</div><div class="stat-l">Restock</div></div>
+    <div class="stat"><div class="stat-v" style="${ac>0?'color:var(--amber)':''}">${ac}</div><div class="stat-l">Active Trips</div></div>
+    <div class="stat"><div class="stat-v" style="${wc>0?'color:var(--gold)':''}">${wc}</div><div class="stat-l">Want list</div></div>`;
+  // badges — restockBtn removed from nav, show restock count on My Kit filter toggle
+  const rb=document.getElementById('restockBtn');
+  if(rb){ rb.querySelectorAll('.tbadge').forEach(b=>b.remove()); if(rc>0) rb.innerHTML+=`<span class="tbadge">${rc}</span>`; }
+  // Show restock count on filter toggle button in My Kit
+  const ftb=document.getElementById('filterToggleBtn');
+  if(ftb){ ftb.querySelectorAll('.tbadge').forEach(b=>b.remove()); if(rc>0) ftb.innerHTML=`⚙ Filter <span class="tbadge" style="background:var(--rust)">${rc}</span>`; else ftb.textContent='⚙ Filter'; }
+  const wb=document.getElementById('wishBtn');
+  if(wb){ wb.querySelectorAll('.tbadge').forEach(b=>b.remove()); if(wc>0) wb.innerHTML+=`<span class="tbadge" style="background:var(--gold)">${wc}</span>`; }
+}
+
+// ══════════════════════════════════════════════════
+// INVENTORY
+// ══════════════════════════════════════════════════
+function toggleKitFilters(){
+  const el=document.getElementById('kitFilters');
+  const btn=document.getElementById('filterToggleBtn');
+  const open=el.style.display==='block';
+  el.style.display=open?'none':'block';
+  btn.style.background=open?'':'var(--canvas-3)';
+  btn.style.color=open?'':'var(--amber)';
+  btn.style.borderColor=open?'':'var(--amber-d)';
+}
+
+function itemMatchesPerson(item, pid){
+  // Does this item or any of its sub-items match the person filter?
+  if(pid==='all') return true;
+  if((item.personIds||[]).includes(pid)) return true;
+  return subItems(item.id).some(s=>(s.personIds||[]).includes(pid));
+}
+
+function renderInv(){
+  populateDynamicDropdowns(null, null, null); // keep locF in sync
+  const srch=document.getElementById('srch').value.toLowerCase();
+  const lf=document.getElementById('locF').value;
+  const sort=document.getElementById('sortS').value;
+  let items=topItems().filter(i=>{
+    const textMatch=!srch||i.name.toLowerCase().includes(srch)||(i.notes||'').toLowerCase().includes(srch)
+      ||subItems(i.id).some(s=>s.name.toLowerCase().includes(srch)||(s.notes||'').toLowerCase().includes(srch));
+    const pMatch=itemMatchesPerson(i, personFilter);
+    return textMatch
+      &&(tf==='all'||i.type===tf)
+      &&(lf==='all'||i.location===lf)
+      &&pMatch;
+  });
+  if(sort==='name') items.sort((a,b)=>a.name.localeCompare(b.name));
+  else if(sort==='location') items.sort((a,b)=>a.location.localeCompare(b.location));
+  else if(sort==='restock') items.sort((a,b)=>((b.restock||b.qty===0)?1:0)-((a.restock||a.qty===0)?1:0));
+  else items.sort((a,b)=>getCats().findIndex(c=>c.id===a.category)-getCats().findIndex(c=>c.id===b.category)||a.name.localeCompare(b.name));
+
+  const el=document.getElementById('invContent');
+  if(!items.length){ el.innerHTML=`<div class="empty">No items match — adjust filters or add one above.</div>`; return; }
+
+  if(sort==='category'){
+    const g={};
+    items.forEach(i=>{ if(!g[i.category])g[i.category]=[]; g[i.category].push(i); }); // keyed by id
+    el.innerHTML=getCats().filter(c=>g[c.id]?.length).map(c=>{
+      const open=!collapsedCats.has(c.id);
+      return `<div class="cg cat-${c.id}">
+        <div class="cg-hdr" onclick="toggleCat('${c.id}')">
+          <span class="cg-toggle ${open?'open':'closed'}">▼</span>
+          <span class="cg-title">${c.emoji||''} ${c.label}</span>
+          <span class="cg-count">${g[c.id].length}</span>
+        </div>
+        <div class="cg-body" id="cgb-${c.id}" style="display:${open?'block':'none'}">
+          ${invTable(g[c.id])}
+        </div>
+      </div>`;
+    }).join('');
+  } else {
+    el.innerHTML=invTable(items);
+  }
+}
+
+function invTable(rows){
+  return `<table class="itbl">
+    <thead><tr><th style="width:38%">Item</th><th>Type</th><th>Location</th><th>Qty</th><th></th></tr></thead>
+    <tbody>${rows.map(item=>itemRow(item,false)).join('')}</tbody>
+  </table>`;
+}
+
+function itemRow(item, isSub){
+  // When filtering by person, only show sub-items that match
+  const allSubs=subItems(item.id);
+  const subs=personFilter==='all'?allSubs:allSubs.filter(s=>(s.personIds||[]).includes(personFilter));
+  const restock=item.restock||item.qty===0;
+  const isWish=item.type==='wishlist';
+  const assignedPeople=(S.people||[]).filter(p=>(item.personIds||[]).includes(p.id));
+  const personBadges=assignedPeople.map(p=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55;margin-left:4px">${p.name}</span>`).join('');
+  return `
+    <tr class="irow${isSub?' sub-row':''}${isWish?' wishlist-item':''}">
+      <td>
+        <div class="iname">${isWish?`<span class="wishlist-badge">✦</span>`:''}${esc(item.name)}${restock?` <span class="rflag">⚠ restock</span>`:''}${personBadges}</div>
+        ${item.notes?`<div class="inotes">${esc(item.notes)}</div>`:''}
+        ${item.activity?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--teal);text-transform:uppercase;letter-spacing:.06em">${item.activity}</span>`:''}
+        ${item.isContainer?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--amber-d);text-transform:uppercase;letter-spacing:.06em">⊞ group</span>`:''}
+        ${(item.actions&&item.actions.length)?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--teal);text-transform:uppercase;letter-spacing:.06em">⚡ ${item.actions.length} action${item.actions.length!==1?'s':''}</span>`:''}
+        ${item.packsInto&&item.packsInto!==item.location?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--text-m)">→ ${labMap(getLocs())[item.packsInto]||item.packsInto}</span>`:''}
+      </td>
+      <td><span class="tpill tp-${item.type}">${TLAB[item.type]}</span></td>
+      <td><span class="lbadge lb-${item.location}">${labMap(getLocs())[item.location]||item.location}</span></td>
+      <td>${item.type==='consumable'?`
+        <div class="qc">
+          <button class="qbtn" onclick="qAdj('${item.id}',-1)">−</button>
+          <span id="qv-${item.id}">${item.qty}</span>
+          <button class="qbtn" onclick="qAdj('${item.id}',+1)">+</button>
+        </div>`:`<span style="font-family:'DM Mono',monospace;color:var(--text-m)">${item.qty}</span>`}
+      </td>
+      <td style="position:relative">
+        <button class="btn-ic" style="font-size:14px;padding:2px 8px;border:1px solid var(--border);border-radius:2px" onclick="toggleRowMenu('${item.id}',event)">•••</button>
+        <div id="rmenu-${item.id}" style="display:none;position:absolute;right:0;top:100%;margin-top:2px;background:var(--canvas-3);border:1px solid var(--border-l);border-radius:3px;z-index:50;min-width:110px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.4)">
+          <button onclick="closeRowMenu('${item.id}');openEditItemModal('${item.id}')" style="display:block;width:100%;padding:8px 14px;background:transparent;border:none;color:var(--text);font-size:12px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;text-align:left;cursor:pointer;text-transform:uppercase">✎ Edit</button>
+          <button onclick="closeRowMenu('${item.id}');delItem('${item.id}')" style="display:block;width:100%;padding:8px 14px;background:transparent;border:none;color:var(--rust);font-size:12px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;text-align:left;cursor:pointer;text-transform:uppercase">✕ Delete</button>
+        </div>
+      </td>
+    </tr>
+    ${!isSub&&subs.length?`<tr class="irow"><td colspan="5" style="padding:1px 9px 1px 28px;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-m);letter-spacing:.08em;text-transform:uppercase">includes:</td></tr>`:''}
+    ${subs.map(s=>itemRow(s,true)).join('')}
+    ${!isSub?`<tr class="irow add-sub-row"><td colspan="5"><button class="add-sub-btn" onclick="openAddSubModal('${item.id}')">+ add to group</button></td></tr>`:''}
+  `;
+}
+
+function toggleCIMenu(id, e){
+  e.stopPropagation();
+  const el=document.getElementById(id);
+  if(!el) return;
+  const wasOpen=el.style.display==='block';
+  document.querySelectorAll('[id^="ci-menu-"]').forEach(m=>m.style.display='none');
+  if(!wasOpen) el.style.display='block';
+}
+function closeCIMenu(id){
+  const el=document.getElementById(id);
+  if(el) el.style.display='none';
+}
+document.addEventListener('click',()=>document.querySelectorAll('[id^="ci-menu-"]').forEach(m=>m.style.display='none'));
+
+function toggleRowMenu(id, e){
+  e.stopPropagation();
+  const el=document.getElementById('rmenu-'+id);
+  const wasOpen=el.style.display==='block';
+  // close all open menus first
+  document.querySelectorAll('[id^="rmenu-"]').forEach(m=>m.style.display='none');
+  if(!wasOpen) el.style.display='block';
+}
+function closeRowMenu(id){ const el=document.getElementById('rmenu-'+id); if(el) el.style.display='none'; }
+document.addEventListener('click',()=>document.querySelectorAll('[id^="rmenu-"]').forEach(m=>m.style.display='none'));
+
+function toggleCat(c){
+  if(collapsedCats.has(c)) collapsedCats.delete(c);
+  else collapsedCats.add(c);
+  renderInv();
+}
+
+// ══════════════════════════════════════════════════
+// TRIPS
+// ══════════════════════════════════════════════════
+function renderTrips(){
+  const el=document.getElementById('tripsContent');
+  if(activeTripId){
+    const trip=S.trips.find(t=>t.id===activeTripId);
+    if(trip){ el.innerHTML=tripDetail(trip); return; }
+    activeTripId=null;
+  }
+
+  // Empty state — warm and inviting
+  if(!S.trips.length){
+    el.innerHTML=`
+      <div style="text-align:center;padding:40px 20px 30px">
+        <div style="font-size:52px;margin-bottom:12px;line-height:1">⛺</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:.06em;color:var(--ink,var(--text));margin-bottom:8px">Where are you heading?</div>
+        <div style="font-size:13px;color:var(--text-m);margin-bottom:24px;line-height:1.6;max-width:280px;margin-left:auto;margin-right:auto">Plan a trip and Base Camp will help you pack everything you need — stress free.</div>
+        <button class="btn btn-p" style="font-size:13px;padding:10px 24px" onclick="openNewTripModal()">Plan my first trip →</button>
+      </div>`; return;
+  }
+
+  // Sort: upcoming first, then by date, complete/post-trip at bottom
+  const statusOrder={'planning':0,'packing':1,'pack-up':2,'pack-away':3,'post-trip':4,'complete':5};
+  const sorted=[...S.trips].sort((a,b)=>{
+    const ao=statusOrder[a.status]??3, bo=statusOrder[b.status]??3;
+    if(ao!==bo) return ao-bo;
+    return (a.date||'9999')<(b.date||'9999')?-1:1;
+  });
+
+  // Upcoming = first non-complete trip
+  const upcoming=sorted.find(t=>t.status!=='complete');
+  const rest=sorted.filter(t=>t!==upcoming);
+
+  function countdown(dateStr){
+    if(!dateStr) return null;
+    const diff=Math.ceil((new Date(dateStr+'T12:00:00')-new Date())/(1000*60*60*24));
+    if(diff<0) return null;
+    if(diff===0) return 'Today!';
+    if(diff===1) return 'Tomorrow';
+    return diff+' days to go';
+  }
+
+  function peopleAvatars(trip){
+    if(!S.people||!S.people.length) return '';
+    return `<div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:6px">
+      ${S.people.map(p=>`<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:${p.color}33;border:1.5px solid ${p.color};font-size:13px" title="${esc(p.name)}">${p.emoji||'👤'}</span>`).join('')}
+      ${trip.dog?`<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#c8a84a33;border:1.5px solid #c8a84a;font-size:13px">🐕</span>`:''}
+    </div>`;
+  }
+
+  function packProgress(t){
+    if(!t.checklist||!t.checklist.length) return '';
+    const cl=t.checklist.filter(c=>{const it=S.items.find(i=>i.id===c.itemId);return it&&it.type!=='wishlist';});
+    const packed=cl.filter(c=>c.state==='packed').length;
+    const ready=cl.filter(c=>c.state==='ready').length;
+    const total=cl.length;
+    const pct=total?Math.round((packed+ready)/total*100):0;
+    return `<div style="margin-top:10px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${packed} packed · ${ready} ready · ${total-(packed+ready)} to go</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--sage)">${pct}%</span>
+      </div>
+      <div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden;display:flex">
+        <div style="width:${Math.round(packed/total*100)}%;background:var(--sage);transition:width .3s"></div>
+        <div style="width:${Math.round(ready/total*100)}%;background:var(--amber);transition:width .3s"></div>
+      </div>
+    </div>`;
+  }
+
+  // Hero card for upcoming trip
+  const heroHtml=upcoming?`
+    <div onclick="openTrip('${upcoming.id}')" style="background:var(--canvas-2);border:1.5px solid var(--amber-d);border-radius:8px;padding:18px;margin-bottom:16px;cursor:pointer;position:relative;overflow:hidden">
+      <div style="position:absolute;right:12px;top:12px;font-size:36px;opacity:.08;line-height:1;pointer-events:none">⛺</div>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px">
+        <span class="tstatus ts-${upcoming.status}">${STLAB[upcoming.status]||upcoming.status}</span>
+        ${countdown(upcoming.date)?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--amber);letter-spacing:.06em">${countdown(upcoming.date)}</span>`:''}
+      </div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;letter-spacing:.04em;color:var(--text);line-height:1.1;margin-bottom:3px">${esc(upcoming.name)}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${upcoming.date?fmtDate(upcoming.date)+' · ':''}${upcoming.nights} night${upcoming.nights!==1?'s':''} · ${SELAB[upcoming.season]||''} · ${SITELAB[upcoming.site]||''}</div>
+      ${peopleAvatars(upcoming)}
+      ${packProgress(upcoming)}
+      <div style="margin-top:12px;display:flex;gap:7px">
+        <button class="btn btn-p btn-sm" onclick="event.stopPropagation();openTrip('${upcoming.id}')">Open trip →</button>
+        ${upcoming.status==='planning'?`<button class="btn btn-o btn-sm" onclick="event.stopPropagation();startPacking('${upcoming.id}')">Start packing</button>`:''}
+      </div>
+    </div>`:' ';
+
+  // Remaining trips as compact cards
+  const restHtml=rest.length?`
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);margin-bottom:8px">${upcoming?'Other trips':'All trips'}</div>
+    <div class="tlist">${rest.map(t=>`
+      <div class="tcard" onclick="openTrip('${t.id}')">
+        <div>
+          <div class="tcard-name">${esc(t.name)}</div>
+          <div class="tcard-meta">${t.date?fmtDate(t.date)+' · ':''}${t.nights}n · ${SELAB[t.season]||''}${t.dog?' · 🐕':''}</div>
+        </div>
+        <div class="tcard-r">
+          ${t.checklist?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${t.checklist.filter(c=>c.state==='packed').length}/${t.checklist.length}</span>`:''}
+          <span class="tstatus ts-${t.status}">${STLAB[t.status]||t.status}</span>
+        </div>
+      </div>`).join('')}
+    </div>`:'';
+
+  el.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-d)">My Trips</span>
+      <button class="btn btn-p btn-sm" onclick="openNewTripModal()">+ New Trip</button>
+    </div>
+    ${heroHtml}
+    ${restHtml}`;
+}
+
+function tripDetail(trip){
+  const hl=getHL(trip);
+  const cl=trip.checklist||[];
+  // Count only items that exist in S.items and aren't wishlist
+  const validCl=cl.filter(c=>{
+    const it=S.items.find(i=>i.id===c.itemId);
+    return it&&it.type!=='wishlist';
+  });
+  const ready=validCl.filter(c=>c.state==='ready').length;
+  const packed=validCl.filter(c=>c.state==='packed').length;
+  const total=validCl.length;
+  const pctR=total?Math.round((ready+packed)/total*100):0;
+  const pctP=total?Math.round(packed/total*100):0;
+
+  const chips=[
+    `${trip.nights}n`, SELAB[trip.season], SITELAB[trip.site], DISTLAB[trip.distance],
+    trip.dog?'🐕 Dog':'No dog',
+    ...(trip.activities||[]).map(a=>`🏷 ${a}`),
+    trip.extraPeople>0?`+${trip.extraPeople} extra`:null
+  ].filter(Boolean);
+
+  let body='';
+  if(activeTripTab==='checklist')  body=checklistBody(trip,hl,ready,packed,total,pctR,pctP);
+  else if(activeTripTab==='pack-up')   body=packUpBody(trip);
+  else if(activeTripTab==='pack-away') body=packAwayBody(trip);
+  else if(activeTripTab==='actions')   body=actionsBody(trip);
+  else if(activeTripTab==='post-trip') body=postTripBody(trip);
+  else body=notesBody(trip);
+
+  return `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <button class="btn btn-o btn-sm" onclick="closeTrip()">← All Trips</button>
+      <div style="display:flex;gap:5px">
+        <button class="btn btn-o btn-sm" onclick="openEditTripModal('${trip.id}')">✎ Edit</button>
+        <button class="btn btn-x" onclick="delTrip('${trip.id}')">Delete</button>
+      </div>
+    </div>
+    <div class="tdetail">
+      <div class="tdhdr">
+        <div>
+          <div class="tdname">${esc(trip.name)}</div>
+          ${trip.date?`<div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:1px">${fmtDate(trip.date)}</div>`:''}
+          <div class="chips">${chips.map(c=>`<span class="chip">${esc(c)}</span>`).join('')}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+          <select class="fs" style="font-size:11px;padding:4px 8px;text-transform:uppercase;letter-spacing:.08em" onchange="setTripStatusFromDropdown('${trip.id}',this.value)">
+            <option value="planning"  ${trip.status==='planning'?'selected':''}>Planning</option>
+            <option value="packing"   ${trip.status==='packing'?'selected':''}>Packing</option>
+            <option value="pack-up"   ${trip.status==='pack-up'?'selected':''}>Pack up camp</option>
+            <option value="pack-away" ${trip.status==='pack-away'?'selected':''}>Unpack at home</option>
+            <option value="post-trip" ${trip.status==='post-trip'?'selected':''}>Back home</option>
+            <option value="complete"  ${trip.status==='complete'?'selected':''}>Complete</option>
+          </select>
+          ${statusBtn(trip)}
+        </div>
+      </div>
+      <div class="ttabs">
+        <button class="ttab ${activeTripTab==='checklist'?'on':''}" onclick="setTripTab('checklist')">Packing list</button>
+        <button class="ttab ${activeTripTab==='pack-up'?'on':''}" onclick="setTripTab('pack-up')">Pack up camp</button>
+        <button class="ttab ${activeTripTab==='pack-away'?'on':''}" onclick="setTripTab('pack-away')">Unpack at home</button>
+        <button class="ttab ${activeTripTab==='actions'?'on':''}" onclick="setTripTab('actions')">Reminders</button>
+        <button class="ttab ${activeTripTab==='post-trip'?'on':''}" onclick="setTripTab('post-trip')">Back home</button>
+        <button class="ttab ${activeTripTab==='notes'?'on':''}" onclick="setTripTab('notes')">Notes</button>
+      </div>
+      <div class="tbody">${body}</div>
+    </div>`;
+}
+
+function statusBtn(trip){
+  if(trip.status==='planning')  return `<button class="btn btn-p btn-sm" onclick="startPacking('${trip.id}')">Start packing →</button>`;
+  if(trip.status==='packing')   return `<button class="btn btn-p btn-sm" onclick="advanceStatus('${trip.id}','pack-up','pack-up')">At camp — Pack up camp →</button>`;
+  if(trip.status==='pack-up')   return `<button class="btn btn-p btn-sm" onclick="advanceStatus('${trip.id}','pack-away','pack-away')">Home — Pack Away →</button>`;
+  if(trip.status==='pack-away') return `<button class="btn btn-g btn-sm" onclick="advanceStatus('${trip.id}','post-trip','post-trip')">Done — Post-trip →</button>`;
+  return '';
+}
+
+function advanceStatus(tripId, status, tab){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  trip.status=status;
+  activeTripTab=tab;
+  save(); renderTrips();
+}
+
+function setTripStatusFromDropdown(tripId, status){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  trip.status=status;
+  if(status==='packing' && !trip.checklist) genChecklist(tripId);
+  if(status==='pack-up')   activeTripTab='pack-up';
+  if(status==='pack-away') activeTripTab='pack-away';
+  if(status==='post-trip') activeTripTab='post-trip';
+  save(); renderTrips();
+}
+
+function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
+  const cl=trip.checklist||[];
+  if(!cl.length) return `
+    <div class="empty">
+      No checklist yet.<br>
+      <button class="btn btn-p" style="margin-top:10px" onclick="genChecklist('${trip.id}')">Generate Checklist from Inventory</button>
+    </div>`;
+
+  const locMap=labMap(getLocs());
+  const locMap2=labMap(getLocs());
+
+  // ── COLLAPSED FILTER PANEL (mirrors My Kit) ──
+  const hasActiveFilter=checklistPersonFilter!=='all'||checklistLocFilter!=='all'||checklistHidePacked;
+  const activeFilterSummary=hasActiveFilter?[
+    checklistPersonFilter!=='all'?(S.people.find(p=>p.id===checklistPersonFilter)?.name||''):'',
+    checklistLocFilter!=='all'?(getStorageLocs().find(l=>l.id===checklistLocFilter)?.label||''):'',
+    checklistHidePacked?'Unpacked only':''
+  ].filter(Boolean).join(' · '):'';
+
+  const filterPanel=`
+    <div style="display:flex;gap:7px;margin-bottom:10px;align-items:center">
+      <button class="btn btn-o btn-sm" onclick="toggleChecklistFilters()" style="${hasActiveFilter?'background:var(--caborder-color:var(--amber-d)':''}">
+        ⚙ Filter${hasActiveFilter?` · <span style="font-family:'DM Mono',monospace;font-size:9px">${activeFilterSummary}</span>`:''}
+      </button>
+      ${hasActiveFilter?`<button class="btn btn-o btn-sm" style="color:var(--rust);border-color:var(--rust)" onclick="clearChecklistFilters()">✕ Clear</button>`:''}
+    </div>
+    <div id="clFilters" style="display:${checklistFiltersOpen?'block':'none'};padding:10px;background:var(--canvas-3);border-radius:3px;margin-bottom:12px">
+      ${(S.people&&S.people.length)?`
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;align-items:center">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em">Person:</span>
+        <button class="fb ${checklistPersonFilter==='all'?'on':''}" onclick="setChecklistPersonFilter('all')">All</button>
+        ${S.people.map(p=>`<button class="fb" style="${checklistPersonFilter===p.id?`background:${p.color}22;color:${p.color};border-color:${p.color}66`:''}" onclick="setChecklistPersonFilter('${p.id}')">${p.emoji||'👤'} ${p.name}</button>`).join('')}
+      </div>`:''}
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;align-items:center">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em">Location:</span>
+        <button class="fb ${checklistLocFilter==='all'?'on':''}" onclick="setChecklistLocFilter('all')">All</button>
+        ${getStorageLocs().map(l=>`<button class="fb" style="${checklistLocFilter===l.id?'background:var(--canvas-3);color:var(--amber);border-color:var(--amber-d)':''}" onclick="setChecklistLocFilter('${l.id}')">${l.label}</button>`).join('')}
+      </div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em">Sort:</span>
+        ${[['location','Location'],['category','Category'],['type','Type'],['name','Name'],['restock','Restocking first']].map(([v,l])=>`<button class="fb ${checklistSort===v?'on':''}" onclick="setChecklistSort('${v}')">${l}</button>`).join('')}
+        <button class="fb${checklistHidePacked?' on':''}" onclick="toggleHidePacked()" style="${checklistHidePacked?'background:rgba(107,140,90,.15);color:var(--sage);border-color:rgba(107,140,90,.3)':''}">
+          ${checklistHidePacked?'👁 Show packed':'👁 Hide packed'}
+        </button>
+      </div>
+    </div>`;
+
+  const peoplePills=''; const locPills='';
+
+  // ── BUILD FILTERED ITEM LIST ──
+  const filteredCIs=[];
+  cl.forEach(ci=>{
+    const item=S.items.find(i=>i.id===ci.itemId);
+    if(!item||item.parentId) return; // sub-items render under parent
+    if(checklistHidePacked && ci.state==='packed') return;
+    if(checklistPersonFilter!=='all'){
+      const itemMatches=(item.personIds||[]).includes(checklistPersonFilter);
+      const subMatches=subItems(item.id).some(s=>{
+        const ownIds=s.personIds&&s.personIds.length?s.personIds:null;
+        return ownIds?ownIds.includes(checklistPersonFilter):(item.personIds||[]).includes(checklistPersonFilter);
+      });
+      if(!itemMatches&&!subMatches) return;
+    }
+    if(checklistLocFilter!=='all'&&item.location!==checklistLocFilter) return;
+    filteredCIs.push({ci,item});
+  });
+
+  // ── SORT ──
+  if(checklistSort==='category'){
+    filteredCIs.sort((a,b)=>getCats().findIndex(c=>c.id===a.item.category)-getCats().findIndex(c=>c.id===b.item.category)||a.item.name.localeCompare(b.item.name));
+  } else if(checklistSort==='type'){
+    const typeOrder=['always','house','consumable','seasonal'];
+    filteredCIs.sort((a,b)=>typeOrder.indexOf(a.item.type)-typeOrder.indexOf(b.item.type)||a.item.name.localeCompare(b.item.name));
+  } else if(checklistSort==='restock'){
+    filteredCIs.sort((a,b)=>((b.item.restock||b.item.qty===0)?1:0)-((a.item.restock||a.item.qty===0)?1:0)||a.item.name.localeCompare(b.item.name));
+  } else if(checklistSort==='name'){
+    filteredCIs.sort((a,b)=>a.item.name.localeCompare(b.item.name));
+  } else {
+    // default: by location
+    filteredCIs.sort((a,b)=>getStorageLocs().findIndex(l=>l.id===a.item.location)-getStorageLocs().findIndex(l=>l.id===b.item.location)||a.item.name.localeCompare(b.item.name));
+  }
+
+  // ── GROUP by sort key ──
+  // Build ordered group keys and label map based on sort mode
+  let groupKey, groupOrder, groupLabel, groupIcon;
+  if(checklistSort==='location'){
+    groupKey=item=>item.location;
+    groupOrder=getStorageLocs().map(l=>l.id);
+    groupLabel=id=>{ const l=getStorageLocs().find(x=>x.id===id); return l?l.label:id; };
+    groupIcon=()=>'📍 ';
+  } else if(checklistSort==='category'){
+    groupKey=item=>item.category;
+    groupOrder=getCats().map(c=>c.id);
+    groupLabel=id=>{ const c=getCats().find(x=>x.id===id); return c?(c.emoji?c.emoji+' ':'')+c.label:id; };
+    groupIcon=()=>'';
+  } else if(checklistSort==='type'){
+    groupKey=item=>item.type;
+    groupOrder=['always','house','consumable','seasonal'];
+    groupLabel=id=>({always:'Always in kit',house:'Bring from home',consumable:'Needs restocking',seasonal:'Seasonal'}[id]||id);
+    groupIcon=()=>'';
+  } else {
+    groupKey=null; // no grouping for name / restock
+  }
+
+  const groups={};
+  if(groupKey){
+    filteredCIs.forEach(({ci,item})=>{
+      const k=groupKey(item);
+      if(!groups[k]) groups[k]=[];
+      groups[k].push({ci,item});
+    });
+  }
+
+  const hlCount=Object.keys(hl).length;
+  const pbarReadyW=pctR-pctP;
+  const pbarPackedW=pctP;
+
+  const sortBar=`
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em;align-self:center">Sort:</span>
+      ${[['location','Location'],['category','Category'],['type','Type'],['name','Name'],['restock','Restock first']].map(([v,l])=>
+        `<button class="fb ${checklistSort===v?'on':''}" onclick="setChecklistSort('${v}')">${l}</button>`
+      ).join('')}
+      <button class="fb${checklistHidePacked?' on':''}" onclick="toggleHidePacked()" style="${checklistHidePacked?'background:rgba(107,140,90,.15);color:var(--sage);border-color:rgba(107,140,90,.3)':''}">
+        ${checklistHidePacked?'👁 Show packed':'👁 Hide packed'}
+      </button>
+    </div>`;
+
+  const itemsHtml=groupKey
+    ? (groupOrder||[]).filter(k=>groups[k]?.length).map(k=>{
+        const groupId='clgrp-'+checklistSort+'-'+k;
+        const open=!collapsedLocs.has(groupId);
+        const packedCount=groups[k].filter(x=>x.ci.state==='packed').length;
+        // Count includes sub-items for accurate total
+        const subTotal=groups[k].reduce((s,{item})=>s+subItems(item.id).filter(si=>!isExcluded(si,trip)).length,0);
+        const totalCount=groups[k].length+subTotal;
+        return `<div class="cloc-group">
+          <div class="cloc-hdr" onclick="toggleLocGroup('${groupId}')">
+            <span class="cg-toggle ${open?'open':'closed'}" style="font-size:9px">▼</span>
+            <span class="cloc-title">${groupIcon(k)}${groupLabel(k)}</span>
+            <span class="cg-count">${packedCount}/${totalCount}</span>
+          </div>
+          <div id="clg-${groupId}" style="display:${open?'block':'none'}">
+            ${groups[k].map(({ci,item})=>ciRow(ci,item,trip,hl)).join('')}
+          </div>
+        </div>`;
+      }).join('')
+    : filteredCIs.map(({ci,item})=>ciRow(ci,item,trip,hl)).join('');
+
+  return `${filterPanel}
+    <div class="cprog">
+      <div class="cprog-top">
+        <div class="cprog-label">${ready} ready · ${packed} packed · ${total-(ready+packed)} remaining</div>
+        <div class="cprog-pcts">
+          <span class="cprog-pct pct-ready">${pctR}% ready</span>
+          <span class="cprog-pct pct-packed">${pctP}% packed</span>
+        </div>
+      </div>
+      <div class="pbar-wrap">
+        <div class="pbar-packed" style="width:${pbarPackedW}%"></div>
+        <div class="pbar-ready" style="width:${pbarReadyW}%"></div>
+      </div>
+      <div class="cprog-hint">Tap once = ✓ Ready · Tap again = ✓ Packed · Tap again = uncheck</div>
+      ${hlCount?`<div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--amber);letter-spacing:.05em;margin-top:4px">▲ ${hlCount} items highlighted for this trip</div>`:''}
+    </div>
+    ${itemsHtml}
+    <div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap">
+      <button class="btn btn-o btn-sm" onclick="regenChecklist('${trip.id}')">↺ Rebuild list</button>
+      <button class="btn btn-o btn-sm" onclick="uncheckAll('${trip.id}')">Uncheck all</button>
+      <button class="btn btn-p btn-sm" onclick="openQuickAddModal('${trip.id}')">+ Quick add item</button>
+      <button class="btn btn-o btn-sm" onclick="printChecklist('${trip.id}','packing')">🖨 Print</button>
+    </div>`;
+}
+
+function ciRow(ci,item,trip,hl){
+  const isHL=!!hl[item.id];
+  const qty=adjQty(item,trip);
+  const locMap=labMap(getLocs());
+  const cl=trip.checklist||[];
+
+  // Container items: show as group header, no state toggle — progress from children
+  if(item.isContainer){
+    const allSubs=subItems(item.id).filter(s=>!isExcluded(s,trip));
+    let visibleSubs=checklistPersonFilter==='all'?allSubs:allSubs.filter(s=>{
+      const ownIds=s.personIds&&s.personIds.length?s.personIds:null;
+      return ownIds?ownIds.includes(checklistPersonFilter):(item.personIds||[]).includes(checklistPersonFilter);
+    });
+    // Hide packed sub-items when toggle is on
+    if(checklistHidePacked) visibleSubs=visibleSubs.filter(s=>{
+      const sci=cl.find(c=>c.itemId===s.id);
+      return !sci||sci.state!=='packed';
+    });
+    if(!visibleSubs.length) return ''; // hide container entirely if all children hidden
+    const subCIs=visibleSubs.map(s=>cl.find(c=>c.itemId===s.id)).filter(Boolean);
+    const subPacked=subCIs.filter(c=>c.state==='packed').length;
+    const subReady=subCIs.filter(c=>c.state==='ready').length;
+    return `
+      <div style="margin:4px 0 2px;padding:6px 8px;background:var(--canvas-3);border-left:2px solid var(--amber-d);border-radius:2px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-d)">${esc(item.name)}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${subPacked} packed · ${subReady} ready · ${visibleSubs.length} total</span>
+        </div>
+      </div>
+      ${visibleSubs.map(sub=>{
+        let sci=cl.find(c=>c.itemId===sub.id);
+        if(!sci){
+          sci={itemId:sub.id,state:'unchecked'};
+          trip.checklist.push(sci);
+        }
+        return ciSubRow(sci,sub,trip,hl,locMap);
+      }).join('')}`;
+  }
+
+  // Regular item
+  const needsRestock=item.restock||item.qty===0;
+  const packsRoute=item.packsInto&&item.packsInto!==item.location
+    ?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--text-m)">${locMap[item.location]||item.location} → ${locMap[item.packsInto]||item.packsInto}</span>`
+    :`<span class="lbadge lb-${item.location}" style="font-size:8px;padding:1px 4px">${locMap[item.location]||item.location}</span>`;
+
+  // Visible sub-items (respects person filter)
+  const allSubs=subItems(item.id).filter(s=>!isExcluded(s,trip));
+  const visibleSubs=checklistPersonFilter==='all'?allSubs:allSubs.filter(s=>{
+    const ownIds=s.personIds&&s.personIds.length?s.personIds:null;
+    return ownIds?ownIds.includes(checklistPersonFilter):(item.personIds||[]).includes(checklistPersonFilter);
+  });
+
+  return `
+    <div class="ci ${ci.state||''} ${isHL?'hl':''}" style="position:relative" onclick="cycleState('${trip.id}','${ci.itemId}')">
+      <div class="ci-state ${ci.state||''}">${ci.state==='packed'||ci.state==='ready'?'✓':''}</div>
+      <div class="ci-body">
+        <div class="ci-name ${ci.state||''}">${esc(item.name)}${needsRestock?` <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--amber)">⚠ low stock</span>`:''}${(()=>{
+          const prePending=(item.actions||[]).filter(a=>a.stage==='pre-trip');
+          const tripActions=(trip.actionStates||{});
+          const incomplete=prePending.filter(a=>!tripActions[item.id+'::'+a.id]);
+          return (ci.state==='packed'||ci.state==='ready')&&incomplete.length
+            ? ` <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--rust)">⚡ ${incomplete.length} pre-trip action${incomplete.length!==1?'s':''} incomplete</span>`
+            : incomplete.length
+              ? ` <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--teal)">⚡ ${incomplete.length} to do</span>`
+              : '';
+        })()}</div>
+        <div class="ci-meta">
+          ${qty>1?`<span class="ci-qty">×${qty}</span>`:''}
+          ${packsRoute}
+          ${(S.people||[]).filter(p=>(item.personIds||[]).includes(p.id)).map(p=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55">${p.name}</span>`).join('')}
+          ${isHL?`<span class="hl-tag">▲ ${(hl[item.id]||[]).join(', ')}</span>`:''}
+          ${item.notes?`<span class="ci-note">${esc(item.notes)}</span>`:''}
+        </div>
+      </div>
+      <div style="position:relative;flex-shrink:0" onclick="event.stopPropagation()">
+        <button class="btn-ic" style="padding:2px 6px;font-size:13px;border:1px solid var(--border);border-radius:2px" onclick="toggleCIMenu('ci-menu-${ci.itemId}',event)">•••</button>
+        <div id="ci-menu-${ci.itemId}" style="display:none;position:absolute;right:0;top:100%;margin-top:2px;background:var(--canvas-3);border:1px solid var(--border-l);border-radius:3px;z-index:50;min-width:130px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.4)">
+          <button onclick="closeCIMenu('ci-menu-${ci.itemId}');removeFromChecklist('${trip.id}','${ci.itemId}')" style="display:block;width:100%;padding:8px 14px;background:transparent;border:none;color:var(--rust);font-size:12px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;text-align:left;cursor:pointer;text-transform:uppercase">✕ Remove from trip</button>
+        </div>
+      </div>
+    </div>
+    ${visibleSubs.length?`<div style="padding:2px 5px 0 32px;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-m);letter-spacing:.08em;text-transform:uppercase">includes:</div>`:''}
+    ${visibleSubs.map(sub=>{
+      let sci=cl.find(c=>c.itemId===sub.id);
+      if(!sci){
+        sci={itemId:sub.id,state:'unchecked'};
+        trip.checklist.push(sci);
+      }
+      return ciSubRow(sci,sub,trip,hl,locMap);
+    }).join('')}
+    ${inlineActions(item,trip,['pre-trip','during'])}`;
+}
+
+function ciSubRow(sci,sub,trip,hl,locMap){
+  const isSubHL=!!hl[sub.id];
+  const needsRestock=sub.restock||sub.qty===0;
+  const packsRoute=sub.packsInto&&sub.packsInto!==sub.location
+    ?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--text-m)">${locMap[sub.location]||sub.location} → ${locMap[sub.packsInto]||sub.packsInto}</span>`
+    :`<span class="lbadge lb-${sub.location}" style="font-size:8px;padding:1px 4px">${locMap[sub.location]||sub.location}</span>`;
+  return `<div class="ci sub-ci ${sci.state||''} ${isSubHL?'hl':''}" onclick="cycleState('${trip.id}','${sci.itemId}')">
+    <div class="ci-state ${sci.state||''}">${sci.state==='packed'||sci.state==='ready'?'✓':''}</div>
+    <div class="ci-body">
+      <div class="ci-name ${sci.state||''}">${esc(sub.name)}${needsRestock?` <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--amber)">⚠ low stock</span>`:''}</div>
+      <div class="ci-meta">
+        ${packsRoute}
+        ${(S.people||[]).filter(p=>(sub.personIds||[]).includes(p.id)).map(p=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55">${p.name}</span>`).join('')}
+        ${isSubHL?`<span class="hl-tag">▲ ${(hl[sub.id]||[]).join(', ')}</span>`:''}
+        ${sub.notes?`<span class="ci-note">${esc(sub.notes)}</span>`:''}
+      </div>
+    </div>
+  </div>
+  ${inlineActions(sub,trip,['pre-trip','during'])}`;
+}
+
+function packAwayBody(trip){
+  // Car to storage — items shown at their pack-into location (where they are in car)
+  // grouped by pack-into (current) location, shown with route back to storage
+  const cl=trip.checklist||[];
+  if(!cl.length) return `<div class="empty">No checklist generated yet.</div>`;
+
+  const locMap=labMap(getLocs());
+  const paStates=trip.packAwayStates||{};
+
+  // Build groups by pack-into (current) location
+  let displayItems=[];
+  cl.forEach(ci=>{
+    const item=S.items.find(i=>i.id===ci.itemId);
+    if(!item||item.parentId||item.type==='wishlist') return;
+    if(checklistHidePacked&&paStates[item.id]==='packed') return;
+    displayItems.push({item});
+  });
+
+  // Group by current location (packsInto || location)
+  const groups={};
+  const groupOrder=getLocs().map(l=>l.id);
+  displayItems.forEach(({item})=>{
+    const k=item.packsInto||item.location;
+    if(!groups[k]) groups[k]=[];
+    groups[k].push(item);
+  });
+
+  const allTop=cl.map(c=>S.items.find(i=>i.id===c.itemId)).filter(i=>i&&!i.parentId&&i.type!=='wishlist');
+  const doneCount=allTop.filter(i=>paStates[i.id]==='packed').length;
+  const total=allTop.length;
+  const pct=total?Math.round(doneCount/total*100):0;
+
+  const itemsHtml=groupOrder.filter(k=>groups[k]?.length).map(k=>{
+    const gid='pa2-grp-'+k;
+    const open=!collapsedLocs.has(gid);
+    const locLabel=locMap[k]||k;
+    const doneInGroup=groups[k].filter(i=>paStates[i.id]==='packed').length;
+    return `<div class="cloc-group">
+      <div class="cloc-hdr" onclick="toggleLocGroup('${gid}')">
+        <span class="cg-toggle ${open?'open':'closed'}" style="font-size:9px">▼</span>
+        <span class="cloc-title">📦 ${locLabel}</span>
+        <span class="cg-count">${doneInGroup}/${groups[k].length}</span>
+      </div>
+      <div id="clg-${gid}" style="display:${open?'block':'none'}">
+        ${groups[k].map(item=>{
+          const done=paStates[item.id]==='packed';
+          const dest=item.location;
+          const route=item.packsInto&&item.packsInto!==item.location
+            ?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--text-m)">${locMap[item.packsInto]||item.packsInto} → ${locMap[dest]||dest}</span>`
+            :`<span class="lbadge lb-${dest}" style="font-size:8px;padding:1px 4px">→ ${locMap[dest]||dest}</span>`;
+          const subs=subItems(item.id).filter(s=>s.type!=='wishlist');
+          const subDone=subs.filter(s=>paStates[s.id]==='packed').length;
+          return `<div class="ci ${done?'checked':''}" style="${done?'opacity:.4':''}" onclick="cyclePackAwayState('${trip.id}','${item.id}')">
+            <div class="ci-state ${done?'packed':''}">${done?'✓':''}</div>
+            <div class="ci-body">
+              <div class="ci-name ${done?'checked-text':''}">${esc(item.name)}</div>
+              <div class="ci-meta">
+                ${route}
+                ${subs.length?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${subDone}/${subs.length} sub-items</span>`:''}
+              </div>
+            </div>
+          </div>
+          ${subs.map(sub=>{
+            const subDoneFlag=paStates[sub.id]==='packed';
+            const subDest=sub.location;
+            const subRoute=sub.packsInto&&sub.packsInto!==sub.location
+              ?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--text-m)">${locMap[sub.packsInto]||sub.packsInto} → ${locMap[subDest]||subDest}</span>`
+              :`<span class="lbadge lb-${subDest}" style="font-size:8px;padding:1px 4px">→ ${locMap[subDest]||subDest}</span>`;
+            return `<div class="ci sub-ci ${subDoneFlag?'checked':''}" style="${subDoneFlag?'opacity:.4':''}" onclick="cyclePackAwayState('${trip.id}','${sub.id}')">
+              <div class="ci-state ${subDoneFlag?'packed':''}">${subDoneFlag?'✓':''}</div>
+              <div class="ci-body">
+                <div class="ci-name ${subDoneFlag?'checked-text':''}">${esc(sub.name)}</div>
+                <div class="ci-meta">${subRoute}</div>
+              </div>
+            </div>`;
+          }).join('')}
+          ${inlineActions(item,trip,['post-trip'])}`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+
+  return `
+    <div style="background:var(--canvas-3);border:1px solid var(--border);border-radius:2px;padding:10px 14px;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px">
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-d)">${doneCount} of ${total} stored away</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--sage)">${pct}%</span>
+      </div>
+      <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+        <div style="width:${pct}%;height:100%;background:var(--sage);transition:width .3s"></div>
+      </div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);margin-top:5px;letter-spacing:.05em">
+        Items grouped by where they are now → tap to confirm stored away
+      </div>
+    </div>
+    <div style="display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap">
+      <button class="fb${checklistHidePacked?' on':''}" onclick="toggleHidePacked()" style="${checklistHidePacked?'background:rgba(107,140,90,.15);color:var(--sage);border-color:rgba(107,140,90,.3)':''}">
+        ${checklistHidePacked?'👁 Show stored':'👁 Hide stored'}
+      </button>
+    </div>
+    ${itemsHtml}
+    <div style="display:flex;gap:7px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn btn-g" onclick="packAwayAll('${trip.id}')">✓ Store Everything</button>
+      <button class="btn btn-o btn-sm" onclick="unpackAwayAll('${trip.id}')">Reset all</button>
+      <button class="btn btn-o btn-sm" onclick="printChecklist('${trip.id}','packaway')">🖨 Print</button>
+    </div>`;
+}
+
+function cyclePackAwayState(tripId, itemId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  if(!trip.packAwayStates) trip.packAwayStates={};
+  const cur=trip.packAwayStates[itemId]||'unchecked';
+  trip.packAwayStates[itemId]=cur==='unchecked'?'packed':'unchecked';
+  save(); renderTrips();
+}
+
+function packAwayAll(tripId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  if(!trip.packAwayStates) trip.packAwayStates={};
+  (trip.checklist||[]).forEach(ci=>{
+    const item=S.items.find(i=>i.id===ci.itemId);
+    if(item&&item.type!=='wishlist') trip.packAwayStates[item.id]='packed';
+  });
+  save(); renderTrips();
+}
+
+function unpackAwayAll(tripId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  trip.packAwayStates={};
+  save(); renderTrips();
+}
+
+function postTripBody(trip){
+  // All checklist items (not just consumables)
+  const allItems=(trip.checklist||[]).map(ci=>S.items.find(i=>i.id===ci.itemId)).filter(i=>i&&!i.parentId&&i.type!=='wishlist');
+  const cons=allItems.filter(i=>i.type==='consumable');
+  const nonCons=allItems.filter(i=>i.type!=='consumable');
+  const damaged=trip.damaged||{};
+
+  function ptMenu(itemId){
+    return `<td style="position:relative">
+      <button class="btn-ic" style="padding:2px 6px;font-size:12px;border:1px solid var(--border);border-radius:2px" onclick="toggleCIMenu('pt-menu-${itemId}',event)">•••</button>
+      <div id="pt-menu-${itemId}" style="display:none;position:absolute;right:0;top:100%;margin-top:2px;background:var(--canvas-3);border:1px solid var(--border-l);border-radius:3px;z-index:50;min-width:160px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.4)">
+        <button onclick="closeCIMenu('pt-menu-${itemId}');flagLeftAtSite('${trip.id}','${itemId}')" style="display:block;width:100%;padding:7px 14px;background:transparent;border:none;color:var(--rust);font-size:11px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;text-align:left;cursor:pointer;text-transform:uppercase">⚠ Left at site</button>
+        <button onclick="closeCIMenu('pt-menu-${itemId}');flagDamaged('${trip.id}','${itemId}','repair')" style="display:block;width:100%;padding:7px 14px;background:transparent;border:none;color:var(--amber);font-size:11px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;text-align:left;cursor:pointer;text-transform:uppercase">🔧 Needs repair</button>
+        <button onclick="closeCIMenu('pt-menu-${itemId}');flagDamaged('${trip.id}','${itemId}','replace')" style="display:block;width:100%;padding:7px 14px;background:transparent;border:none;color:var(--purple);font-size:11px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;text-align:left;cursor:pointer;text-transform:uppercase">✦ Needs replacing</button>
+      </div>
+    </td>`;
+  }
+
+  return `
+    <div class="pt-banner">
+      <div class="pt-title">Back home review</div>
+      <div class="pt-sub">Check all items, update consumables, and flag anything damaged, left behind or needing attention.</div>
+    </div>
+
+    ${cons.length?`
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--rust);margin-bottom:8px">Restocking</div>
+    <table class="itbl" style="margin-bottom:16px">
+      <thead><tr><th>Item</th><th>Qty left</th><th>Restock</th><th></th></tr></thead>
+      <tbody>${cons.map(item=>`
+        <tr class="irow">
+          <td><div class="iname">${esc(item.name)}${damaged[item.id]?` <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:${damaged[item.id]==='repair'?'var(--amber)':'var(--purple)'}">${damaged[item.id]==='repair'?'🔧 repair':'✦ replace'}</span>`:''}</div></td>
+          <td><div class="qc">
+            <button class="qbtn" onclick="ptAdj('${item.id}',-1)">−</button>
+            <span id="ptq-${item.id}">${item.qty}</span>
+            <button class="qbtn" onclick="ptAdj('${item.id}',+1)">+</button>
+          </div></td>
+          <td><label class="ck"><input type="checkbox" ${item.restock?'checked':''} onchange="setRestock('${item.id}',this.checked)"> Restock</label></td>
+          ${ptMenu(item.id)}
+        </tr>`).join('')}
+      </tbody>
+    </table>`:''}
+
+    ${nonCons.length?`
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-d);margin-bottom:8px">All Items</div>
+    <table class="itbl" style="margin-bottom:16px">
+      <thead><tr><th>Item</th><th>Type</th><th>OK?</th><th></th></tr></thead>
+      <tbody>${nonCons.map(item=>`
+        <tr class="irow">
+          <td><div class="iname">${esc(item.name)}${damaged[item.id]?` <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:${damaged[item.id]==='repair'?'var(--amber)':'var(--purple)'}">${damaged[item.id]==='repair'?'🔧 repair':'✦ replace'}</span>`:''}</div></td>
+          <td><span class="tpill tp-${item.type}">${TLAB[item.type]||item.type}</span></td>
+          <td><label class="ck"><input type="checkbox" ${!damaged[item.id]?'checked':''} onchange="if(this.checked)clearDamaged('${trip.id}','${item.id}')"> Good</label></td>
+          ${ptMenu(item.id)}
+        </tr>`).join('')}
+      </tbody>
+    </table>`:''}
+
+    <div style="margin-top:14px">
+      <button class="btn btn-g" onclick="finishPostTrip('${trip.id}')">✓ Done — mark trip complete</button>
+    </div>
+    ${(()=>{
+      const leftItems=Object.keys(trip.leftAtSite||{}).map(id=>S.items.find(i=>i.id===id)).filter(Boolean);
+      if(!leftItems.length) return '';
+      return `<div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border)">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--rust);margin-bottom:10px">⚠ Left at site</div>
+        ${leftItems.map(item=>`
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-bottom:1px solid var(--border);background:rgba(184,92,58,.05)">
+            <span style="font-size:13px;font-weight:500;flex:1;color:var(--rust)">${esc(item.name)}</span>
+            <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${esc((trip.leftAtSite||{})[item.id]||'')}</span>
+            <button class="btn btn-o btn-sm" onclick="clearLeftAtSite('${trip.id}','${item.id}')">✓ Found it</button>
+          </div>`).join('')}
+      </div>`;
+    })()}
+    ${(()=>{
+      // Post-trip actions from checklist items
+      const ptActions=[];
+      (trip.checklist||[]).forEach(ci=>{
+        const item=S.items.find(i=>i.id===ci.itemId);
+        if(!item) return;
+        (item.actions||[]).filter(a=>a.stage==='post-trip').forEach(a=>{
+          ptActions.push({item,action:a});
+        });
+      });
+      if(!ptActions.length) return '';
+      const tripActions=trip.actionStates||{};
+      return `<div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border)">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:10px">⚡ Post-trip Actions</div>
+        ${ptActions.map(({item,action})=>{
+          const key=item.id+'::'+action.id;
+          const done=!!tripActions[key];
+          return `<div style="display:flex;align-items:center;gap:10px;padding:7px 8px;border-bottom:1px solid var(--border);cursor:pointer;${done?'opacity:.45':''}" onclick="toggleTripAction('${trip.id}','${item.id}','${action.id}')">
+            <div style="width:18px;height:18px;border-radius:3px;border:1px solid ${done?'var(--sage)':'var(--border)'};background:${done?'rgba(107,140,90,.25)':'var(--canvas-3)'};display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--sage);flex-shrink:0">${done?'✓':''}</div>
+            <div>
+              <div style="font-size:12px;font-weight:500;${done?'text-decoration:line-through':''}">${esc(action.label)}</div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.06em">${esc(item.name)}</div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    })()}`;
+}
+
+function notesBody(trip){
+  return `
+    <div class="fg">
+      <label class="fl">Trip notes</label>
+      <textarea class="tnotes-area" onblur="saveTripNotes('${trip.id}',this.value)">${esc(trip.notes||'')}</textarea>
+    </div>
+    ${(trip.activities||[]).length?`
+      <div class="fg" style="margin-top:12px">
+        <label class="fl">Activities</label>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:5px">
+          ${trip.activities.map(a=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--teal);border:1px solid rgba(90,154,138,.3);background:rgba(90,154,138,.08);padding:2px 9px;border-radius:2px;text-transform:uppercase;letter-spacing:.08em">${a}</span>`).join('')}
+        </div>
+      </div>`:''}`;
+}
+
+// ── RESTOCK ──────────────────────────────────────
+function renderRestock(){
+  const items=S.items.filter(i=>!i.parentId&&!i.type==='wishlist'&&(i.restock||i.qty===0));
+  // fix: include all non-wishlist with restock flag
+  const ri=S.items.filter(i=>!i.parentId&&i.type!=='wishlist'&&(i.restock||i.qty===0));
+  const el=document.getElementById('restockContent');
+  if(!ri.length){ el.innerHTML=`<div class="empty" style="margin-top:0">✓ Nothing flagged for restock. All good.</div>`; return; }
+  const byLoc={};
+  ri.forEach(i=>{ if(!byLoc[i.location]) byLoc[i.location]=[]; byLoc[i.location].push(i); });
+  el.innerHTML=`
+    <div style="margin-bottom:12px"><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--rust)">${ri.length} item${ri.length!==1?'s':''} to restock</span></div>
+    ${getStorageLocs().filter(l=>byLoc[l.id]).map(loc=>`
+      <div class="cg">
+        <div class="cg-hdr" style="cursor:default">
+          <span class="cg-title" style="color:var(--text-d)">📍 ${loc.label}</span>
+          <span class="cg-count">${byLoc[loc.id].length}</span>
+        </div>
+        <table class="itbl">
+          <thead><tr><th>Item</th><th>Qty</th><th>Notes</th><th></th></tr></thead>
+          <tbody>${byLoc[loc.id].map(item=>`
+            <tr class="irow">
+              <td><div class="iname">${esc(item.name)}</div></td>
+              <td><span style="font-family:'DM Mono',monospace;color:var(--rust)">${item.qty}</span></td>
+              <td><span class="inotes">${esc(item.notes||'—')}</span></td>
+              <td><button class="btn btn-g btn-sm" onclick="clearRestock('${item.id}')">✓ Restocked</button></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`).join('')}`;
+}
+
+// ── WISH LIST ─────────────────────────────────────
+function renderWishlist(){
+  const items=wishItems();
+  const el=document.getElementById('wishContent');
+  if(!items.length){ el.innerHTML=`
+    <div class="empty" style="margin-top:0">
+      ✦ No wish list items yet.<br>
+      <span style="font-size:11px;margin-top:4px;display:block">Add items you'd love to upgrade to — they stay out of your trip checklists.</span>
+      <button class="btn btn-p btn-sm" style="margin-top:12px" onclick="openAddWishModal()">+ Add Wish Item</button>
+    </div>`; return; }
+  const g={};
+  items.forEach(i=>{ if(!g[i.category]) g[i.category]=[]; g[i.category].push(i); });
+  el.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)">✦ ${items.length} Want list Item${items.length!==1?'s':''}</span>
+      <button class="btn btn-p btn-sm" onclick="openAddWishModal()">+ Add Item</button>
+    </div>
+    ${getCats().filter(c=>g[c.id]?.length).map(c=>`
+      <div class="cg cat-${c.id}">
+        <div class="cg-hdr" style="cursor:default">
+          <span class="cg-title">${c.emoji||''} ${c.label}</span>
+          <span class="cg-count">${g[c.id].length}</span>
+        </div>
+        <table class="itbl">
+          <thead><tr><th>Item</th><th>Location (if acquired)</th><th>Notes</th><th></th></tr></thead>
+          <tbody>${g[c.id].map(item=>`
+            <tr class="irow wishlist-item">
+              <td><div class="iname"><span class="wishlist-badge">✦</span>${esc(item.name)}</div></td>
+              <td><span class="lbadge lb-${item.location}">${labMap(getLocs())[item.location]||item.location}</span></td>
+              <td><span class="inotes">${esc(item.notes||'—')}</span></td>
+              <td><div class="iacts" style="opacity:1">
+                <button class="btn btn-g btn-sm" onclick="promoteWish('${item.id}')" title="Move to inventory">↑ Add to Inventory</button>
+                <button class="btn-ic" onclick="openEditItemModal('${item.id}')">✎</button>
+                <button class="btn btn-x" onclick="delItem('${item.id}')">✕</button>
+              </div></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`).join('')}`;
+}
+
+// ══════════════════════════════════════════════════
+// TRIP ACTIONS
+// ══════════════════════════════════════════════════
+function genChecklist(tripId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  // Only include top-level items — sub-items are rendered via their parent in ciRow
+  // and tracked as separate checklist entries for independent state
+  const included=S.items.filter(i=>i.type!=='wishlist'&&!isExcluded(i,trip));
+  // Preserve state for any items already in checklist (don't reset existing progress)
+  const existing={};
+  (trip.checklist||[]).forEach(c=>existing[c.itemId]=c.state);
+  trip.checklist=included.map(item=>({
+    itemId:item.id,
+    state:existing[item.id]||'unchecked'
+  }));
+  save(); renderTrips();
+}
+
+function hardRegenChecklist(tripId){
+  // Full reset — used by the Regenerate button
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  const included=S.items.filter(i=>i.type!=='wishlist'&&!isExcluded(i,trip));
+  trip.checklist=included.map(item=>({ itemId:item.id, state:'unchecked' }));
+  save(); renderTrips();
+}
+
+function regenChecklist(tripId){
+  if(!confirm('Regenerate checklist? Current ready/packed state will be reset.')) return;
+  hardRegenChecklist(tripId);
+}
+
+function cycleState(tripId, itemId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip?.checklist) return;
+  const ci=trip.checklist.find(c=>c.itemId===itemId);
+  if(!ci) return;
+  const currentState=ci.state||'unchecked';
+  // Hard block: moving from unchecked→ready requires all pre-trip actions complete
+  if(currentState==='unchecked'){
+    const item=S.items.find(i=>i.id===itemId);
+    if(item){
+      const prePending=(item.actions||[]).filter(a=>a.stage==='pre-trip');
+      const tripActions=trip.actionStates||{};
+      const incomplete=prePending.filter(a=>!tripActions[item.id+'::'+a.id]);
+      if(incomplete.length){
+        showToast('⚡ Complete pre-trip action'+(incomplete.length>1?'s':'')+' first: '+incomplete.map(a=>a.label).join(', '));
+        return;
+      }
+    }
+  }
+  const cycle={ unchecked:'ready', ready:'packed', packed:'unchecked' };
+  ci.state=cycle[currentState]||'ready';
+  save(); renderTrips();
+}
+
+function uncheckAll(tripId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip?.checklist) return;
+  trip.checklist.forEach(c=>c.state='unchecked');
+  save(); renderTrips();
+}
+
+function toggleLocGroup(loc){
+  if(collapsedLocs.has(loc)) collapsedLocs.delete(loc);
+  else collapsedLocs.add(loc);
+  renderTrips();
+}
+
+function startPacking(tripId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  trip.status='packing';
+  activeTripTab='checklist';
+  if(!trip.checklist||!trip.checklist.length){ genChecklist(tripId); return; }
+  save(); renderTrips();
+}
+
+function completeTrip(tripId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  trip.status='complete'; save(); renderTrips();
+}
+
+function startPostTrip(tripId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  trip.status='post-trip'; activeTripTab='post-trip'; save(); renderTrips();
+}
+
+function finishPostTrip(tripId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  trip.status='complete'; activeTripTab='checklist'; save(); renderAll();
+}
+
+function saveTripNotes(tripId,val){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(trip){ trip.notes=val; save(); }
+}
+
+function setRestock(itemId,val){
+  const item=S.items.find(i=>i.id===itemId);
+  if(item){ item.restock=val; save(); renderStats(); }
+}
+
+function ptAdj(id,delta){
+  const item=S.items.find(i=>i.id===id);
+  if(!item) return;
+  item.qty=Math.max(0,(item.qty||0)+delta);
+  if(item.qty===0) item.restock=true;
+  save();
+  const el=document.getElementById('ptq-'+id);
+  if(el) el.textContent=item.qty;
+  renderStats();
+}
+
+function openTrip(id){ activeTripId=id; activeTripTab='checklist'; checklistLocFilter='all'; checklistPersonFilter='all'; checklistSort='location'; checklistHidePacked=false; checklistFiltersOpen=false; renderTrips(); }
+function closeTrip(){ activeTripId=null; renderTrips(); }
+function setTripTab(tab){ activeTripTab=tab; renderTrips(); }
+
+function delTrip(id){
+  if(!confirm('Delete this trip?')) return;
+  S.trips=S.trips.filter(t=>t.id!==id);
+  activeTripId=null; save(); renderTrips();
+}
+
+// ══════════════════════════════════════════════════
+// PACK AWAY BODY
+// ══════════════════════════════════════════════════
+function packUpBody(trip){
+  const cl=trip.checklist||[];
+  if(!cl.length) return `<div class="empty">No checklist generated yet.<br>
+    <button class="btn btn-p" style="margin-top:10px" onclick="genChecklist('${trip.id}')">Generate Checklist</button></div>`;
+
+  const locMap=labMap(getLocs());
+  const paStates=trip.packUpStates||{};
+
+  // Build item list — top-level items on checklist
+  // Grouped by "currently at" location = packsInto if set, else storage location
+  const byLoc={};
+  cl.forEach(ci=>{
+    const item=S.items.find(i=>i.id===ci.itemId);
+    if(!item||item.parentId||item.type==='wishlist') return;
+    const currentLoc=item.packsInto||item.location;
+    if(!byLoc[currentLoc]) byLoc[currentLoc]=[];
+    byLoc[currentLoc].push({ci,item});
+  });
+
+  // progress
+  const allItems=cl.map(c=>S.items.find(i=>i.id===c.itemId)).filter(i=>i&&!i.parentId&&i.type!=='wishlist');
+  const doneCount=allItems.filter(i=>paStates[i.id]==='packed').length;
+  const total=allItems.length;
+  const pct=total?Math.round(doneCount/total*100):0;
+
+  // Sort controls reuse checklistSort state
+  const sortBar=`
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em;align-self:center">Group:</span>
+      ${[['location','By location'],['category','By category'],['type','By type'],['name','By name']].map(([v,l])=>
+        `<button class="fb ${checklistSort===v?'on':''}" onclick="setChecklistSort('${v}')">${l}</button>`
+      ).join('')}
+      <button class="fb${checklistHidePacked?' on':''}" onclick="toggleHidePacked()" style="${checklistHidePacked?'background:rgba(107,140,90,.15);color:var(--sage);border-color:rgba(107,140,90,.3)':''}">
+        ${checklistHidePacked?'👁 Show packed':'👁 Hide packed'}
+      </button>
+    </div>`;
+
+  // Build sorted/grouped list
+  let groupKey,groupOrder,groupLabel,groupIcon;
+  if(checklistSort==='category'){
+    groupKey=item=>item.category;
+    groupOrder=getCats().map(c=>c.id);
+    groupLabel=id=>{ const c=getCats().find(x=>x.id===id); return c?(c.emoji?c.emoji+' ':'')+c.label:id; };
+    groupIcon=()=>'';
+  } else if(checklistSort==='type'){
+    groupKey=item=>item.type;
+    groupOrder=['always','house','consumable','seasonal'];
+    groupLabel=id=>({always:'Always in kit',house:'Bring from home',consumable:'Needs restocking',seasonal:'Seasonal'}[id]||id);
+    groupIcon=()=>'';
+  } else if(checklistSort==='name'){
+    groupKey=null;
+  } else {
+    // default: by current location (packsInto || location)
+    groupKey=item=>item.packsInto||item.location;
+    groupOrder=getAllLocs().map(l=>l.id);
+    groupLabel=id=>{ const l=getLocs().find(x=>x.id===id); return l?l.label:id; };
+    groupIcon=()=>'📍 ';
+  }
+
+  // Collect items for display
+  let displayItems=[];
+  cl.forEach(ci=>{
+    const item=S.items.find(i=>i.id===ci.itemId);
+    if(!item||item.parentId||item.type==='wishlist') return;
+    if(checklistHidePacked&&paStates[item.id]==='packed') return;
+    displayItems.push({ci,item});
+  });
+
+  if(checklistSort==='name') displayItems.sort((a,b)=>a.item.name.localeCompare(b.item.name));
+
+  const groups={};
+  if(groupKey){
+    displayItems.forEach(({ci,item})=>{
+      const k=groupKey(item);
+      if(!groups[k]) groups[k]=[];
+      groups[k].push({ci,item});
+    });
+  }
+
+  const itemsHtml=groupKey
+    ?(groupOrder||[]).filter(k=>groups[k]?.length).map(k=>{
+        const gid='pa-grp-'+k;
+        const open=!collapsedLocs.has(gid);
+        const doneInGroup=groups[k].filter(({item})=>paStates[item.id]==='packed').length;
+        return `<div class="cloc-group">
+          <div class="cloc-hdr" onclick="toggleLocGroup('${gid}')">
+            <span class="cg-toggle ${open?'open':'closed'}" style="font-size:9px">▼</span>
+            <span class="cloc-title">${groupIcon(k)}${groupLabel(k)}</span>
+            <span class="cg-count">${doneInGroup}/${groups[k].length}</span>
+          </div>
+          <div id="clg-${gid}" style="display:${open?'block':'none'}">
+            ${groups[k].map(({ci,item})=>packUpRow(item,trip,locMap)).join('')}
+          </div>
+        </div>`;
+      }).join('')
+    :displayItems.map(({ci,item})=>packUpRow(item,trip,locMap)).join('');
+
+  return `
+    <div style="background:var(--canvas-3);border:1px solid var(--border);border-radius:2px;padding:10px 14px;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px">
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-d)">${doneCount} of ${total} packed away</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--sage)">${pct}%</span>
+      </div>
+      <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+        <div style="width:${pct}%;height:100%;background:var(--sage);transition:width .3s"></div>
+      </div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);margin-top:5px;letter-spacing:.05em">
+        Items are shown at their current packed location → tap to confirm packed away to storage
+      </div>
+    </div>
+    ${sortBar}
+    ${itemsHtml}
+    <div style="display:flex;gap:7px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn btn-g" onclick="packUpAll('${trip.id}')">✓ Pack up everything</button>
+      <button class="btn btn-o btn-sm" onclick="unpackAll('${trip.id}')">Unpack all</button>
+      <button class="btn btn-o btn-sm" onclick="printChecklist('${trip.id}','packup')">🖨 Print</button>
+    </div>`;
+}
+
+function packUpAll(tripId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  if(!trip.packUpStates) trip.packUpStates={};
+  (trip.checklist||[]).forEach(ci=>{
+    const item=S.items.find(i=>i.id===ci.itemId);
+    if(item&&item.type!=='wishlist') trip.packUpStates[item.id]='packed';
+  });
+  save(); renderTrips();
+}
+
+function unpackAll(tripId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  trip.packUpStates={};
+  save(); renderTrips();
+}
+
+function packUpRow(item, trip, locMap){
+  const paStates=trip.packUpStates||{};
+  const state=paStates[item.id]||'unchecked';
+  const done=state==='packed';
+  const currentLoc=item.packsInto||item.location;
+  const route=item.packsInto&&item.packsInto!==item.location
+    ?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--text-m)">${locMap[currentLoc]||currentLoc} → ${locMap[item.location]||item.location}</span>`
+    :`<span class="lbadge lb-${item.location}" style="font-size:8px;padding:1px 4px">${locMap[item.location]||item.location}</span>`;
+
+  // sub-items
+  const subs=subItems(item.id).filter(s=>s.type!=='wishlist');
+  const subsDoneCount=subs.filter(s=>(paStates[s.id]||'unchecked')==='packed').length;
+
+  return `
+    <div class="ci ${done?'checked':''}" style="position:relative;${done?'opacity:.4':''}" onclick="cyclePackUpState('${trip.id}','${item.id}')">
+      <div class="ci-state ${done?'packed':''}">${done?'✓':''}</div>
+      <div class="ci-body">
+        <div class="ci-name ${done?'checked-text':''}">${esc(item.name)}</div>
+        <div class="ci-meta">
+          ${route}
+          ${subs.length?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${subsDoneCount}/${subs.length} sub-items</span>`:''}
+        </div>
+      </div>
+    </div>
+    ${subs.map(sub=>{
+      const subDone=(paStates[sub.id]||'unchecked')==='packed';
+      const subRoute=sub.packsInto&&sub.packsInto!==sub.location
+        ?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--text-m)">${locMap[sub.packsInto]||sub.packsInto} → ${locMap[sub.location]||sub.location}</span>`
+        :`<span class="lbadge lb-${sub.location}" style="font-size:8px;padding:1px 4px">${locMap[sub.location]||sub.location}</span>`;
+      return `<div class="ci sub-ci ${subDone?'checked':''}" style="${subDone?'opacity:.4':''}" onclick="cyclePackUpState('${trip.id}','${sub.id}')">
+        <div class="ci-state ${subDone?'packed':''}">${subDone?'✓':''}</div>
+        <div class="ci-body">
+          <div class="ci-name ${subDone?'checked-text':''}">${esc(sub.name)}</div>
+          <div class="ci-meta">${subRoute}</div>
+        </div>
+      </div>
+      ${inlineActions(sub,trip,['before-pack-away'])}`;
+    }).join('')}
+    ${inlineActions(item,trip,['before-pack-away'])}`;
+}
+
+function cyclePackUpState(tripId, itemId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  if(!trip.packUpStates) trip.packUpStates={};
+  const cur=trip.packUpStates[itemId]||'unchecked';
+  trip.packUpStates[itemId]=cur==='unchecked'?'packed':'unchecked';
+  save(); renderTrips();
+}
+
+function getAllLocs(){ return getLocs(); } // alias used in packAwayBody
+
+// ══════════════════════════════════════════════════
+// ITEM ACTIONS
+// ══════════════════════════════════════════════════
+function qAdj(id,delta){
+  const item=S.items.find(i=>i.id===id);
+  if(!item) return;
+  item.qty=Math.max(0,(item.qty||0)+delta);
+  if(item.qty===0) item.restock=true;
+  save(); renderAll();
+}
+
+function clearRestock(id){
+  const item=S.items.find(i=>i.id===id);
+  if(!item) return;
+  item.restock=false; item.qty=Math.max(item.qty,1);
+  save(); renderAll();
+}
+
+function delItem(id){
+  // also delete sub-items
+  S.items=S.items.filter(i=>i.id!==id&&i.parentId!==id);
+  save(); renderAll();
+}
+
+function promoteWish(id){
+  const item=S.items.find(i=>i.id===id);
+  if(!item) return;
+  item.type='always';
+  save(); renderAll();
+}
+
+function openAddItemModal(){
+  editItemId=null;
+  document.getElementById('imt').textContent='Add Item';
+  clearItemForm();
+  populateDynamicDropdowns(getCats()[0]?.id, getLocs()[0]?.id, '');
+  populateParentDropdown(null);
+  populatePersonButtons([]);
+  openM('itemModal');
+  setTimeout(()=>document.getElementById('iName').focus(),50);
+}
+
+function openAddSubModal(parentId){
+  editItemId=null;
+  document.getElementById('imt').textContent='Add to group';
+  clearItemForm();
+  const parentItem=S.items.find(i=>i.id===parentId);
+  populateDynamicDropdowns(parentItem?.category||getCats()[0]?.id, parentItem?.location||getLocs()[0]?.id, '');
+  populateParentDropdown(parentId);
+  populatePersonButtons([]);
+  openM('itemModal');
+  setTimeout(()=>document.getElementById('iName').focus(),50);
+}
+
+function openAddWishModal(){
+  editItemId=null;
+  document.getElementById('imt').textContent='Add Want list Item';
+  clearItemForm();
+  populateDynamicDropdowns(getCats()[0]?.id, getLocs()[0]?.id, '');
+  document.getElementById('iType').value='wishlist';
+  populateParentDropdown(null);
+  populatePersonButtons([]);
+  openM('itemModal');
+  setTimeout(()=>document.getElementById('iName').focus(),50);
+}
+
+function openEditItemModal(id){
+  const item=S.items.find(i=>i.id===id);
+  if(!item) return;
+  editItemId=id;
+  document.getElementById('imt').textContent='Edit Item';
+  document.getElementById('iName').value=item.name;
+  document.getElementById('iType').value=item.type;
+  document.getElementById('iCat').value=item.category;
+  document.getElementById('iLoc').value=item.location;
+  document.getElementById('iQty').value=item.qty;
+  document.getElementById('iSeason').value=item.season||'all';
+  document.getElementById('iRestock').checked=!!item.restock;
+  document.getElementById('iContainer').checked=!!item.isContainer;
+  document.getElementById('iNotes').value=item.notes||'';
+  populateDynamicDropdowns(item.category, item.location, item.activity||'');
+  if(item.packsInto) document.getElementById('iPacksInto').value=item.packsInto;
+  populateParentDropdown(item.parentId||null, id);
+  populatePersonButtons(item.personIds||[]);
+  window._itemActions=(item.actions||[]).map(a=>({...a}));
+  renderItemActionsList();
+  openM('itemModal');
+}
+
+function clearItemForm(){
+  ['iName','iNotes'].forEach(x=>document.getElementById(x).value='');
+  document.getElementById('iType').value='always';
+  document.getElementById('iQty').value='1';
+  document.getElementById('iSeason').value='all';
+  document.getElementById('iRestock').checked=false;
+  document.getElementById('iContainer').checked=false;
+  document.getElementById('iPacksInto').value='';
+  window._itemActions=[];
+  renderItemActionsList();
+}
+
+function populateDynamicDropdowns(selectedCat, selectedLoc, selectedActivity){
+  // Category select
+  const catSel=document.getElementById('iCat');
+  if(catSel){
+    catSel.innerHTML=getCats().map(c=>`<option value="${c.id}"${c.id===selectedCat?' selected':''}>${c.emoji||''} ${c.label}</option>`).join('');
+  }
+  // Location select — storage locations only
+  const locSel=document.getElementById('iLoc');
+  if(locSel){
+    locSel.innerHTML=getStorageLocs().map(l=>`<option value="${l.id}"${l.id===selectedLoc?' selected':''}>${l.label}</option>`).join('');
+  }
+  // Activity select
+  const actSel=document.getElementById('iActivity');
+  if(actSel){
+    actSel.innerHTML=`<option value="">None</option>`+getActs().map(a=>`<option value="${a.id}"${a.id===selectedActivity?' selected':''}>${a.emoji||''} ${a.label}</option>`).join('');
+  }
+  // Packs into select — pack-into locations only
+  const pitSel=document.getElementById('iPacksInto');
+  if(pitSel){
+    const curPit=pitSel.value;
+    pitSel.innerHTML=`<option value="">— Same as storage location —</option>`+getPackIntoLocs().map(l=>`<option value="${l.id}"${l.id===curPit?' selected':''}>${l.label}</option>`).join('');
+  }
+  // Inventory location filter — storage locations only
+  const locF=document.getElementById('locF');
+  if(locF){
+    const cur=locF.value;
+    locF.innerHTML=`<option value="all">All Locations</option>`+getStorageLocs().map(l=>`<option value="${l.id}"${l.id===cur?' selected':''}>${l.label}</option>`).join('');
+  }
+}
+
+function populateTripActGrid(selectedActivities){
+  const grid=document.getElementById('tActGrid');
+  if(!grid) return;
+  grid.innerHTML=getActs().map(a=>{
+    const checked=(selectedActivities||[]).includes(a.id);
+    return `<label class="atog${checked?' on':''}"><input type="checkbox" value="${a.id}"${checked?' checked':''}> ${a.emoji||''} ${a.label}</label>`;
+  }).join('');
+  grid.querySelectorAll('.atog').forEach(el=>{
+    el.querySelector('input').addEventListener('change',()=>el.classList.toggle('on',el.querySelector('input').checked));
+  });
+}
+
+function populateParentDropdown(selectedParentId, excludeId){
+  const sel=document.getElementById('iParent');
+  sel.innerHTML='<option value="">— Top-level item —</option>';
+  S.items.filter(i=>!i.parentId&&i.type!=='wishlist'&&i.id!==excludeId).forEach(i=>{
+    const opt=document.createElement('option');
+    opt.value=i.id; opt.textContent=i.name;
+    if(i.id===selectedParentId) opt.selected=true;
+    sel.appendChild(opt);
+  });
+}
+
+function populatePersonButtons(selectedIds){
+  const grp=document.getElementById('iPersonGroup');
+  const btns=document.getElementById('iPersonBtns');
+  if(!S.people||!S.people.length){ grp.style.display='none'; return; }
+  grp.style.display='block';
+  btns.innerHTML=S.people.map(p=>{
+    const sel=(selectedIds||[]).includes(p.id);
+    return `<button type="button" data-pid="${p.id}" class="fb${sel?' on':''}"
+      style="border-radius:10px;${sel?`background:${p.color}33;color:${p.color};border-color:${p.color}66`:''}"
+      onclick="togglePersonBtn(this,'${p.color}')">${p.emoji||'👤'} ${p.name}</button>`;
+  }).join('');
+}
+
+function togglePersonBtn(btn, color){
+  btn.classList.toggle('on');
+  const on=btn.classList.contains('on');
+  btn.style.background=on?color+'33':'';
+  btn.style.color=on?color:'';
+  btn.style.borderColor=on?color+'66':'';
+}
+
+function setPersonFilter(val){
+  personFilter=val;
+  renderInv();
+}
+
+function setChecklistPersonFilter(val){
+  checklistPersonFilter=val;
+  renderTrips();
+}
+
+function setChecklistLocFilter(val){
+  checklistLocFilter=val;
+  renderTrips();
+}
+
+function toggleChecklistFilters(){
+  checklistFiltersOpen=!checklistFiltersOpen;
+  const el=document.getElementById('clFilters');
+  if(el) el.style.display=checklistFiltersOpen?'block':'none';
+}
+
+function clearChecklistFilters(){
+  checklistPersonFilter='all';
+  checklistLocFilter='all';
+  checklistHidePacked=false;
+  checklistSort='location';
+  checklistFiltersOpen=false;
+  renderTrips();
+}
+
+function setChecklistSort(val){
+  checklistSort=val;
+  renderTrips();
+}
+
+function toggleHidePacked(){
+  checklistHidePacked=!checklistHidePacked;
+  renderTrips();
+}
+
+function removeFromChecklist(tripId, itemId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  trip.checklist=trip.checklist.filter(c=>c.itemId!==itemId);
+  save(); renderTrips();
+}
+
+function updatePersonFilterSelect(){
+  const sel=document.getElementById('personF');
+  if(!sel) return;
+  if(!S.people||!S.people.length){ sel.style.display='none'; return; }
+  sel.style.display='';
+  // rebuild options
+  sel.innerHTML='<option value="all">All People</option>';
+  S.people.forEach(p=>{
+    const opt=document.createElement('option');
+    opt.value=p.id; opt.textContent=p.emoji+' '+p.name;
+    if(p.id===personFilter) opt.selected=true;
+    sel.appendChild(opt);
+  });
+}
+
+function saveItem(){
+  const name=document.getElementById('iName').value.trim();
+  if(!name){ document.getElementById('iName').focus(); return; }
+  const parentId=document.getElementById('iParent').value||null;
+  const data={
+    name,
+    parentId,
+    type:document.getElementById('iType').value,
+    category:document.getElementById('iCat').value,
+    location:document.getElementById('iLoc').value,
+    qty:parseInt(document.getElementById('iQty').value)||1,
+    season:document.getElementById('iSeason').value,
+    activity:document.getElementById('iActivity').value,
+    restock:document.getElementById('iRestock').checked,
+    isContainer:document.getElementById('iContainer').checked,
+    packsInto:document.getElementById('iPacksInto').value||null,
+    notes:document.getElementById('iNotes').value.trim(),
+    personIds:[...document.querySelectorAll('#iPersonBtns button.on')].map(b=>b.dataset.pid),
+    actions:window._itemActions||[]
+  };
+  if(editItemId){
+    const idx=S.items.findIndex(i=>i.id===editItemId);
+    S.items[idx]={...S.items[idx],...data};
+  } else {
+    S.items.push({id:uid(),...data});
+  }
+  save(); closeM('itemModal'); renderAll();
+}
+
+// ══════════════════════════════════════════════════
+// TRIP MODAL
+// ══════════════════════════════════════════════════
+function openNewTripModal(){
+  editTripId=null;
+  document.getElementById('tmt').textContent='New Trip';
+  ['tName','tNotes'].forEach(x=>document.getElementById(x).value='');
+  document.getElementById('tDate').value='';
+  document.getElementById('tNights').value='3';
+  document.getElementById('tSeason').value='summer';
+  document.getElementById('tSite').value='basic';
+  document.getElementById('tExtra').value='0';
+  document.getElementById('tDist').value='regional';
+  document.getElementById('tDog').checked=true;
+  populateTripActGrid([]);
+  openM('tripModal');
+  setTimeout(()=>document.getElementById('tName').focus(),50);
+}
+
+function openEditTripModal(id){
+  const trip=S.trips.find(t=>t.id===id);
+  if(!trip) return;
+  editTripId=id;
+  document.getElementById('tmt').textContent='Edit Trip';
+  document.getElementById('tName').value=trip.name;
+  document.getElementById('tDate').value=trip.date||'';
+  document.getElementById('tNights').value=trip.nights||3;
+  document.getElementById('tSeason').value=trip.season||'summer';
+  document.getElementById('tSite').value=trip.site||'basic';
+  document.getElementById('tExtra').value=trip.extraPeople||0;
+  document.getElementById('tDist').value=trip.distance||'regional';
+  document.getElementById('tDog').checked=!!trip.dog;
+  document.getElementById('tNotes').value=trip.notes||'';
+  populateTripActGrid(trip.activities||[]);
+  openM('tripModal');
+}
+
+function saveTrip(){
+  const name=document.getElementById('tName').value.trim();
+  if(!name){ document.getElementById('tName').focus(); return; }
+  const activities=[...document.querySelectorAll('#tActGrid input[type=checkbox]:checked')].map(cb=>cb.value);
+  const data={
+    name,
+    date:document.getElementById('tDate').value,
+    nights:parseInt(document.getElementById('tNights').value)||3,
+    season:document.getElementById('tSeason').value,
+    site:document.getElementById('tSite').value,
+    extraPeople:parseInt(document.getElementById('tExtra').value)||0,
+    distance:document.getElementById('tDist').value,
+    dog:document.getElementById('tDog').checked,
+    activities,
+    notes:document.getElementById('tNotes').value.trim()
+  };
+  if(editTripId){
+    const idx=S.trips.findIndex(t=>t.id===editTripId);
+    const hadCL=!!S.trips[idx].checklist;
+    S.trips[idx]={...S.trips[idx],...data};
+    closeM('tripModal');
+    if(hadCL&&confirm('Trip config changed — regenerate checklist?')) genChecklist(editTripId);
+    else{ save(); renderTrips(); }
+  } else {
+    const t={id:uid(),status:'planning',...data};
+    S.trips.push(t);
+    activeTripId=t.id;
+    save(); closeM('tripModal'); renderTrips();
+  }
+}
+
+// ══════════════════════════════════════════════════
+// MODAL HELPERS
+// ══════════════════════════════════════════════════
+function openM(id){ document.getElementById(id).classList.add('on'); }
+function closeM(id){ document.getElementById(id).classList.remove('on'); }
+function closeMOver(e,id){ if(e.target===document.getElementById(id)) closeM(id); }
+
+// ══════════════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════════════
+function setTab(tab,btn){
+  mainTab=tab;
+  document.querySelectorAll('.mtab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  ['inv','trips','restock','wishlist','people','settings'].forEach(t=>{ const el=document.getElementById('pg-'+t); if(el) el.style.display=t===tab?'block':'none'; });
+  if(tab==='trips') renderTrips();
+  if(tab==='inv') renderInv();
+  if(tab==='wishlist') renderWishlist();
+  if(tab==='people') renderPeople();
+  if(tab==='settings') renderSettings();
+}
+
+function setTF(f,btn){
+  tf=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderInv();
+}
+
+
+// ══════════════════════════════════════════════════
+// ITEM ACTIONS
+// ══════════════════════════════════════════════════
+const STAGE_LABELS={
+  'pre-trip':        { label:'Before you go',         color:'var(--blue)',  icon:'🔧' },
+  'during':          { label:'While camping',       color:'var(--amber)', icon:'⛺' },
+  'before-pack-away':{ label:'Before loading up',  color:'var(--purple)',icon:'📦' },
+  'post-trip':       { label:'When you\'re home',         color:'var(--teal)',  icon:'🏠' }
+};
+
+function inlineActions(item, trip, stages){
+  const tripActions=trip.actionStates||{};
+  const actions=(item.actions||[]).filter(a=>stages.includes(a.stage));
+  if(!actions.length) return '';
+  return `<div style="padding:3px 6px 3px 32px;background:var(--canvas-3);border-left:2px solid var(--border-l)">
+    ${actions.map(a=>{
+      const key=item.id+'::'+a.id;
+      const done=!!tripActions[key];
+      const sl=STAGE_LABELS[a.stage];
+      return `<div style="display:flex;align-items:center;gap:7px;padding:4px 0;cursor:pointer;border-bottom:1px solid var(--border);${done?'opacity:.45':''}" onclick="event.stopPropagation();toggleTripAction('${trip.id}','${item.id}','${a.id}')">
+        <div style="width:14px;height:14px;border-radius:2px;border:1px solid ${done?'var(--sage)':'var(--border)'};background:${done?'rgba(107,140,90,.25)':'transparent'};display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--sage);flex-shrink:0">${done?'✓':''}</div>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:${sl?.color||'var(--text-m)'};text-transform:uppercase;letter-spacing:.06em;min-width:60px">${sl?.icon||''} ${sl?.label||a.stage}</span>
+        <span style="font-size:11px;${done?'text-decoration:line-through':''}">${esc(a.label)}</span>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function actionsBody(trip){
+  // Collect all actions from checklist items
+  const byStage={ 'pre-trip':[], 'during':[], 'before-pack-away':[], 'post-trip':[] };
+  (trip.checklist||[]).forEach(ci=>{
+    const item=S.items.find(i=>i.id===ci.itemId);
+    if(!item) return;
+    (item.actions||[]).forEach(a=>{
+      if(byStage[a.stage]) byStage[a.stage].push({item,action:a});
+    });
+  });
+
+  const hasAny=Object.values(byStage).some(arr=>arr.length>0);
+  if(!hasAny) return `
+    <div class="empty">No actions defined for items on this trip.<br>
+    <span style="font-size:11px;display:block;margin-top:4px">Add actions to items in your inventory to see them here.</span></div>`;
+
+  const tripActions=trip.actionStates||{};
+  const stageOrder=['pre-trip','during','before-pack-away','post-trip'];
+
+  return stageOrder.filter(s=>byStage[s].length).map(stage=>{
+    const sl=STAGE_LABELS[stage];
+    const items=byStage[stage];
+    const doneCount=items.filter(({item,action})=>!!tripActions[item.id+'::'+action.id]).length;
+    const stageGroupId='astage-'+stage;
+    const open=!collapsedLocs.has(stageGroupId);
+    return `<div class="cloc-group">
+      <div class="cloc-hdr" onclick="toggleLocGroup('${stageGroupId}')">
+        <span class="cg-toggle ${open?'open':'closed'}" style="font-size:9px">▼</span>
+        <span class="cloc-title" style="color:${sl.color}">${sl.icon} ${sl.label}</span>
+        <span class="cg-count">${doneCount}/${items.length}</span>
+      </div>
+      <div id="clg-${stageGroupId}" style="display:${open?'block':'none'}">
+        ${items.map(({item,action})=>{
+          const key=item.id+'::'+action.id;
+          const done=!!tripActions[key];
+          return `<div style="display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid rgba(58,58,46,.4);cursor:pointer;${done?'opacity:.45':''}" onclick="toggleTripAction('${trip.id}','${item.id}','${action.id}')">
+            <div style="width:20px;height:20px;border-radius:3px;border:1px solid ${done?'var(--sage)':'var(--border)'};background:${done?'rgba(107,140,90,.25)':'var(--canvas-3)'};display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--sage);flex-shrink:0">${done?'✓':''}</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:500;${done?'text-decoration:line-through':''}">${esc(action.label)}</div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.06em;margin-top:1px">${esc(item.name)}</div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function flagDamaged(tripId, itemId, type){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  if(!trip.damaged) trip.damaged={};
+  trip.damaged[itemId]=type;
+  // If replace — auto-create wishlist entry
+  if(type==='replace'){
+    const item=S.items.find(i=>i.id===itemId);
+    if(item){
+      const exists=S.items.some(i=>i.type==='wishlist'&&i.name===item.name+' (replacement)');
+      if(!exists){
+        S.items.push({
+          id:uid(), parentId:null, name:item.name+' (replacement)',
+          type:'wishlist', category:item.category, location:item.location,
+          qty:1, season:'all', activity:'', restock:false, isContainer:false,
+          packsInto:null, notes:'Flagged for replacement after '+esc(trip.name),
+          personIds:[], actions:[]
+        });
+      }
+    }
+  }
+  save(); renderTrips(); renderStats();
+}
+
+function clearDamaged(tripId, itemId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip||!trip.damaged) return;
+  delete trip.damaged[itemId];
+  save(); renderTrips();
+}
+
+function flagLeftAtSite(tripId, itemId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  if(!trip.leftAtSite) trip.leftAtSite={};
+  const item=S.items.find(i=>i.id===itemId);
+  const note=prompt(`Note for "${item?.name||itemId}" left at site (optional):`);
+  if(note===null) return; // cancelled
+  trip.leftAtSite[itemId]=note||'';
+  save(); renderTrips();
+}
+
+function clearLeftAtSite(tripId, itemId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip||!trip.leftAtSite) return;
+  delete trip.leftAtSite[itemId];
+  save(); renderTrips();
+}
+
+function toggleTripAction(tripId, itemId, actionId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  if(!trip.actionStates) trip.actionStates={};
+  const key=itemId+'::'+actionId;
+  trip.actionStates[key]=!trip.actionStates[key];
+  save(); renderTrips();
+}
+
+// Item modal action list management
+function renderItemActionsList(){
+  const el=document.getElementById('iActionsList');
+  if(!el) return;
+  const actions=window._itemActions||[];
+  if(!actions.length){ el.innerHTML=''; return; }
+  el.innerHTML=actions.map((a,i)=>`
+    <div style="display:flex;align-items:center;gap:7px;padding:5px 7px;background:var(--canvas-3);border:1px solid var(--border);border-radius:2px;margin-bottom:4px">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:${STAGE_LABELS[a.stage]?.color||'var(--text-m)'};text-transform:uppercase;letter-spacing:.06em;min-width:90px">${STAGE_LABELS[a.stage]?.icon||''} ${STAGE_LABELS[a.stage]?.label||a.stage}</span>
+      <span style="flex:1;font-size:12px">${esc(a.label)}</span>
+      <button class="btn-ic" style="color:var(--rust);font-size:13px" onclick="removeItemAction(${i})">✕</button>
+    </div>`).join('');
+}
+
+function addItemAction(){
+  const label=document.getElementById('iActionLabel').value.trim();
+  if(!label) return;
+  const stage=document.getElementById('iActionStage').value;
+  if(!window._itemActions) window._itemActions=[];
+  window._itemActions.push({id:uid(), label, stage});
+  document.getElementById('iActionLabel').value='';
+  renderItemActionsList();
+}
+
+function removeItemAction(idx){
+  if(!window._itemActions) return;
+  window._itemActions.splice(idx,1);
+  renderItemActionsList();
+}
+
+// ══════════════════════════════════════════════════
+// QUICK ADD FROM CHECKLIST
+// ══════════════════════════════════════════════════
+function openQuickAddModal(tripId){
+  const EMOJIS_QA=['👤','🧑','👩','👨','🧒','👦','👧','🐕'];
+  const modalHtml=`
+    <div id="qaModalOverlay" style="position:fixed;inset:0;background:rgba(10,10,8,.88);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px" onclick="if(event.target===this)closeQAModal()">
+      <div style="background:var(--canvas-2);border:1px solid var(--border-l);border-top:3px solid var(--amber);width:100%;max-width:420px;border-radius:3px;padding:20px">
+        <div class="mtitle">Quick Add Item to Trip</div>
+        <div class="fg"><label class="fl">Item Name *</label><input class="fi" id="qaName" placeholder="e.g. Insect repellent" autofocus></div>
+        <div style="display:flex;gap:9px">
+          <div class="fg" style="flex:1"><label class="fl">Category</label>
+            <select class="fs" id="qaCat">${getCats().map(c=>`<option value="${c.id}">${c.emoji||''} ${c.label}</option>`).join('')}</select>
+          </div>
+          <div class="fg" style="flex:1"><label class="fl">Location</label>
+            <select class="fs" id="qaLoc">${getLocs().map(l=>`<option value="${l.id}">${l.label}</option>`).join('')}</select>
+          </div>
+        </div>
+        <div style="display:flex;gap:9px">
+          <div class="fg" style="flex:1"><label class="fl">Type</label>
+            <select class="fs" id="qaType">
+              <option value="always">Always in kit</option>
+              <option value="house">From House</option>
+              <option value="consumable">Consumable</option>
+              <option value="seasonal">Seasonal</option>
+            </select>
+          </div>
+          <div class="fg" style="flex:1"><label class="fl">Qty</label>
+            <input class="fi" id="qaQty" type="number" min="1" value="1">
+          </div>
+        </div>
+        <div class="fg"><label class="fl">Notes</label><input class="fi" id="qaNotes" placeholder="Optional note"></div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-bottom:12px">Item will be added to your inventory and this trip's checklist.</div>
+        <div style="display:flex;gap:7px;justify-content:flex-end;padding-top:12px;border-top:1px solid var(--border)">
+          <button class="btn btn-o" onclick="closeQAModal()">Cancel</button>
+          <button class="btn btn-p" onclick="saveQuickAdd('${tripId}')">Add Item</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+  setTimeout(()=>document.getElementById('qaName').focus(),50);
+}
+
+function closeQAModal(){
+  const ov=document.getElementById('qaModalOverlay');
+  if(ov) ov.remove();
+}
+
+function saveQuickAdd(tripId){
+  const name=document.getElementById('qaName').value.trim();
+  if(!name) return;
+  const newItem={
+    id:uid(), parentId:null,
+    name, type:document.getElementById('qaType').value,
+    category:document.getElementById('qaCat').value,
+    location:document.getElementById('qaLoc').value,
+    qty:parseInt(document.getElementById('qaQty').value)||1,
+    season:'all', activity:'', restock:false, isContainer:false, packsInto:null,
+    notes:document.getElementById('qaNotes').value.trim(), personIds:[]
+  };
+  S.items.push(newItem);
+  // Add to trip checklist
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(trip&&trip.checklist){
+    trip.checklist.push({itemId:newItem.id, state:'unchecked'});
+  }
+  save();
+  closeQAModal();
+  renderTrips();
+}
+
+// ══════════════════════════════════════════════════
+// SETTINGS
+// ══════════════════════════════════════════════════
+function renderSettings(){
+  const el=document.getElementById('settingsContent');
+  if(!el) return;
+
+  function listSection(title, key, hasEmoji){
+    const items=S.settings[key];
+    const usageCounts={};
+    if(key==='categories') S.items.forEach(i=>{ usageCounts[i.category]=(usageCounts[i.category]||0)+1; });
+    if(key==='locations')  S.items.forEach(i=>{ usageCounts[i.location]=(usageCounts[i.location]||0)+1; });
+    if(key==='activities') S.items.forEach(i=>{ if(i.activity) usageCounts[i.activity]=(usageCounts[i.activity]||0)+1; });
+
+    return `<div style="margin-bottom:28px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--amber)">${title}</span>
+        <button class="btn btn-p btn-sm" onclick="openSettingsItemModal('${key}',null)">+ Add</button>
+      </div>
+      ${items.map(item=>{
+        const count=usageCounts[item.id]||0;
+        const isDefault=defaultSettings()[key].some(d=>d.id===item.id);
+        const locFlags=key==='locations'?`
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:2px;background:${item.isStorageLoc!==false?'rgba(107,140,90,.15)':'var(--canvas-3)'};color:${item.isStorageLoc!==false?'var(--sage)':'var(--text-m)'};border:1px solid ${item.isStorageLoc!==false?'rgba(107,140,90,.3)':'var(--border)'}">Storage</span>
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:2px;background:${item.isPackInto?'rgba(90,122,184,.15)':'var(--canvas-3)'};color:${item.isPackInto?'var(--blue)':'var(--text-m)'};border:1px solid ${item.isPackInto?'rgba(90,122,184,.3)':'var(--border)'}">Pack into</span>`:'';
+        return `<div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-bottom:1px solid var(--border);background:var(--canvas-2);margin-bottom:2px;border-radius:2px">
+          ${hasEmoji?`<span style="font-size:16px;width:24px;text-align:center">${item.emoji||'•'}</span>`:''}
+          <span style="flex:1;font-size:13px;font-weight:500">${esc(item.label)}</span>
+          ${locFlags}
+          ${count>0?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${count} item${count!==1?'s':''}</span>`:''}
+          <button class="btn-ic" onclick="openSettingsItemModal('${key}','${item.id}')">✎</button>
+          <button class="btn-ic" style="color:var(--rust)" onclick="deleteSettingsItem('${key}','${item.id}',${count})" ${isDefault&&items.length<=1?'disabled title="Cannot delete last item"':''}>✕</button>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+
+  el.innerHTML=`
+    <div style="margin-bottom:18px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--text-m);letter-spacing:.05em">Manage the lists used throughout Base Camp. Changes apply immediately everywhere.</div>
+    </div>
+    ${listSection('Categories', 'categories', true)}
+    ${listSection('Locations', 'locations', false)}
+    ${listSection('Activities', 'activities', true)}
+    <div style="margin-top:28px;padding-top:20px;border-top:2px solid var(--border)">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--rust);margin-bottom:8px">Data</div>
+      <div style="font-size:12px;color:var(--text-m);margin-bottom:14px;line-height:1.5">Reset clears all your items, trips, people and settings. Your display preferences (light/dark mode) are kept. This cannot be undone.</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" style="background:transparent;color:var(--rust);border:1px solid var(--rust);font-size:11px;padding:7px 14px" onclick="resetAllData()">🗑 Start fresh — clear all data</button>
+        <button class="btn btn-o btn-sm" onclick="loadDemoDataAgain()">↺ Reload demo data</button>
+      </div>
+    </div>
+  `;
+}
+
+let settingsEditKey=null, settingsEditId=null;
+
+function openSettingsItemModal(key, id){
+  settingsEditKey=key;
+  settingsEditId=id;
+  const items=S.settings[key];
+  const item=id?items.find(x=>x.id===id):null;
+  const hasEmoji=key==='categories'||key==='activities';
+  const titles={ categories:'Category', locations:'Location', activities:'Activity' };
+
+  const modalHtml=`
+    <div id="settingsModalOverlay" style="position:fixed;inset:0;background:rgba(10,10,8,.88);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px" onclick="if(event.target===this)closeSettingsModal()">
+      <div style="background:var(--canvas-2);border:1px solid var(--border-l);border-top:3px solid var(--amber);width:100%;max-width:380px;border-radius:3px;padding:20px">
+        <div class="mtitle">${item?'Edit':'Add'} ${titles[key]}</div>
+        <div class="fg">
+          <label class="fl">Label *</label>
+          <input class="fi" id="stgLabel" value="${item?esc(item.label):''}" placeholder="e.g. Electronics">
+        </div>
+        ${!item?`<div class="fg">
+          <label class="fl">ID (unique key, no spaces)</label>
+          <input class="fi" id="stgId" value="" placeholder="e.g. electronics" style="font-family:'DM Mono',monospace">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:3px">Lowercase letters and hyphens only. Cannot be changed later.</div>
+        </div>`:''}
+        ${hasEmoji?`<div class="fg">
+          <label class="fl">Emoji</label>
+          <input class="fi" id="stgEmoji" value="${item?item.emoji||'':''}" placeholder="e.g. 💻" style="font-size:18px;width:80px">
+        </div>`:''}
+        ${key==='locations'?`<div class="fg">
+          <label class="fl">Used as</label>
+          <div style="display:flex;gap:14px;margin-top:4px">
+            <label class="ck"><input type="checkbox" id="stgIsStorage" ${!item||item.isStorageLoc!==false?'checked':''}> Storage location (items live here)</label>
+            <label class="ck"><input type="checkbox" id="stgIsPackInto" ${item&&item.isPackInto?'checked':''}> Pack-into destination (items end up here)</label>
+          </div>
+        </div>`:''}
+        <div style="display:flex;gap:7px;justify-content:flex-end;margin-top:16px;padding-top:12px;border-top:1px solid var(--border)">
+          <button class="btn btn-o" onclick="closeSettingsModal()">Cancel</button>
+          <button class="btn btn-p" onclick="saveSettingsItem()">Save</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+  setTimeout(()=>document.getElementById('stgLabel').focus(),50);
+}
+
+function closeSettingsModal(){
+  const ov=document.getElementById('settingsModalOverlay');
+  if(ov) ov.remove();
+}
+
+function saveSettingsItem(){
+  const label=document.getElementById('stgLabel').value.trim();
+  if(!label){ document.getElementById('stgLabel').focus(); return; }
+  const hasEmoji=settingsEditKey==='categories'||settingsEditKey==='activities';
+  const emoji=hasEmoji?(document.getElementById('stgEmoji')?.value.trim()||''):'';
+
+  const isLoc=settingsEditKey==='locations';
+  const locFlags=isLoc?{
+    isStorageLoc:document.getElementById('stgIsStorage')?.checked!==false,
+    isPackInto:!!document.getElementById('stgIsPackInto')?.checked
+  }:{};
+
+  if(settingsEditId){
+    // Edit existing
+    S.settings[settingsEditKey]=S.settings[settingsEditKey].map(x=>
+      x.id===settingsEditId?{...x, label, ...(hasEmoji?{emoji}:{}), ...locFlags}:x
+    );
+  } else {
+    // Add new — validate id
+    const idInput=document.getElementById('stgId');
+    let id=(idInput?.value.trim()||label.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''));
+    if(!id){ alert('Please enter a valid ID.'); return; }
+    // Ensure unique
+    if(S.settings[settingsEditKey].some(x=>x.id===id)){
+      id=id+'-'+Date.now().toString(36);
+    }
+    S.settings[settingsEditKey].push({ id, label, ...(hasEmoji?{emoji}:{}), ...locFlags });
+  }
+  save();
+  closeSettingsModal();
+  renderSettings();
+  populateDynamicDropdowns(null,null,null); // refresh locF
+}
+
+function deleteSettingsItem(key, id, usageCount){
+  if(usageCount>0){
+    if(!confirm(`"${S.settings[key].find(x=>x.id===id)?.label}" is used by ${usageCount} item${usageCount!==1?'s':''}. Delete anyway? Those items will still reference the old value.`)) return;
+  } else {
+    if(!confirm('Delete this item?')) return;
+  }
+  S.settings[key]=S.settings[key].filter(x=>x.id!==id);
+  save();
+  renderSettings();
+  populateDynamicDropdowns(null,null,null);
+}
+
+// ══════════════════════════════════════════════════
+// IMPORT / EXPORT
+// ══════════════════════════════════════════════════
+function exportData(){
+  const json=JSON.stringify({version:3,exported:new Date().toISOString(),...S},null,2);
+  const blob=new Blob([json],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`basecamp-${new Date().toISOString().slice(0,10)}.json`;
+  a.click(); URL.revokeObjectURL(url);
+  // Record last export time
+  localStorage.setItem('basecamp_last_export', new Date().toISOString());
+}
+
+async function shareBackup(){
+  const json=JSON.stringify({version:3,exported:new Date().toISOString(),...S},null,2);
+  const filename=`basecamp-${new Date().toISOString().slice(0,10)}.json`;
+  const file=new File([json], filename, {type:'application/json'});
+  // Try Web Share API with file (iOS 15+, works with Files, WhatsApp, Mail, etc.)
+  if(navigator.canShare && navigator.canShare({files:[file]})){
+    try{
+      await navigator.share({
+        title:'Base Camp Backup',
+        text:'Base Camp camping inventory backup — '+new Date().toLocaleDateString('en-GB')+'. Open with Base Camp to restore.',
+        files:[file]
+      });
+      localStorage.setItem('basecamp_last_export', new Date().toISOString());
+      closeBackupModal();
+      return;
+    }catch(e){
+      if(e.name==='AbortError') return; // user cancelled — don't fall through
+    }
+  }
+  // Fallback — plain download
+  exportData();
+  closeBackupModal();
+}
+
+function checkBackupReminder(){
+  const last=localStorage.getItem('basecamp_last_export');
+  if(!last){
+    // Never exported — show reminder after a small delay so app loads first
+    setTimeout(showBackupModal, 1200);
+    return;
+  }
+  const daysSince=(Date.now()-new Date(last).getTime())/(1000*60*60*24);
+  if(daysSince>=7) setTimeout(showBackupModal, 1200);
+}
+
+function showBackupModal(){
+  const last=localStorage.getItem('basecamp_last_export');
+  const lastStr=last?new Date(last).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'Never';
+  const daysSince=last?Math.floor((Date.now()-new Date(last).getTime())/(1000*60*60*24)):null;
+  const urgency=!last||daysSince>30;
+  const modalHtml=`
+    <div id="backupModalOverlay" style="position:fixed;inset:0;background:rgba(10,10,8,.88);z-index:2000;display:flex;align-items:center;justify-content:center;padding:16px">
+      <div style="background:var(--canvas-2);border:1px solid var(--border-l);border-top:3px solid ${urgency?'var(--rust)':'var(--amber)'};width:100%;max-width:440px;border-radius:3px;padding:22px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:${urgency?'var(--rust)':'var(--amber)'};margin-bottom:8px">
+          ${urgency?'⚠ Backup Overdue':'💾 Time to Back Up'}
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-d);margin-bottom:6px">
+          Last backup: <strong>${lastStr}</strong>${daysSince!==null?' ('+daysSince+' day'+(daysSince!==1?'s':'')+' ago)':''}
+        </div>
+        <div style="font-size:12px;color:var(--text-m);margin-bottom:18px;line-height:1.5">
+          Your data is saved on this device only. Browsers can clear it without warning — a regular backup keeps your inventory, trips, and settings safe.
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+          <button class="btn btn-p" onclick="shareBackup()" style="text-align:left;display:flex;align-items:center;gap:8px;padding:10px 14px">
+            <span style="font-size:18px">📤</span>
+            <div>
+              <div style="font-size:12px">Share or save a backup</div>
+              <div style="font-size:10px;font-weight:400;opacity:.7;text-transform:none;letter-spacing:0">Save to iCloud, Google Drive, WhatsApp, email and more…</div>
+            </div>
+          </button>
+          <button class="btn btn-o" onclick="exportData();closeBackupModal()" style="text-align:left;display:flex;align-items:center;gap:8px;padding:10px 14px">
+            <span style="font-size:18px">⬇️</span>
+            <div>
+              <div style="font-size:12px">Download backup file</div>
+              <div style="font-size:10px;font-weight:400;opacity:.7;text-transform:none;letter-spacing:0">Save to your Downloads folder</div>
+            </div>
+          </button>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--border)">
+          <button class="btn btn-o btn-sm" onclick="snoozeBackup()">Remind me tomorrow</button>
+          <button class="btn btn-o btn-sm" onclick="closeBackupModal()">Not now</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function closeBackupModal(){
+  const ov=document.getElementById('backupModalOverlay');
+  if(ov) ov.remove();
+}
+
+function snoozeBackup(){
+  // Set last export to 6 days ago so it reminds again tomorrow
+  const snooze=new Date(Date.now()-6*24*60*60*1000).toISOString();
+  localStorage.setItem('basecamp_last_export', snooze);
+  closeBackupModal();
+}
+
+function importData(event){
+  const file=event.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      // Accept any object with an items array — v1, v2, v3
+      const rawItems=Array.isArray(data.items)?data.items:Array.isArray(data)?data:null;
+      if(!rawItems){ alert('This file doesn\'t look like a Base Camp backup. Please choose a file you exported from Base Camp.'); return; }
+      if(!confirm('Restore '+rawItems.length+' items and '+(data.trips||[]).length+' trips from this backup? This will replace all your current data.')) return;
+
+      // Migrate items — fill in all fields with safe defaults
+      const items=rawItems.map(i=>({
+        id:          i.id||uid(),
+        parentId:    i.parentId||null,
+        name:        i.name||'Unnamed item',
+        type:        i.type||'always',
+        category:    i.category||'other',
+        location:    i.location||'shed',
+        qty:         (i.qty!=null)?Number(i.qty):1,
+        season:      i.season||'all',
+        activity:    i.activity||'',
+        restock:     !!i.restock,
+        isContainer: !!i.isContainer,
+        packsInto:   i.packsInto||null,
+        personIds:   i.personIds||[],
+        actions:     i.actions||[],
+        notes:       i.notes||''
+      }));
+
+      // Migrate trips
+      const trips=(data.trips||[]).map(t=>({
+        id:          t.id||uid(),
+        name:        t.name||'Unnamed trip',
+        status:      t.status||'planning',
+        date:        t.date||'',
+        nights:      t.nights||3,
+        season:      t.season||'summer',
+        site:        t.site||'basic',
+        extraPeople: t.extraPeople||0,
+        distance:    t.distance||'regional',
+        dog:         t.dog!=null?t.dog:true,
+        activities:  t.activities||[],
+        notes:       t.notes||'',
+        checklist:   (t.checklist||[]).map(c=>({
+          itemId: c.itemId,
+          state:  c.state||(c.checked===true?'packed':'unchecked')
+        })),
+        actionStates:    t.actionStates||{},
+        packUpStates:    t.packUpStates||{},
+        packAwayStates:  t.packAwayStates||{},
+        leftAtSite:      t.leftAtSite||{},
+        damaged:         t.damaged||{}
+      }));
+
+      // Migrate people
+      const people=(data.people||[]).map(p=>({
+        id:    p.id||uid(),
+        name:  p.name||'Unknown',
+        emoji: p.emoji||'👤',
+        color: p.color||'#d4902a'
+      }));
+
+      // Migrate settings — keep custom lists if present, fall back to defaults
+      const ds=defaultSettings();
+      const settings={
+        categories: (data.settings&&data.settings.categories&&data.settings.categories.length)
+          ? data.settings.categories : ds.categories,
+        locations:  (data.settings&&data.settings.locations&&data.settings.locations.length)
+          ? data.settings.locations  : ds.locations,
+        activities: (data.settings&&data.settings.activities&&data.settings.activities.length)
+          ? data.settings.activities : ds.activities,
+      };
+
+      S={ items, trips, people, settings };
+      save(); renderAll();
+      alert('✓ Restored successfully — '+items.length+' items, '+trips.length+' trips, '+people.length+' people.');
+    }catch(err){
+      alert('Could not read file: '+err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value='';
+}
+
+// ══════════════════════════════════════════════════
+// RENDER ALL
+// ══════════════════════════════════════════════════
+function renderPeople(){
+  if(!S.people) S.people=[];
+  const el=document.getElementById('peopleContent');
+  const EMOJIS=['👤','🧑','👩','👨','🧒','👦','👧','🐕'];
+  if(!S.people.length){
+    el.innerHTML=`<div class="empty" style="margin-top:0">No people added yet. Add family members to assign items and filter by person.<br>
+      <button class="btn btn-p" style="margin-top:12px" onclick="openPersonModal()">+ Add Person</button></div>`;
+  } else {
+    el.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-d)">${S.people.length} Person${S.people.length!==1?'s':''}</span>
+        <button class="btn btn-p btn-sm" onclick="openPersonModal()">+ Add Person</button>
+      </div>
+      ${S.people.map(p=>{
+        const count=S.items.filter(i=>(i.personIds||[]).includes(p.id)).length;
+        return `<div style="background:var(--canvas-2);border:1px solid var(--border);border-left:3px solid ${p.color};border-radius:3px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:22px">${p.emoji||'👤'}</span>
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.06em;color:${p.color}">${esc(p.name)}</div>
+              <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:2px">${count} item${count!==1?'s':''} assigned</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:5px">
+            <button class="btn-ic" onclick="openPersonModal('${p.id}')">✎</button>
+            <button class="btn-ic" style="color:var(--rust)" onclick="deletePerson('${p.id}')">✕</button>
+          </div>
+        </div>`;
+      }).join('')}`;
+  }
+}
+
+let editPersonId=null;
+function openPersonModal(id){
+  editPersonId=id||null;
+  const person=id?S.people.find(p=>p.id===id):null;
+  const EMOJIS=['👤','🧑','👩','👨','🧒','👦','👧','🐕'];
+  const currentColor=person?person.color:PERSON_COLORS[(S.people.length)%PERSON_COLORS.length];
+  const currentEmoji=person?person.emoji:'👤';
+  const el=document.getElementById('peopleContent');
+  // inject inline modal
+  const modalHtml=`
+    <div id="personModalOverlay" style="position:fixed;inset:0;background:rgba(10,10,8,.88);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px" onclick="if(event.target===this)closePersonModal()">
+      <div style="background:var(--canvas-2);border:1px solid var(--border-l);border-top:3px solid var(--amber);width:100%;max-width:400px;border-radius:3px;padding:20px">
+        <div class="mtitle">${person?'Edit Person':'Add Person'}</div>
+        <div class="fg"><label class="fl">Name *</label><input class="fi" id="pName" value="${person?esc(person.name):''}" placeholder="e.g. Derrick" autofocus></div>
+        <div class="fg"><label class="fl">Emoji</label>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:3px">
+            ${EMOJIS.map(em=>`<button type="button" id="pemoji-${em}" onclick="selectEmoji('${em}')" style="font-size:20px;padding:4px 8px;background:${currentEmoji===em?'var(--canvas-3)':'transparent'};border:1px solid ${currentEmoji===em?'var(--amber-d)':'var(--border)'};border-radius:4px;cursor:pointer">${em}</button>`).join('')}
+          </div>
+        </div>
+        <div class="fg"><label class="fl">Colour</label>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:3px">
+            ${PERSON_COLORS.map(c=>`<button type="button" id="pcol-${c.slice(1)}" onclick="selectPersonColor('${c}')" style="width:28px;height:28px;border-radius:50%;background:${c};border:2px solid ${currentColor===c?'#e8e4d8':'transparent'};cursor:pointer"></button>`).join('')}
+          </div>
+        </div>
+        <div style="display:flex;gap:7px;justify-content:flex-end;margin-top:16px;padding-top:12px;border-top:1px solid var(--border)">
+          <button class="btn btn-o" onclick="closePersonModal()">Cancel</button>
+          <button class="btn btn-p" onclick="savePerson()">Save</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+  // store selected values
+  window._personEmoji=currentEmoji;
+  window._personColor=currentColor;
+}
+
+function selectEmoji(em){
+  window._personEmoji=em;
+  document.querySelectorAll('[id^="pemoji-"]').forEach(b=>{
+    b.style.background='transparent'; b.style.borderColor='var(--border)';
+  });
+  const btn=document.getElementById('pemoji-'+em);
+  if(btn){btn.style.background='var(--canvas-3)';btn.style.borderColor='var(--amber-d)';}
+}
+
+function selectPersonColor(c){
+  window._personColor=c;
+  document.querySelectorAll('[id^="pcol-"]').forEach(b=>b.style.borderColor='transparent');
+  const btn=document.getElementById('pcol-'+c.slice(1));
+  if(btn) btn.style.borderColor='#e8e4d8';
+}
+
+function closePersonModal(){
+  const ov=document.getElementById('personModalOverlay');
+  if(ov) ov.remove();
+}
+
+function savePerson(){
+  const name=document.getElementById('pName').value.trim();
+  if(!name) return;
+  if(!S.people) S.people=[];
+  if(editPersonId){
+    const idx=S.people.findIndex(p=>p.id===editPersonId);
+    S.people[idx]={...S.people[idx],name,emoji:window._personEmoji||'👤',color:window._personColor||'#d4902a'};
+  } else {
+    S.people.push({id:uid(),name,emoji:window._personEmoji||'👤',color:window._personColor||'#d4902a'});
+  }
+  save(); closePersonModal(); renderAll(); updatePersonFilterSelect();
+}
+
+function deletePerson(id){
+  if(!confirm('Delete this person? Items assigned to them will become unassigned.')) return;
+  S.people=(S.people||[]).filter(p=>p.id!==id);
+  S.items=S.items.map(i=>({...i,personIds:(i.personIds||[]).filter(pid=>pid!==id)}));
+  if(personFilter===id) personFilter='all';
+  if(checklistPersonFilter===id) checklistPersonFilter='all';
+  save(); renderAll(); updatePersonFilterSelect();
+}
+
+// ══════════════════════════════════════════════════
+// PRINT
+// ══════════════════════════════════════════════════
+function printChecklist(tripId, mode){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  const cl=trip.checklist||[];
+  const locMap=labMap(getLocs());
+
+  // ── Determine title and action stages ──
+  const titles={packing:'Packing List',packup:'Pack Up',packaway:'Pack Away'};
+  const modeDescs={packing:'Home to car',packup:'Camp to car',packaway:'Car to storage'};
+  const actionStagesMap={packing:['pre-trip','during'],packup:['before-pack-away'],packaway:['post-trip']};
+  const listTitle=titles[mode]||'Checklist';
+  const modeDesc=modeDescs[mode]||'';
+  const actionStages=actionStagesMap[mode]||[];
+
+  // ── Use same filter/sort/group as current app state ──
+  // Build filtered item list matching exactly what is on screen
+  const filteredCIs=[];
+  cl.forEach(ci=>{
+    const item=S.items.find(i=>i.id===ci.itemId);
+    if(!item||item.parentId||item.type==='wishlist') return;
+    // Respect hide-packed setting
+    if(checklistHidePacked && ci.state==='packed') return;
+    // Respect person filter
+    if(checklistPersonFilter!=='all'){
+      const itemMatches=(item.personIds||[]).includes(checklistPersonFilter);
+      const subMatches=subItems(item.id).some(s=>{
+        const ownIds=s.personIds&&s.personIds.length?s.personIds:null;
+        return ownIds?ownIds.includes(checklistPersonFilter):(item.personIds||[]).includes(checklistPersonFilter);
+      });
+      if(!itemMatches&&!subMatches) return;
+    }
+    // Respect location filter
+    if(checklistLocFilter!=='all'&&item.location!==checklistLocFilter) return;
+    filteredCIs.push({ci,item});
+  });
+
+  // ── Same sort as app ──
+  if(checklistSort==='category'){
+    filteredCIs.sort((a,b)=>getCats().findIndex(c=>c.id===a.item.category)-getCats().findIndex(c=>c.id===b.item.category)||a.item.name.localeCompare(b.item.name));
+  } else if(checklistSort==='type'){
+    const typeOrder=['always','house','consumable','seasonal'];
+    filteredCIs.sort((a,b)=>typeOrder.indexOf(a.item.type)-typeOrder.indexOf(b.item.type)||a.item.name.localeCompare(b.item.name));
+  } else if(checklistSort==='restock'){
+    filteredCIs.sort((a,b)=>((b.item.restock||b.item.qty===0)?1:0)-((a.item.restock||a.item.qty===0)?1:0)||a.item.name.localeCompare(b.item.name));
+  } else if(checklistSort==='name'){
+    filteredCIs.sort((a,b)=>a.item.name.localeCompare(b.item.name));
+  } else {
+    filteredCIs.sort((a,b)=>getStorageLocs().findIndex(l=>l.id===a.item.location)-getStorageLocs().findIndex(l=>l.id===b.item.location)||a.item.name.localeCompare(b.item.name));
+  }
+
+  // ── Same grouping as app ──
+  let groupKey,groupOrder,groupLabel,groupIcon;
+  if(checklistSort==='location'){
+    groupKey=item=>item.location;
+    groupOrder=getStorageLocs().map(l=>l.id);
+    groupLabel=id=>{ const l=getStorageLocs().find(x=>x.id===id); return l?'\uD83D\uDCCD '+l.label:id; };
+    groupIcon='';
+  } else if(checklistSort==='category'){
+    groupKey=item=>item.category;
+    groupOrder=getCats().map(c=>c.id);
+    groupLabel=id=>{ const c=getCats().find(x=>x.id===id); return c?(c.emoji?c.emoji+' ':'')+c.label:id; };
+    groupIcon='';
+  } else if(checklistSort==='type'){
+    groupKey=item=>item.type;
+    groupOrder=['always','house','consumable','seasonal'];
+    groupLabel=id=>({always:'Always in kit',house:'Bring from home',consumable:'Needs restocking',seasonal:'Seasonal'}[id]||id);
+    groupIcon='';
+  } else {
+    groupKey=null;
+  }
+
+  // Build group map
+  const groupMap={};
+  if(groupKey){
+    filteredCIs.forEach(({ci,item})=>{
+      const k=groupKey(item);
+      if(!groupMap[k]) groupMap[k]=[];
+      groupMap[k].push({ci,item});
+    });
+  }
+
+  // ── Active filter labels for header ──
+  const filterLabels=[];
+  if(checklistPersonFilter!=='all'){
+    const p=S.people.find(x=>x.id===checklistPersonFilter);
+    if(p) filterLabels.push((p.emoji||'\uD83D\uDC64')+' '+p.name);
+  }
+  if(checklistLocFilter!=='all'){
+    const l=getStorageLocs().find(x=>x.id===checklistLocFilter);
+    if(l) filterLabels.push('\uD83D\uDCCD '+l.label);
+  }
+  if(checklistHidePacked) filterLabels.push('Unpacked only');
+
+  // ── Trip meta ──
+  const chips=[
+    trip.nights+'n',
+    ({summer:'Summer',shoulder:'Shoulder',winter:'Winter'}[trip.season]||''),
+    ({hookup:'Full hookup',basic:'Basic',wild:'Wild camping'}[trip.site]||''),
+    ({local:'Local',regional:'Regional',remote:'Remote'}[trip.distance]||''),
+    trip.dog?'\uD83D\uDC15 Dog':'',
+    trip.extraPeople>0?'+'+trip.extraPeople+' people':'',
+    ...(trip.activities||[])
+  ].filter(Boolean);
+  const today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  const totalItems=filteredCIs.length;
+
+  // ── Build item HTML ──
+  function personBadges(item){
+    return (S.people||[]).filter(p=>(item.personIds||[]).includes(p.id))
+      .map(p=>`<span style="display:inline-block;font-family:sans-serif;font-size:6.5pt;font-weight:700;padding:0.5pt 4pt;border-radius:8pt;background:${p.color}22;color:${p.color};border:0.5pt solid ${p.color}55;margin-left:3pt">${p.name}</span>`)
+      .join('');
+  }
+
+  function stateIndicator(state){
+    if(state==='packed') return '<span style="color:#4a6b3a;font-size:9pt;margin-right:3pt">&#x2713;</span>';
+    if(state==='ready')  return '<span style="color:#9a6820;font-size:9pt;margin-right:3pt">&#x25CB;</span>';
+    return '<span style="display:inline-block;width:10pt;height:10pt;border:1pt solid #1a1a12;border-radius:1pt;margin-right:3pt;vertical-align:middle"></span>';
+  }
+
+  function buildItems(items){
+    return items.map(({ci,item})=>{
+      const subs=subItems(item.id).filter(s=>s.type!=='wishlist');
+      const acts=(item.actions||[]).filter(a=>actionStages.includes(a.stage));
+      const route=item.packsInto&&item.packsInto!==item.location?' \u2192 '+(locMap[item.packsInto]||item.packsInto):'';
+      const meta=[locMap[item.location]||item.location,route?route.trim():'',item.notes||''].filter(Boolean).join(' \u00B7 ');
+      const packed=ci.state==='packed';
+      return `<div class="item${packed?' item-packed':''}">
+        <div class="item-main">
+          ${stateIndicator(ci.state)}
+          <div class="item-body">
+            <div class="item-name">${esc(item.name)}${personBadges(item)}</div>
+            ${meta?`<div class="item-meta">${esc(meta)}</div>`:''}
+            ${!packed?'<div class="notes-line"></div>':''}
+          </div>
+        </div>
+        ${subs.map(s=>`
+        <div class="sub-item">
+          ${stateIndicator((trip.checklist||[]).find(c=>c.itemId===s.id)?.state||'unchecked')}
+          <div class="item-body">
+            <div class="item-name sub-name">${esc(s.name)}${personBadges(s)}</div>
+            ${s.notes?`<div class="item-meta">${esc(s.notes)}</div>`:''}
+          </div>
+        </div>`).join('')}
+        ${acts.map(a=>{
+          const done=!!(trip.actionStates||{})[item.id+'::'+a.id];
+          return `<div class="action-row${done?' action-done':''}">
+            <span style="display:inline-block;width:8pt;height:8pt;border:0.75pt solid #9a7040;border-radius:1pt;margin-right:4pt;vertical-align:middle;${done?'background:#9a7040':''}">${done?'<span style=\'color:#fff;font-size:7pt;line-height:8pt;display:block;text-align:center\'>\u2713</span>':''}</span>
+            <span class="action-stage">${STAGE_LABELS[a.stage]&&STAGE_LABELS[a.stage].icon?STAGE_LABELS[a.stage].icon+' ':''}</span>
+            <span class="action-label">${esc(a.label)}</span>
+          </div>`;
+        }).join('')}
+      </div>`;
+    }).join('');
+  }
+
+  // ── Build sections ──
+  function buildSections(){
+    if(!groupKey){
+      // Flat list — no section headers
+      return `<div class="section">${buildItems(filteredCIs)}</div>`;
+    }
+    return (groupOrder||[]).filter(k=>groupMap[k]?.length).map(k=>`
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">${groupLabel(k)}</span>
+          <span class="section-count">${groupMap[k].length} item${groupMap[k].length!==1?'s':''}</span>
+        </div>
+        ${buildItems(groupMap[k])}
+      </div>`).join('');
+  }
+
+  // ── Full document ──
+  const html=`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>${esc(listTitle)} \u2014 ${esc(trip.name)}</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Nunito:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1a1a12;--ink-l:#4a4a38;--ink-f:#8a8a74;
+    --paper:#f7f4ec;--paper-d:#ede8d8;--paper-r:#d8d3c0;
+    --accent:#6b4c1e;--accent-l:#9a7040;--green:#4a6b3a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--paper);color:var(--ink);font-size:9.5pt;line-height:1.35}
+
+  /* COVER — compact horizontal strip */
+  .cover{background:var(--ink);color:var(--paper);padding:6mm 14mm 5mm;display:flex;align-items:center;gap:10pt}
+  .cover-deco{font-size:30pt;opacity:.15;flex-shrink:0;line-height:1}
+  .cover-left{flex:1}
+  .cover-label{font-family:'Barlow Condensed',sans-serif;font-size:6.5pt;letter-spacing:.25em;text-transform:uppercase;color:var(--paper-r);margin-bottom:1pt}
+  .cover-title{font-family:'Barlow Condensed',sans-serif;font-size:16pt;font-weight:800;letter-spacing:.06em;text-transform:uppercase;line-height:1;margin-bottom:1pt}
+  .cover-mode{font-family:'Barlow Condensed',sans-serif;font-size:9pt;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-l);margin-bottom:3pt}
+  .cover-trip{font-family:'DM Mono',monospace;font-size:8.5pt;font-weight:700}
+  .cover-date{font-family:'DM Mono',monospace;font-size:7.5pt;color:var(--paper-r);margin-top:1pt}
+  .cover-right{text-align:right;flex-shrink:0}
+  .chips{display:flex;flex-wrap:wrap;gap:2pt;margin-top:3pt;justify-content:flex-end}
+  .chip{font-family:'Barlow Condensed',sans-serif;font-size:6.5pt;letter-spacing:.07em;text-transform:uppercase;padding:1pt 4pt;border:0.5pt solid rgba(255,255,255,.2);border-radius:2pt;color:rgba(255,255,255,.6)}
+
+  /* STATS BAR */
+  .statsbar{background:var(--paper-d);border-bottom:1pt solid var(--paper-r);padding:2pt 14mm;display:flex;gap:14pt;align-items:center}
+  .stat-item{font-family:'Barlow Condensed',sans-serif;font-size:7pt;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-l)}
+  .stat-item strong{color:var(--accent);font-size:9pt;margin-right:2pt}
+  .filter-note{font-family:'DM Mono',monospace;font-size:7pt;color:var(--accent-l);margin-left:auto;font-style:italic}
+
+  /* CONTENT — two explicit columns using grid */
+  .content{padding:3mm 14mm 14mm;page-break-before:avoid;break-before:avoid}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:0 6mm;align-items:start;page-break-before:avoid;break-before:avoid}
+
+  /* SECTION */
+  .section{margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
+  .section-header{display:flex;align-items:center;gap:4pt;margin-bottom:3pt;padding-bottom:3pt;border-bottom:1.5pt solid var(--ink)}
+  .section-title{font-family:'Barlow Condensed',sans-serif;font-size:10pt;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);flex:1}
+  .section-count{font-family:'DM Mono',monospace;font-size:7pt;color:var(--ink-f)}
+
+  /* ITEMS */
+  .item{padding:3pt 0 1pt;border-bottom:.5pt solid var(--paper-r);break-inside:avoid;page-break-inside:avoid}
+  .item-packed{opacity:.55}
+  .item-main{display:flex;align-items:flex-start;gap:5pt}
+  .item-body{flex:1}
+  .item-name{font-size:9pt;font-weight:600;color:var(--ink);line-height:1.3}
+  .item-meta{font-family:'DM Mono',monospace;font-size:7pt;color:var(--ink-f);margin-top:1pt}
+  .notes-line{border-bottom:.5pt solid var(--paper-r);margin:3pt 0 1pt;height:9pt}
+
+  /* SUB-ITEMS */
+  .sub-item{display:flex;align-items:flex-start;gap:5pt;padding:1.5pt 0 1.5pt 14pt}
+  .sub-name{font-size:8.5pt;font-weight:500;color:var(--ink-l)}
+
+  /* ACTIONS */
+  .action-row{display:flex;align-items:center;gap:4pt;padding:1.5pt 0 1.5pt 14pt;border-left:1.5pt solid var(--accent-l);margin-left:14pt;margin-bottom:1pt}
+  .action-done .action-label{text-decoration:line-through;opacity:.6}
+  .action-stage{font-family:'Barlow Condensed',sans-serif;font-size:6.5pt;text-transform:uppercase;letter-spacing:.07em;color:var(--accent-l);min-width:8pt}
+  .action-label{font-size:8.5pt;color:var(--ink-l)}
+
+  /* FOOTER */
+  .footer{position:fixed;bottom:6mm;left:14mm;right:14mm;display:flex;justify-content:space-between;border-top:.5pt solid var(--paper-r);padding-top:3pt}
+  .footer span{font-family:'Barlow Condensed',sans-serif;font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-f)}
+
+  /* PRINT BUTTON */
+  .print-btn{display:block;margin:8mm auto 0;padding:8pt 20pt;background:var(--ink);color:var(--paper);font-family:'Barlow Condensed',sans-serif;font-size:11pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;border-radius:3pt;cursor:pointer}
+  .print-btn:hover{background:var(--accent)}
+
+  @media print{
+    .print-btn{display:none!important}
+    body{background:#fff}
+    @page{margin:0;size:A4}
+    .cover,.statsbar{-webkit-print-color-adjust:exact;print-color-adjust:exact;page-break-after:avoid;break-after:avoid}
+    .action-row{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .footer{position:fixed}
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-deco">&#x26FA;</div>
+  <div class="cover-left">
+    <div class="cover-label">Base Camp Field Notes</div>
+    <div class="cover-title">${esc(listTitle)}</div>
+    <div class="cover-mode">${esc(modeDesc)}</div>
+    <div class="cover-trip">${esc(trip.name)}</div>
+    <div class="cover-date">${trip.date?fmtDate(trip.date)+' \u00B7 ':''}${trip.nights} night${trip.nights!==1?'s':''} \u00B7 Printed ${today}</div>
+  </div>
+  ${chips.length?`<div class="cover-right"><div class="chips">${chips.map(c=>`<span class="chip">${esc(c)}</span>`).join('')}</div></div>`:''}
+</div>
+
+<div class="statsbar">
+  <div class="stat-item"><strong>${totalItems}</strong> Items</div>
+  <div class="stat-item"><strong>${(groupKey?(groupOrder||[]).filter(k=>groupMap[k]?.length):['all']).length}</strong> Groups</div>
+  <div class="stat-item"><strong>${filteredCIs.filter(x=>x.ci.state==='packed').length}</strong> Packed</div>
+  <div class="stat-item"><strong>${filteredCIs.filter(x=>x.ci.state==='ready').length}</strong> Ready</div>
+  ${filterLabels.length?`<div class="filter-note">Filtered: ${filterLabels.join(' \u00B7 ')}</div>`:''}
+</div>
+
+<div class="content">
+  <div class="grid">
+    ${buildSections()}
+  </div>
+</div>
+
+<div class="footer">
+  <span>Base Camp \u00B7 ${esc(listTitle)} \u00B7 ${esc(trip.name)}</span>
+  <span>${today}</span>
+</div>
+
+<button class="print-btn" onclick="window.print()">\uD83D\uDDB6 Print this page</button>
+
+</body>
+</html>`;
+
+  const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.target='_blank'; a.rel='noopener'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+
+function renderAll(){
+  renderStats();
+  updatePersonFilterSelect();
+  if(mainTab==='trips') renderTrips();
+  else if(mainTab==='inv') renderInv();
+  else if(mainTab==='restock') renderRestock();
+  else if(mainTab==='wishlist') renderWishlist();
+  else if(mainTab==='people') renderPeople();
+  else if(mainTab==='settings') renderSettings();
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ closeM('itemModal'); closeM('tripModal'); }
+  if(e.key==='Enter'&&e.target.id==='iActionLabel'){ e.preventDefault(); addItemAction(); }
+});
+
+document.querySelectorAll('.atog').forEach(el=>{
+  el.querySelector('input').addEventListener('change',()=>el.classList.toggle('on',el.querySelector('input').checked));
+});
+
+// ══════════════════════════════════════════════════
+// SEED DATA
+// ══════════════════════════════════════════════════
+function seed(){
+  // Basic seed — used only as minimal fallback, demo data is richer
+  return demoData().items;
+}
+
+function demoData(){
+  const u=uid;
+
+  // ── PEOPLE ──
+  const dadId=u(), mumId=u(), kid1Id=u(), kid2Id=u(), dogId=u();
+  const people=[
+    {id:dadId,  name:'Dad',    emoji:'👨', color:'#5a7ab8'},
+    {id:mumId,  name:'Mum',    emoji:'👩', color:'#b85c3a'},
+    {id:kid1Id, name:'Arlo',   emoji:'👦', color:'#6b8c5a'},
+    {id:kid2Id, name:'Isla',   emoji:'👧', color:'#8a6ab8'},
+    {id:dogId,  name:'Biscuit',emoji:'🐕', color:'#c8a84a'},
+  ];
+
+  // ── ITEMS ──
+  const tentId=u(), bedId=u(), kitchenId=u(), dogKitId=u(), clothingId=u();
+
+  // Sleeping bags sub-items IDs (needed for person assignment + actions)
+  const sbDadId=u(), sbMumId=u(), sbArloId=u(), sbIslaId=u();
+  const smDadId=u(), smMumId=u(), smArloId=u(), smIslaId=u();
+  const pilDadId=u(), pilMumId=u(), pilArloId=u(), pilIslaId=u();
+  const speakerId=u(), lightId=u(), matId=u();
+
+  const items=[
+    // ── SHELTER ──
+    {id:tentId,parentId:null,name:'Tent',type:'always',category:'shelter',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'Check for missing pegs before packing',
+      actions:[
+        {id:u(),label:'Check all poles are present',stage:'pre-trip'},
+        {id:u(),label:'Check for any rips or broken zips',stage:'pre-trip'},
+        {id:u(),label:'Dry thoroughly before folding',stage:'before-pack-away'},
+        {id:u(),label:'Check and treat any mould spots',stage:'post-trip'},
+      ]},
+    {id:u(),parentId:null,name:'Tent pegs ×20',type:'always',category:'shelter',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'Count them back in at end of trip',actions:[]},
+    {id:u(),parentId:null,name:'Guy ropes',type:'always',category:'shelter',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'',actions:[]},
+    {id:u(),parentId:null,name:'Mallet',type:'always',category:'shelter',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'',actions:[]},
+    {id:u(),parentId:null,name:'Windbreak',type:'seasonal',category:'shelter',location:'shed',qty:1,season:'summer',activity:'',restock:false,isContainer:false,packsInto:null,personIds:[],notes:'',actions:[]},
+    {id:u(),parentId:null,name:'Extra tarp',type:'seasonal',category:'shelter',location:'shed',qty:1,season:'winter',activity:'',restock:false,isContainer:false,packsInto:null,personIds:[],notes:'Bad weather cover',actions:[]},
+
+    // ── SLEEP (container) ──
+    {id:bedId,parentId:null,name:'Beds & sleep kit',type:'always',category:'sleep',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:true,packsInto:'car',personIds:[],notes:'',actions:[]},
+    {id:sbDadId, parentId:bedId,name:"Dad's sleeping bag",  type:'always',category:'sleep',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dadId],notes:'3-season rated',
+      actions:[{id:u(),label:'Check zip works',stage:'pre-trip'},{id:u(),label:'Air out before packing',stage:'before-pack-away'}]},
+    {id:sbMumId, parentId:bedId,name:"Mum's sleeping bag",  type:'always',category:'sleep',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[mumId],notes:'3-season rated',
+      actions:[{id:u(),label:'Check zip works',stage:'pre-trip'},{id:u(),label:'Air out before packing',stage:'before-pack-away'}]},
+    {id:sbArloId,parentId:bedId,name:"Arlo's sleeping bag", type:'always',category:'sleep',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[kid1Id],notes:'Kids 2-season — add blanket if cold',actions:[{id:u(),label:'Check zip works',stage:'pre-trip'}]},
+    {id:sbIslaId,parentId:bedId,name:"Isla's sleeping bag",  type:'always',category:'sleep',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[kid2Id],notes:'Kids 2-season — add blanket if cold',actions:[{id:u(),label:'Check zip works',stage:'pre-trip'}]},
+    {id:smDadId, parentId:bedId,name:"Dad's sleeping mat",   type:'always',category:'sleep',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dadId],notes:'Self-inflating',
+      actions:[{id:u(),label:'Inflate and check for leaks',stage:'pre-trip'},{id:u(),label:'Deflate and roll tightly',stage:'before-pack-away'}]},
+    {id:smMumId, parentId:bedId,name:"Mum's sleeping mat",   type:'always',category:'sleep',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[mumId],notes:'Self-inflating',
+      actions:[{id:u(),label:'Inflate and check for leaks',stage:'pre-trip'},{id:u(),label:'Deflate and roll tightly',stage:'before-pack-away'}]},
+    {id:smArloId,parentId:bedId,name:"Arlo's sleeping mat",  type:'always',category:'sleep',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[kid1Id],notes:'Foam mat',actions:[]},
+    {id:smIslaId,parentId:bedId,name:"Isla's sleeping mat",  type:'always',category:'sleep',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[kid2Id],notes:'Foam mat',actions:[]},
+    {id:pilDadId, parentId:bedId,name:"Dad's pillow",    type:'house',category:'sleep',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dadId],notes:'',actions:[]},
+    {id:pilMumId, parentId:bedId,name:"Mum's pillow",    type:'house',category:'sleep',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[mumId],notes:'',actions:[]},
+    {id:pilArloId,parentId:bedId,name:"Arlo's pillow",   type:'house',category:'sleep',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[kid1Id],notes:'',actions:[]},
+    {id:pilIslaId,parentId:bedId,name:"Isla's pillow",   type:'house',category:'sleep',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[kid2Id],notes:'',actions:[]},
+
+    // ── KITCHEN ──
+    {id:kitchenId,parentId:null,name:'Kitchen kit',type:'always',category:'kitchen',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:true,packsInto:'car',personIds:[],notes:'',actions:[]},
+    {id:u(),parentId:kitchenId,name:'Camping stove',type:'always',category:'kitchen',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'',
+      actions:[{id:u(),label:'Clean burner heads',stage:'post-trip'}]},
+    {id:u(),parentId:kitchenId,name:'Gas canisters',type:'consumable',category:'kitchen',location:'duffle',qty:2,season:'all',activity:'',restock:true,notes:'Check level before trip',isContainer:false,packsInto:'car',personIds:[],
+      actions:[{id:u(),label:'Check gas level — shake to test',stage:'pre-trip'}]},
+    {id:u(),parentId:kitchenId,name:'Cooking pot & lid',type:'always',category:'kitchen',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'',actions:[]},
+    {id:u(),parentId:kitchenId,name:'Plates, cups & cutlery',type:'always',category:'kitchen',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'',actions:[]},
+    {id:u(),parentId:kitchenId,name:'Washing up liquid',type:'consumable',category:'kitchen',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'',actions:[]},
+    {id:u(),parentId:kitchenId,name:'Washing up bowl & brush',type:'always',category:'kitchen',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'',actions:[]},
+
+    // ── HYGIENE ──
+    {id:u(),parentId:null,name:'Towels',type:'house',category:'hygiene',location:'house',qty:4,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dadId,mumId,kid1Id,kid2Id],notes:'One each',actions:[]},
+    {id:u(),parentId:null,name:'Beach towels',type:'seasonal',category:'hygiene',location:'house',qty:4,season:'summer',activity:'beach',restock:false,isContainer:false,packsInto:'car',personIds:[dadId,mumId,kid1Id,kid2Id],notes:'',actions:[]},
+    {id:u(),parentId:null,name:'Toilet roll',type:'consumable',category:'hygiene',location:'duffle',qty:4,season:'all',activity:'',restock:true,notes:'',isContainer:false,packsInto:'car',personIds:[],actions:[]},
+    {id:u(),parentId:null,name:'First aid kit',type:'always',category:'hygiene',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'Check contents before remote trips',
+      actions:[{id:u(),label:'Check nothing expired',stage:'pre-trip'},{id:u(),label:'Restock any used items',stage:'post-trip'}]},
+    {id:u(),parentId:null,name:'Sun cream',type:'consumable',category:'hygiene',location:'duffle',qty:1,season:'summer',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'Factor 50 for kids',actions:[]},
+    {id:u(),parentId:null,name:'Insect repellent',type:'consumable',category:'hygiene',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'',actions:[]},
+
+    // ── DOG KIT ──
+    {id:dogKitId,parentId:null,name:"Biscuit's kit",type:'always',category:'dog',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:true,packsInto:'car',personIds:[dogId],notes:'',actions:[]},
+    {id:u(),parentId:dogKitId,name:'Dog lead & harness',type:'always',category:'dog',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dogId],notes:'',actions:[]},
+    {id:u(),parentId:dogKitId,name:'Dog food (4 days)',type:'consumable',category:'dog',location:'house',qty:4,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dogId],notes:'Pack from kitchen',actions:[]},
+    {id:u(),parentId:dogKitId,name:'Dog water bowl',type:'always',category:'dog',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dogId],notes:'',actions:[]},
+    {id:u(),parentId:dogKitId,name:'Dog poo bags',type:'consumable',category:'dog',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dogId],notes:'',actions:[]},
+    {id:u(),parentId:dogKitId,name:"Biscuit's bed",type:'always',category:'dog',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dogId],notes:'The grey fleece one',actions:[{id:u(),label:'Shake out and air',stage:'post-trip'}]},
+    {id:u(),parentId:dogKitId,name:'Dog towel',type:'house',category:'dog',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dogId],notes:'Old blue towel from under stairs',actions:[]},
+
+    // ── CLOTHING ──
+    {id:clothingId,parentId:null,name:'Clothing bags',type:'house',category:'clothing',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:true,packsInto:'car',personIds:[],notes:'One bag per person',actions:[]},
+    {id:u(),parentId:clothingId,name:"Dad's clothing bag",type:'house',category:'clothing',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dadId],notes:'3 days + waterproofs',actions:[]},
+    {id:u(),parentId:clothingId,name:"Mum's clothing bag",type:'house',category:'clothing',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[mumId],notes:'3 days + waterproofs',actions:[]},
+    {id:u(),parentId:clothingId,name:"Arlo's clothing bag",type:'house',category:'clothing',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[kid1Id],notes:'3 days + spare wellies',actions:[]},
+    {id:u(),parentId:clothingId,name:"Isla's clothing bag",type:'house',category:'clothing',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[kid2Id],notes:'3 days + spare wellies',actions:[]},
+    {id:u(),parentId:null,name:'Hiking boots',type:'always',category:'clothing',location:'house',qty:1,season:'all',activity:'hiking',restock:false,isContainer:false,packsInto:'car',personIds:[dadId,mumId],notes:'',actions:[]},
+    {id:u(),parentId:null,name:'Kids walking shoes',type:'always',category:'clothing',location:'house',qty:1,season:'all',activity:'hiking',restock:false,isContainer:false,packsInto:'car',personIds:[kid1Id,kid2Id],notes:'',actions:[]},
+    {id:u(),parentId:null,name:'Waterproof jackets',type:'always',category:'clothing',location:'house',qty:4,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dadId,mumId,kid1Id,kid2Id],notes:'One each',actions:[]},
+
+    // ── OTHER ──
+    {id:speakerId,parentId:null,name:'Portable speaker',type:'always',category:'other',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'',
+      actions:[{id:u(),label:'Charge fully',stage:'pre-trip'},{id:u(),label:'Check battery level',stage:'during'}]},
+    {id:lightId,parentId:null,name:'Camping lights',type:'always',category:'other',location:'shed',qty:2,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'Check batteries',
+      actions:[{id:u(),label:'Charge or replace batteries',stage:'pre-trip'}]},
+    {id:u(),parentId:null,name:'Kids activity bag',type:'house',category:'other',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[kid1Id,kid2Id],notes:'Books, cards, small games',actions:[]},
+    {id:u(),parentId:null,name:'Hiking poles',type:'seasonal',category:'other',location:'shed',qty:2,season:'all',activity:'hiking',restock:false,isContainer:false,packsInto:'car',personIds:[dadId,mumId],notes:'',actions:[]},
+    {id:u(),parentId:null,name:'Camp chairs',type:'always',category:'other',location:'shed',qty:4,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'Folding ones in blue bags',actions:[]},
+    {id:u(),parentId:null,name:'Camp table',type:'always',category:'other',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'',actions:[]},
+
+    // ── WISH LIST ──
+    {id:u(),parentId:null,name:'Lightweight camp chairs',type:'wishlist',category:'other',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:null,personIds:[],notes:'Current ones are too heavy',actions:[]},
+    {id:u(),parentId:null,name:'Portable solar panel',type:'wishlist',category:'other',location:'car',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:null,personIds:[],notes:'For charging phones off-grid',actions:[]},
+    {id:u(),parentId:null,name:'3-season sleeping bag upgrade',type:'wishlist',category:'sleep',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:null,personIds:[],notes:'Current bags not warm enough for shoulder season',actions:[]},
+  ];
+
+  // ── TRIP ──
+  // Build checklist from all non-wishlist items
+  const cl=items.filter(i=>i.type!=='wishlist').map(i=>({itemId:i.id,state:'unchecked'}));
+  // Mark tent, tent pegs, mallet, gas check action as ready; sleeping bags as packed for demo
+  const markReady=[tentId];
+  const markPacked=[sbDadId,sbMumId,smDadId,smMumId,speakerId,lightId];
+  cl.forEach(c=>{
+    if(markReady.includes(c.itemId)) c.state='ready';
+    if(markPacked.includes(c.itemId)) c.state='packed';
+  });
+  // Pre-trip actions — mark speaker charge and mat checks as done
+  const actionStates={};
+  items.forEach(item=>{
+    (item.actions||[]).forEach(a=>{
+      if(a.label==='Charge fully'||a.label==='Check gas level — shake to test')
+        actionStates[item.id+'::'+a.id]=true;
+    });
+  });
+
+  const trips=[{
+    id:uid(),
+    name:'Easter Weekend — Peak District',
+    date: (() => {
+      const d=new Date(); d.setDate(d.getDate()+14);
+      return d.toISOString().slice(0,10);
+    })(),
+    nights:3,
+    season:'shoulder',
+    site:'basic',
+    extraPeople:0,
+    distance:'regional',
+    dog:true,
+    activities:['hiking'],
+    notes:'Campsite: Fieldhead Campsite, Edale. Booking ref: FC-2847. Near Kinder Scout — great walking. Dogs welcome.',
+    status:'packing',
+    checklist:cl,
+    actionStates,
+    packUpStates:{},
+    packAwayStates:{},
+    leftAtSite:{},
+    damaged:{}
+  }];
+
+  return {items, people, trips, settings:defaultSettings()};
+}
+
+// ── LIGHT MODE ──
+function toggleLightMode(){
+  const isLight=document.body.classList.toggle('light');
+  localStorage.setItem('basecamp_theme', isLight?'light':'dark');
+  document.getElementById('lightBtn').textContent=isLight?'🌙':'☀️';
+  document.getElementById('lightBtn').title=isLight?'Switch to dark mode':'Switch to light mode';
+}
+
+function initTheme(){
+  const saved=localStorage.getItem('basecamp_theme');
+  // Default is now LIGHT — dark is the option
+  const useDark=saved?saved==='dark':false;
+  if(!useDark){
+    document.body.classList.add('light');
+    document.getElementById('lightBtn').textContent='🌙';
+    document.getElementById('lightBtn').title='Switch to dark mode';
+  } else {
+    document.getElementById('lightBtn').title='Switch to light mode';
+  }
+}
+
+load();
+renderAll();
+initTheme();
+initDemoBanner();
+document.getElementById('fileImport').addEventListener('change', importData, false);
+checkBackupReminder();
+</script>
+</body>
+</html>
