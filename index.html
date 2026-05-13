@@ -191,20 +191,35 @@ select:focus{border-color:var(--amber-d)}
 .ci:active{transform:scale(.97)}
 .ci:hover{box-shadow:0 4px 14px rgba(0,0,0,.1)}
 .ci.ready{background:rgba(212,144,42,.07);box-shadow:0 2px 8px rgba(212,144,42,.15)}
-.ci.packed{opacity:.35;background:var(--canvas-3);box-shadow:none;pointer-events:auto}
+.ci.packed{background:var(--canvas-3);box-shadow:none;pointer-events:auto}
+.ci.packed .ci-meta{opacity:.65}
 .ci.hl{box-shadow:0 0 0 2px var(--amber-d);background:rgba(212,144,42,.05)}
 .sub-ci{padding:10px 14px 10px 46px;border-radius:0 0 12px 12px;margin-top:-5px;border:none;box-shadow:none;margin-bottom:6px;background:rgba(0,0,0,0.025)}
 
-/* State indicator — large, filled, satisfying */
-.ci-state{width:28px;height:28px;border-radius:8px;border:2px solid var(--border-l);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0;font-weight:800;transition:all .25s cubic-bezier(.34,1.56,.64,1);background:var(--canvas);margin-top:1px}
-.ci.ready .ci-state{border-color:var(--amber);background:var(--amber);font-size:15px;color:#fff;box-shadow:0 2px 8px rgba(212,144,42,.4)}
-.ci.packed .ci-state{border-color:var(--sage);background:var(--sage);font-size:15px;color:#fff;box-shadow:0 2px 8px rgba(107,140,90,.35)}
+/* State indicator — three visuals: empty ring → ready (amber ring + dot) → packed (sage + ✓) */
+.ci-state{position:relative;width:28px;height:28px;border-radius:8px;border:2px solid var(--border-l);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0;font-weight:800;transition:all .25s cubic-bezier(.34,1.56,.64,1);background:var(--canvas);margin-top:1px}
+.ci-state.unchecked{background:var(--canvas);border-color:var(--border-l);box-shadow:inset 0 0 0 1px rgba(0,0,0,.04)}
+.ci-state.ready{background:rgba(212,144,42,.12);border:2px solid var(--amber-d);box-shadow:none}
+.ci-state.ready::after{content:'';position:absolute;width:9px;height:9px;border-radius:50%;background:var(--amber-d);box-shadow:0 1px 3px rgba(212,144,42,.35)}
+.ci-state.packed{border-color:var(--sage);background:var(--sage);font-size:15px;color:#fff;box-shadow:0 2px 8px rgba(107,140,90,.35)}
+.ci-state.packed::after{display:none}
 @keyframes checkPop{0%{transform:scale(.8);opacity:.6}60%{transform:scale(1.2)}80%{transform:scale(.95)}100%{transform:scale(1);opacity:1}}
 .ci.ready .ci-state{animation:checkPop .3s cubic-bezier(.34,1.56,.64,1)}
 .ci.packed .ci-state{animation:checkPop .3s cubic-bezier(.34,1.56,.64,1)}
 .sub-ci .ci-state{width:22px;height:22px;border-radius:6px;font-size:0}
-.sub-ci.ready .ci-state{font-size:12px}
-.sub-ci.packed .ci-state{font-size:12px}
+.sub-ci .ci-state.ready::after{width:7px;height:7px}
+.sub-ci .ci-state.packed{font-size:12px}
+
+.ci-tap-nudge{font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:500;letter-spacing:.02em;margin-top:5px;line-height:1.35}
+.ci-tap-state{font-weight:700;letter-spacing:.01em}
+.ci-tap-hint{font-weight:500;opacity:.88}
+.ci-tap-sep{opacity:.4;font-weight:400}
+.ci-tap-nudge--unchecked{color:var(--text-m)}
+.ci-tap-nudge--unchecked .ci-tap-state{color:var(--text)}
+.ci-tap-nudge--ready{color:var(--text-m)}
+.ci-tap-nudge--ready .ci-tap-state{color:var(--amber-d)}
+.ci-tap-nudge--packed{color:var(--text-m)}
+.ci-tap-nudge--packed .ci-tap-state{color:var(--sage)}
 
 .ci-body{flex:1;min-width:0}
 .ci-name{font-size:14px;font-weight:700;line-height:1.35;transition:all .2s}
@@ -221,7 +236,6 @@ select:focus{border-color:var(--amber-d)}
 .cloc-title{font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:700;letter-spacing:-.01em;text-transform:none;flex:1;color:var(--text)}
 .cloc-progress{height:3px;flex:1;max-width:60px;background:var(--border);border-radius:2px;overflow:hidden}
 .cloc-progress-fill{height:100%;background:var(--sage);border-radius:2px;transition:width .4s ease}
-.cloc-group-done{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;background:rgba(107,140,90,.08);margin-bottom:6px}
 
 /* ── CHECKLIST PROGRESS ── */
 .cprog{background:var(--canvas-2);border:none;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.07);padding:16px;margin-bottom:18px}
@@ -383,10 +397,13 @@ select:focus{border-color:var(--amber-d)}
 .ci.hl{background:rgba(212,144,42,.07);border-left:2px solid var(--amber-d);padding-left:7px}
 .ci.sub-ci{padding-left:22px}
 .ci.sub-ci.hl{padding-left:24px}
-.ci-state{width:22px;height:22px;border-radius:3px;border:1px solid var(--border);background:var(--canvas-3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:1px;transition:all .15s;user-select:none}
+.ci-state{position:relative;width:22px;height:22px;border-radius:3px;border:1px solid var(--border);background:var(--canvas-3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0;flex-shrink:0;margin-top:1px;transition:all .15s;user-select:none}
 .ci-state:hover{border-color:var(--amber-d)}
-.ci-state.ready{background:rgba(212,144,42,.2);border-color:var(--amber);color:var(--amber)}
-.ci-state.packed{background:rgba(107,140,90,.25);border-color:var(--sage);color:var(--sage)}
+.ci-state.unchecked{background:var(--canvas-3)}
+.ci-state.ready{background:rgba(212,144,42,.2);border-color:var(--amber);font-size:0}
+.ci-state.ready::after{content:'';position:absolute;width:7px;height:7px;border-radius:50%;background:var(--amber-d)}
+.ci-state.packed{background:rgba(107,140,90,.25);border-color:var(--sage);color:var(--sage);font-size:11px}
+.ci-state.packed::after{display:none}
 .ci-body{flex:1}
 .ci-name{font-size:12px;font-weight:500;transition:opacity .15s}
 .ci-name.packed{text-decoration:line-through;opacity:.4}
@@ -395,6 +412,16 @@ select:focus{border-color:var(--amber-d)}
 .ci-qty{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)}
 .ci-note{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)}
 .hl-tag{font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);background:rgba(212,144,42,.12);border:1px solid rgba(212,144,42,.3);padding:1px 4px;border-radius:2px}
+.ci-tap-nudge{font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:500;letter-spacing:.02em;margin-top:3px;line-height:1.35}
+.ci-tap-state{font-weight:700;letter-spacing:.01em}
+.ci-tap-hint{font-weight:500;opacity:.88}
+.ci-tap-sep{opacity:.4;font-weight:400}
+.ci-tap-nudge--unchecked{color:var(--text-m)}
+.ci-tap-nudge--unchecked .ci-tap-state{color:var(--text-d)}
+.ci-tap-nudge--ready{color:var(--text-m)}
+.ci-tap-nudge--ready .ci-tap-state{color:var(--amber-d)}
+.ci-tap-nudge--packed{color:var(--text-m)}
+.ci-tap-nudge--packed .ci-tap-state{color:var(--sage)}
 
 /* ── POST TRIP */
 .pt-banner{background:rgba(184,92,58,.07);border:1px solid rgba(184,92,58,.3);border-left:3px solid var(--rust);border-radius:2px;padding:12px 14px;margin-bottom:14px}
@@ -444,6 +471,55 @@ select:focus{border-color:var(--amber-d)}
 ::-webkit-scrollbar-thumb{background:var(--border-l);border-radius:3px}
 ::-webkit-scrollbar-thumb:hover{background:var(--amber-d)}
 
+/* ── GLOBAL SEARCH (right drawer — matches backup sheet styling) ── */
+#searchModal.gsearch-overlay{background:rgba(10,10,8,.6)!important;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:2000!important;align-items:stretch!important;justify-content:flex-end!important;padding:0!important}
+#searchModal.gsearch-overlay .gsearch-panel{
+  width:min(100vw,420px);max-width:100%;height:100%;min-height:100%;
+  margin:0;border:none;border-radius:20px 0 0 20px;
+  background:var(--canvas-2);
+  box-shadow:-12px 0 40px rgba(0,0,0,.2);
+  padding:20px 20px 28px;
+  display:flex;flex-direction:column;overflow:hidden;
+  animation:gsearchSlideIn .28s ease both;
+}
+@keyframes gsearchSlideIn{from{opacity:0;transform:translateX(100%)}to{opacity:1;transform:translateX(0)}}
+.gsearch-drag{width:36px;height:4px;border-radius:2px;background:var(--border-l);margin:0 auto 18px;flex-shrink:0}
+.gsearch-panel-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;padding-left:8px}
+.gsearch-panel-title{font-family:'Familjen Grotesk',sans-serif;font-size:20px;font-weight:600;letter-spacing:-.015em;color:var(--text);line-height:1.2;margin:0}
+.gsearch-close{background:var(--canvas-3);border:none;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-m);font-size:14px;flex-shrink:0;transition:background .15s,color .15s}
+.gsearch-close:hover{background:var(--border);color:var(--text)}
+.gsearch-intro{font-size:14px;color:var(--text-m);margin:0 0 4px;line-height:1.55;padding-left:8px}
+.gsearch-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-m);margin:0 0 18px;padding-left:8px}
+.gsearch-input-wrap{margin-bottom:16px;padding-left:8px;padding-right:2px}
+.gsearch-fi{font-family:'Familjen Grotesk',sans-serif!important}
+.gsearch-results{flex:1;min-height:120px;overflow-y:auto;margin:0 -4px;padding:0 4px 8px;-webkit-overflow-scrolling:touch}
+.gsearch-sec{font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);margin:16px 0 10px;padding-left:8px}
+.gsearch-sec:first-of-type{margin-top:4px}
+.gsearch-result-btn{
+  width:100%;padding:14px 16px;margin:0 0 10px;border:1px solid var(--border);border-radius:10px;
+  background:var(--canvas-3);color:var(--text);cursor:pointer;text-align:left;
+  font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:500;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  transition:background .15s,border-color .15s,opacity .15s;
+}
+.gsearch-result-btn:hover{background:var(--canvas);border-color:var(--border-l)}
+.gsearch-result-btn:active{opacity:.92}
+.gsearch-result-btn .gsearch-result-main{flex:1;min-width:0}
+.gsearch-result-btn .gsearch-result-name{font-weight:600;display:block;line-height:1.25}
+.gsearch-result-btn .gsearch-result-meta{font-size:12px;font-weight:400;opacity:.55;margin-top:3px;font-family:'Familjen Grotesk',sans-serif;color:var(--text-m)}
+.gsearch-result-btn .gsearch-result-arrow{font-size:18px;opacity:.45;flex-shrink:0;margin-top:2px}
+.gsearch-hint{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin:4px 0 0;padding-left:8px;line-height:1.45}
+.gsearch-empty{padding:28px 12px;text-align:center;color:var(--text-m);font-size:14px;line-height:1.55}
+
+.btn:focus-visible,.hdr-btn:focus-visible,.hnav:focus-visible,.fb:focus-visible,.gsearch-result-btn:focus-visible,.qbtn:focus-visible,.btn-ic:focus-visible,.gsearch-close:focus-visible,.tback:focus-visible,.add-sub-btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.fi:focus-visible,.fs:focus-visible,.fta:focus-visible{outline:2px solid var(--amber-d);outline-offset:2px}
+
+@media (prefers-reduced-motion: reduce){
+  .page,.mover.on,.modal,#searchModal.gsearch-overlay .gsearch-panel,.cprog-complete{animation:none!important}
+  .ci.ready .ci-state,.ci.packed .ci-state{animation:none!important}
+  html{scroll-behavior:auto}
+}
+
 @media(max-width:640px){
   .hdr{padding:0 11px}
   .page{padding:12px 11px 80px}
@@ -453,6 +529,8 @@ select:focus{border-color:var(--amber-d)}
   .itbl th:nth-child(3),.itbl td:nth-child(3){display:none}
   .logo sup{display:none}
   .mtab{padding:9px 10px;font-size:11px}
+  .qbtn{min-width:40px;min-height:40px;font-size:16px;line-height:1}
+  .btn-ic{min-width:40px;min-height:40px;padding:8px 10px!important;font-size:16px!important}
 }
 </style>
 </head>
@@ -462,15 +540,15 @@ select:focus{border-color:var(--amber-d)}
   <div class="logo"><div class="logo-mark">N</div>NeverLeft</div>
   <div class="hdr-nav" id="hdrNav">
     <button class="hnav on" onclick="setTab('trips',this)" id="tripsBtn">Trips</button>
-    <button class="hnav" onclick="setTab('inv',this)">Kit</button>
+    <button class="hnav" id="navKitBtn" onclick="setTab('inv',this)">Kit</button>
     <button class="hnav" onclick="setTab('wishlist',this)" id="wishBtn">Want list</button>
-    <button class="hnav" onclick="setTab('settings',this)">Settings</button>
+    <button class="hnav" id="navSettingsBtn" onclick="setTab('settings',this)">Settings</button>
   </div>
   <div class="hdr-r" id="hdrR">
-    <button class="hdr-btn hdr-collapsible" data-priority="4" data-label="Shopping list" data-action="openShoppingList()" id="shopListBtn" onclick="openShoppingList()" style="display:none">Shopping list</button>
-    <button class="hdr-btn hdr-collapsible" data-priority="3" data-label="Search" data-action="openSearchPanel && openSearchPanel()">Search</button>
-    <button class="hdr-btn hdr-collapsible" data-priority="2" data-label="Light" id="lightBtn" onclick="toggleLightMode()">Light</button>
-    <button class="hdr-btn hdr-collapsible" data-priority="1" data-label="Backup" data-action="exportData()">Backup</button>
+    <button class="hdr-btn hdr-collapsible" data-priority="4" data-label="Shopping list" data-action="openShoppingList" id="shopListBtn" onclick="openShoppingList()" style="display:none">Shopping list</button>
+    <button class="hdr-btn hdr-collapsible" data-priority="3" data-label="Search" data-action="openSearchPanel" onclick="openSearchPanel()">Search</button>
+    <button class="hdr-btn hdr-collapsible" data-priority="2" data-label="Light" data-action="toggleLightMode" id="lightBtn" onclick="toggleLightMode()">Light</button>
+    <button class="hdr-btn hdr-collapsible" data-priority="1" data-label="Backup" data-action="exportData">Backup</button>
     <div style="position:relative;flex-shrink:0" id="overflowWrap">
       <button class="hdr-btn" onclick="toggleUtilMenu()" id="utilMenuBtn" style="display:none;padding:0 12px;letter-spacing:.05em">···</button>
       <div id="utilMenu" style="display:none;position:absolute;right:0;top:calc(100% + 6px);background:var(--canvas-2);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.12);min-width:170px;z-index:300">
@@ -503,7 +581,6 @@ select:focus{border-color:var(--amber-d)}
 </div>
 
 <div class="page" id="pg-inv" style="display:none">
-  <div class="stats" id="statsBar"></div>
   <!-- Search always visible; filters hidden by default -->
   <div style="display:flex;gap:7px;margin-bottom:10px;align-items:center">
     <div class="sw" style="flex:1"><span class="sw-ic">⌕</span><input type="text" id="srch" placeholder="Search your kit…" oninput="renderInv()"></div>
@@ -515,7 +592,7 @@ select:focus{border-color:var(--amber-d)}
         <button class="fb on" onclick="setTF('all',this)">All</button>
         <button class="fb"    onclick="setTF('always',this)">Always packed</button>
         <button class="fb"    onclick="setTF('house',this)">From home</button>
-        <button class="fb"    onclick="setTF('consumable',this)">Needs restocking</button>
+        <button class="fb"    onclick="setTF('consumable',this)">Consumable</button>
         <button class="fb"    onclick="setTF('seasonal',this)">Seasonal</button>
       </div>
       <select id="locF" onchange="renderInv()">
@@ -534,7 +611,7 @@ select:focus{border-color:var(--amber-d)}
     <div class="legend" style="margin-bottom:12px">
       <div class="li"><div class="ld" style="background:var(--sage)"></div>Always packed</div>
       <div class="li"><div class="ld" style="background:var(--blue)"></div>Bring from home</div>
-      <div class="li"><div class="ld" style="background:var(--rust)"></div>Needs restocking</div>
+      <div class="li"><div class="ld" style="background:var(--rust)"></div>Consumable</div>
       <div class="li"><div class="ld" style="background:var(--purple)"></div>Seasonal</div>
     </div>
   </div>
@@ -542,7 +619,10 @@ select:focus{border-color:var(--amber-d)}
 </div>
 
 <!-- TRIPS -->
-<div class="page" id="pg-trips"><div id="tripsContent"></div></div>
+<div class="page" id="pg-trips">
+  <div class="stats" id="statsBar"></div>
+  <div id="tripsContent"></div>
+</div>
 
 <!-- RESTOCK -->
 <div class="page" id="pg-restock" style="display:none"><div id="restockContent"></div></div>
@@ -667,6 +747,22 @@ select:focus{border-color:var(--amber-d)}
  </div>
 </div>
 
+<div class="mover gsearch-overlay" id="searchModal" onclick="closeMOver(event,'searchModal')">
+ <aside class="gsearch-panel" onclick="event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="gsearchTitle">
+  <div class="gsearch-drag" aria-hidden="true"></div>
+  <div class="gsearch-panel-header">
+   <h2 class="gsearch-panel-title" id="gsearchTitle">Search</h2>
+   <button type="button" class="gsearch-close" onclick="closeSearchDrawer()" aria-label="Close search">✕</button>
+  </div>
+  <p class="gsearch-intro">Find kit items, trips, and people in one place.</p>
+  <p class="gsearch-sub">Tip: press Esc to close · Ctrl+K to open</p>
+  <div class="gsearch-input-wrap">
+   <input type="search" class="fi gsearch-fi" id="globalSrch" placeholder="Type to search…" autocomplete="off" enterkeyhint="search" oninput="scheduleGlobalSearchInput()">
+  </div>
+  <div id="globalSearchResults" class="gsearch-results"></div>
+ </aside>
+</div>
+
 <script>
 // ══════════════════════════════════════════════════
 // STATE
@@ -678,6 +774,8 @@ let tf = 'all', mainTab = 'trips';
 let activeTripId = null, activeTripTab = 'checklist';
 let collapsedCats = new Set();   // inventory
 let collapsedLocs = new Set();   // checklist locations
+/** Checklist group ids (clgrp-*) user expanded while fully packed — stops auto re-collapse on each render. */
+let expandedPackedChecklistGroups = new Set();
 let personFilter = 'all';        // inventory person filter
 let checklistPersonFilter = 'all'; // checklist person filter
 let checklistLocFilter = 'all';    // checklist location filter
@@ -687,7 +785,7 @@ let checklistFiltersOpen = false;  // filter panel open state
 
 const CATS    = ['shelter','sleep','kitchen','clothing','hygiene','dog','other'];
 const CLAB    = { shelter:'⛺ Shelter', sleep:'🛌 Sleep', kitchen:'🍳 Kitchen', clothing:'🧥 Clothing', hygiene:'🪥 Hygiene', dog:'🐕 Dog', other:'📦 Other' };
-const TLAB    = { always:'Always packed', house:'Bring from home', consumable:'Needs restocking', seasonal:'Seasonal', wishlist:'Want list' };
+const TLAB    = { always:'Always packed', house:'Bring from home', consumable:'Consumable', seasonal:'Seasonal', wishlist:'Want list' };
 const LLAB    = { shed:'Shed', duffle:'Duffle Bag', house:'House', car:'Car' };
 const SELAB   = { summer:'Summer', shoulder:'Spring / Autumn', winter:'Winter', all:'All' };
 const SITELAB = { hookup:'Full hookup', basic:'Basic', wild:'Wild' };
@@ -806,6 +904,7 @@ function resetAllData(){
   const theme=localStorage.getItem('basecamp_theme');
   const lastExport=localStorage.getItem('basecamp_last_export');
   localStorage.clear();
+  // Demo mode flag and all NeverLeft keys cleared; restore only theme + last backup reminder below.
   if(theme) localStorage.setItem('basecamp_theme',theme);
   if(lastExport) localStorage.setItem('basecamp_last_export',lastExport);
   S={ items:[], trips:[], people:[], settings:defaultSettings() };
@@ -825,7 +924,13 @@ function loadDemoDataAgain(){
   if(b) b.style.display='flex';
   renderAll();
 }
-function save(){ localStorage.setItem(SK,JSON.stringify(S)); }
+function save(){
+  try{ localStorage.setItem(SK,JSON.stringify(S)); }
+  catch(e){
+    const full=e&&e.name==='QuotaExceededError';
+    showToast(full?'Could not save — storage is full. Export a backup, then remove items or old trips.':'Could not save — your browser blocked storage.');
+  }
+}
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function fmtDate(d){ if(!d)return''; try{return new Date(d+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}catch(e){return d;} }
@@ -834,6 +939,10 @@ function fmtDate(d){ if(!d)return''; try{return new Date(d+'T12:00:00').toLocale
 // ITEM HELPERS
 // ══════════════════════════════════════════════════
 function topItems(){ return S.items.filter(i=>!i.parentId && i.type!=='wishlist'); }
+/** All kit lines (non–wish list) flagged for shopping / low stock — same set as shopping list & Restock tab. */
+function itemsNeedingRestock(){ return S.items.filter(i=>i.type!=='wishlist'&&(i.restock||Number(i.qty)===0)); }
+/** Every non–wish list line in the kit (parents + sub-items). */
+function kitItems(){ return S.items.filter(i=>i.type!=='wishlist'); }
 function subItems(parentId){ return S.items.filter(i=>i.parentId===parentId); }
 function wishItems(){ return S.items.filter(i=>i.type==='wishlist'); }
 
@@ -847,6 +956,25 @@ function isExcluded(item, trip){
   }
   if(item.activity && (!trip.activities||!trip.activities.includes(item.activity))) return true;
   return false;
+}
+
+/** Checklist rows that count toward packing % (omit container parents — progress is on their children only). */
+function checklistProgressCIs(trip){
+  const cl=trip.checklist||[];
+  return cl.filter(c=>{
+    const it=S.items.find(i=>i.id===c.itemId);
+    if(!it||it.type==='wishlist') return false;
+    if(it.isContainer && subItems(it.id).some(s=>!isExcluded(s,trip))) return false;
+    return true;
+  });
+}
+function checklistProgressTotals(trip){
+  const rows=checklistProgressCIs(trip);
+  return{
+    ready:rows.filter(c=>c.state==='ready').length,
+    packed:rows.filter(c=>c.state==='packed').length,
+    total:rows.length
+  };
 }
 
 function getHL(trip){
@@ -877,14 +1005,16 @@ function adjQty(item, trip){
 // STATS
 // ══════════════════════════════════════════════════
 function renderStats(){
-  const top=topItems();
-  const rc=top.filter(i=>i.restock||i.qty===0).length;
-  const ac=S.trips.filter(t=>t.status==='packing'||t.status==='planning').length;
+  const kit=kitItems();
+  const rc=itemsNeedingRestock().length;
+  const ac=S.trips.filter(t=>t.status!=='complete').length;
   const wc=wishItems().length;
-  document.getElementById('statsBar').innerHTML=`
-    <div class="stat"><div class="stat-v">${top.length}</div><div class="stat-l">Items</div></div>
-    <div class="stat"><div class="stat-v">${top.filter(i=>i.type==='always').length}</div><div class="stat-l">Always packed</div></div>
-    <div class="stat"><div class="stat-v">${top.filter(i=>i.type==='house').length}</div><div class="stat-l">From home</div></div>
+  const bar=document.getElementById('statsBar');
+  if(!bar) return;
+  bar.innerHTML=`
+    <div class="stat"><div class="stat-v">${kit.length}</div><div class="stat-l">Items</div></div>
+    <div class="stat"><div class="stat-v">${kit.filter(i=>i.type==='always').length}</div><div class="stat-l">Always packed</div></div>
+    <div class="stat"><div class="stat-v">${kit.filter(i=>i.type==='house').length}</div><div class="stat-l">From home</div></div>
     <div class="stat"><div class="stat-v" style="${rc>0?'color:var(--rust)':''}">${rc}</div><div class="stat-l">Restock</div></div>
     <div class="stat"><div class="stat-v" style="${ac>0?'color:var(--amber)':''}">${ac}</div><div class="stat-l">Active Trips</div></div>
     <div class="stat"><div class="stat-v" style="${wc>0?'color:var(--gold)':''}">${wc}</div><div class="stat-l">Want list</div></div>`;
@@ -924,6 +1054,25 @@ function itemMatchesPerson(item, pid){
   return subItems(item.id).some(s=>(s.personIds||[]).includes(pid));
 }
 
+function itemMatchesTypeFilter(item, tfv){
+  if(tfv==='all') return true;
+  if(item.type===tfv) return true;
+  return subItems(item.id).some(s=>s.type===tfv);
+}
+function itemMatchesLocFilter(item, lf){
+  if(lf==='all') return true;
+  if(item.location===lf) return true;
+  return subItems(item.id).some(s=>s.location===lf);
+}
+function visibleSubCountForInv(item){
+  const subs=subItems(item.id);
+  if(personFilter==='all') return subs.length;
+  return subs.filter(s=>(s.personIds||[]).includes(personFilter)).length;
+}
+function lineNeedsRestockForSort(item){
+  return (item.restock||Number(item.qty)===0)||subItems(item.id).some(s=>s.restock||Number(s.qty)===0);
+}
+
 function renderInv(){
   populateDynamicDropdowns(null, null, null); // keep locF in sync
   const srch=document.getElementById('srch').value.toLowerCase();
@@ -934,13 +1083,13 @@ function renderInv(){
       ||subItems(i.id).some(s=>s.name.toLowerCase().includes(srch)||(s.notes||'').toLowerCase().includes(srch));
     const pMatch=itemMatchesPerson(i, personFilter);
     return textMatch
-      &&(tf==='all'||i.type===tf)
-      &&(lf==='all'||i.location===lf)
+      &&itemMatchesTypeFilter(i, tf)
+      &&itemMatchesLocFilter(i, lf)
       &&pMatch;
   });
   if(sort==='name') items.sort((a,b)=>a.name.localeCompare(b.name));
   else if(sort==='location') items.sort((a,b)=>a.location.localeCompare(b.location));
-  else if(sort==='restock') items.sort((a,b)=>((b.restock||b.qty===0)?1:0)-((a.restock||a.qty===0)?1:0));
+  else if(sort==='restock') items.sort((a,b)=>(lineNeedsRestockForSort(b)?1:0)-(lineNeedsRestockForSort(a)?1:0));
   else items.sort((a,b)=>getCats().findIndex(c=>c.id===a.category)-getCats().findIndex(c=>c.id===b.category)||a.name.localeCompare(b.name));
 
   const el=document.getElementById('invContent');
@@ -954,8 +1103,8 @@ function renderInv(){
       return `<div class="cg cat-${c.id}">
         <div class="cg-hdr" onclick="toggleCat('${c.id}')">
           <span class="cg-toggle ${open?'open':'closed'}">▼</span>
-          <span class="cg-title">${c.emoji||''} ${c.label}</span>
-          <span class="cg-count">${g[c.id].length}</span>
+          <span class="cg-title">${c.emoji||''} ${esc(c.label)}</span>
+          <span class="cg-count">${g[c.id].reduce((sum,p)=>sum+1+visibleSubCountForInv(p),0)}</span>
         </div>
         <div class="cg-body" id="cgb-${c.id}" style="display:${open?'block':'none'}">
           ${invTable(g[c.id])}
@@ -981,19 +1130,19 @@ function itemRow(item, isSub){
   const restock=item.restock||item.qty===0;
   const isWish=item.type==='wishlist';
   const assignedPeople=(S.people||[]).filter(p=>(item.personIds||[]).includes(p.id));
-  const personBadges=assignedPeople.map(p=>`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55;margin-left:4px">${p.name}</span>`).join('');
+  const personBadges=assignedPeople.map(p=>`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55;margin-left:4px">${esc(p.name)}</span>`).join('');
   return `
     <tr class="irow${isSub?' sub-row':''}${isWish?' wishlist-item':''}">
       <td>
         <div class="iname">${isWish?`<span class="wishlist-badge">✦</span>`:''}${esc(item.name)}${restock?` <span class="rflag">⚠ restock</span>`:''}${personBadges}</div>
         ${item.notes?`<div class="inotes">${esc(item.notes)}</div>`:''}
-        ${item.activity?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--teal);text-transform:uppercase;letter-spacing:.06em">${item.activity}</span>`:''}
+        ${item.activity?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--teal);text-transform:uppercase;letter-spacing:.06em">${esc(item.activity)}</span>`:''}
         ${item.isContainer?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--amber-d);text-transform:uppercase;letter-spacing:.06em">⊞ group</span>`:''}
         ${(item.actions&&item.actions.length)?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--teal);text-transform:uppercase;letter-spacing:.06em">⚡ ${item.actions.length} action${item.actions.length!==1?'s':''}</span>`:''}
-        ${item.packsInto&&item.packsInto!==item.location?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">→ ${labMap(getLocs())[item.packsInto]||item.packsInto}</span>`:''}
+        ${item.packsInto&&item.packsInto!==item.location?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">→ ${esc(labMap(getLocs())[item.packsInto]||item.packsInto)}</span>`:''}
       </td>
       <td><span class="tpill tp-${item.type}">${TLAB[item.type]}</span></td>
-      <td><span class="lbadge lb-${item.location}">${labMap(getLocs())[item.location]||item.location}</span></td>
+      <td><span class="lbadge lb-${item.location}">${esc(labMap(getLocs())[item.location]||item.location)}</span></td>
       <td>${item.type==='consumable'?`
         <div class="qc">
           <button class="qbtn" onclick="qAdj('${item.id}',-1)">−</button>
@@ -1041,7 +1190,7 @@ function openCtxMenu(id, btnEl){
   menu.innerHTML=actions.map((a,i)=>
     '<button data-idx="'+i+'" style="display:block;width:100%;padding:11px 16px;background:transparent;'+
     'border:none;font-family:Familjen Grotesk,sans-serif;font-size:14px;color:'+(a.color||'var(--text-d)')+
-    ';text-align:left;cursor:pointer">'+a.label+'</button>'
+    ';text-align:left;cursor:pointer">'+esc(a.label)+'</button>'
   ).join('');
   menu.querySelectorAll('button').forEach(btn=>{
     btn.addEventListener('click',()=>{
@@ -1122,6 +1271,8 @@ function toggleCat(c){
 // ══════════════════════════════════════════════════
 function renderTrips(){
   const el=document.getElementById('tripsContent');
+  const statsBar=document.getElementById('statsBar');
+  if(statsBar) statsBar.style.display=activeTripId?'none':'';
   if(activeTripId){
     const trip=S.trips.find(t=>t.id===activeTripId);
     if(trip){ el.innerHTML=tripDetail(trip); return; }
@@ -1170,10 +1321,7 @@ function renderTrips(){
 
   function packProgress(t){
     if(!t.checklist||!t.checklist.length) return '';
-    const cl=t.checklist.filter(c=>{const it=S.items.find(i=>i.id===c.itemId);return it&&it.type!=='wishlist';});
-    const packed=cl.filter(c=>c.state==='packed').length;
-    const ready=cl.filter(c=>c.state==='ready').length;
-    const total=cl.length;
+    const {packed, ready, total}=checklistProgressTotals(t);
     const pct=total?Math.round((packed+ready)/total*100):0;
     return `<div style="margin-top:10px">
       <div style="display:flex;justify-content:space-between;margin-bottom:4px">
@@ -1195,8 +1343,8 @@ function renderTrips(){
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
         <span class="tstatus ts-${upcoming.status}">${STLAB[upcoming.status]||upcoming.status}</span>
         ${pc?`<div style="text-align:right">
-          <div style="font-family:'Familjen Grotesk',sans-serif;font-size:22px;font-weight:700;color:${pc.color};line-height:1${pc.pulse?';animation:pulse 2s infinite':''}">${pc.label}</div>
-          ${pc.sub?`<div style="font-size:11px;color:var(--text-m);margin-top:1px">${pc.sub}</div>`:''}
+          <div style="font-family:'Familjen Grotesk',sans-serif;font-size:22px;font-weight:700;color:${pc.color};line-height:1${pc.pulse?';animation:pulse 2s infinite':''}">${esc(pc.label)}</div>
+          ${pc.sub?`<div style="font-size:11px;color:var(--text-m);margin-top:1px">${esc(pc.sub)}</div>`:''}
         </div>`:''}
       </div>
       <div style="font-family:'Familjen Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;color:var(--text);line-height:1.15;margin-bottom:4px">${esc(upcoming.name)}</div>
@@ -1219,7 +1367,7 @@ function renderTrips(){
           <div class="tcard-meta">${t.date?fmtDate(t.date)+' · ':''}${t.nights}n · ${SELAB[t.season]||''}${t.dog?' · 🐕':''}</div>
         </div>
         <div class="tcard-r">
-          ${t.checklist?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${t.checklist.filter(c=>c.state==='packed').length}/${t.checklist.length}</span>`:''}
+          ${t.checklist?(()=>{ const p=checklistProgressTotals(t); return `<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${p.packed}/${p.total}</span>`; })():''}
           <span class="tstatus ts-${t.status}">${STLAB[t.status]||t.status}</span>
         </div>
       </div>`).join('')}
@@ -1236,24 +1384,9 @@ function renderTrips(){
 
 function tripDetail(trip){
   const hl=getHL(trip);
-  const cl=trip.checklist||[];
-  // Count only items that exist in S.items and aren't wishlist
-  const validCl=cl.filter(c=>{
-    const it=S.items.find(i=>i.id===c.itemId);
-    return it&&it.type!=='wishlist';
-  });
-  const ready=validCl.filter(c=>c.state==='ready').length;
-  const packed=validCl.filter(c=>c.state==='packed').length;
-  const total=validCl.length;
+  const {ready, packed, total}=checklistProgressTotals(trip);
   const pctR=total?Math.round((ready+packed)/total*100):0;
   const pctP=total?Math.round(packed/total*100):0;
-
-  const chips=[
-    `${trip.nights}n`, SELAB[trip.season], SITELAB[trip.site], DISTLAB[trip.distance],
-    trip.dog?'🐕 Dog':'No dog',
-    ...(trip.activities||[]).map(a=>`🏷 ${a}`),
-    trip.extraPeople>0?`+${trip.extraPeople} extra`:null
-  ].filter(Boolean);
 
   let body='';
   if(activeTripTab==='checklist')  body=checklistBody(trip,hl,ready,packed,total,pctR,pctP);
@@ -1293,7 +1426,7 @@ function tripDetail(trip){
   </div>`;
 
   // ── Human subtitle ──
-  const people=(S.people||[]).map(p=>p.name);
+  const people=(S.people||[]).map(p=>esc(p.name));
   const crewStr=people.length<=2?people.join(' & '):people.slice(0,-1).join(', ')+' & '+people[people.length-1];
   const subtitle=[
     trip.nights+' night'+(trip.nights!==1?'s':''),
@@ -1376,6 +1509,52 @@ function setTripStatusFromDropdown(tripId, status){
   save(); renderTrips();
 }
 
+/** Sub-rows shown under a parent on the packing checklist (same rules as ciRow). */
+function checklistVisibleSubsForRow(trip, item){
+  let subs=subItems(item.id).filter(s=>!isExcluded(s,trip));
+  if(checklistPersonFilter!=='all'){
+    subs=subs.filter(s=>{
+      const ownIds=s.personIds&&s.personIds.length?s.personIds:null;
+      return ownIds?ownIds.includes(checklistPersonFilter):(item.personIds||[]).includes(checklistPersonFilter);
+    });
+  }
+  if(checklistHidePacked){
+    const cl=trip.checklist||[];
+    subs=subs.filter(s=>{
+      const sci=cl.find(c=>c.itemId===s.id);
+      return !sci||sci.state!=='packed';
+    });
+  }
+  return subs;
+}
+
+/** Packed / ready / total lines for one parent row (container = children only). */
+function packingProgressContribution(trip, ci, item){
+  const cl=trip.checklist||[];
+  const vis=checklistVisibleSubsForRow(trip, item);
+  if(item.isContainer){
+    let packed=0, ready=0;
+    vis.forEach(sub=>{
+      const sci=cl.find(c=>c.itemId===sub.id);
+      const st=(sci&&sci.state)||'unchecked';
+      if(st==='packed') packed++;
+      else if(st==='ready') ready++;
+    });
+    return{packed, ready, total:vis.length};
+  }
+  let packed=ci.state==='packed'?1:0;
+  let ready=ci.state==='ready'?1:0;
+  let total=1;
+  vis.forEach(sub=>{
+    const sci=cl.find(c=>c.itemId===sub.id);
+    const st=(sci&&sci.state)||'unchecked';
+    total++;
+    if(st==='packed') packed++;
+    else if(st==='ready') ready++;
+  });
+  return{packed, ready, total};
+}
+
 function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
   const cl=trip.checklist||[];
   if(!cl.length) return `
@@ -1397,8 +1576,8 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
 
   const filterPanel=`
     <div style="display:flex;gap:7px;margin-bottom:10px;align-items:center">
-      <button class="btn btn-o btn-sm" onclick="toggleChecklistFilters()" style="${hasActiveFilter?'background:var(--caborder-color:var(--amber-d)':''}">
-        ⚙ Filter${hasActiveFilter?` · <span style="font-family:'DM Mono',monospace;font-size:9px">${activeFilterSummary}</span>`:''}
+      <button class="btn btn-o btn-sm" onclick="toggleChecklistFilters()" style="${hasActiveFilter?'background:var(--canvas-3);border-color:var(--amber-d)':''}">
+        ⚙ Filter${hasActiveFilter?` · <span style="font-family:'DM Mono',monospace;font-size:9px">${esc(activeFilterSummary)}</span>`:''}
       </button>
       ${hasActiveFilter?`<button class="btn btn-o btn-sm" style="color:var(--rust);border-color:var(--rust)" onclick="clearChecklistFilters()">✕ Clear</button>`:''}
     </div>
@@ -1407,12 +1586,12 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
       <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;align-items:center">
         <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em">Person:</span>
         <button class="fb ${checklistPersonFilter==='all'?'on':''}" onclick="setChecklistPersonFilter('all')">All</button>
-        ${S.people.map(p=>`<button class="fb" style="${checklistPersonFilter===p.id?`background:${p.color}22;color:${p.color};border-color:${p.color}66`:''}" onclick="setChecklistPersonFilter('${p.id}')">${p.emoji||'👤'} ${p.name}</button>`).join('')}
+        ${S.people.map(p=>`<button class="fb" style="${checklistPersonFilter===p.id?`background:${p.color}22;color:${p.color};border-color:${p.color}66`:''}" onclick="setChecklistPersonFilter('${p.id}')">${p.emoji||'👤'} ${esc(p.name)}</button>`).join('')}
       </div>`:''}
       <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;align-items:center">
         <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em">Location:</span>
         <button class="fb ${checklistLocFilter==='all'?'on':''}" onclick="setChecklistLocFilter('all')">All</button>
-        ${getStorageLocs().map(l=>`<button class="fb" style="${checklistLocFilter===l.id?'background:var(--canvas-3);color:var(--amber);border-color:var(--amber-d)':''}" onclick="setChecklistLocFilter('${l.id}')">${l.label}</button>`).join('')}
+        ${getStorageLocs().map(l=>`<button class="fb" style="${checklistLocFilter===l.id?'background:var(--canvas-3);color:var(--amber);border-color:var(--amber-d)':''}" onclick="setChecklistLocFilter('${l.id}')">${esc(l.label)}</button>`).join('')}
       </div>
       <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
         <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em">Sort:</span>
@@ -1474,7 +1653,7 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
   } else if(checklistSort==='type'){
     groupKey=item=>item.type;
     groupOrder=['always','house','consumable','seasonal'];
-    groupLabel=id=>({always:'Always packed',house:'Bring from home',consumable:'Needs restocking',seasonal:'Seasonal'}[id]||id);
+    groupLabel=id=>({always:'Always packed',house:'Bring from home',consumable:'Consumable',seasonal:'Seasonal'}[id]||id);
     groupIcon=()=>'';
   } else {
     groupKey=null; // no grouping for name / restock
@@ -1500,7 +1679,7 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
         ⚙ ${hasActiveSort?'Filters active':'Sort & filter'}
       </button>
       ${checklistHidePacked?`<button class="fb on" onclick="toggleHidePacked()" style="background:rgba(107,140,90,.15);color:var(--sage)">👁 Show packed</button>`:''}
-      ${checklistPersonFilter!=='all'?`<button class="fb on" onclick="setChecklistPersonFilter('all')" style="background:rgba(212,144,42,.1);color:var(--amber)">${(S.people||[]).find(p=>p.id===checklistPersonFilter)?.name||'Person'} ✕</button>`:''}
+      ${checklistPersonFilter!=='all'?`<button class="fb on" onclick="setChecklistPersonFilter('all')" style="background:rgba(212,144,42,.1);color:var(--amber)">${esc((S.people||[]).find(p=>p.id===checklistPersonFilter)?.name||'Person')} ✕</button>`:''}
       ${checklistLocFilter!=='all'?`<button class="fb on" onclick="setChecklistLocFilter('all')" style="background:rgba(212,144,42,.1);color:var(--amber)">${labMap(getStorageLocs())[checklistLocFilter]||checklistLocFilter} ✕</button>`:''}
     </div>
     <div id="clControls" style="display:none;background:var(--canvas-2);border-radius:12px;padding:12px 14px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.07)">
@@ -1513,12 +1692,12 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
       <div style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);margin-bottom:8px">Filter by person</div>
       <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px">
         <button class="fb ${checklistPersonFilter==='all'?'on':''}" onclick="setChecklistPersonFilter('all')">Everyone</button>
-        ${(S.people||[]).map(p=>`<button class="fb" style="${checklistPersonFilter===p.id?'background:'+p.color+'22;color:'+p.color+';border-color:'+p.color+'66':''}" onclick="setChecklistPersonFilter('${p.id}')">${p.emoji||'👤'} ${p.name}</button>`).join('')}
+        ${(S.people||[]).map(p=>`<button class="fb" style="${checklistPersonFilter===p.id?'background:'+p.color+'22;color:'+p.color+';border-color:'+p.color+'66':''}" onclick="setChecklistPersonFilter('${p.id}')">${p.emoji||'👤'} ${esc(p.name)}</button>`).join('')}
       </div>
       <div style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);margin-bottom:8px">Filter by location</div>
       <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px">
         <button class="fb ${checklistLocFilter==='all'?'on':''}" onclick="setChecklistLocFilter('all')">All</button>
-        ${getStorageLocs().map(l=>`<button class="fb ${checklistLocFilter===l.id?'on':''}" onclick="setChecklistLocFilter('${l.id}')">${l.label}</button>`).join('')}
+        ${getStorageLocs().map(l=>`<button class="fb ${checklistLocFilter===l.id?'on':''}" onclick="setChecklistLocFilter('${l.id}')">${esc(l.label)}</button>`).join('')}
       </div>
       <label class="ck" style="font-size:12px"><input type="checkbox" ${checklistHidePacked?'checked':''} onchange="toggleHidePacked()"> Hide packed items</label>
     </div>`;
@@ -1526,31 +1705,41 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
   const itemsHtml=groupKey
     ? (groupOrder||[]).filter(k=>groups[k]?.length).map(k=>{
         const groupId='clgrp-'+checklistSort+'-'+k;
-        const packedCount=groups[k].filter(x=>x.ci.state==='packed').length;
-        const subTotal=groups[k].reduce((s,{item})=>s+subItems(item.id).filter(si=>!isExcluded(si,trip)).length,0);
-        const totalCount=groups[k].length+subTotal;
-        const allDone=packedCount===groups[k].length&&groups[k].length>0;
-        // Auto-collapse completed groups
-        if(allDone && !collapsedLocs.has(groupId)) collapsedLocs.add(groupId);
+        let packedCount=0, readyCount=0, totalCount=0;
+        groups[k].forEach(x=>{
+          const st=packingProgressContribution(trip,x.ci,x.item);
+          packedCount+=st.packed;
+          readyCount+=st.ready;
+          totalCount+=st.total;
+        });
+        const doneCount=packedCount+readyCount;
+        const allPacked=totalCount>0&&packedCount===totalCount;
+        let revealInGroup=false;
+        if(_gsearchRevealChecklist&&_gsearchRevealChecklist.tripId===trip.id)
+          revealInGroup=groups[k].some(({item})=>item.id===_gsearchRevealChecklist.itemId);
+        if(revealInGroup){
+          collapsedLocs.delete(groupId);
+          expandedPackedChecklistGroups.add(groupId);
+        }
+        if(!allPacked) expandedPackedChecklistGroups.delete(groupId);
+        else if(allPacked&&!collapsedLocs.has(groupId)&&!revealInGroup&&!expandedPackedChecklistGroups.has(groupId))
+          collapsedLocs.add(groupId);
         const open=!collapsedLocs.has(groupId);
-        const pct=totalCount?Math.round(packedCount/totalCount*100):0;
+        const pct=totalCount?Math.round((doneCount/totalCount)*100):0;
+        const hdrHint=allPacked&&!open?'Tap to expand and edit items':'';
         return `<div class="cloc-group">
-          <div class="cloc-hdr" onclick="toggleLocGroup('${groupId}')">
+          <div class="cloc-hdr" onclick="toggleLocGroup('${groupId}')"${hdrHint?' title="'+hdrHint+'"':''}>
             <span class="cg-toggle ${open?'open':'closed'}" style="font-size:9px;color:var(--text-m)">▼</span>
-            <span class="cloc-title">${groupLabel(k)}</span>
-            ${allDone
-              ? `<span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;color:var(--sage);letter-spacing:.06em">✓ All packed</span>`
+            ${allPacked?`<span style="font-size:14px;line-height:1;color:var(--sage);flex-shrink:0" aria-hidden="true">✓</span>`:''}
+            <span class="cloc-title">${esc(groupLabel(k))}</span>
+            ${allPacked
+              ? `<span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;color:var(--sage);letter-spacing:.06em">All packed</span>`
               : `<div class="cloc-progress"><div class="cloc-progress-fill" style="width:${pct}%"></div></div>
-                 <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${packedCount}/${totalCount}</span>`}
+                 <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${doneCount}/${totalCount}</span>`}
           </div>
-          ${allDone && !open
-            ? `<div class="cloc-group-done">
-                <span style="font-size:16px">✅</span>
-                <span style="font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:700;color:var(--sage);letter-spacing:.06em;text-transform:uppercase">${groupLabel(k)} — all ${totalCount} item${totalCount!==1?'s':''} packed</span>
-               </div>`
-            : `<div id="clg-${groupId}" style="display:${open?'block':'none'}">
-                ${groups[k].map(({ci,item})=>ciRow(ci,item,trip,hl)).join('')}
-               </div>`}
+          <div id="clg-${groupId}" style="display:${open?'block':'none'}">
+            ${groups[k].map(({ci,item})=>ciRow(ci,item,trip,hl)).join('')}
+          </div>
         </div>`;
       }).join('')
     : filteredCIs.map(({ci,item})=>ciRow(ci,item,trip,hl)).join('');
@@ -1568,17 +1757,30 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
         <div class="pbar-packed" style="width:${pbarPackedW}%"></div>
         <div class="pbar-ready" style="width:${pbarReadyW}%"></div>
       </div>
-      <div class="cprog-hint">Tap once = ready · tap again = packed · tap again = clear</div>
+      <div class="cprog-hint">Find it and finish any pre-trip steps on the row first, then: tap = ready · tap again = packed · tap again = reset</div>
       ${pctP===100?`<div class="cprog-complete">🎉 Everything packed — you're good to go!</div>`:''}
       ${hlCount?`<div style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--amber);letter-spacing:.05em;margin-top:4px">▲ ${hlCount} items highlighted for this trip</div>`:''}
     </div>
     ${itemsHtml}
     <div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap">
       <button class="btn btn-o btn-sm" onclick="regenChecklist('${trip.id}')">↺ Rebuild list</button>
-      <button class="btn btn-o btn-sm" onclick="uncheckAll('${trip.id}')">Uncheck all</button>
+      <button class="btn btn-o btn-sm" onclick="uncheckAll('${trip.id}')" title="Clears every checklist row and all action reminder ticks for items on this list">Uncheck all</button>
       <button class="btn btn-p btn-sm" onclick="openQuickAddModal('${trip.id}')">+ Quick add item</button>
       <button class="btn btn-o btn-sm" onclick="printChecklist('${trip.id}','packing')">🖨 Print</button>
     </div>`;
+}
+
+/** Packing checklist: explicit state label + tap hint on every row */
+function checklistStateNudgeHtml(state){
+  const st=state==='packed'?'packed':state==='ready'?'ready':'unchecked';
+  const map={
+    unchecked:{label:'Still to pack',hint:''},
+    ready:{label:'Ready to pack',hint:'Tap again to mark packed'},
+    packed:{label:'Packed',hint:'Tap to unpack'}
+  };
+  const x=map[st];
+  if(!x.hint) return `<div class="ci-tap-nudge ci-tap-nudge--${st}"><span class="ci-tap-state">${x.label}</span></div>`;
+  return `<div class="ci-tap-nudge ci-tap-nudge--${st}"><span class="ci-tap-state">${x.label}</span><span class="ci-tap-sep"> — </span><span class="ci-tap-hint">${x.hint}</span></div>`;
 }
 
 function ciRow(ci,item,trip,hl){
@@ -1604,7 +1806,7 @@ function ciRow(ci,item,trip,hl){
     const subPacked=subCIs.filter(c=>c.state==='packed').length;
     const subReady=subCIs.filter(c=>c.state==='ready').length;
     return `
-      <div style="margin:0 0 4px;padding:8px 14px 6px;border-bottom:1px solid rgba(0,0,0,.06)">
+      <div style="margin:0 0 4px;padding:8px 14px 6px;border-bottom:1px solid rgba(0,0,0,.06)" id="clitem-${trip.id}-${item.id}">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
           <span style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text)">${esc(item.name)}</span>
           <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);flex-shrink:0">${subPacked}/${visibleSubs.length}</span>
@@ -1623,8 +1825,8 @@ function ciRow(ci,item,trip,hl){
   // Regular item
   const needsRestock=item.restock||item.qty===0;
   const packsRoute=item.packsInto&&item.packsInto!==item.location
-    ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${locMap[item.location]||item.location} → ${locMap[item.packsInto]||item.packsInto}</span>`
-    :`<span class="lbadge lb-${item.location}" style="font-size:8px;padding:1px 4px">${locMap[item.location]||item.location}</span>`;
+    ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${esc(locMap[item.location]||item.location)} → ${esc(locMap[item.packsInto]||item.packsInto)}</span>`
+    :`<span class="lbadge lb-${item.location}" style="font-size:8px;padding:1px 4px">${esc(locMap[item.location]||item.location)}</span>`;
 
   // Visible sub-items (respects person filter)
   const allSubs=subItems(item.id).filter(s=>!isExcluded(s,trip));
@@ -1633,9 +1835,12 @@ function ciRow(ci,item,trip,hl){
     return ownIds?ownIds.includes(checklistPersonFilter):(item.personIds||[]).includes(checklistPersonFilter);
   });
 
+  const stateCls=ci.state==='packed'?'packed':ci.state==='ready'?'ready':'unchecked';
+  const tapNudge=checklistStateNudgeHtml(ci.state);
+
   return `
-    <div class="ci ${ci.state||''} ${isHL?'hl':''}" style="position:relative" onclick="cycleState('${trip.id}','${ci.itemId}')">
-      <div class="ci-state ${ci.state||''}">${ci.state==='packed'||ci.state==='ready'?'✓':''}</div>
+    <div class="ci ${ci.state||''} ${isHL?'hl':''}" id="clitem-${trip.id}-${ci.itemId}" style="position:relative" onclick="cycleState('${trip.id}','${ci.itemId}')">
+      <div class="ci-state ${stateCls}">${ci.state==='packed'?'✓':''}</div>
       <div class="ci-body">
         <div class="ci-name ${ci.state||''}">${esc(item.name)}${needsRestock?` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--amber)">⚠ low stock</span>`:''}${(()=>{
           const prePending=(item.actions||[]).filter(a=>a.stage==='pre-trip');
@@ -1647,11 +1852,12 @@ function ciRow(ci,item,trip,hl){
               ? ` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--teal)">⚡ ${incomplete.length} to do</span>`
               : '';
         })()}</div>
+        ${tapNudge}
         <div class="ci-meta">
           ${qty>1?`<span class="ci-qty">×${qty}</span>`:''}
           ${packsRoute}
-          ${(S.people||[]).filter(p=>(item.personIds||[]).includes(p.id)).map(p=>`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55">${p.name}</span>`).join('')}
-          ${isHL?`<span class="hl-tag">▲ ${(hl[item.id]||[]).join(', ')}</span>`:''}
+          ${(S.people||[]).filter(p=>(item.personIds||[]).includes(p.id)).map(p=>`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55">${esc(p.name)}</span>`).join('')}
+          ${isHL?`<span class="hl-tag">▲ ${(hl[item.id]||[]).map(x=>esc(x)).join(', ')}</span>`:''}
           ${item.notes?`<span class="ci-note">${esc(item.notes)}</span>`:''}
         </div>
         ${inlineActions(item,trip,['pre-trip','during'])}
@@ -1676,16 +1882,19 @@ function ciSubRow(sci,sub,trip,hl,locMap){
   const isSubHL=!!hl[sub.id];
   const needsRestock=sub.restock||sub.qty===0;
   const packsRoute=sub.packsInto&&sub.packsInto!==sub.location
-    ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${locMap[sub.location]||sub.location} → ${locMap[sub.packsInto]||sub.packsInto}</span>`
-    :`<span class="lbadge lb-${sub.location}" style="font-size:8px;padding:1px 4px">${locMap[sub.location]||sub.location}</span>`;
-  return `<div class="ci sub-ci ${sci.state||''} ${isSubHL?'hl':''}" style="position:relative" onclick="cycleState('${trip.id}','${sci.itemId}')">
-    <div class="ci-state ${sci.state||''}">${sci.state==='packed'||sci.state==='ready'?'✓':''}</div>
+    ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${esc(locMap[sub.location]||sub.location)} → ${esc(locMap[sub.packsInto]||sub.packsInto)}</span>`
+    :`<span class="lbadge lb-${sub.location}" style="font-size:8px;padding:1px 4px">${esc(locMap[sub.location]||sub.location)}</span>`;
+  const subStateCls=sci.state==='packed'?'packed':sci.state==='ready'?'ready':'unchecked';
+  const subTapNudge=checklistStateNudgeHtml(sci.state);
+  return `<div class="ci sub-ci ${sci.state||''} ${isSubHL?'hl':''}" id="clitem-${trip.id}-${sci.itemId}" style="position:relative" onclick="cycleState('${trip.id}','${sci.itemId}')">
+    <div class="ci-state ${subStateCls}">${sci.state==='packed'?'✓':''}</div>
     <div class="ci-body">
       <div class="ci-name ${sci.state||''}">${esc(sub.name)}${needsRestock?` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--amber)">⚠ low stock</span>`:''}</div>
+      ${subTapNudge}
       <div class="ci-meta">
         ${packsRoute}
-        ${(S.people||[]).filter(p=>(sub.personIds||[]).includes(p.id)).map(p=>`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55">${p.name}</span>`).join('')}
-        ${isSubHL?`<span class="hl-tag">▲ ${(hl[sub.id]||[]).join(', ')}</span>`:''}
+        ${(S.people||[]).filter(p=>(sub.personIds||[]).includes(p.id)).map(p=>`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55">${esc(p.name)}</span>`).join('')}
+        ${isSubHL?`<span class="hl-tag">▲ ${(hl[sub.id]||[]).map(x=>esc(x)).join(', ')}</span>`:''}
         ${sub.notes?`<span class="ci-note">${esc(sub.notes)}</span>`:''}
       </div>
       ${inlineActions(sub,trip,['pre-trip','during'])}
@@ -1724,33 +1933,39 @@ function packAwayBody(trip){
     groups[k].push(item);
   });
 
-  const allTop=cl.map(c=>S.items.find(i=>i.id===c.itemId)).filter(i=>i&&!i.parentId&&i.type!=='wishlist');
-  const doneCount=allTop.filter(i=>paStates[i.id]==='packed').length;
-  const total=allTop.length;
+  const allKitOnChecklist=cl.map(c=>S.items.find(i=>i.id===c.itemId)).filter(i=>i&&i.type!=='wishlist');
+  const doneCount=allKitOnChecklist.filter(i=>paStates[i.id]==='packed').length;
+  const total=allKitOnChecklist.length;
   const pct=total?Math.round(doneCount/total*100):0;
 
   const itemsHtml=groupOrder.filter(k=>groups[k]?.length).map(k=>{
     const gid='pa2-grp-'+k;
     const open=!collapsedLocs.has(gid);
-    const locLabel=locMap[k]||k;
-    const doneInGroup=groups[k].filter(i=>paStates[i.id]==='packed').length;
+    const locLabel=esc(locMap[k]||k);
+    let grpDone=0, grpTot=0;
+    groups[k].forEach(item=>{
+      grpTot++; if(paStates[item.id]==='packed') grpDone++;
+      subItems(item.id).filter(s=>s.type!=='wishlist').forEach(s=>{
+        grpTot++; if(paStates[s.id]==='packed') grpDone++;
+      });
+    });
     return `<div class="cloc-group">
       <div class="cloc-hdr" onclick="toggleLocGroup('${gid}')">
         <span class="cg-toggle ${open?'open':'closed'}" style="font-size:9px">▼</span>
         <span class="cloc-title">📦 ${locLabel}</span>
-        <span class="cg-count">${doneInGroup}/${groups[k].length}</span>
+        <span class="cg-count">${grpDone}/${grpTot}</span>
       </div>
       <div id="clg-${gid}" style="display:${open?'block':'none'}">
         ${groups[k].map(item=>{
           const done=paStates[item.id]==='packed';
           const dest=item.location;
           const route=item.packsInto&&item.packsInto!==item.location
-            ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${locMap[item.packsInto]||item.packsInto} → ${locMap[dest]||dest}</span>`
-            :`<span class="lbadge lb-${dest}" style="font-size:8px;padding:1px 4px">→ ${locMap[dest]||dest}</span>`;
+            ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${esc(locMap[item.packsInto]||item.packsInto)} → ${esc(locMap[dest]||dest)}</span>`
+            :`<span class="lbadge lb-${dest}" style="font-size:8px;padding:1px 4px">→ ${esc(locMap[dest]||dest)}</span>`;
           const subs=subItems(item.id).filter(s=>s.type!=='wishlist');
           const subDone=subs.filter(s=>paStates[s.id]==='packed').length;
           return `<div class="ci ${done?'checked':''}" style="${done?'opacity:.4':''}" onclick="cyclePackAwayState('${trip.id}','${item.id}')">
-            <div class="ci-state ${done?'packed':''}">${done?'✓':''}</div>
+            <div class="ci-state ${done?'packed':'unchecked'}">${done?'✓':''}</div>
             <div class="ci-body">
               <div class="ci-name ${done?'checked-text':''}">${esc(item.name)}</div>
               <div class="ci-meta">
@@ -1763,10 +1978,10 @@ function packAwayBody(trip){
             const subDoneFlag=paStates[sub.id]==='packed';
             const subDest=sub.location;
             const subRoute=sub.packsInto&&sub.packsInto!==sub.location
-              ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${locMap[sub.packsInto]||sub.packsInto} → ${locMap[subDest]||subDest}</span>`
-              :`<span class="lbadge lb-${subDest}" style="font-size:8px;padding:1px 4px">→ ${locMap[subDest]||subDest}</span>`;
+              ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${esc(locMap[sub.packsInto]||sub.packsInto)} → ${esc(locMap[subDest]||subDest)}</span>`
+              :`<span class="lbadge lb-${subDest}" style="font-size:8px;padding:1px 4px">→ ${esc(locMap[subDest]||subDest)}</span>`;
             return `<div class="ci sub-ci ${subDoneFlag?'checked':''}" style="${subDoneFlag?'opacity:.4':''}" onclick="cyclePackAwayState('${trip.id}','${sub.id}')">
-              <div class="ci-state ${subDoneFlag?'packed':''}">${subDoneFlag?'✓':''}</div>
+              <div class="ci-state ${subDoneFlag?'packed':'unchecked'}">${subDoneFlag?'✓':''}</div>
               <div class="ci-body">
                 <div class="ci-name ${subDoneFlag?'checked-text':''}">${esc(sub.name)}</div>
                 <div class="ci-meta">${subRoute}</div>
@@ -1833,8 +2048,9 @@ function unpackAwayAll(tripId){
 }
 
 function postTripBody(trip){
-  // All checklist items (not just consumables)
-  const allItems=(trip.checklist||[]).map(ci=>S.items.find(i=>i.id===ci.itemId)).filter(i=>i&&!i.parentId&&i.type!=='wishlist');
+  // All checklist lines (parents + sub-items), excluding wish list
+  const cl=trip.checklist||[];
+  const allItems=cl.map(c=>S.items.find(i=>i.id===c.itemId)).filter(i=>i&&i.type!=='wishlist');
   const cons=allItems.filter(i=>i.type==='consumable');
   const nonCons=allItems.filter(i=>i.type!=='consumable');
   const damaged=trip.damaged||{};
@@ -1939,16 +2155,14 @@ function notesBody(trip){
       <div class="fg" style="margin-top:12px">
         <label class="fl">Activities</label>
         <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:5px">
-          ${trip.activities.map(a=>`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:11px;color:var(--teal);border:1px solid rgba(90,154,138,.3);background:rgba(90,154,138,.08);padding:2px 9px;border-radius:2px;text-transform:uppercase;letter-spacing:.08em">${a}</span>`).join('')}
+          ${trip.activities.map(a=>`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:11px;color:var(--teal);border:1px solid rgba(90,154,138,.3);background:rgba(90,154,138,.08);padding:2px 9px;border-radius:2px;text-transform:uppercase;letter-spacing:.08em">${esc(String(a))}</span>`).join('')}
         </div>
       </div>`:''}`;
 }
 
 // ── RESTOCK ──────────────────────────────────────
 function renderRestock(){
-  const items=S.items.filter(i=>!i.parentId&&!i.type==='wishlist'&&(i.restock||i.qty===0));
-  // fix: include all non-wishlist with restock flag
-  const ri=S.items.filter(i=>!i.parentId&&i.type!=='wishlist'&&(i.restock||i.qty===0));
+  const ri=itemsNeedingRestock();
   const el=document.getElementById('restockContent');
   if(!ri.length){ el.innerHTML=`<div class="empty" style="margin-top:0">✓ Nothing flagged for restock. All good.</div>`; return; }
   const byLoc={};
@@ -1958,7 +2172,7 @@ function renderRestock(){
     ${getStorageLocs().filter(l=>byLoc[l.id]).map(loc=>`
       <div class="cg">
         <div class="cg-hdr" style="cursor:default">
-          <span class="cg-title" style="color:var(--text-d)">📍 ${loc.label}</span>
+          <span class="cg-title" style="color:var(--text-d)">📍 ${esc(loc.label)}</span>
           <span class="cg-count">${byLoc[loc.id].length}</span>
         </div>
         <table class="itbl">
@@ -1995,7 +2209,7 @@ function renderWishlist(){
     ${getCats().filter(c=>g[c.id]?.length).map(c=>`
       <div class="cg cat-${c.id}">
         <div class="cg-hdr" style="cursor:default">
-          <span class="cg-title">${c.emoji||''} ${c.label}</span>
+          <span class="cg-title">${c.emoji||''} ${esc(c.label)}</span>
           <span class="cg-count">${g[c.id].length}</span>
         </div>
         <table class="itbl">
@@ -2003,7 +2217,7 @@ function renderWishlist(){
           <tbody>${g[c.id].map(item=>`
             <tr class="irow wishlist-item">
               <td><div class="iname"><span class="wishlist-badge">✦</span>${esc(item.name)}</div></td>
-              <td><span class="lbadge lb-${item.location}">${labMap(getLocs())[item.location]||item.location}</span></td>
+              <td><span class="lbadge lb-${item.location}">${esc(labMap(getLocs())[item.location]||item.location)}</span></td>
               <td><span class="inotes">${esc(item.notes||'—')}</span></td>
               <td><div class="iacts" style="opacity:1">
                 <button class="btn btn-g btn-sm" onclick="promoteWish('${item.id}')" title="Move to inventory">↑ Add to Inventory</button>
@@ -2022,8 +2236,7 @@ function renderWishlist(){
 function genChecklist(tripId){
   const trip=S.trips.find(t=>t.id===tripId);
   if(!trip) return;
-  // Only include top-level items — sub-items are rendered via their parent in ciRow
-  // and tracked as separate checklist entries for independent state
+  // Every non–wish list line on the trip (parents + sub-items); each has its own checklist row.
   const included=S.items.filter(i=>i.type!=='wishlist'&&!isExcluded(i,trip));
   // Preserve state for any items already in checklist (don't reset existing progress)
   const existing={};
@@ -2073,16 +2286,33 @@ function cycleState(tripId, itemId){
   save(); renderTrips();
 }
 
+/** Remove trip.actionStates keys for any item on this trip's checklist (shared key format itemId::actionId). */
+function clearActionTicksForChecklistItems(trip){
+  if(!trip?.checklist?.length) return;
+  if(!trip.actionStates) return;
+  const ids=new Set(trip.checklist.map(c=>c.itemId));
+  for(const k of Object.keys(trip.actionStates)){
+    const itemId=k.split('::')[0];
+    if(ids.has(itemId)) delete trip.actionStates[k];
+  }
+}
+
 function uncheckAll(tripId){
   const trip=S.trips.find(t=>t.id===tripId);
   if(!trip?.checklist) return;
   trip.checklist.forEach(c=>c.state='unchecked');
+  clearActionTicksForChecklistItems(trip);
   save(); renderTrips();
 }
 
 function toggleLocGroup(loc){
-  if(collapsedLocs.has(loc)) collapsedLocs.delete(loc);
-  else collapsedLocs.add(loc);
+  if(collapsedLocs.has(loc)){
+    collapsedLocs.delete(loc);
+    if(String(loc).indexOf('clgrp-')===0) expandedPackedChecklistGroups.add(loc);
+  }else{
+    collapsedLocs.add(loc);
+    if(String(loc).indexOf('clgrp-')===0) expandedPackedChecklistGroups.delete(loc);
+  }
   renderTrips();
 }
 
@@ -2136,6 +2366,7 @@ function ptAdj(id,delta){
 
 function openTrip(id){
   activeTripId=id;
+  expandedPackedChecklistGroups.clear();
   checklistLocFilter='all'; checklistPersonFilter='all';
   checklistSort='location'; checklistHidePacked=false; checklistFiltersOpen=false;
   // Open the right view for the current journey stage
@@ -2144,13 +2375,13 @@ function openTrip(id){
   activeTripTab=trip?(stageTab[trip.status]||'checklist'):'checklist';
   renderTrips();
 }
-function closeTrip(){ activeTripId=null; renderTrips(); }
+function closeTrip(){ activeTripId=null; expandedPackedChecklistGroups.clear(); renderTrips(); }
 function setTripTab(tab){ activeTripTab=tab; renderTrips(); }
 
 function delTrip(id){
   if(!confirm('Delete this trip?')) return;
   S.trips=S.trips.filter(t=>t.id!==id);
-  activeTripId=null; save(); renderTrips();
+  activeTripId=null; expandedPackedChecklistGroups.clear(); save(); renderTrips();
 }
 
 // ══════════════════════════════════════════════════
@@ -2176,7 +2407,7 @@ function packUpBody(trip){
   });
 
   // progress
-  const allItems=cl.map(c=>S.items.find(i=>i.id===c.itemId)).filter(i=>i&&!i.parentId&&i.type!=='wishlist');
+  const allItems=cl.map(c=>S.items.find(i=>i.id===c.itemId)).filter(i=>i&&i.type!=='wishlist');
   const doneCount=allItems.filter(i=>paStates[i.id]==='packed').length;
   const total=allItems.length;
   const pct=total?Math.round(doneCount/total*100):0;
@@ -2203,7 +2434,7 @@ function packUpBody(trip){
   } else if(checklistSort==='type'){
     groupKey=item=>item.type;
     groupOrder=['always','house','consumable','seasonal'];
-    groupLabel=id=>({always:'Always packed',house:'Bring from home',consumable:'Needs restocking',seasonal:'Seasonal'}[id]||id);
+    groupLabel=id=>({always:'Always packed',house:'Bring from home',consumable:'Consumable',seasonal:'Seasonal'}[id]||id);
     groupIcon=()=>'';
   } else if(checklistSort==='name'){
     groupKey=null;
@@ -2239,12 +2470,18 @@ function packUpBody(trip){
     ?(groupOrder||[]).filter(k=>groups[k]?.length).map(k=>{
         const gid='pa-grp-'+k;
         const open=!collapsedLocs.has(gid);
-        const doneInGroup=groups[k].filter(({item})=>paStates[item.id]==='packed').length;
+        let grpDone=0, grpTot=0;
+        groups[k].forEach(({item})=>{
+          grpTot++; if(paStates[item.id]==='packed') grpDone++;
+          subItems(item.id).filter(s=>s.type!=='wishlist').forEach(s=>{
+            grpTot++; if(paStates[s.id]==='packed') grpDone++;
+          });
+        });
         return `<div class="cloc-group">
           <div class="cloc-hdr" onclick="toggleLocGroup('${gid}')">
             <span class="cg-toggle ${open?'open':'closed'}" style="font-size:9px">▼</span>
-            <span class="cloc-title">${groupIcon(k)}${groupLabel(k)}</span>
-            <span class="cg-count">${doneInGroup}/${groups[k].length}</span>
+            <span class="cloc-title">${groupIcon(k)}${esc(groupLabel(k))}</span>
+            <span class="cg-count">${grpDone}/${grpTot}</span>
           </div>
           <div id="clg-${gid}" style="display:${open?'block':'none'}">
             ${groups[k].map(({ci,item})=>packUpRow(item,trip,locMap)).join('')}
@@ -2299,8 +2536,8 @@ function packUpRow(item, trip, locMap){
   const done=state==='packed';
   const currentLoc=item.packsInto||item.location;
   const route=item.packsInto&&item.packsInto!==item.location
-    ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${locMap[currentLoc]||currentLoc} → ${locMap[item.location]||item.location}</span>`
-    :`<span class="lbadge lb-${item.location}" style="font-size:8px;padding:1px 4px">${locMap[item.location]||item.location}</span>`;
+    ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${esc(locMap[currentLoc]||currentLoc)} → ${esc(locMap[item.location]||item.location)}</span>`
+    :`<span class="lbadge lb-${item.location}" style="font-size:8px;padding:1px 4px">${esc(locMap[item.location]||item.location)}</span>`;
 
   // sub-items
   const subs=subItems(item.id).filter(s=>s.type!=='wishlist');
@@ -2308,7 +2545,7 @@ function packUpRow(item, trip, locMap){
 
   return `
     <div class="ci ${done?'checked':''}" style="position:relative;${done?'opacity:.4':''}" onclick="cyclePackUpState('${trip.id}','${item.id}')">
-      <div class="ci-state ${done?'packed':''}">${done?'✓':''}</div>
+      <div class="ci-state ${done?'packed':'unchecked'}">${done?'✓':''}</div>
       <div class="ci-body">
         <div class="ci-name ${done?'checked-text':''}">${esc(item.name)}</div>
         <div class="ci-meta">
@@ -2320,10 +2557,10 @@ function packUpRow(item, trip, locMap){
     ${subs.map(sub=>{
       const subDone=(paStates[sub.id]||'unchecked')==='packed';
       const subRoute=sub.packsInto&&sub.packsInto!==sub.location
-        ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${locMap[sub.packsInto]||sub.packsInto} → ${locMap[sub.location]||sub.location}</span>`
-        :`<span class="lbadge lb-${sub.location}" style="font-size:8px;padding:1px 4px">${locMap[sub.location]||sub.location}</span>`;
+        ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${esc(locMap[sub.packsInto]||sub.packsInto)} → ${esc(locMap[sub.location]||sub.location)}</span>`
+        :`<span class="lbadge lb-${sub.location}" style="font-size:8px;padding:1px 4px">${esc(locMap[sub.location]||sub.location)}</span>`;
       return `<div class="ci sub-ci ${subDone?'checked':''}" style="${subDone?'opacity:.4':''}" onclick="cyclePackUpState('${trip.id}','${sub.id}')">
-        <div class="ci-state ${subDone?'packed':''}">${subDone?'✓':''}</div>
+        <div class="ci-state ${subDone?'packed':'unchecked'}">${subDone?'✓':''}</div>
         <div class="ci-body">
           <div class="ci-name ${subDone?'checked-text':''}">${esc(sub.name)}</div>
           <div class="ci-meta">${subRoute}</div>
@@ -2458,29 +2695,29 @@ function populateDynamicDropdowns(selectedCat, selectedLoc, selectedActivity){
   // Category select
   const catSel=document.getElementById('iCat');
   if(catSel){
-    catSel.innerHTML=getCats().map(c=>`<option value="${c.id}"${c.id===selectedCat?' selected':''}>${c.emoji||''} ${c.label}</option>`).join('');
+    catSel.innerHTML=getCats().map(c=>`<option value="${esc(c.id)}"${c.id===selectedCat?' selected':''}>${c.emoji||''} ${esc(c.label)}</option>`).join('');
   }
   // Location select — storage locations only
   const locSel=document.getElementById('iLoc');
   if(locSel){
-    locSel.innerHTML=getStorageLocs().map(l=>`<option value="${l.id}"${l.id===selectedLoc?' selected':''}>${l.label}</option>`).join('');
+    locSel.innerHTML=getStorageLocs().map(l=>`<option value="${esc(l.id)}"${l.id===selectedLoc?' selected':''}>${esc(l.label)}</option>`).join('');
   }
   // Activity select
   const actSel=document.getElementById('iActivity');
   if(actSel){
-    actSel.innerHTML=`<option value="">None</option>`+getActs().map(a=>`<option value="${a.id}"${a.id===selectedActivity?' selected':''}>${a.emoji||''} ${a.label}</option>`).join('');
+    actSel.innerHTML=`<option value="">None</option>`+getActs().map(a=>`<option value="${esc(a.id)}"${a.id===selectedActivity?' selected':''}>${a.emoji||''} ${esc(a.label)}</option>`).join('');
   }
   // Packs into select — pack-into locations only
   const pitSel=document.getElementById('iPacksInto');
   if(pitSel){
     const curPit=pitSel.value;
-    pitSel.innerHTML=`<option value="">— Same as storage location —</option>`+getPackIntoLocs().map(l=>`<option value="${l.id}"${l.id===curPit?' selected':''}>${l.label}</option>`).join('');
+    pitSel.innerHTML=`<option value="">— Same as storage location —</option>`+getPackIntoLocs().map(l=>`<option value="${esc(l.id)}"${l.id===curPit?' selected':''}>${esc(l.label)}</option>`).join('');
   }
   // Inventory location filter — storage locations only
   const locF=document.getElementById('locF');
   if(locF){
     const cur=locF.value;
-    locF.innerHTML=`<option value="all">All Locations</option>`+getStorageLocs().map(l=>`<option value="${l.id}"${l.id===cur?' selected':''}>${l.label}</option>`).join('');
+    locF.innerHTML=`<option value="all">All Locations</option>`+getStorageLocs().map(l=>`<option value="${esc(l.id)}"${l.id===cur?' selected':''}>${esc(l.label)}</option>`).join('');
   }
 }
 
@@ -2489,7 +2726,7 @@ function populateTripActGrid(selectedActivities){
   if(!grid) return;
   grid.innerHTML=getActs().map(a=>{
     const checked=(selectedActivities||[]).includes(a.id);
-    return `<label class="atog${checked?' on':''}"><input type="checkbox" value="${a.id}"${checked?' checked':''}> ${a.emoji||''} ${a.label}</label>`;
+    return `<label class="atog${checked?' on':''}"><input type="checkbox" value="${esc(a.id)}"${checked?' checked':''}> ${a.emoji||''} ${esc(a.label)}</label>`;
   }).join('');
   grid.querySelectorAll('.atog').forEach(el=>{
     el.querySelector('input').addEventListener('change',()=>el.classList.toggle('on',el.querySelector('input').checked));
@@ -2516,7 +2753,7 @@ function populatePersonButtons(selectedIds){
     const sel=(selectedIds||[]).includes(p.id);
     return `<button type="button" data-pid="${p.id}" class="fb${sel?' on':''}"
       style="border-radius:10px;${sel?`background:${p.color}33;color:${p.color};border-color:${p.color}66`:''}"
-      onclick="togglePersonBtn(this,'${p.color}')">${p.emoji||'👤'} ${p.name}</button>`;
+      onclick="togglePersonBtn(this,'${p.color}')">${p.emoji||'👤'} ${esc(p.name)}</button>`;
   }).join('');
 }
 
@@ -2701,7 +2938,210 @@ function saveTrip(){
 // ══════════════════════════════════════════════════
 function openM(id){ document.getElementById(id).classList.add('on'); }
 function closeM(id){ document.getElementById(id).classList.remove('on'); }
-function closeMOver(e,id){ if(e.target===document.getElementById(id)) closeM(id); }
+function closeMOver(e,id){
+  if(e.target!==document.getElementById(id)) return;
+  if(id==='searchModal') closeSearchDrawer();
+  else closeM(id);
+}
+
+// ══════════════════════════════════════════════════
+// GLOBAL SEARCH (command palette)
+// ══════════════════════════════════════════════════
+let _gsearchDebounce=null;
+let _gsearchRevealChecklist=null;
+let _gsearchRestoreFocus=null;
+const GSEARCH_MAX=12;
+
+function _gsearchToken(q){ return String(q||'').trim().toLowerCase(); }
+
+function _gsearchHaystackItem(item){
+  const parts=[item.name||'', item.notes||''];
+  try{
+    const cat=getCats().find(c=>c.id===item.category);
+    if(cat) parts.push(cat.label);
+    const loc=getLocs().find(l=>l.id===item.location);
+    if(loc) parts.push(loc.label);
+    if(item.type) parts.push(TLAB[item.type]||item.type);
+    (item.actions||[]).forEach(a=>{ if(a&&a.label) parts.push(a.label); });
+  }catch(e){}
+  return parts.join('\n').toLowerCase();
+}
+
+function _gsearchHaystackTrip(trip){
+  const parts=[trip.name||'', trip.notes||''];
+  if(trip.date) parts.push(trip.date, fmtDate(trip.date));
+  if(trip.site) parts.push(SITELAB[trip.site]||'');
+  if(trip.distance) parts.push(DISTLAB[trip.distance]||'');
+  if(trip.season) parts.push(SELAB[trip.season]||'');
+  return parts.join('\n').toLowerCase();
+}
+
+function searchAll(q){
+  const t=_gsearchToken(q);
+  if(!t) return {items:[],trips:[],people:[],onTrips:[],itemsTotal:0,tripsTotal:0,peopleTotal:0,onTripsTotal:0};
+  const items=[], trips=[], people=[], onTrips=[];
+  const onTripSeen=new Set();
+  (S.items||[]).forEach(item=>{ if(_gsearchHaystackItem(item).includes(t)) items.push(item); });
+  (S.trips||[]).forEach(trip=>{ if(_gsearchHaystackTrip(trip).includes(t)) trips.push(trip); });
+  (S.people||[]).forEach(p=>{
+    const h=(p.name||'')+(p.emoji||'');
+    if(h.toLowerCase().includes(t)) people.push(p);
+  });
+  (S.trips||[]).forEach(trip=>{
+    (trip.checklist||[]).forEach(ci=>{
+      const item=S.items.find(i=>i.id===ci.itemId);
+      if(!item||item.type==='wishlist') return;
+      if(isExcluded(item,trip)) return;
+      if(!_gsearchHaystackItem(item).includes(t)) return;
+      const key=trip.id+'::'+item.id;
+      if(onTripSeen.has(key)) return;
+      onTripSeen.add(key);
+      onTrips.push({trip,item});
+    });
+  });
+  return{
+    items:items.slice(0,GSEARCH_MAX),
+    trips:trips.slice(0,GSEARCH_MAX),
+    people:people.slice(0,GSEARCH_MAX),
+    onTrips:onTrips.slice(0,GSEARCH_MAX),
+    itemsTotal:items.length,
+    tripsTotal:trips.length,
+    peopleTotal:people.length,
+    onTripsTotal:onTrips.length
+  };
+}
+
+function renderGlobalSearchResults(q){
+  const out=document.getElementById('globalSearchResults');
+  if(!out) return;
+  const t=_gsearchToken(q);
+  if(!t){
+    out.innerHTML='<div class="gsearch-empty">Type to search kit, trips, trip packing lists, and people.</div>';
+    return;
+  }
+  const r=searchAll(q);
+  if(!r.items.length&&!r.trips.length&&!r.onTrips.length&&!r.people.length){
+    out.innerHTML='<div class="gsearch-empty">No matches. Try a different word.</div>';
+    return;
+  }
+  let html='';
+  if(r.items.length){
+    html+='<div class="gsearch-sec">Kit</div>';
+    r.items.forEach(item=>{
+      let meta='';
+      try{
+        const catLab=getCats().find(c=>c.id===item.category);
+        meta=[TLAB[item.type]||item.type, catLab?catLab.label:null].filter(Boolean).join(' · ');
+      }catch(e){ meta=TLAB[item.type]||''; }
+      html+=`<button type="button" class="gsearch-result-btn" onclick="navigateGlobalSearchItem('${item.id}')"><span class="gsearch-result-main"><span class="gsearch-result-name">${esc(item.name)}</span><span class="gsearch-result-meta">${esc(meta)}</span></span><span class="gsearch-result-arrow">→</span></button>`;
+    });
+    if(r.itemsTotal>GSEARCH_MAX) html+=`<div class="gsearch-hint" style="margin-top:4px;margin-bottom:0">${r.itemsTotal-GSEARCH_MAX} more in kit — narrow your search.</div>`;
+  }
+  if(r.trips.length){
+    html+='<div class="gsearch-sec">Trips</div>';
+    r.trips.forEach(trip=>{
+      const meta=[trip.date?fmtDate(trip.date):'', STLAB[trip.status]||trip.status].filter(Boolean).join(' · ');
+      html+=`<button type="button" class="gsearch-result-btn" onclick="navigateGlobalSearchTrip('${trip.id}')"><span class="gsearch-result-main"><span class="gsearch-result-name">${esc(trip.name)}</span><span class="gsearch-result-meta">${esc(meta)}</span></span><span class="gsearch-result-arrow">→</span></button>`;
+    });
+    if(r.tripsTotal>GSEARCH_MAX) html+=`<div class="gsearch-hint" style="margin-top:4px;margin-bottom:0">${r.tripsTotal-GSEARCH_MAX} more trips — narrow your search.</div>`;
+  }
+  if(r.onTrips.length){
+    html+='<div class="gsearch-sec">On trips</div>';
+    r.onTrips.forEach(({trip,item})=>{
+      html+=`<button type="button" class="gsearch-result-btn" onclick="navigateGlobalSearchTripChecklist('${trip.id}','${item.id}')"><span class="gsearch-result-main"><span class="gsearch-result-name">${esc(trip.name)}</span><span class="gsearch-result-meta">${esc(item.name)}</span></span><span class="gsearch-result-arrow">→</span></button>`;
+    });
+    if(r.onTripsTotal>GSEARCH_MAX) html+=`<div class="gsearch-hint" style="margin-top:4px;margin-bottom:0">${r.onTripsTotal-GSEARCH_MAX} more on-trip matches — narrow your search.</div>`;
+  }
+  if(r.people.length){
+    html+='<div class="gsearch-sec">People</div>';
+    r.people.forEach(p=>{
+      const meta=p.emoji?String(p.emoji)+' Person':'Person';
+      html+=`<button type="button" class="gsearch-result-btn" onclick="navigateGlobalSearchPerson('${p.id}')"><span class="gsearch-result-main"><span class="gsearch-result-name">${esc(p.name)}</span><span class="gsearch-result-meta">${esc(meta)}</span></span><span class="gsearch-result-arrow">→</span></button>`;
+    });
+    if(r.peopleTotal>GSEARCH_MAX) html+=`<div class="gsearch-hint" style="margin-top:4px;margin-bottom:0">${r.peopleTotal-GSEARCH_MAX} more people — narrow your search.</div>`;
+  }
+  out.innerHTML=html;
+}
+
+function scheduleGlobalSearchInput(){
+  clearTimeout(_gsearchDebounce);
+  _gsearchDebounce=setTimeout(()=>{
+    const inp=document.getElementById('globalSrch');
+    renderGlobalSearchResults(inp?inp.value:'');
+  },160);
+}
+
+function closeSearchDrawer(){
+  const was=document.getElementById('searchModal')?.classList.contains('on');
+  closeM('searchModal');
+  if(was){
+    const r=_gsearchRestoreFocus;
+    _gsearchRestoreFocus=null;
+    if(r&&typeof r.focus==='function'){ try{ r.focus(); }catch(x){} }
+  }
+}
+
+function openSearchPanel(){
+  clearTimeout(_gsearchDebounce);
+  const sm=document.getElementById('searchModal');
+  if(sm&&!sm.classList.contains('on')) _gsearchRestoreFocus=document.activeElement;
+  openM('searchModal');
+  const inp=document.getElementById('globalSrch');
+  if(inp){ inp.value=''; }
+  renderGlobalSearchResults('');
+  setTimeout(()=>{ const g=document.getElementById('globalSrch'); if(g) g.focus(); },30);
+}
+
+function navigateGlobalSearchItem(itemId){
+  const item=S.items.find(i=>i.id===itemId);
+  closeSearchDrawer();
+  const btn=document.getElementById('navKitBtn');
+  setTab('inv', btn);
+  const srch=document.getElementById('srch');
+  if(srch&&item) srch.value=item.name||'';
+  renderInv();
+}
+
+function navigateGlobalSearchTrip(tripId){
+  closeSearchDrawer();
+  const btn=document.getElementById('tripsBtn');
+  setTab('trips', btn);
+  openTrip(tripId);
+}
+
+function navigateGlobalSearchTripChecklist(tripId,itemId){
+  if(!S.trips.some(x=>x.id===tripId)) return;
+  closeSearchDrawer();
+  checklistLocFilter='all';
+  checklistPersonFilter='all';
+  checklistSort='location';
+  checklistHidePacked=false;
+  checklistFiltersOpen=false;
+  activeTripId=tripId;
+  activeTripTab='checklist';
+  _gsearchRevealChecklist={tripId,itemId};
+  const btn=document.getElementById('tripsBtn');
+  setTab('trips', btn);
+  setTimeout(()=>{
+    _gsearchRevealChecklist=null;
+    const el=document.getElementById('clitem-'+tripId+'-'+itemId);
+    if(el){
+      el.scrollIntoView({behavior:'smooth',block:'center'});
+      el.classList.add('hl');
+      setTimeout(()=>{ try{ el.classList.remove('hl'); }catch(e){} },2200);
+    }
+  },140);
+}
+
+function navigateGlobalSearchPerson(personId){
+  closeSearchDrawer();
+  const btn=document.getElementById('navSettingsBtn');
+  setTab('settings', btn);
+  setTimeout(()=>{
+    const el=document.getElementById('settingsPeopleSection');
+    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  },120);
+}
 
 // ══════════════════════════════════════════════════
 // NAV
@@ -2784,7 +3224,7 @@ function actionsBody(trip){
     return `<div class="cloc-group">
       <div class="cloc-hdr" onclick="toggleLocGroup('${stageGroupId}')">
         <span class="cg-toggle ${open?'open':'closed'}" style="font-size:9px">▼</span>
-        <span class="cloc-title" style="color:${sl.color}">${sl.icon} ${sl.label}</span>
+        <span class="cloc-title" style="color:${sl.color}">${sl.icon} ${esc(sl.label)}</span>
         <span class="cg-count">${doneCount}/${items.length}</span>
       </div>
       <div id="clg-${stageGroupId}" style="display:${open?'block':'none'}">
@@ -2819,7 +3259,7 @@ function flagDamaged(tripId, itemId, type){
           id:uid(), parentId:null, name:item.name+' (replacement)',
           type:'wishlist', category:item.category, location:item.location,
           qty:1, season:'all', activity:'', restock:false, isContainer:false,
-          packsInto:null, notes:'Flagged for replacement after '+esc(trip.name),
+          packsInto:null, notes:'Flagged for replacement after '+(trip.name||''),
           personIds:[], actions:[]
         });
       }
@@ -2870,7 +3310,7 @@ function renderItemActionsList(){
   if(!actions.length){ el.innerHTML=''; return; }
   el.innerHTML=actions.map((a,i)=>`
     <div style="display:flex;align-items:center;gap:7px;padding:5px 7px;background:var(--canvas-3);border:1px solid var(--border);border-radius:2px;margin-bottom:4px">
-      <span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:${STAGE_LABELS[a.stage]?.color||'var(--text-m)'};text-transform:uppercase;letter-spacing:.06em;min-width:90px">${STAGE_LABELS[a.stage]?.icon||''} ${STAGE_LABELS[a.stage]?.label||a.stage}</span>
+      <span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:${STAGE_LABELS[a.stage]?.color||'var(--text-m)'};text-transform:uppercase;letter-spacing:.06em;min-width:90px">${STAGE_LABELS[a.stage]?.icon||''} ${esc(STAGE_LABELS[a.stage]?.label||a.stage||'')}</span>
       <span style="flex:1;font-size:12px">${esc(a.label)}</span>
       <button class="btn-ic" style="color:var(--rust);font-size:13px" onclick="removeItemAction(${i})">✕</button>
     </div>`).join('');
@@ -2896,7 +3336,7 @@ function removeItemAction(idx){
 // SHOPPING LIST
 // ══════════════════════════════════════════════════
 function openShoppingList(){
-  const items=S.items.filter(i=>i.restock||i.qty===0).sort((a,b)=>{
+  const items=itemsNeedingRestock().sort((a,b)=>{
     // Group by category
     const ci=getCats().findIndex(c=>c.id===a.category);
     const cj=getCats().findIndex(c=>c.id===b.category);
@@ -2910,7 +3350,7 @@ function openShoppingList(){
 
   const rows=getCats().filter(c=>byCat[c.id]).map(c=>`
     <div style="margin-bottom:18px">
-      <div style="font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid rgba(0,0,0,.07)">${c.emoji||''} ${c.label}</div>
+      <div style="font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid rgba(0,0,0,.07)">${c.emoji||''} ${esc(c.label)}</div>
       ${byCat[c.id].map(item=>`
         <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(0,0,0,.05)" id="slrow-${item.id}">
           <div style="flex:1">
@@ -2964,6 +3404,7 @@ function markRestocked(itemId){
   const item=S.items.find(i=>i.id===itemId);
   if(!item) return;
   item.restock=false;
+  if(Number(item.qty)===0) item.qty=Math.max(1,Number(item.qty)||0);
   save();
   const row=document.getElementById('slrow-'+itemId);
   if(row){ row.style.transition='all .3s'; row.style.opacity='0'; row.style.transform='translateX(20px)'; setTimeout(()=>{ row.remove(); renderStats(); },300); }
@@ -2972,7 +3413,10 @@ function markRestocked(itemId){
 
 function markAllRestocked(){
   if(!confirm('Mark everything as restocked?')) return;
-  S.items.forEach(i=>{ if(i.restock||i.qty===0) i.restock=false; });
+  itemsNeedingRestock().forEach(i=>{
+    i.restock=false;
+    if(Number(i.qty)===0) i.qty=Math.max(1,Number(i.qty)||0);
+  });
   save();
   closeShoppingList();
   renderStats();
@@ -2980,7 +3424,7 @@ function markAllRestocked(){
 }
 
 async function shareShoppingList(){
-  const items=S.items.filter(i=>i.restock||i.qty===0).sort((a,b)=>a.name.localeCompare(b.name));
+  const items=itemsNeedingRestock().sort((a,b)=>a.name.localeCompare(b.name));
   if(!items.length){ showToast('Nothing to share'); return; }
   const text='NeverLeft — Shopping List\n\n'+items.map(i=>('• '+i.name+(i.qty>1?' ×'+i.qty:''))).join('\n');
   if(navigator.share){
@@ -3008,10 +3452,10 @@ function openQuickAddModal(tripId){
         <div class="fg"><label class="fl">Item Name *</label><input class="fi" id="qaName" placeholder="e.g. Insect repellent" autofocus></div>
         <div style="display:flex;gap:9px">
           <div class="fg" style="flex:1"><label class="fl">Category</label>
-            <select class="fs" id="qaCat">${getCats().map(c=>`<option value="${c.id}">${c.emoji||''} ${c.label}</option>`).join('')}</select>
+            <select class="fs" id="qaCat">${getCats().map(c=>`<option value="${esc(c.id)}">${c.emoji||''} ${esc(c.label)}</option>`).join('')}</select>
           </div>
           <div class="fg" style="flex:1"><label class="fl">Location</label>
-            <select class="fs" id="qaLoc">${getLocs().map(l=>`<option value="${l.id}">${l.label}</option>`).join('')}</select>
+            <select class="fs" id="qaLoc">${getLocs().map(l=>`<option value="${esc(l.id)}">${esc(l.label)}</option>`).join('')}</select>
           </div>
         </div>
         <div style="display:flex;gap:9px">
@@ -3347,16 +3791,55 @@ function snoozeBackup(){
   closeBackupModal();
 }
 
+function validateBackupImport(data){
+  const MAX_ITEMS=20000,MAX_TRIPS=3000,MAX_PEOPLE=300;
+  if(data===null||(typeof data!=='object'&&!Array.isArray(data)))
+    return{ok:false,msg:'Invalid backup: file must contain JSON (an object or array).'};
+  if(Array.isArray(data)){
+    if(data.length>MAX_ITEMS) return{ok:false,msg:'Invalid backup: too many entries in array ('+data.length+').'};
+    if(data.some(x=>!x||typeof x!=='object'||Array.isArray(x)))
+      return{ok:false,msg:'Invalid backup: each entry must be a plain object.'};
+    return{ok:true,legacyArray:true};
+  }
+  const ctor=data.constructor&&data.constructor.name;
+  if(ctor&&ctor!=='Object') return{ok:false,msg:'Invalid backup: unsupported JSON object type.'};
+  if(!Array.isArray(data.items))
+    return{ok:false,msg:'Invalid backup: missing "items" array. Choose a file exported from NeverLeft.'};
+  if(data.items.length>MAX_ITEMS)
+    return{ok:false,msg:'Invalid backup: too many items ('+data.items.length+').'};
+  if(data.version!=null&&(typeof data.version!=='number'||data.version<1||data.version>3))
+    return{ok:false,msg:'Unsupported backup version. Export a new file from NeverLeft.'};
+  if(data.trips!=null&&!Array.isArray(data.trips))
+    return{ok:false,msg:'Invalid backup: "trips" must be an array if present.'};
+  if(Array.isArray(data.trips)&&data.trips.length>MAX_TRIPS)
+    return{ok:false,msg:'Invalid backup: too many trips.'};
+  if(data.people!=null&&!Array.isArray(data.people))
+    return{ok:false,msg:'Invalid backup: "people" must be an array if present.'};
+  if(Array.isArray(data.people)&&data.people.length>MAX_PEOPLE)
+    return{ok:false,msg:'Invalid backup: too many people.'};
+  if(data.settings!=null&&(typeof data.settings!=='object'||Array.isArray(data.settings)))
+    return{ok:false,msg:'Invalid backup: "settings" must be an object if present.'};
+  if(data.settings){
+    for(const k of ['categories','locations','activities']){
+      const v=data.settings[k];
+      if(v!=null&&!Array.isArray(v)) return{ok:false,msg:'Invalid backup: settings.'+k+' must be an array.'};
+    }
+  }
+  return{ok:true,legacyArray:false};
+}
+
 function importData(event){
   const file=event.target.files[0]; if(!file) return;
   const reader=new FileReader();
   reader.onload=e=>{
     try{
       const data=JSON.parse(e.target.result);
-      // Accept any object with an items array — v1, v2, v3
-      const rawItems=Array.isArray(data.items)?data.items:Array.isArray(data)?data:null;
+      const chk=validateBackupImport(data);
+      if(!chk.ok){ alert(chk.msg); return; }
+      const rawItems=chk.legacyArray?data:data.items;
+      const tripCount=chk.legacyArray?0:(data.trips||[]).length;
       if(!rawItems){ alert('This file doesn\'t look like a NeverLeft backup. Please choose a file you exported from NeverLeft.'); return; }
-      if(!confirm('Restore '+rawItems.length+' items and '+(data.trips||[]).length+' trips from this backup? This will replace all your current data.')) return;
+      if(!confirm('Restore '+rawItems.length+' items and '+tripCount+' trips from this backup? This will replace all your current data.')) return;
 
       // Migrate items — fill in all fields with safe defaults
       const items=rawItems.map(i=>({
@@ -3378,7 +3861,7 @@ function importData(event){
       }));
 
       // Migrate trips
-      const trips=(data.trips||[]).map(t=>({
+      const trips=(chk.legacyArray?[]:(data.trips||[])).map(t=>({
         id:          t.id||uid(),
         name:        t.name||'Unnamed trip',
         status:      t.status||'planning',
@@ -3403,7 +3886,7 @@ function importData(event){
       }));
 
       // Migrate people
-      const people=(data.people||[]).map(p=>({
+      const people=(chk.legacyArray?[]:(data.people||[])).map(p=>({
         id:    p.id||uid(),
         name:  p.name||'Unknown',
         emoji: p.emoji||'👤',
@@ -3412,7 +3895,7 @@ function importData(event){
 
       // Migrate settings — keep custom lists if present, fall back to defaults
       const ds=defaultSettings();
-      const settings={
+      const settings=chk.legacyArray?ds:{
         categories: (data.settings&&data.settings.categories&&data.settings.categories.length)
           ? data.settings.categories : ds.categories,
         locations:  (data.settings&&data.settings.locations&&data.settings.locations.length)
@@ -3642,7 +4125,7 @@ function printChecklist(tripId, mode){
   } else if(checklistSort==='type'){
     groupKey=item=>item.type;
     groupOrder=['always','house','consumable','seasonal'];
-    groupLabel=id=>({always:'Always packed',house:'Bring from home',consumable:'Needs restocking',seasonal:'Seasonal'}[id]||id);
+    groupLabel=id=>({always:'Always packed',house:'Bring from home',consumable:'Consumable',seasonal:'Seasonal'}[id]||id);
     groupIcon='';
   } else {
     groupKey=null;
@@ -3681,12 +4164,18 @@ function printChecklist(tripId, mode){
     ...(trip.activities||[])
   ].filter(Boolean);
   const today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  const totalItems=filteredCIs.length;
+  let printPacked=0, printReady=0, printLineTotal=0;
+  filteredCIs.forEach(x=>{
+    const st=packingProgressContribution(trip,x.ci,x.item);
+    printPacked+=st.packed;
+    printReady+=st.ready;
+    printLineTotal+=st.total;
+  });
 
   // ── Build item HTML ──
   function personBadges(item){
     return (S.people||[]).filter(p=>(item.personIds||[]).includes(p.id))
-      .map(p=>`<span style="display:inline-block;font-family:sans-serif;font-size:6.5pt;font-weight:700;padding:0.5pt 4pt;border-radius:8pt;background:${p.color}22;color:${p.color};border:0.5pt solid ${p.color}55;margin-left:3pt">${p.name}</span>`)
+      .map(p=>`<span style="display:inline-block;font-family:sans-serif;font-size:6.5pt;font-weight:700;padding:0.5pt 4pt;border-radius:8pt;background:${p.color}22;color:${p.color};border:0.5pt solid ${p.color}55;margin-left:3pt">${esc(p.name)}</span>`)
       .join('');
   }
 
@@ -3741,7 +4230,7 @@ function printChecklist(tripId, mode){
     return (groupOrder||[]).filter(k=>groupMap[k]?.length).map(k=>`
       <div class="section">
         <div class="section-header">
-          <span class="section-title">${groupLabel(k)}</span>
+          <span class="section-title">${esc(groupLabel(k))}</span>
           <span class="section-count">${groupMap[k].length} item${groupMap[k].length!==1?'s':''}</span>
         </div>
         ${buildItems(groupMap[k])}
@@ -3845,10 +4334,10 @@ function printChecklist(tripId, mode){
 </div>
 
 <div class="statsbar">
-  <div class="stat-item"><strong>${totalItems}</strong> Items</div>
+  <div class="stat-item"><strong>${printLineTotal}</strong> Items</div>
   <div class="stat-item"><strong>${(groupKey?(groupOrder||[]).filter(k=>groupMap[k]?.length):['all']).length}</strong> Groups</div>
-  <div class="stat-item"><strong>${filteredCIs.filter(x=>x.ci.state==='packed').length}</strong> Packed</div>
-  <div class="stat-item"><strong>${filteredCIs.filter(x=>x.ci.state==='ready').length}</strong> Ready</div>
+  <div class="stat-item"><strong>${printPacked}</strong> Packed</div>
+  <div class="stat-item"><strong>${printReady}</strong> Ready</div>
   ${filterLabels.length?`<div class="filter-note">Filtered: ${filterLabels.join(' \u00B7 ')}</div>`:''}
 </div>
 
@@ -3887,8 +4376,26 @@ function renderAll(){
 }
 
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){ closeM('itemModal'); closeM('tripModal'); }
+  if(e.key==='Escape'){ closeM('itemModal'); closeM('tripModal'); closeSearchDrawer(); }
   if(e.key==='Enter'&&e.target.id==='iActionLabel'){ e.preventDefault(); addItemAction(); }
+  const sm=document.getElementById('searchModal');
+  if(sm?.classList.contains('on')&&e.key==='Tab'){
+    const panel=sm.querySelector('.gsearch-panel');
+    if(!panel||!panel.contains(e.target)) return;
+    const sel='button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled])';
+    const focusables=[...panel.querySelectorAll(sel)].filter(el=>el.offsetParent!==null);
+    if(focusables.length<2) return;
+    const first=focusables[0], last=focusables[focusables.length-1];
+    if(e.shiftKey&&document.activeElement===first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey&&document.activeElement===last){ e.preventDefault(); first.focus(); }
+  }
+  if(e.ctrlKey&&(e.key==='k'||e.key==='K')){
+    if(document.getElementById('itemModal')?.classList.contains('on')) return;
+    if(document.getElementById('tripModal')?.classList.contains('on')) return;
+    e.preventDefault();
+    if(sm?.classList.contains('on')){ document.getElementById('globalSrch')?.focus(); return; }
+    openSearchPanel();
+  }
 });
 
 document.querySelectorAll('.atog').forEach(el=>{
@@ -4062,6 +4569,18 @@ function demoData(){
 
 // ── LIGHT MODE ──
 // ── RESPONSIVE HEADER OVERFLOW ──
+const HDR_OVERFLOW_ACTIONS={
+  openShoppingList:()=>openShoppingList(),
+  openSearchPanel:()=>openSearchPanel(),
+  exportData:()=>exportData(),
+  toggleLightMode:()=>toggleLightMode()
+};
+function runHdrOverflowAction(raw){
+  const k=String(raw||'').replace(/\(\)\s*$/,'').trim();
+  const fn=HDR_OVERFLOW_ACTIONS[k];
+  if(typeof fn==='function') fn();
+}
+
 function initHeaderOverflow(){
   const hdr=document.querySelector('.hdr');
   const hdrR=document.getElementById('hdrR');
@@ -4112,13 +4631,18 @@ function initHeaderOverflow(){
         btn.style.display='none';
         // Add to overflow menu
         const label=btn.dataset.label||btn.textContent.trim();
-        const action=btn.dataset.action||btn.getAttribute('onclick')||'';
+        let actionKey=(btn.dataset.action||'').replace(/\(\)\s*$/,'').trim();
+        if(!actionKey){
+          const oc=(btn.getAttribute('onclick')||'').trim();
+          const m=/^([a-zA-Z_$][\w$]*)\s*\(\s*\)\s*;?\s*$/.exec(oc);
+          if(m) actionKey=m[1];
+        }
         // Skip shop list if it was already hidden
         if(btn.id==='shopListBtn'&&btn.getAttribute('data-was-hidden')==='true') return;
         const item=document.createElement('button');
         item.className='umenu-item';
         item.textContent=label;
-        item.onclick=()=>{ closeUtilMenu(); try{ eval(action); }catch(e){} };
+        item.onclick=()=>{ closeUtilMenu(); runHdrOverflowAction(actionKey); };
         overflowItems.appendChild(item);
       });
       // If backup is also in overflow, hide the static one to avoid duplicate
