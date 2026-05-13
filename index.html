@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>NeverLeft</title>
 <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Newsreader:ital,wght@0,400;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -50,35 +50,69 @@ body.light {
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Familjen Grotesk',sans-serif;background:var(--canvas);color:var(--text);min-height:100vh;font-size:14px;-webkit-font-smoothing:antialiased}
+body{font-family:'Familjen Grotesk',sans-serif;background:var(--canvas);color:var(--text);min-height:100vh;font-size:14px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
 /* ── TRANSITIONS ── */
-.page{max-width:var(--page-max);margin:0 auto;padding:20px clamp(16px,3vw,36px) 100px;animation:fadeUp .25s ease both}
+.page{max-width:var(--page-max);margin:0 auto;padding:20px clamp(16px,3vw,36px) 100px;animation:fadeUp .25s ease both;width:100%;min-width:0;box-sizing:border-box}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
 
 /* ── HEADER ── */
-.hdr{background:var(--canvas-2);border-bottom:1px solid var(--border);padding:0 max(16px,calc((100% - var(--page-max)) / 2));display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:200;gap:16px}
-.logo{font-family:'Familjen Grotesk',sans-serif;font-weight:600;font-size:17px;letter-spacing:-.012em;color:var(--text);display:flex;align-items:center;gap:10px;flex-shrink:0}
-.logo-mark{width:26px;height:26px;border-radius:7px;background:var(--sage);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-family:'Newsreader',serif;font-style:italic;font-weight:500;flex-shrink:0}
+.hdr{background:var(--canvas-2);border-bottom:1px solid var(--border);display:flex;justify-content:center;align-items:center;width:100%;min-height:56px;position:sticky;top:0;z-index:200;box-sizing:border-box;min-width:0}
+.hdr-inner{
+  width:100%;
+  max-width:var(--page-max);
+  margin:0 auto;
+  box-sizing:border-box;
+  padding:0 clamp(10px,3vw,36px);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  min-width:0;
+  min-height:56px;
+  position:relative;
+  overflow:visible;
+}
+.logo{font-family:'Familjen Grotesk',sans-serif;font-weight:600;font-size:17px;letter-spacing:-.012em;color:var(--text);display:flex;align-items:center;gap:10px;flex-shrink:0;min-width:0}
+.logo-text{display:none;white-space:nowrap}
+@media(min-width:860px){
+  .logo-text{display:inline}
+}
 .logo sup{font-size:9px;color:var(--text-m);font-weight:400;letter-spacing:0;margin-left:2px;vertical-align:middle}
-.hdr-nav{display:flex;gap:2px;align-items:center;flex:1;justify-content:center}
-.hnav{font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:400;padding:6px 14px;border:none;background:transparent;color:var(--text-m);cursor:pointer;border-radius:6px;transition:all .18s;white-space:nowrap}
+.hdr-nav{display:flex;gap:2px;align-items:center;flex:1;justify-content:center;min-width:0}
+.hnav{font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:400;padding:6px 14px 5px;border:none;background:transparent;color:var(--text-m);cursor:pointer;border-radius:6px;transition:color .18s,background .18s,border-color .18s;white-space:nowrap;flex-shrink:0;border-bottom:2px solid transparent}
 .hnav:hover{color:var(--text);background:var(--canvas-3)}
-.hnav.on{background:rgba(74,107,58,.1);color:var(--sage);font-weight:500}
-.hdr-r{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.hnav.on{background:transparent;color:var(--amber-d);font-weight:600;border-bottom-color:var(--amber)}
+.hdr-r{display:flex;gap:6px;align-items:center;flex-shrink:0;min-width:0}
+.hdr-desktop-cluster{display:none;align-items:center;gap:6px;flex-shrink:0}
+.hdr-mobile-cluster{display:flex;align-items:center;flex-shrink:0}
+.hdr-dd-menu{position:absolute;right:0;top:calc(100% + 6px);background:var(--canvas-2);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.12);min-width:200px;max-width:min(280px,92vw);z-index:300}
+.hdr-menu-sep{border-top:1px solid var(--border);margin:0}
+.hdr-menu-subhd{font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);padding:8px 16px 4px}
+@media(min-width:768px){
+  .hdr-desktop-cluster{display:flex!important}
+  .hdr-mobile-cluster{display:none!important}
+}
 .hdr-btn{background:var(--canvas-2);border:1px solid var(--border);cursor:pointer;height:32px;padding:0 12px;border-radius:6px;display:flex;align-items:center;font-size:13px;font-family:'Familjen Grotesk',sans-serif;color:var(--text-d);transition:all .15s;white-space:nowrap}
 .hdr-btn:hover{border-color:var(--border-l);color:var(--text)}
+.hdr-btn-ic{padding:0;width:34px;min-width:34px;justify-content:center;border:none;background:transparent}
+.hdr-btn-ic:hover{background:var(--canvas-3);color:var(--text)}
+.hdr-btn-ic svg{width:18px;height:18px;display:block;flex-shrink:0}
+.hdr-btn-plain{border:none;background:transparent}
+.hdr-btn-plain:hover{background:var(--canvas-3);color:var(--text)}
 .hdr-util{padding:0 10px;font-size:13px}
-.umenu-item{display:block;width:100%;padding:10px 16px;background:transparent;border:none;font-family:'Familjen Grotesk',sans-serif;font-size:13px;color:var(--text-d);text-align:left;cursor:pointer;transition:background .12s}
+.umenu-item{display:flex;align-items:center;gap:10px;width:100%;padding:10px 16px;background:transparent;border:none;font-family:'Familjen Grotesk',sans-serif;font-size:13px;color:var(--text-d);text-align:left;cursor:pointer;transition:background .12s;box-sizing:border-box}
 .umenu-item:hover{background:var(--canvas-3);color:var(--text)}
+.umenu-ic{display:inline-flex;align-items:center;justify-content:center;width:22px;flex-shrink:0;color:var(--text-m)}
+.umenu-ic svg{width:18px;height:18px;display:block}
 
 /* ── MAIN TABS ── */
 .mtabs{display:none} /* tabs moved into header */
 .mtabs::-webkit-scrollbar{display:none}
-.mtab{font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:400;letter-spacing:0;text-transform:none;padding:8px 14px;border:none;background:transparent;color:var(--text-m);cursor:pointer;border-radius:6px;transition:all .18s;white-space:nowrap;flex-shrink:0;margin:6px 0}
+.mtab{font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:400;letter-spacing:0;text-transform:none;padding:8px 14px 7px;border:none;background:transparent;color:var(--text-m);cursor:pointer;border-radius:6px;transition:color .18s,background .18s,border-color .18s;white-space:nowrap;flex-shrink:0;margin:6px 0;border-bottom:2px solid transparent}
 .mtab:hover{color:var(--text);background:var(--canvas-3)}
-.mtab.on{background:var(--sage-l,rgba(107,140,90,.12));color:var(--sage);font-weight:500}
+.mtab.on{background:transparent;color:var(--amber-d);font-weight:600;border-bottom-color:var(--amber)}
 .tbadge{display:inline-flex;align-items:center;justify-content:center;background:var(--rust);color:#fff;font-size:9px;font-weight:700;width:15px;height:15px;border-radius:50%;margin-left:5px;vertical-align:middle}
 
 /* ── BUTTONS ── */
@@ -112,10 +146,12 @@ body{font-family:'Familjen Grotesk',sans-serif;background:var(--canvas);color:va
 
 /* ── CONTROLS ── */
 .ctrls{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
-.sw{flex:1;min-width:160px;position:relative}
+.sw{flex:1;min-width:0;position:relative}
 .sw input{width:100%;background:var(--canvas-2);border:none;box-shadow:0 1px 4px rgba(0,0,0,.08);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:8px 10px 8px 32px;border-radius:8px;outline:none;transition:box-shadow .18s}
 .sw input:focus{box-shadow:0 0 0 3px rgba(212,144,42,.18),0 1px 4px rgba(0,0,0,.08)}
-.sw input::placeholder{color:var(--text-m)}
+@media(min-width:720px){
+  .sw{min-width:160px}
+}
 .sw-ic{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-m);font-size:13px;pointer-events:none}
 .fgrp{display:flex;gap:4px;flex-wrap:wrap}
 .fb{font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:500;letter-spacing:0;text-transform:none;padding:5px 10px;border-radius:6px;border:1.5px solid var(--border);background:transparent;color:var(--text-m);cursor:pointer;transition:all .18s}
@@ -296,11 +332,14 @@ select:focus{border-color:var(--amber-d)}
 .tback:hover{color:var(--amber)}
 .tchips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
 .tchip{font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:500;letter-spacing:0;text-transform:none;padding:3px 10px;background:var(--canvas-3);border-radius:10px;color:var(--text-m)}
-.ttitle{font-family:'Familjen Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;line-height:1.15}
-.tsubtitle{font-size:14px;color:var(--text-m);margin-bottom:12px;line-height:1.4}
+.ttitle{font-family:'Familjen Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;line-height:1.15;overflow-wrap:anywhere;word-break:break-word}
+.tsubtitle{font-size:14px;color:var(--text-m);margin-bottom:12px;line-height:1.4;overflow-wrap:anywhere}
+.trips-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+.trip-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+.trip-toolbar .tback{margin-bottom:0}
 
 /* ── STAGE STEPPER ── */
-.stepper{display:flex;align-items:center;margin-bottom:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:4px 0 6px}
+.stepper{display:flex;align-items:center;margin-bottom:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:4px 0 6px;width:100%;max-width:100%;min-width:0;box-sizing:border-box;touch-action:pan-x}
 .stepper::-webkit-scrollbar{display:none}
 .step{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;cursor:pointer;transition:opacity .15s;min-width:54px}
 .step:hover{opacity:.75}
@@ -310,7 +349,7 @@ select:focus{border-color:var(--amber-d)}
 .step-label{font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:500;color:var(--text-m);text-align:center;line-height:1.25;max-width:54px}
 .step.current .step-label{color:var(--amber);font-weight:700}
 .step.done .step-label{color:var(--sage)}
-.step-line{flex:1;height:2px;background:var(--border);min-width:8px}
+.step-line{flex:1 1 0;min-width:6px;height:2px;background:var(--border);align-self:center}
 .step-line.done{background:var(--sage)}
 
 .ttabs{display:flex;gap:0;background:var(--canvas-3);border:none;border-radius:10px;padding:3px;margin-bottom:16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
@@ -543,11 +582,22 @@ select:focus{border-color:var(--amber-d)}
 }
 
 @media(max-width:640px){
-  .hdr{padding:0 11px}
-  .page{padding:12px 11px 80px}
+  .hdr-inner{padding-left:max(8px, env(safe-area-inset-left, 0px));padding-right:max(8px, env(safe-area-inset-right, 0px));gap:6px}
+  .hnav{padding:6px 9px;font-size:12px}
+  .hdr-btn{padding:0 9px;font-size:12px;height:30px}
+  .hdr-btn-ic{width:30px;min-width:30px}
+  .hdr-btn.hdr-primary{font-size:11px;padding:0 8px;letter-spacing:0}
+  .logo{font-size:15px;gap:6px}
+  .page{padding:12px 10px 80px}
   .stats{grid-template-columns:repeat(2,1fr);gap:7px}
   .stat{padding:10px 12px}
   .stat-v{font-size:22px}
+  .stepper{padding:6px 0 8px;margin-bottom:16px}
+  .step{min-width:44px}
+  .step-dot{width:26px;height:26px;font-size:11px}
+  .step-label{font-size:9px;max-width:58px;line-height:1.2}
+  .ttitle{font-size:19px}
+  .ttab{padding:7px 9px;font-size:11px}
   .cfg-grid{grid-template-columns:1fr}
   .itbl th:nth-child(3),.itbl td:nth-child(3){display:none}
   .logo sup{display:none}
@@ -555,12 +605,53 @@ select:focus{border-color:var(--amber-d)}
   .qbtn{min-width:40px;min-height:40px;font-size:16px;line-height:1}
   .btn-ic{min-width:40px;min-height:40px;padding:8px 10px!important;font-size:16px!important}
 }
+@media(max-width:767px){
+  #navSettingsBtn{display:none!important}
+  /* Logo | flexible nav strip | ··· — middle column grows so tabs are not clipped */
+  .hdr-inner{
+    display:grid;
+    grid-template-columns:auto minmax(0,1fr) auto;
+    align-items:center;
+    gap:0;
+    column-gap:10px;
+  }
+  .logo{
+    grid-column:1;
+    justify-self:start;
+    align-self:center;
+    min-width:0;
+  }
+  .hdr-nav{
+    grid-column:2;
+    justify-self:stretch;
+    width:100%;
+    min-width:0;
+    flex:initial;
+    justify-content:flex-start;
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    overscroll-behavior-x:contain;
+  }
+  .hdr-nav::-webkit-scrollbar{display:none}
+  .hdr-r{
+    grid-column:3;
+    justify-self:end;
+    align-self:center;
+    min-width:0;
+  }
+}
+@media(max-width:360px){
+  .hnav{padding:6px 7px;font-size:11px}
+}
 </style>
 </head>
 <body>
 
 <header class="hdr">
-  <div class="logo"><div class="logo-mark">N</div>NeverLeft</div>
+  <div class="hdr-inner">
+  <div class="logo"><div class="logo-mark">N</div><span class="logo-text">NeverLeft</span></div>
   <div class="hdr-nav" id="hdrNav">
     <button class="hnav on" onclick="setTab('trips',this)" id="tripsBtn">Trips</button>
     <button class="hnav" id="navKitBtn" onclick="setTab('inv',this)">Kit</button>
@@ -568,23 +659,38 @@ select:focus{border-color:var(--amber-d)}
     <button class="hnav" id="navSettingsBtn" onclick="setTab('settings',this)">Settings</button>
   </div>
   <div class="hdr-r" id="hdrR">
-    <button class="hdr-btn hdr-collapsible" data-priority="4" data-label="Shopping list" data-action="openShoppingList" id="shopListBtn" onclick="openShoppingList()" style="display:none">Shopping list</button>
-    <button class="hdr-btn hdr-collapsible" data-priority="3" data-label="Search" data-action="openSearchPanel" onclick="openSearchPanel()">Search</button>
-    <button class="hdr-btn hdr-collapsible" data-priority="2" data-label="Light" data-action="toggleLightMode" id="lightBtn" onclick="toggleLightMode()">Light</button>
-    <button class="hdr-btn hdr-collapsible" data-priority="1" data-label="Backup" data-action="exportData">Backup</button>
-    <div style="position:relative;flex-shrink:0" id="overflowWrap">
-      <button class="hdr-btn" onclick="toggleUtilMenu()" id="utilMenuBtn" style="display:none;padding:0 12px;letter-spacing:.05em">···</button>
-      <div id="utilMenu" style="display:none;position:absolute;right:0;top:calc(100% + 6px);background:var(--canvas-2);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.12);min-width:170px;z-index:300">
-        <div id="overflowItems"></div>
-        <div style="border-top:1px solid var(--border)">
-          <button onclick="closeUtilMenu();exportData()" class="umenu-item" id="staticBackup">Download backup</button>
-          <button onclick="closeUtilMenu();shareBackup()" class="umenu-item">Share backup</button>
-          <label class="umenu-item" for="fileImport" style="cursor:pointer">Restore backup</label>
+    <div class="hdr-desktop-cluster" id="hdrDesktopCluster">
+      <button type="button" class="hdr-btn hdr-btn-plain" id="shopListBtn" onclick="openShoppingList()" style="display:none">Shopping list</button>
+      <button type="button" class="hdr-btn hdr-btn-ic" id="searchHdrBtn" onclick="openSearchPanel()" aria-label="Search" title="Search"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></button>
+      <button type="button" class="hdr-btn hdr-btn-ic" id="lightBtn" onclick="toggleLightMode()" aria-label="Switch theme"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <div class="hdr-dd" style="position:relative">
+        <button type="button" class="hdr-btn hdr-btn-plain" id="backupMenuBtn" onclick="toggleBackupMenu(event)" aria-expanded="false" aria-haspopup="true">Backup ▾</button>
+        <div id="backupMenu" class="hdr-dd-menu" role="menu" style="display:none">
+          <button type="button" class="umenu-item" onclick="closeBackupMenu();exportData()">Download backup</button>
+          <button type="button" class="umenu-item" onclick="closeBackupMenu();shareBackup()">Share backup</button>
+          <label class="umenu-item" for="fileImport" style="cursor:pointer;margin:0" onclick="closeBackupMenu()">Restore backup</label>
         </div>
+      </div>
+      <button type="button" class="hdr-btn hdr-primary" id="addItemBtn" onclick="openAddItemModal()" style="background:var(--text);color:var(--canvas);border:none;font-weight:500;flex-shrink:0">+ Add item</button>
+    </div>
+    <div class="hdr-mobile-cluster" id="hdrMobileCluster" style="position:relative">
+      <button type="button" class="hdr-btn" id="utilMenuBtn" onclick="toggleUtilMenu(event)" aria-label="Menu" aria-expanded="false" aria-haspopup="true" style="padding:0 12px;letter-spacing:.05em">···</button>
+      <div id="utilMenu" class="hdr-dd-menu" style="display:none">
+        <button type="button" class="umenu-item" onclick="closeUtilMenu();setTab('settings', document.getElementById('navSettingsBtn'))">Settings</button>
+        <button type="button" class="umenu-item" id="mobileShopListBtn" onclick="closeUtilMenu();openShoppingList()" style="display:none">Shopping list</button>
+        <button type="button" class="umenu-item" onclick="closeUtilMenu();openSearchPanel()"><span class="umenu-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span><span>Search</span></button>
+        <button type="button" class="umenu-item" id="mobileLightBtn" onclick="closeUtilMenu();toggleLightMode()"><span class="umenu-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span><span>Dark mode</span></button>
+        <div class="hdr-menu-sep" role="presentation"></div>
+        <div class="hdr-menu-subhd">Backup</div>
+        <button type="button" class="umenu-item" onclick="closeUtilMenu();exportData()">Download backup</button>
+        <button type="button" class="umenu-item" onclick="closeUtilMenu();shareBackup()">Share backup</button>
+        <label class="umenu-item" for="fileImport" style="cursor:pointer;margin:0" onclick="closeUtilMenu()">Restore backup</label>
+        <div class="hdr-menu-sep" role="presentation"></div>
+        <button type="button" class="umenu-item" onclick="closeUtilMenu();openAddItemModal()" style="font-weight:600">+ Add item</button>
       </div>
     </div>
     <input type="file" id="fileImport" accept=".json" style="position:absolute;width:1px;height:1px;opacity:0.01;top:0;left:0">
-    <button class="hdr-btn hdr-primary" id="addItemBtn" onclick="openAddItemModal()" style="background:var(--text);color:var(--canvas);border:none;font-weight:500;flex-shrink:0">+ Add item</button>
+  </div>
   </div>
 </header>
 
@@ -593,7 +699,7 @@ select:focus{border-color:var(--amber-d)}
 <!-- INVENTORY -->
 <div id="demoBanner" style="display:none;background:linear-gradient(135deg,#d4902a,#9a6820);color:#1a1a14;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
   <span style="font-size:16px">🏕</span>
-  <div style="flex:1;min-width:200px">
+  <div style="flex:1;min-width:0">
     <div style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Demo Mode</div>
     <div style="font-size:11px;opacity:.85">This is sample data so you can explore all features. Clear it when you're ready to add your own kit.</div>
   </div>
@@ -1050,6 +1156,11 @@ function renderStats(){
     slb.style.display=rc>0?'':'none';
     slb.innerHTML=rc>0?`🛒 <span style="font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:700">${rc}</span>`:'';
   }
+  const msb=document.getElementById('mobileShopListBtn');
+  if(msb&&slb){
+    msb.style.display=slb.style.display;
+    msb.innerHTML=slb.innerHTML||'Shopping list';
+  }
   // Show restock count on filter toggle button in My Kit
   const ftb=document.getElementById('filterToggleBtn');
   if(ftb){ ftb.querySelectorAll('.tbadge').forEach(b=>b.remove()); if(rc>0) ftb.innerHTML=`⚙ Filter <span class="tbadge" style="background:var(--rust)">${rc}</span>`; else ftb.textContent='⚙ Filter'; }
@@ -1397,7 +1508,7 @@ function renderTrips(){
     </div>`:'';
 
   el.innerHTML=`
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <div class="trips-heading">
       <span style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-d)">My Trips</span>
       <button class="btn btn-p btn-sm" onclick="openNewTripModal()">+ New Trip</button>
     </div>
@@ -1458,7 +1569,7 @@ function tripDetail(trip){
   ].filter(Boolean).join(' · ');
 
   return `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <div class="trip-toolbar">
       <button class="tback" onclick="closeTrip()">← My Trips</button>
       <div style="display:flex;gap:5px">
         <button class="btn btn-o btn-sm" onclick="openEditTripModal('${trip.id}')">Edit</button>
@@ -4590,145 +4701,137 @@ function demoData(){
   return {items, people, trips, settings:defaultSettings()};
 }
 
-// ── LIGHT MODE ──
-// ── RESPONSIVE HEADER OVERFLOW ──
-const HDR_OVERFLOW_ACTIONS={
-  openShoppingList:()=>openShoppingList(),
-  openSearchPanel:()=>openSearchPanel(),
-  exportData:()=>exportData(),
-  toggleLightMode:()=>toggleLightMode()
-};
-function runHdrOverflowAction(raw){
-  const k=String(raw||'').replace(/\(\)\s*$/,'').trim();
-  const fn=HDR_OVERFLOW_ACTIONS[k];
-  if(typeof fn==='function') fn();
-}
+// ── LIGHT MODE & HEADER MENUS ──
+const HDR_IC_MOON='<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const HDR_IC_SUN='<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>';
 
-function initHeaderOverflow(){
-  const hdr=document.querySelector('.hdr');
-  const hdrR=document.getElementById('hdrR');
-  const overflowBtn=document.getElementById('utilMenuBtn');
-  const overflowItems=document.getElementById('overflowItems');
-  const staticBackup=document.getElementById('staticBackup');
-  if(!hdr||!hdrR||!overflowBtn) return;
-
-  // All collapsible buttons sorted by priority descending (highest collapses first)
-  const collapsible=[...hdrR.querySelectorAll('.hdr-collapsible')]
-    .sort((a,b)=>parseInt(b.dataset.priority||0)-parseInt(a.dataset.priority||0));
-
-  function measureAndCollapse(){
-    // First show everything to measure natural width
-    collapsible.forEach(b=>{ if(b.id!=='shopListBtn') b.style.display='flex'; });
-    overflowBtn.style.display='none';
-    overflowItems.innerHTML='';
-    // Show static backup only when overflow is visible — hide it now
-    if(staticBackup) staticBackup.style.display='block';
-
-    const hdrWidth=hdr.offsetWidth;
-    const logoWidth=document.querySelector('.logo')?.offsetWidth||140;
-    const navWidth=document.getElementById('hdrNav')?.offsetWidth||0;
-    const primaryWidth=document.getElementById('addItemBtn')?.offsetWidth||100;
-    const gaps=48; // padding + gaps
-    let available=hdrWidth-logoWidth-navWidth-primaryWidth-gaps;
-
-    // Measure each collapsible button
-    const measured=collapsible
-      .filter(b=>b.id!=='shopListBtn'||b.style.display!=='none')
-      .map(b=>({ el:b, w:b.offsetWidth+6 }));
-
-    // Greedily collapse from highest priority down
-    let used=measured.reduce((s,x)=>s+x.w, 0);
-    const toHide=[];
-    for(const {el,w} of measured){
-      if(used>available){
-        toHide.push(el);
-        used-=w;
-      }
-    }
-
-    if(toHide.length){
-      // Need overflow btn (add its width)
-      overflowBtn.style.display='flex';
-      if(staticBackup) staticBackup.style.display='block';
-      toHide.forEach(btn=>{
-        btn.style.display='none';
-        // Add to overflow menu
-        const label=btn.dataset.label||btn.textContent.trim();
-        let actionKey=(btn.dataset.action||'').replace(/\(\)\s*$/,'').trim();
-        if(!actionKey){
-          const oc=(btn.getAttribute('onclick')||'').trim();
-          const m=/^([a-zA-Z_$][\w$]*)\s*\(\s*\)\s*;?\s*$/.exec(oc);
-          if(m) actionKey=m[1];
-        }
-        // Skip shop list if it was already hidden
-        if(btn.id==='shopListBtn'&&btn.getAttribute('data-was-hidden')==='true') return;
-        const item=document.createElement('button');
-        item.className='umenu-item';
-        item.textContent=label;
-        item.onclick=()=>{ closeUtilMenu(); runHdrOverflowAction(actionKey); };
-        overflowItems.appendChild(item);
-      });
-      // If backup is also in overflow, hide the static one to avoid duplicate
-      const backupInOverflow=toHide.some(b=>b.dataset.label==='Backup');
-      if(staticBackup) staticBackup.style.display=backupInOverflow?'none':'block';
-    } else {
-      // Everything fits — hide overflow btn, show static backup in menu
-      overflowBtn.style.display='none';
-    }
+function syncLightModeBtnLabels(){
+  const isLight=document.body.classList.contains('light');
+  const actionLabel=isLight?'Dark mode':'Light mode';
+  const aria=isLight?'Switch to dark mode':'Switch to light mode';
+  const desk=document.getElementById('lightBtn');
+  const mob=document.getElementById('mobileLightBtn');
+  if(desk){
+    desk.innerHTML=isLight?HDR_IC_MOON:HDR_IC_SUN;
+    desk.setAttribute('aria-label',aria);
+    desk.title=aria;
   }
-
-  // Track shopListBtn visibility separately
-  const origShopObserver=new MutationObserver(()=>{
-    const shopBtn=document.getElementById('shopListBtn');
-    if(shopBtn) shopBtn.setAttribute('data-was-hidden', shopBtn.style.display==='none'?'true':'false');
-  });
-  const shopBtn=document.getElementById('shopListBtn');
-  if(shopBtn) origShopObserver.observe(shopBtn, {attributes:true,attributeFilter:['style']});
-
-  const ro=new ResizeObserver(()=>requestAnimationFrame(measureAndCollapse));
-  ro.observe(hdr);
-  measureAndCollapse();
+  if(mob){
+    const ic=isLight?HDR_IC_MOON:HDR_IC_SUN;
+    mob.innerHTML='<span class="umenu-ic" aria-hidden="true">'+ic+'</span><span>'+actionLabel+'</span>';
+    mob.setAttribute('aria-label',aria);
+  }
 }
 
-function toggleUtilMenu(){
+function clearHdrDropdownMenuStyles(menu){
+  if(!menu) return;
+  ['position','top','right','left','bottom','zIndex','maxHeight','overflow'].forEach(p=>{menu.style[p]='';});
+}
+function pinHdrDropdown(menu, anchorEl){
+  if(!menu||!anchorEl) return;
+  const r=anchorEl.getBoundingClientRect();
+  menu.style.position='fixed';
+  menu.style.top=(r.bottom+6)+'px';
+  menu.style.right=Math.max(6, window.innerWidth - r.right)+'px';
+  menu.style.left='auto';
+  menu.style.bottom='auto';
+  menu.style.zIndex='2600';
+  const maxH=Math.max(120, window.innerHeight - r.bottom - 16);
+  menu.style.maxHeight=maxH+'px';
+  menu.style.overflow='auto';
+}
+
+function toggleBackupMenu(ev){
+  if(ev) ev.stopPropagation();
+  closeUtilMenu();
+  const m=document.getElementById('backupMenu');
+  const b=document.getElementById('backupMenuBtn');
+  if(!m||!b) return;
+  const wasOpen=m.style.display==='block';
+  if(wasOpen){
+    m.style.display='none';
+    clearHdrDropdownMenuStyles(m);
+    b.setAttribute('aria-expanded','false');
+  } else {
+    m.style.display='block';
+    pinHdrDropdown(m,b);
+    b.setAttribute('aria-expanded','true');
+  }
+}
+
+function closeBackupMenu(){
+  const m=document.getElementById('backupMenu');
+  const b=document.getElementById('backupMenuBtn');
+  if(m){
+    m.style.display='none';
+    clearHdrDropdownMenuStyles(m);
+  }
+  if(b) b.setAttribute('aria-expanded','false');
+}
+
+function toggleUtilMenu(ev){
+  if(ev) ev.stopPropagation();
+  closeBackupMenu();
   const m=document.getElementById('utilMenu');
-  if(!m) return;
-  const open=m.style.display==='block';
-  m.style.display=open?'none':'block';
+  const btn=document.getElementById('utilMenuBtn');
+  if(!m||!btn) return;
+  const wasOpen=m.style.display==='block';
+  if(wasOpen){
+    m.style.display='none';
+    clearHdrDropdownMenuStyles(m);
+    btn.setAttribute('aria-expanded','false');
+  } else {
+    m.style.display='block';
+    pinHdrDropdown(m,btn);
+    btn.setAttribute('aria-expanded','true');
+  }
 }
+
 function closeUtilMenu(){
   const m=document.getElementById('utilMenu');
-  if(m) m.style.display='none';
-}
-document.addEventListener('click',e=>{
-  if(!e.target.closest('#utilMenuBtn')&&!e.target.closest('#utilMenu')){
-    closeUtilMenu();
+  const btn=document.getElementById('utilMenuBtn');
+  if(m){
+    m.style.display='none';
+    clearHdrDropdownMenuStyles(m);
   }
+  if(btn) btn.setAttribute('aria-expanded','false');
+}
+
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#utilMenuBtn')&&!e.target.closest('#utilMenu')) closeUtilMenu();
+  if(!e.target.closest('#backupMenuBtn')&&!e.target.closest('#backupMenu')) closeBackupMenu();
+});
+window.addEventListener('resize',()=>{
+  const bm=document.getElementById('backupMenu');
+  const bb=document.getElementById('backupMenuBtn');
+  if(bm&&bm.style.display==='block'&&bb) pinHdrDropdown(bm,bb);
+  const um=document.getElementById('utilMenu');
+  const ub=document.getElementById('utilMenuBtn');
+  if(um&&um.style.display==='block'&&ub) pinHdrDropdown(um,ub);
 });
 
 function toggleLightMode(){
-  const isLight=document.body.classList.toggle('light');
+  document.body.classList.toggle('light');
+  const isLight=document.body.classList.contains('light');
   localStorage.setItem('basecamp_theme', isLight?'light':'dark');
-  const lb=document.getElementById('lightBtn'); if(lb) lb.textContent=isLight?'Dark':'Light';
+  syncLightModeBtnLabels();
 }
 
 function initTheme(){
   const saved=localStorage.getItem('basecamp_theme');
-  // Default is now LIGHT — dark is the option
   const useDark=saved?saved==='dark':false;
   if(!useDark){
     document.body.classList.add('light');
-    const lbx=document.getElementById('lightBtn'); if(lbx){ lbx.textContent='Dark'; lbx.title='Switch to dark mode'; }
   } else {
-    const lb2=document.getElementById('lightBtn'); if(lb2) lb2.textContent='Light';
+    document.body.classList.remove('light');
   }
+  syncLightModeBtnLabels();
 }
 
 load();
 renderAll();
 initTheme();
 initDemoBanner();
-initHeaderOverflow();
 document.getElementById('fileImport').addEventListener('change', importData, false);
 checkBackupReminder();
 </script>
