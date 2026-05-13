@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>NeverLeft</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1a1a14">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Newsreader:ital,wght@0,400;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -1609,10 +1613,10 @@ function pressureCountdown(dateStr, nights){
   }
   if(diff===0) return {label:'Today is the day', sub:'Pack the car — you leave today', color:'var(--rust)', pulse:true};
   if(diff===1) return {label:'Tomorrow', sub:'Everything should be packed tonight', color:'var(--rust)', pulse:false};
-  if(diff<=3)  return {label:diff+' days', sub:'Time to get organised', color:'var(--amber)', pulse:false};
-  if(diff<=7)  return {label:diff+' days', sub:'Start thinking about packing', color:'var(--amber-l)', pulse:false};
-  if(diff<=14) return {label:diff+' days', sub:'Plenty of time — no rush', color:'var(--sage)', pulse:false};
-  return {label:diff+' days', sub:'', color:'var(--text-m)', pulse:false};
+  if(diff<=3)  return {label:'Leaving in '+diff+' days', sub:'Time to get organised', color:'var(--amber)', pulse:false};
+  if(diff<=7)  return {label:'Leaving in '+diff+' days', sub:'Start thinking about packing', color:'var(--amber-l)', pulse:false};
+  if(diff<=14) return {label:'Leaving in '+diff+' days', sub:'Plenty of time — no rush', color:'var(--sage)', pulse:false};
+  return {label:'Leaving in '+diff+' days', sub:'', color:'var(--text-m)', pulse:false};
 }
 
 function statusBtn(trip){
@@ -4834,6 +4838,12 @@ initTheme();
 initDemoBanner();
 document.getElementById('fileImport').addEventListener('change', importData, false);
 checkBackupReminder();
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  });
+}
 </script>
 </body>
 </html>
