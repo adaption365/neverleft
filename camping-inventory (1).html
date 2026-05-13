@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Base Camp</title>
-<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<title>NeverLeft</title>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Newsreader:ital,wght@0,400;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --canvas:    #1a1a14;
@@ -49,70 +49,85 @@ body.light {
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Nunito',sans-serif;background:var(--canvas);color:var(--text);min-height:100vh;font-size:14px}
+body{font-family:'Familjen Grotesk',sans-serif;background:var(--canvas);color:var(--text);min-height:100vh;font-size:14px;-webkit-font-smoothing:antialiased}
 
-/* ── HEADER */
-.hdr{background:var(--canvas-2);border-bottom:2px solid var(--amber-d);padding:0 18px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:200}
-.logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:19px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber)}
-.logo sup{font-size:9px;color:var(--text-m);font-weight:400;letter-spacing:.15em;margin-left:5px;vertical-align:middle}
-.hdr-r{display:flex;gap:5px;align-items:center}
+/* ── TRANSITIONS ── */
+.page{max-width:680px;margin:0 auto;padding:20px 16px 100px;animation:fadeUp .25s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
 
-/* ── MAIN TABS */
-.mtabs{display:flex;background:var(--canvas-2);border-bottom:1px solid var(--border);padding:0 18px}
-.mtab{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:10px 15px;border:none;background:transparent;color:var(--text-m);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;white-space:nowrap}
-.mtab:hover{color:var(--text)}
-.mtab.on{color:var(--amber);border-bottom-color:var(--amber)}
+/* ── HEADER ── */
+.hdr{background:var(--canvas-2);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:200;gap:16px}
+.logo{font-family:'Familjen Grotesk',sans-serif;font-weight:600;font-size:17px;letter-spacing:-.012em;color:var(--text);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-mark{width:26px;height:26px;border-radius:7px;background:var(--sage);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-family:'Newsreader',serif;font-style:italic;font-weight:500;flex-shrink:0}
+.logo sup{font-size:9px;color:var(--text-m);font-weight:400;letter-spacing:0;margin-left:2px;vertical-align:middle}
+.hdr-nav{display:flex;gap:2px;align-items:center;flex:1;justify-content:center}
+.hnav{font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:400;padding:6px 14px;border:none;background:transparent;color:var(--text-m);cursor:pointer;border-radius:6px;transition:all .18s;white-space:nowrap}
+.hnav:hover{color:var(--text);background:var(--canvas-3)}
+.hnav.on{background:rgba(74,107,58,.1);color:var(--sage);font-weight:500}
+.hdr-r{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.hdr-btn{background:var(--canvas-2);border:1px solid var(--border);cursor:pointer;height:32px;padding:0 12px;border-radius:6px;display:flex;align-items:center;font-size:13px;font-family:'Familjen Grotesk',sans-serif;color:var(--text-d);transition:all .15s;white-space:nowrap}
+.hdr-btn:hover{border-color:var(--border-l);color:var(--text)}
+.hdr-util{padding:0 10px;font-size:13px}
+.umenu-item{display:block;width:100%;padding:10px 16px;background:transparent;border:none;font-family:'Familjen Grotesk',sans-serif;font-size:13px;color:var(--text-d);text-align:left;cursor:pointer;transition:background .12s}
+.umenu-item:hover{background:var(--canvas-3);color:var(--text)}
+
+/* ── MAIN TABS ── */
+.mtabs{display:none} /* tabs moved into header */
+.mtabs::-webkit-scrollbar{display:none}
+.mtab{font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:400;letter-spacing:0;text-transform:none;padding:8px 14px;border:none;background:transparent;color:var(--text-m);cursor:pointer;border-radius:6px;transition:all .18s;white-space:nowrap;flex-shrink:0;margin:6px 0}
+.mtab:hover{color:var(--text);background:var(--canvas-3)}
+.mtab.on{background:var(--sage-l,rgba(107,140,90,.12));color:var(--sage);font-weight:500}
 .tbadge{display:inline-flex;align-items:center;justify-content:center;background:var(--rust);color:#fff;font-size:9px;font-weight:700;width:15px;height:15px;border-radius:50%;margin-left:5px;vertical-align:middle}
 
-/* ── PAGE */
-.page{max-width:1080px;margin:0 auto;padding:18px 18px 80px}
-
-/* ── BUTTONS */
-.btn{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;padding:6px 12px;border-radius:2px;transition:all .15s;white-space:nowrap}
-.btn-p{background:var(--amber);color:var(--canvas)}.btn-p:hover{background:var(--amber-l)}
-.btn-g{background:var(--sage);color:#fff}.btn-g:hover{background:var(--sage-l)}
-.btn-o{background:transparent;color:var(--text-d);border:1px solid var(--border)}.btn-o:hover{border-color:var(--border-l);color:var(--text)}
+/* ── BUTTONS ── */
+.btn{font-family:'Familjen Grotesk',sans-serif;font-weight:600;font-size:13px;letter-spacing:0;text-transform:none;border:none;cursor:pointer;padding:7px 14px;border-radius:8px;transition:all .18s;white-space:nowrap}
+.btn-p{background:var(--amber);color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.15)}.btn-p:hover{background:var(--amber-l);transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,.2)}
+.btn-p:active{transform:translateY(0)}
+.btn-g{background:var(--sage);color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.12)}.btn-g:hover{background:var(--sage-l);transform:translateY(-1px)}
+.btn-o{background:transparent;color:var(--text-d);border:1.5px solid var(--border)}.btn-o:hover{border-color:var(--amber-d);color:var(--amber)}
 .btn-x{background:transparent;color:var(--rust);border:1px solid transparent;padding:3px 7px;font-size:10px}.btn-x:hover{border-color:var(--rust)}
-.btn-ic{background:transparent;border:none;color:var(--text-m);cursor:pointer;padding:2px 5px;font-size:14px;border-radius:2px;transition:color .15s}.btn-ic:hover{color:var(--amber)}
-.btn-sm{padding:4px 9px;font-size:10px}
+.btn-ic{background:transparent;border:none;color:var(--text-m);cursor:pointer;padding:4px 7px;font-size:15px;border-radius:6px;transition:all .15s}.btn-ic:hover{color:var(--amber);background:var(--canvas-3)}
+.btn-sm{padding:5px 10px;font-size:10px}
 
-/* ── STATS */
-.stats{display:flex;gap:2px;margin-bottom:18px;background:var(--canvas-3);border:1px solid var(--border);border-radius:3px;overflow:hidden}
-.stat{flex:1;padding:9px 12px;border-right:1px solid var(--border)}.stat:last-child{border-right:none}
-.stat-v{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;color:var(--amber);line-height:1}
-.stat-l{font-size:9px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+.stat{padding:12px 14px;background:var(--canvas-2);border:none;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.07);transition:transform .15s}
+.stat:hover{transform:translateY(-1px)}
+.stat-v{font-family:'Familjen Grotesk',sans-serif;font-size:26px;font-weight:800;color:var(--amber);line-height:1}
+.stat-l{font-size:10px;color:var(--text-m);text-transform:none;letter-spacing:0;margin-top:3px;font-family:'Familjen Grotesk',sans-serif}
 
-/* ── CONTROLS */
+/* ── CONTROLS ── */
 .ctrls{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
 .sw{flex:1;min-width:160px;position:relative}
-.sw input{width:100%;background:var(--canvas-2);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:6px 9px 6px 28px;border-radius:2px;outline:none;transition:border-color .15s}
-.sw input:focus{border-color:var(--amber-d)}
+.sw input{width:100%;background:var(--canvas-2);border:none;box-shadow:0 1px 4px rgba(0,0,0,.08);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:8px 10px 8px 32px;border-radius:8px;outline:none;transition:box-shadow .18s}
+.sw input:focus{box-shadow:0 0 0 3px rgba(212,144,42,.18),0 1px 4px rgba(0,0,0,.08)}
 .sw input::placeholder{color:var(--text-m)}
-.sw-ic{position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--text-m);font-size:12px;pointer-events:none}
-.fgrp{display:flex;gap:3px;flex-wrap:wrap}
-.fb{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:5px 9px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-m);cursor:pointer;transition:all .15s}
+.sw-ic{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-m);font-size:13px;pointer-events:none}
+.fgrp{display:flex;gap:4px;flex-wrap:wrap}
+.fb{font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:500;letter-spacing:0;text-transform:none;padding:5px 10px;border-radius:6px;border:1.5px solid var(--border);background:transparent;color:var(--text-m);cursor:pointer;transition:all .18s}
 .fb:hover{color:var(--text);border-color:var(--border-l)}
 .fb.on{background:var(--canvas-3);color:var(--amber);border-color:var(--amber-d)}
-select{background:var(--canvas-2);border:1px solid var(--border);color:var(--text-d);font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:5px 8px;border-radius:2px;outline:none;cursor:pointer}
+select{background:var(--canvas-2);border:1.5px solid var(--border);color:var(--text-d);font-family:'Familjen Grotesk',sans-serif;font-size:12px;letter-spacing:0;text-transform:none;padding:6px 10px;border-radius:6px;outline:none;cursor:pointer;transition:border-color .18s}
 select:focus{border-color:var(--amber-d)}
 
-/* ── LEGEND */
-.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;padding:8px 12px;background:var(--canvas-3);border:1px solid var(--border);border-radius:2px}
-.li{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-m);font-family:'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase}
+/* ── LEGEND ── */
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:8px 0}
+.li{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-m);font-family:'Familjen Grotesk',sans-serif;letter-spacing:.05em;text-transform:uppercase}
 .ld{width:7px;height:7px;border-radius:50%}
 
-/* ── CATEGORY GROUP */
-.cg{margin-bottom:18px}
-.cg-hdr{display:flex;align-items:center;gap:7px;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
-.cg-hdr:hover .cg-title{color:var(--text)}
-.cg-toggle{font-size:10px;color:var(--text-m);transition:transform .2s;display:inline-block;width:14px}
+/* ── CATEGORY GROUP ── */
+.cg{margin-bottom:20px}
+.cg-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:8px 4px;background:transparent;border:none;border-bottom:1px solid var(--border);border-radius:0;cursor:pointer;user-select:none;transition:opacity .15s}
+.cg-hdr:hover{opacity:.75}
+.cg-toggle{font-size:10px;color:var(--text-m);transition:transform .22s;display:inline-block;width:14px}
 .cg-toggle.open{transform:rotate(0deg)}
 .cg-toggle.closed{transform:rotate(-90deg)}
-.cg-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;transition:color .15s}
-.cg-count{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);background:var(--canvas-3);padding:1px 5px;border-radius:2px}
-.cg-body{overflow:hidden;transition:all .2s}
+.cg-title{font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;letter-spacing:0;text-transform:none;transition:color .15s;flex:1}
+.cg-count{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);padding:2px 7px;border-radius:10px}
+.cg-body{overflow:hidden}
 
-/* ── CAT COLOURS */
+/* ── CAT COLOURS ── */
 .cat-shelter .cg-title{color:#85a870}
 .cat-sleep   .cg-title{color:#7a9ab8}
 .cat-kitchen .cg-title{color:#c8823a}
@@ -122,52 +137,195 @@ select:focus{border-color:var(--amber-d)}
 .cat-other   .cg-title{color:var(--text-d)}
 .cat-wishlist .cg-title{color:var(--gold)}
 
-/* ── ITEM TABLE */
-.itbl{width:100%;border-collapse:collapse}
-.itbl th{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);text-align:left;padding:4px 8px;background:var(--canvas-3);border-bottom:1px solid var(--border)}
-.irow{border-bottom:1px solid var(--border);transition:background .1s}
-.irow:hover{background:var(--canvas-2)}
-.irow td{padding:7px 8px;vertical-align:middle}
-.irow.sub-row td:first-child{padding-left:28px}
-.irow.sub-row{background:rgba(0,0,0,0.04)}
-.irow.sub-row:hover{background:rgba(0,0,0,0.07)}
-.iname{font-size:13px;font-weight:500;color:var(--text)}
-.inotes{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:1px}
+/* ── ITEM CARDS ── */
+.itbl{width:100%;border-collapse:collapse;display:block}
+.itbl thead{display:none} /* hide table headers — info shown on cards */
+.itbl tbody{display:flex;flex-direction:column;gap:6px}
+.itbl tr{display:none} /* hidden by default, override below */
+.irow{display:flex!important;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--canvas-2);border:none;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.04);transition:all .18s;cursor:default;position:relative}
+.irow:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.12),0 0 0 1px rgba(212,144,42,.15)}
+.irow td{padding:0;border:none;vertical-align:top}
+.irow td:nth-child(1){flex:1;min-width:0} /* name cell */
+.irow td:nth-child(2){flex-shrink:0} /* type pill */
+.irow td:nth-child(3){flex-shrink:0} /* location */
+.irow td:nth-child(4){flex-shrink:0} /* qty controls */
+.irow td:nth-child(5){flex-shrink:0} /* actions */
+.irow.sub-row{padding:9px 14px 9px 32px;background:rgba(0,0,0,0.03);border:none;box-shadow:none!important;margin-top:-3px;border-radius:0 0 10px 10px;transform:none!important}
+.irow.sub-row:hover{background:rgba(0,0,0,0.05)}
+.iname{font-size:14px;font-weight:700;color:var(--text);line-height:1.3}
+.inotes{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:3px;line-height:1.4}
 .iacts{display:flex;gap:3px;opacity:0;transition:opacity .15s}
 .irow:hover .iacts{opacity:1}
-.tpill{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:2px 6px;border-radius:2px;white-space:nowrap}
-.tp-always{background:rgba(107,140,90,.15);color:var(--sage);border:1px solid rgba(107,140,90,.3)}
-.tp-house{background:rgba(90,122,184,.15);color:var(--blue);border:1px solid rgba(90,122,184,.3)}
-.tp-consumable{background:rgba(184,92,58,.15);color:var(--rust);border:1px solid rgba(184,92,58,.3)}
-.tp-seasonal{background:rgba(138,106,184,.15);color:var(--purple);border:1px solid rgba(138,106,184,.3)}
-.tp-wishlist{background:rgba(200,168,74,.15);color:var(--gold);border:1px solid rgba(200,168,74,.3)}
-.lbadge{font-family:'DM Mono',monospace;font-size:9px;padding:1px 5px;border-radius:2px;text-transform:uppercase;letter-spacing:.05em;border:1px solid}
-.lb-shed{color:#8a7a5a;border-color:#5a4a2a;background:rgba(138,122,90,.1)}
-.lb-duffle{color:#6a9a7a;border-color:#2a5a3a;background:rgba(90,154,122,.1)}
-.lb-house{color:#6a8ab8;border-color:#2a4a7a;background:rgba(90,122,184,.1)}
-.lb-car{color:#9a8a6a;border-color:#5a4a2a;background:rgba(154,138,106,.1)}
-.qc{display:flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:12px}
-.qbtn{background:var(--canvas-3);border:1px solid var(--border);color:var(--text-d);width:19px;height:19px;border-radius:2px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .1s}
+
+/* ── TYPE PILLS ── */
+.tpill{font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:600;letter-spacing:0;text-transform:none;padding:3px 8px;border-radius:10px;white-space:nowrap}
+.tp-always{background:rgba(107,140,90,.12);color:var(--sage);border:1px solid rgba(107,140,90,.25)}
+.tp-house{background:rgba(90,122,184,.12);color:var(--blue);border:1px solid rgba(90,122,184,.25)}
+.tp-consumable{background:rgba(184,92,58,.12);color:var(--rust);border:1px solid rgba(184,92,58,.25)}
+.tp-seasonal{background:rgba(138,106,184,.12);color:var(--purple);border:1px solid rgba(138,106,184,.25)}
+.tp-wishlist{background:rgba(200,168,74,.12);color:var(--gold);border:1px solid rgba(200,168,74,.25)}
+
+/* ── LOCATION BADGES ── */
+.lbadge{font-family:'DM Mono',monospace;font-size:9px;padding:2px 6px;border-radius:8px;text-transform:uppercase;letter-spacing:.04em;border:1px solid}
+.lb-shed{color:#8a7a5a;border-color:#8a7a5a;background:rgba(138,122,90,.08)}
+.lb-duffle{color:#5a8a6a;border-color:#5a8a6a;background:rgba(90,138,106,.08)}
+.lb-house{color:#5a7ab8;border-color:#5a7ab8;background:rgba(90,122,184,.08)}
+.lb-car{color:#9a8a6a;border-color:#9a8a6a;background:rgba(154,138,106,.08)}
+
+/* ── QTY CONTROLS ── */
+.qc{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:12px}
+.qbtn{background:var(--canvas-3);border:1px solid var(--border);color:var(--text-d);width:22px;height:22px;border-radius:6px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s}
 .qbtn:hover{border-color:var(--amber-d);color:var(--amber)}
-.rflag{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--rust)}
-.add-sub-row td{padding:3px 8px 7px 28px}
-.add-sub-btn{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);background:transparent;border:1px dashed var(--border);padding:3px 10px;border-radius:2px;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;transition:all .15s}
-.add-sub-btn:hover{border-color:var(--amber-d);color:var(--amber)}
-.wishlist-item{opacity:.7}
+.rflag{font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--rust)}
+
+/* ── SUB-ITEM ADD BUTTON ── */
+.add-sub-row{display:flex!important;padding:2px 14px 6px 40px!important;background:transparent!important;border:none!important;border-radius:0!important;box-shadow:none!important;transform:none!important}
+.add-sub-row td{width:100%}
+.add-sub-btn{font-family:'Familjen Grotesk',sans-serif;font-size:12px;color:var(--text-m);background:transparent;border:none;padding:3px 0;cursor:pointer;transition:color .15s;text-align:left}
+.add-sub-btn:hover{color:var(--sage)}
+.wishlist-item{opacity:.65}
 .wishlist-badge{font-size:12px;margin-right:3px}
 
-/* ── EMPTY */
-.empty{text-align:center;padding:36px 18px;color:var(--text-m);font-family:'DM Mono',monospace;font-size:12px;border:1px dashed var(--border);border-radius:2px;margin-top:6px}
+/* ── CHECKLIST ITEMS ── */
+.ci{display:flex;align-items:flex-start;gap:13px;padding:14px;background:var(--canvas-2);border:none;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07);cursor:pointer;margin-bottom:8px;transition:background .2s,box-shadow .2s,opacity .25s,transform .15s;position:relative;-webkit-tap-highlight-color:transparent}
+.ci:active{transform:scale(.97)}
+.ci:hover{box-shadow:0 4px 14px rgba(0,0,0,.1)}
+.ci.ready{background:rgba(212,144,42,.07);box-shadow:0 2px 8px rgba(212,144,42,.15)}
+.ci.packed{opacity:.35;background:var(--canvas-3);box-shadow:none;pointer-events:auto}
+.ci.hl{box-shadow:0 0 0 2px var(--amber-d);background:rgba(212,144,42,.05)}
+.sub-ci{padding:10px 14px 10px 46px;border-radius:0 0 12px 12px;margin-top:-5px;border:none;box-shadow:none;margin-bottom:6px;background:rgba(0,0,0,0.025)}
+
+/* State indicator — large, filled, satisfying */
+.ci-state{width:28px;height:28px;border-radius:8px;border:2px solid var(--border-l);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0;font-weight:800;transition:all .25s cubic-bezier(.34,1.56,.64,1);background:var(--canvas);margin-top:1px}
+.ci.ready .ci-state{border-color:var(--amber);background:var(--amber);font-size:15px;color:#fff;box-shadow:0 2px 8px rgba(212,144,42,.4)}
+.ci.packed .ci-state{border-color:var(--sage);background:var(--sage);font-size:15px;color:#fff;box-shadow:0 2px 8px rgba(107,140,90,.35)}
+@keyframes checkPop{0%{transform:scale(.8);opacity:.6}60%{transform:scale(1.2)}80%{transform:scale(.95)}100%{transform:scale(1);opacity:1}}
+.ci.ready .ci-state{animation:checkPop .3s cubic-bezier(.34,1.56,.64,1)}
+.ci.packed .ci-state{animation:checkPop .3s cubic-bezier(.34,1.56,.64,1)}
+.sub-ci .ci-state{width:22px;height:22px;border-radius:6px;font-size:0}
+.sub-ci.ready .ci-state{font-size:12px}
+.sub-ci.packed .ci-state{font-size:12px}
+
+.ci-body{flex:1;min-width:0}
+.ci-name{font-size:14px;font-weight:700;line-height:1.35;transition:all .2s}
+.ci.packed .ci-name{text-decoration:line-through;opacity:.5}
+.ci-meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px;align-items:center}
+.ci-qty{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)}
+.ci-note{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);font-style:italic}
+.hl-tag{font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--amber);letter-spacing:.06em;text-transform:uppercase}
+
+/* ── CHECKLIST GROUP HEADERS — warm, not administrative ── */
+.cloc-group{margin-bottom:18px}
+.cloc-hdr{display:flex;align-items:center;gap:10px;padding:6px 2px;background:transparent;border:none;border:none;cursor:pointer;margin-bottom:10px;transition:opacity .15s}
+.cloc-hdr:hover{opacity:.7}
+.cloc-title{font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:700;letter-spacing:-.01em;text-transform:none;flex:1;color:var(--text)}
+.cloc-progress{height:3px;flex:1;max-width:60px;background:var(--border);border-radius:2px;overflow:hidden}
+.cloc-progress-fill{height:100%;background:var(--sage);border-radius:2px;transition:width .4s ease}
+.cloc-group-done{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;background:rgba(107,140,90,.08);margin-bottom:6px}
+
+/* ── CHECKLIST PROGRESS ── */
+.cprog{background:var(--canvas-2);border:none;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.07);padding:16px;margin-bottom:18px}
+.cprog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cprog-label{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-d)}
+.cprog-pcts{display:flex;gap:8px}
+.cprog-pct{font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em}
+.pct-ready{color:var(--amber)}
+.pct-packed{color:var(--sage)}
+.pbar-wrap{height:10px;background:var(--border);border-radius:5px;overflow:hidden;display:flex}
+.pbar-packed{background:var(--sage);transition:width .5s cubic-bezier(.34,1.1,.64,1)}
+.pbar-ready{background:var(--amber);transition:width .5s cubic-bezier(.34,1.1,.64,1)}
+.cprog-hint{font-family:'DM Mono',monospace;font-size:9px;color:var(--text-m);margin-top:7px}
+.cprog-complete{text-align:center;padding:8px 0 2px;font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:700;letter-spacing:.08em;color:var(--sage);animation:fadeUp .4s ease}
+
+/* ── TRIP CARDS ── */
+.tlist{display:flex;flex-direction:column;gap:10px}
+.tcard{background:var(--canvas-2);border:none;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.04);padding:16px;cursor:pointer;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;transition:all .2s}
+.tcard:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.12),0 0 0 2px var(--amber-d)}
+.tcard:active{transform:translateY(0)}
+.tcard-name{font-family:'Familjen Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.01em;color:var(--text);line-height:1.15;margin-bottom:4px}
+.tcard-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)}
+.tcard-r{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+
+/* ── TRIP STATUS PILLS ── */
+.tstatus{font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:600;letter-spacing:0;text-transform:none;padding:3px 10px;border-radius:10px;white-space:nowrap}
+.ts-planning{background:rgba(90,122,184,.12);color:var(--blue);border:1px solid rgba(90,122,184,.25)}
+.ts-packing{background:rgba(212,144,42,.12);color:var(--amber);border:1px solid rgba(212,144,42,.25)}
+.ts-pack-up{background:rgba(138,106,184,.12);color:var(--purple);border:1px solid rgba(138,106,184,.25)}
+.ts-pack-away{background:rgba(90,154,138,.12);color:var(--teal);border:1px solid rgba(90,154,138,.25)}
+.ts-post-trip{background:rgba(107,140,90,.12);color:var(--sage);border:1px solid rgba(107,140,90,.25)}
+.ts-complete{background:rgba(107,140,90,.2);color:var(--sage);border:1px solid rgba(107,140,90,.35)}
+
+/* ── TRIP DETAIL ── */
+.tback{font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--text-m);background:transparent;border:none;cursor:pointer;padding:0;display:inline-flex;align-items:center;gap:5px;transition:color .15s;margin-bottom:14px}
+.tback:hover{color:var(--amber)}
+.tchips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tchip{font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:500;letter-spacing:0;text-transform:none;padding:3px 10px;background:var(--canvas-3);border-radius:10px;color:var(--text-m)}
+.ttitle{font-family:'Familjen Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;line-height:1.15}
+.tsubtitle{font-size:14px;color:var(--text-m);margin-bottom:12px;line-height:1.4}
+
+/* ── STAGE STEPPER ── */
+.stepper{display:flex;align-items:center;margin-bottom:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:4px 0 6px}
+.stepper::-webkit-scrollbar{display:none}
+.step{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;cursor:pointer;transition:opacity .15s;min-width:54px}
+.step:hover{opacity:.75}
+.step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;transition:all .22s;border:2px solid var(--border);background:var(--canvas);color:var(--text-m)}
+.step.done .step-dot{background:var(--sage);border-color:var(--sage);color:#fff}
+.step.current .step-dot{background:var(--amber);border-color:var(--amber);color:#fff;box-shadow:0 2px 8px rgba(212,144,42,.35)}
+.step-label{font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:500;color:var(--text-m);text-align:center;line-height:1.25;max-width:54px}
+.step.current .step-label{color:var(--amber);font-weight:700}
+.step.done .step-label{color:var(--sage)}
+.step-line{flex:1;height:2px;background:var(--border);min-width:8px}
+.step-line.done{background:var(--sage)}
+
+.ttabs{display:flex;gap:0;background:var(--canvas-3);border:none;border-radius:10px;padding:3px;margin-bottom:16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.ttabs::-webkit-scrollbar{display:none}
+.ttab{font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:600;padding:7px 12px;border:none;background:transparent;color:var(--text-m);cursor:pointer;border-radius:7px;transition:all .18s;white-space:nowrap;flex-shrink:0}
+.ttab:hover{color:var(--text)}
+.ttab.on{background:var(--canvas-2);color:var(--amber);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+
+/* ── POST-TRIP ── */
+.pt-banner{background:var(--canvas-3);border:none;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.06);padding:16px;margin-bottom:16px}
+.pt-title{font-family:'Familjen Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.01em;text-transform:none;margin-bottom:4px;color:var(--amber)}
+.pt-sub{font-size:12px;color:var(--text-m)}
+
+/* ── MODALS ── */
+.mover{display:none;position:fixed;inset:0;background:rgba(10,10,8,.7);z-index:1000;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+.mover.on{display:flex;animation:modalFadeIn .2s ease}
+@keyframes modalFadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--canvas-2);width:100%;max-width:600px;padding:24px 20px 32px;max-height:88vh;overflow-y:auto;border-radius:20px 20px 0 0;animation:modalSlideUp .25s ease;border-top:2px solid var(--amber-d)}
+@keyframes modalSlideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.mbox{background:var(--canvas-2);border-radius:20px 20px 0 0;width:100%;max-width:600px;padding:24px 20px 32px;max-height:88vh;overflow-y:auto}
+.mtitle{font-family:'Familjen Grotesk',sans-serif;font-size:18px;font-weight:700;letter-spacing:-.01em;text-transform:none;margin-bottom:18px;color:var(--text)}
+.fg{margin-bottom:14px}
+.fl{font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--text-m);display:block;margin-bottom:5px}
+.fi{width:100%;background:var(--canvas-3);border:1px solid var(--border);color:var(--text);font-family:'Familjen Grotesk',sans-serif;font-size:14px;padding:9px 12px;border-radius:8px;outline:none;transition:border-color .18s,box-shadow .18s}
+.fi:focus{border-color:var(--amber-d);box-shadow:0 0 0 3px rgba(212,144,42,.1)}
+.fta{width:100%;background:var(--canvas-3);border:1.5px solid var(--border);color:var(--text);font-family:'Familjen Grotesk',sans-serif;font-size:13px;padding:9px 12px;border-radius:8px;outline:none;resize:vertical;min-height:70px;transition:border-color .18s}
+.fta:focus{border-color:var(--amber-d)}
+.factions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.ck{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--text-d)}
+.ck input{width:16px;height:16px;accent-color:var(--amber);border-radius:4px}
+.agrid{display:flex;gap:6px;flex-wrap:wrap}
+.atog{font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:500;letter-spacing:0;text-transform:none;padding:5px 10px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--text-m);cursor:pointer;transition:all .18s}
+.atog.on{background:rgba(212,144,42,.1);border-color:var(--amber-d);color:var(--amber)}
+
+/* ── TRIP NONE / EMPTY ── */
+.trip-none{text-align:center;padding:48px 24px}
+.tn-title{font-family:'Familjen Grotesk',sans-serif;font-size:24px;font-weight:800;letter-spacing:.04em;color:var(--text);margin-bottom:8px}
+.tn-sub{font-size:13px;color:var(--text-m);margin-bottom:24px;line-height:1.6}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:40px 20px;color:var(--text-m);font-size:13px;border:1.5px dashed rgba(0,0,0,.12);border-radius:12px;margin-top:8px;line-height:1.6}
 
 /* ── MODAL */
 .mover{display:none;position:fixed;inset:0;background:rgba(10,10,8,.88);z-index:1000;align-items:center;justify-content:center}
 .mover.on{display:flex}
 .modal{background:var(--canvas-2);border:1px solid var(--border-l);border-top:3px solid var(--amber);width:500px;max-width:95vw;max-height:92vh;overflow-y:auto;border-radius:3px;padding:20px}
 .modal-wide{width:560px}
-.mtitle{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:16px}
+.mtitle{font-family:'Familjen Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:16px}
 .fg{margin-bottom:11px}
-.fl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--text-m);display:block;margin-bottom:3px}
-.fi,.fs,.fta{width:100%;background:var(--canvas);border:1px solid var(--border);color:var(--text);font-family:'Nunito',sans-serif;font-size:13px;padding:6px 8px;border-radius:2px;outline:none;transition:border-color .15s}
+.fl{font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--text-m);display:block;margin-bottom:3px}
+.fi,.fs,.fta{width:100%;background:var(--canvas);border:1px solid var(--border);color:var(--text);font-family:'Familjen Grotesk',sans-serif;font-size:13px;padding:6px 8px;border-radius:2px;outline:none;transition:border-color .15s}
 .fi:focus,.fs:focus,.fta:focus{border-color:var(--amber-d)}
 .fta{resize:vertical;min-height:50px;font-size:12px}
 .frow{display:flex;gap:9px}.frow .fg{flex:1}
@@ -177,15 +335,15 @@ select:focus{border-color:var(--amber-d)}
 
 /* ── TRIP LIST */
 .trip-none{text-align:center;padding:44px 20px}
-.tn-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-d);margin-bottom:8px}
+.tn-title{font-family:'Familjen Grotesk',sans-serif;font-size:18px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-d);margin-bottom:8px}
 .tn-sub{font-size:12px;color:var(--text-m);margin-bottom:20px;font-family:'DM Mono',monospace}
 .tlist{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
 .tcard{background:var(--canvas-2);border:1px solid var(--border);border-radius:3px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:border-color .15s}
 .tcard:hover{border-color:var(--amber-d)}
-.tcard-name{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.06em;color:var(--text)}
+.tcard-name{font-family:'Familjen Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:.06em;color:var(--text)}
 .tcard-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:2px}
 .tcard-r{display:flex;gap:7px;align-items:center}
-.tstatus{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:2px}
+.tstatus{font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:2px}
 .ts-planning{background:rgba(90,122,184,.15);color:var(--blue);border:1px solid rgba(90,122,184,.3)}
 .ts-packing{background:rgba(212,144,42,.15);color:var(--amber);border:1px solid rgba(212,144,42,.3)}
 .ts-complete{background:rgba(107,140,90,.15);color:var(--sage);border:1px solid rgba(107,140,90,.3)}
@@ -194,11 +352,11 @@ select:focus{border-color:var(--amber-d)}
 /* ── TRIP DETAIL */
 .tdetail{background:var(--canvas-2);border:1px solid var(--border);border-radius:3px;overflow:hidden}
 .tdhdr{background:var(--canvas-3);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-.tdname{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:.08em;color:var(--amber)}
+.tdname{font-family:'Familjen Grotesk',sans-serif;font-size:18px;font-weight:700;letter-spacing:.08em;color:var(--amber)}
 .chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
 .chip{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-d);background:var(--canvas);border:1px solid var(--border);padding:1px 7px;border-radius:2px}
 .ttabs{display:flex;border-bottom:1px solid var(--border);background:var(--canvas-3)}
-.ttab{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:8px 13px;border:none;background:transparent;color:var(--text-m);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.ttab{font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:8px 13px;border:none;background:transparent;color:var(--text-m);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
 .ttab:hover{color:var(--text)}
 .ttab.on{color:var(--amber);border-bottom-color:var(--amber)}
 .tbody{padding:14px 16px}
@@ -208,18 +366,18 @@ select:focus{border-color:var(--amber-d)}
 .cprog-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px}
 .cprog-label{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-d)}
 .cprog-pcts{display:flex;gap:10px}
-.cprog-pct{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;line-height:1}
+.cprog-pct{font-family:'Familjen Grotesk',sans-serif;font-size:16px;font-weight:700;line-height:1}
 .pct-ready{color:var(--amber)}
 .pct-packed{color:var(--sage)}
 .pbar-wrap{height:8px;background:var(--border);border-radius:4px;overflow:hidden;display:flex}
 .pbar-ready{height:100%;background:var(--amber);transition:width .3s}
 .pbar-packed{height:100%;background:var(--sage);transition:width .3s}
-.cprog-hint{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);margin-top:5px;letter-spacing:.05em}
+.cprog-hint{font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--text-m);margin-top:5px;letter-spacing:.05em}
 
 /* ── CHECKLIST ITEMS */
 .cloc-group{margin-bottom:18px}
 .cloc-hdr{display:flex;align-items:center;gap:7px;padding:5px 0;margin-bottom:5px;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
-.cloc-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--text-m)}
+.cloc-title{font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--text-m)}
 .ci{display:flex;align-items:flex-start;gap:8px;padding:6px 5px;border-radius:2px;transition:background .1s;border-bottom:1px solid rgba(58,58,46,.4)}
 .ci:hover{background:var(--canvas-3)}
 .ci.hl{background:rgba(212,144,42,.07);border-left:2px solid var(--amber-d);padding-left:7px}
@@ -236,11 +394,11 @@ select:focus{border-color:var(--amber-d)}
 .ci-meta{display:flex;gap:4px;align-items:center;margin-top:2px;flex-wrap:wrap}
 .ci-qty{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)}
 .ci-note{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)}
-.hl-tag{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);background:rgba(212,144,42,.12);border:1px solid rgba(212,144,42,.3);padding:1px 4px;border-radius:2px}
+.hl-tag{font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);background:rgba(212,144,42,.12);border:1px solid rgba(212,144,42,.3);padding:1px 4px;border-radius:2px}
 
 /* ── POST TRIP */
 .pt-banner{background:rgba(184,92,58,.07);border:1px solid rgba(184,92,58,.3);border-left:3px solid var(--rust);border-radius:2px;padding:12px 14px;margin-bottom:14px}
-.pt-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--rust);margin-bottom:3px}
+.pt-title{font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--rust);margin-bottom:3px}
 .pt-sub{font-size:11px;color:var(--text-m);font-family:'DM Mono',monospace}
 
 /* ── TRIP NOTES */
@@ -264,10 +422,10 @@ select:focus{border-color:var(--amber-d)}
   .hdr,.mtabs,.ctrls,.legend,.stats,.no-print{display:none!important}
   .page{display:none!important}
   #printView{display:block!important;max-width:100%;padding:0}
-  .print-title{font-family:'Barlow Condensed',sans-serif;font-size:18pt;font-weight:700;text-transform:uppercase;margin-bottom:4pt;letter-spacing:.1em}
+  .print-title{font-family:'Familjen Grotesk',sans-serif;font-size:18pt;font-weight:700;text-transform:uppercase;margin-bottom:4pt;letter-spacing:.1em}
   .print-sub{font-size:9pt;color:#666;margin-bottom:12pt}
   .print-group{margin-bottom:14pt;break-inside:avoid}
-  .print-group-title{font-family:'Barlow Condensed',sans-serif;font-size:11pt;font-weight:700;text-transform:uppercase;letter-spacing:.12em;border-bottom:1pt solid #000;padding-bottom:3pt;margin-bottom:6pt}
+  .print-group-title{font-family:'Familjen Grotesk',sans-serif;font-size:11pt;font-weight:700;text-transform:uppercase;letter-spacing:.12em;border-bottom:1pt solid #000;padding-bottom:3pt;margin-bottom:6pt}
   .print-item{display:flex;align-items:flex-start;gap:8pt;padding:3pt 0;border-bottom:.5pt solid #ddd;break-inside:avoid}
   .print-cb{width:12pt;height:12pt;border:1pt solid #000;flex-shrink:0;margin-top:1pt}
   .print-item-name{font-size:10pt;font-weight:600;flex:1}
@@ -301,29 +459,41 @@ select:focus{border-color:var(--amber-d)}
 <body>
 
 <header class="hdr">
-  <div class="logo">Base Camp <sup>v3</sup></div>
-  <div class="hdr-r">
-    <button class="btn btn-o btn-sm" onclick="toggleLightMode()" id="lightBtn">☀️</button>
-    <button class="btn btn-o btn-sm" onclick="exportData()">↓ Backup</button>
-    <button class="btn btn-o btn-sm" onclick="shareBackup()">📤 Share</button>
-    <label class="btn btn-o btn-sm" for="fileImport" style="cursor:pointer">↑ Restore</label><input type="file" id="fileImport" accept=".json" style="position:absolute;width:1px;height:1px;opacity:0.01;top:0;left:0">
-    <button class="btn btn-p btn-sm" onclick="openAddItemModal()">+ Item</button>
+  <div class="logo"><div class="logo-mark">N</div>NeverLeft</div>
+  <div class="hdr-nav" id="hdrNav">
+    <button class="hnav on" onclick="setTab('trips',this)" id="tripsBtn">Trips</button>
+    <button class="hnav" onclick="setTab('inv',this)">Kit</button>
+    <button class="hnav" onclick="setTab('wishlist',this)" id="wishBtn">Want list</button>
+    <button class="hnav" onclick="setTab('settings',this)">Settings</button>
+  </div>
+  <div class="hdr-r" id="hdrR">
+    <button class="hdr-btn hdr-collapsible" data-priority="4" data-label="Shopping list" data-action="openShoppingList()" id="shopListBtn" onclick="openShoppingList()" style="display:none">Shopping list</button>
+    <button class="hdr-btn hdr-collapsible" data-priority="3" data-label="Search" data-action="openSearchPanel && openSearchPanel()">Search</button>
+    <button class="hdr-btn hdr-collapsible" data-priority="2" data-label="Light" id="lightBtn" onclick="toggleLightMode()">Light</button>
+    <button class="hdr-btn hdr-collapsible" data-priority="1" data-label="Backup" data-action="exportData()">Backup</button>
+    <div style="position:relative;flex-shrink:0" id="overflowWrap">
+      <button class="hdr-btn" onclick="toggleUtilMenu()" id="utilMenuBtn" style="display:none;padding:0 12px;letter-spacing:.05em">···</button>
+      <div id="utilMenu" style="display:none;position:absolute;right:0;top:calc(100% + 6px);background:var(--canvas-2);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.12);min-width:170px;z-index:300">
+        <div id="overflowItems"></div>
+        <div style="border-top:1px solid var(--border)">
+          <button onclick="closeUtilMenu();exportData()" class="umenu-item" id="staticBackup">Download backup</button>
+          <button onclick="closeUtilMenu();shareBackup()" class="umenu-item">Share backup</button>
+          <label class="umenu-item" for="fileImport" style="cursor:pointer">Restore backup</label>
+        </div>
+      </div>
+    </div>
+    <input type="file" id="fileImport" accept=".json" style="position:absolute;width:1px;height:1px;opacity:0.01;top:0;left:0">
+    <button class="hdr-btn hdr-primary" id="addItemBtn" onclick="openAddItemModal()" style="background:var(--text);color:var(--canvas);border:none;font-weight:500;flex-shrink:0">+ Add item</button>
   </div>
 </header>
 
-<div class="mtabs">
-  <button class="mtab on"  onclick="setTab('trips',this)" id="tripsBtn">My Trips</button>
-  <button class="mtab"     onclick="setTab('inv',this)">My Kit</button>
-  <button class="mtab"     onclick="setTab('wishlist',this)" id="wishBtn">Want List</button>
-  <button class="mtab"     onclick="setTab('people',this)" id="peopleBtn">People</button>
-  <button class="mtab"     onclick="setTab('settings',this)">Settings</button>
-</div>
+<!-- nav moved into header -->
 
 <!-- INVENTORY -->
 <div id="demoBanner" style="display:none;background:linear-gradient(135deg,#d4902a,#9a6820);color:#1a1a14;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
   <span style="font-size:16px">🏕</span>
   <div style="flex:1;min-width:200px">
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Demo Mode</div>
+    <div style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Demo Mode</div>
     <div style="font-size:11px;opacity:.85">This is sample data so you can explore all features. Clear it when you're ready to add your own kit.</div>
   </div>
   <div style="display:flex;gap:7px;flex-shrink:0">
@@ -343,7 +513,7 @@ select:focus{border-color:var(--amber-d)}
     <div class="ctrls" style="margin-bottom:8px">
       <div class="fgrp">
         <button class="fb on" onclick="setTF('all',this)">All</button>
-        <button class="fb"    onclick="setTF('always',this)">Always in kit</button>
+        <button class="fb"    onclick="setTF('always',this)">Always packed</button>
         <button class="fb"    onclick="setTF('house',this)">From home</button>
         <button class="fb"    onclick="setTF('consumable',this)">Needs restocking</button>
         <button class="fb"    onclick="setTF('seasonal',this)">Seasonal</button>
@@ -362,7 +532,7 @@ select:focus{border-color:var(--amber-d)}
       </select>
     </div>
     <div class="legend" style="margin-bottom:12px">
-      <div class="li"><div class="ld" style="background:var(--sage)"></div>Always in kit</div>
+      <div class="li"><div class="ld" style="background:var(--sage)"></div>Always packed</div>
       <div class="li"><div class="ld" style="background:var(--blue)"></div>Bring from home</div>
       <div class="li"><div class="ld" style="background:var(--rust)"></div>Needs restocking</div>
       <div class="li"><div class="ld" style="background:var(--purple)"></div>Seasonal</div>
@@ -397,7 +567,7 @@ select:focus{border-color:var(--amber-d)}
   <div class="frow">
     <div class="fg"><label class="fl">Type *</label>
       <select class="fs" id="iType">
-        <option value="always">Always in kit</option>
+        <option value="always">Always packed</option>
         <option value="house">From House</option>
         <option value="consumable">Consumable</option>
         <option value="seasonal">Seasonal</option>
@@ -420,7 +590,7 @@ select:focus{border-color:var(--amber-d)}
         <option value="all">All seasons</option>
         <option value="summer">Summer only</option>
         <option value="winter">Winter / cold</option>
-        <option value="shoulder">Shoulder season</option>
+        <option value="shoulder">Spring / Autumn</option>
       </select>
     </div>
     <div class="fg"><label class="fl">Activity tag</label>
@@ -475,7 +645,7 @@ select:focus{border-color:var(--amber-d)}
   </div>
   <div class="cfg-grid">
     <div class="fg"><label class="fl">Season / Weather</label>
-      <select class="fs" id="tSeason"><option value="summer">Summer (warm)</option><option value="shoulder">Shoulder (mixed)</option><option value="winter">Winter (cold)</option></select>
+      <select class="fs" id="tSeason"><option value="summer">Summer (warm)</option><option value="shoulder">Spring / Autumn (mixed)</option><option value="winter">Winter (cold)</option></select>
     </div>
     <div class="fg"><label class="fl">Site Type</label>
       <select class="fs" id="tSite"><option value="hookup">Full hookup</option><option value="basic">Basic / no hookup</option><option value="wild">Wild camping</option></select>
@@ -517,12 +687,12 @@ let checklistFiltersOpen = false;  // filter panel open state
 
 const CATS    = ['shelter','sleep','kitchen','clothing','hygiene','dog','other'];
 const CLAB    = { shelter:'⛺ Shelter', sleep:'🛌 Sleep', kitchen:'🍳 Kitchen', clothing:'🧥 Clothing', hygiene:'🪥 Hygiene', dog:'🐕 Dog', other:'📦 Other' };
-const TLAB    = { always:'Always in kit', house:'Bring from home', consumable:'Needs restocking', seasonal:'Seasonal', wishlist:'Want list' };
+const TLAB    = { always:'Always packed', house:'Bring from home', consumable:'Needs restocking', seasonal:'Seasonal', wishlist:'Want list' };
 const LLAB    = { shed:'Shed', duffle:'Duffle Bag', house:'House', car:'Car' };
-const SELAB   = { summer:'Summer', shoulder:'Shoulder', winter:'Winter', all:'All' };
+const SELAB   = { summer:'Summer', shoulder:'Spring / Autumn', winter:'Winter', all:'All' };
 const SITELAB = { hookup:'Full hookup', basic:'Basic', wild:'Wild' };
 const DISTLAB = { local:'Local', regional:'Regional', remote:'Remote' };
-const STLAB   = { planning:'Planning', packing:'Packing', 'pack-up':'Pack up camp', 'pack-away':'Unpack at home', 'post-trip':'Back home', complete:'Done' };
+const STLAB   = { planning:'Plan', packing:'Packing', 'pack-up':'Packing up', 'pack-away':'Back home', 'post-trip':'Back home', complete:'Done' };
 const PERSON_COLORS = ['#d4902a','#6b8c5a','#5a7ab8','#b85c3a','#8a6ab8','#5a9a8a','#c8a84a','#b8a87a'];
 
 // ══════════════════════════════════════════════════
@@ -565,7 +735,7 @@ function showToast(msg){
   const t=document.createElement('div');
   t.id='bcToast';
   t.textContent=msg;
-  t.style.cssText="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--canvas-3);color:var(--text);border:1px solid var(--rust);border-left:3px solid var(--rust);padding:10px 16px;border-radius:3px;font-size:12px;font-family:Nunito,sans-serif;z-index:9999;max-width:90vw;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.3)";
+  t.style.cssText="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--canvas-3);color:var(--text);border:1px solid var(--rust);border-left:3px solid var(--rust);padding:10px 16px;border-radius:3px;font-size:12px;font-family:'Familjen Grotesk',sans-serif;z-index:9999;max-width:90vw;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.3)";
   document.body.appendChild(t);
   setTimeout(()=>{ t.style.transition='opacity .4s'; t.style.opacity='0'; setTimeout(()=>t.remove(),400); },3000);
 }
@@ -713,7 +883,7 @@ function renderStats(){
   const wc=wishItems().length;
   document.getElementById('statsBar').innerHTML=`
     <div class="stat"><div class="stat-v">${top.length}</div><div class="stat-l">Items</div></div>
-    <div class="stat"><div class="stat-v">${top.filter(i=>i.type==='always').length}</div><div class="stat-l">Always in kit</div></div>
+    <div class="stat"><div class="stat-v">${top.filter(i=>i.type==='always').length}</div><div class="stat-l">Always packed</div></div>
     <div class="stat"><div class="stat-v">${top.filter(i=>i.type==='house').length}</div><div class="stat-l">From home</div></div>
     <div class="stat"><div class="stat-v" style="${rc>0?'color:var(--rust)':''}">${rc}</div><div class="stat-l">Restock</div></div>
     <div class="stat"><div class="stat-v" style="${ac>0?'color:var(--amber)':''}">${ac}</div><div class="stat-l">Active Trips</div></div>
@@ -721,11 +891,17 @@ function renderStats(){
   // badges — restockBtn removed from nav, show restock count on My Kit filter toggle
   const rb=document.getElementById('restockBtn');
   if(rb){ rb.querySelectorAll('.tbadge').forEach(b=>b.remove()); if(rc>0) rb.innerHTML+=`<span class="tbadge">${rc}</span>`; }
+  // Update shopping list badge button
+  const slb=document.getElementById('shopListBtn');
+  if(slb){
+    slb.style.display=rc>0?'':'none';
+    slb.innerHTML=rc>0?`🛒 <span style="font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:700">${rc}</span>`:'';
+  }
   // Show restock count on filter toggle button in My Kit
   const ftb=document.getElementById('filterToggleBtn');
   if(ftb){ ftb.querySelectorAll('.tbadge').forEach(b=>b.remove()); if(rc>0) ftb.innerHTML=`⚙ Filter <span class="tbadge" style="background:var(--rust)">${rc}</span>`; else ftb.textContent='⚙ Filter'; }
   const wb=document.getElementById('wishBtn');
-  if(wb){ wb.querySelectorAll('.tbadge').forEach(b=>b.remove()); if(wc>0) wb.innerHTML+=`<span class="tbadge" style="background:var(--gold)">${wc}</span>`; }
+  if(wb){ wb.querySelectorAll('.tbadge').forEach(b=>b.remove()); if(wc>0) wb.innerHTML=`Want list <span class="tbadge" style="background:var(--gold)">${wc}</span>`; }
 }
 
 // ══════════════════════════════════════════════════
@@ -805,16 +981,16 @@ function itemRow(item, isSub){
   const restock=item.restock||item.qty===0;
   const isWish=item.type==='wishlist';
   const assignedPeople=(S.people||[]).filter(p=>(item.personIds||[]).includes(p.id));
-  const personBadges=assignedPeople.map(p=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55;margin-left:4px">${p.name}</span>`).join('');
+  const personBadges=assignedPeople.map(p=>`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55;margin-left:4px">${p.name}</span>`).join('');
   return `
     <tr class="irow${isSub?' sub-row':''}${isWish?' wishlist-item':''}">
       <td>
         <div class="iname">${isWish?`<span class="wishlist-badge">✦</span>`:''}${esc(item.name)}${restock?` <span class="rflag">⚠ restock</span>`:''}${personBadges}</div>
         ${item.notes?`<div class="inotes">${esc(item.notes)}</div>`:''}
-        ${item.activity?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--teal);text-transform:uppercase;letter-spacing:.06em">${item.activity}</span>`:''}
-        ${item.isContainer?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--amber-d);text-transform:uppercase;letter-spacing:.06em">⊞ group</span>`:''}
-        ${(item.actions&&item.actions.length)?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--teal);text-transform:uppercase;letter-spacing:.06em">⚡ ${item.actions.length} action${item.actions.length!==1?'s':''}</span>`:''}
-        ${item.packsInto&&item.packsInto!==item.location?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--text-m)">→ ${labMap(getLocs())[item.packsInto]||item.packsInto}</span>`:''}
+        ${item.activity?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--teal);text-transform:uppercase;letter-spacing:.06em">${item.activity}</span>`:''}
+        ${item.isContainer?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--amber-d);text-transform:uppercase;letter-spacing:.06em">⊞ group</span>`:''}
+        ${(item.actions&&item.actions.length)?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--teal);text-transform:uppercase;letter-spacing:.06em">⚡ ${item.actions.length} action${item.actions.length!==1?'s':''}</span>`:''}
+        ${item.packsInto&&item.packsInto!==item.location?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">→ ${labMap(getLocs())[item.packsInto]||item.packsInto}</span>`:''}
       </td>
       <td><span class="tpill tp-${item.type}">${TLAB[item.type]}</span></td>
       <td><span class="lbadge lb-${item.location}">${labMap(getLocs())[item.location]||item.location}</span></td>
@@ -826,43 +1002,114 @@ function itemRow(item, isSub){
         </div>`:`<span style="font-family:'DM Mono',monospace;color:var(--text-m)">${item.qty}</span>`}
       </td>
       <td style="position:relative">
-        <button class="btn-ic" style="font-size:14px;padding:2px 8px;border:1px solid var(--border);border-radius:2px" onclick="toggleRowMenu('${item.id}',event)">•••</button>
-        <div id="rmenu-${item.id}" style="display:none;position:absolute;right:0;top:100%;margin-top:2px;background:var(--canvas-3);border:1px solid var(--border-l);border-radius:3px;z-index:50;min-width:110px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.4)">
-          <button onclick="closeRowMenu('${item.id}');openEditItemModal('${item.id}')" style="display:block;width:100%;padding:8px 14px;background:transparent;border:none;color:var(--text);font-size:12px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;text-align:left;cursor:pointer;text-transform:uppercase">✎ Edit</button>
-          <button onclick="closeRowMenu('${item.id}');delItem('${item.id}')" style="display:block;width:100%;padding:8px 14px;background:transparent;border:none;color:var(--rust);font-size:12px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;text-align:left;cursor:pointer;text-transform:uppercase">✕ Delete</button>
-        </div>
+        <button class="btn-ic" style="font-size:14px;padding:2px 8px;opacity:.55"
+          onclick="event.stopPropagation();_invMenu(this,'${item.id}',${item.restock?1:0})">•••</button>
       </td>
     </tr>
-    ${!isSub&&subs.length?`<tr class="irow"><td colspan="5" style="padding:1px 9px 1px 28px;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-m);letter-spacing:.08em;text-transform:uppercase">includes:</td></tr>`:''}
+    
     ${subs.map(s=>itemRow(s,true)).join('')}
-    ${!isSub?`<tr class="irow add-sub-row"><td colspan="5"><button class="add-sub-btn" onclick="openAddSubModal('${item.id}')">+ add to group</button></td></tr>`:''}
+    ${!isSub?`<tr class="irow add-sub-row"><td colspan="5"><button class="add-sub-btn" onclick="openAddSubModal('${item.id}')">+ Add item to group</button></td></tr>`:''}
   `;
 }
 
-function toggleCIMenu(id, e){
-  e.stopPropagation();
-  const el=document.getElementById(id);
-  if(!el) return;
-  const wasOpen=el.style.display==='block';
-  document.querySelectorAll('[id^="ci-menu-"]').forEach(m=>m.style.display='none');
-  if(!wasOpen) el.style.display='block';
-}
-function closeCIMenu(id){
-  const el=document.getElementById(id);
-  if(el) el.style.display='none';
-}
-document.addEventListener('click',()=>document.querySelectorAll('[id^="ci-menu-"]').forEach(m=>m.style.display='none'));
+// ── FLOATING CONTEXT MENU ──
+const _ctxRegistry={};
 
-function toggleRowMenu(id, e){
-  e.stopPropagation();
-  const el=document.getElementById('rmenu-'+id);
-  const wasOpen=el.style.display==='block';
-  // close all open menus first
-  document.querySelectorAll('[id^="rmenu-"]').forEach(m=>m.style.display='none');
-  if(!wasOpen) el.style.display='block';
+function registerCtxMenu(id, actions){
+  _ctxRegistry[id]=actions;
 }
-function closeRowMenu(id){ const el=document.getElementById('rmenu-'+id); if(el) el.style.display='none'; }
-document.addEventListener('click',()=>document.querySelectorAll('[id^="rmenu-"]').forEach(m=>m.style.display='none'));
+
+function openCtxMenu(id, btnEl){
+  const actions=_ctxRegistry[id];
+  if(!actions) return;
+  let menu=document.getElementById('_ctxMenu');
+  if(!menu){
+    menu=document.createElement('div');
+    menu.id='_ctxMenu';
+    menu.style.cssText='position:fixed;z-index:9999;border-radius:10px;overflow:hidden;display:none';
+    document.body.appendChild(menu);
+  }
+  // Toggle
+  if(menu.dataset.openId===id && menu.style.display==='block'){
+    menu.style.display='none';
+    menu.dataset.openId='';
+    return;
+  }
+  menu.style.background='var(--canvas-2)';
+  menu.style.boxShadow='0 8px 32px rgba(0,0,0,.18)';
+  menu.style.minWidth='180px';
+  menu.innerHTML=actions.map((a,i)=>
+    '<button data-idx="'+i+'" style="display:block;width:100%;padding:11px 16px;background:transparent;'+
+    'border:none;font-family:Familjen Grotesk,sans-serif;font-size:14px;color:'+(a.color||'var(--text-d)')+
+    ';text-align:left;cursor:pointer">'+a.label+'</button>'
+  ).join('');
+  menu.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const idx=parseInt(btn.dataset.idx);
+      try{ actions[idx].fn(); }catch(e){ console.error(e); }
+      menu.style.display='none';
+    });
+    btn.addEventListener('mouseover',()=>btn.style.background='var(--canvas-3)');
+    btn.addEventListener('mouseout',()=>btn.style.background='transparent');
+  });
+  const rect=btnEl.getBoundingClientRect();
+  const menuWidth=180;
+  const left=Math.min(rect.right-menuWidth, window.innerWidth-menuWidth-8);
+  menu.style.top=(rect.bottom+6)+'px';
+  menu.style.left=Math.max(8,left)+'px';
+  menu.style.display='block';
+  menu.dataset.openId=id;
+}
+
+function hideCtxMenu(){
+  const menu=document.getElementById('_ctxMenu');
+  if(menu){ menu.style.display='none'; menu.dataset.openId=''; }
+}
+
+// Close when clicking outside
+document.addEventListener('click',e=>{
+  const menu=document.getElementById('_ctxMenu');
+  if(menu&&menu.style.display==='block'&&!menu.contains(e.target)){
+    menu.style.display='none';
+    menu.dataset.openId='';
+  }
+});
+
+// Legacy stubs
+function closeAllMenus(){ hideCtxMenu(); }
+function closeCIMenu(){ hideCtxMenu(); }
+function toggleCIMenu(){ hideCtxMenu(); }
+
+// Helper: checklist item menu
+function _ciMenu(btn, tripId, itemId){
+  registerCtxMenu('ci-'+itemId,[
+    {label:'Remove from trip', color:'var(--rust)', fn:()=>removeFromChecklist(tripId, itemId)}
+  ]);
+  openCtxMenu('ci-'+itemId, btn);
+}
+
+// Helper: post-trip item menu
+function _ptMenu(btn, tripId, itemId){
+  registerCtxMenu('pt-'+itemId,[
+    {label:'Left at site',    color:'var(--rust)',    fn:()=>flagLeftAtSite(tripId, itemId)},
+    {label:'Needs repair',    color:'var(--amber-d)', fn:()=>flagDamaged(tripId, itemId,'repair')},
+    {label:'Needs replacing', color:'var(--purple)',  fn:()=>flagDamaged(tripId, itemId,'replace')}
+  ]);
+  openCtxMenu('pt-'+itemId, btn);
+}
+
+function toggleRowMenu(id,e){ e.stopPropagation(); _invMenu(e.currentTarget||e.target,id,0); }
+function closeRowMenu(){ hideCtxMenu(); }
+
+function _invMenu(btn, itemId, isRestock){
+  const actions=[
+    {label:'Edit', fn:()=>openEditItemModal(itemId)},
+    {label:isRestock?'Mark restocked':'Add to shopping list', color:'var(--amber-d)', fn:()=>toggleRestock(itemId)},
+    {label:'Delete', color:'var(--rust)', fn:()=>delItem(itemId)}
+  ];
+  registerCtxMenu('inv-'+itemId, actions);
+  openCtxMenu('inv-'+itemId, btn);
+}
 
 function toggleCat(c){
   if(collapsedCats.has(c)) collapsedCats.delete(c);
@@ -886,14 +1133,14 @@ function renderTrips(){
     el.innerHTML=`
       <div style="text-align:center;padding:40px 20px 30px">
         <div style="font-size:52px;margin-bottom:12px;line-height:1">⛺</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:.06em;color:var(--ink,var(--text));margin-bottom:8px">Where are you heading?</div>
-        <div style="font-size:13px;color:var(--text-m);margin-bottom:24px;line-height:1.6;max-width:280px;margin-left:auto;margin-right:auto">Plan a trip and Base Camp will help you pack everything you need — stress free.</div>
+        <div style="font-family:'Familjen Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:.06em;color:var(--ink,var(--text));margin-bottom:8px">Where are you heading?</div>
+        <div style="font-size:13px;color:var(--text-m);margin-bottom:24px;line-height:1.6;max-width:280px;margin-left:auto;margin-right:auto">Plan a trip and NeverLeft will help you pack everything you need — stress free.</div>
         <button class="btn btn-p" style="font-size:13px;padding:10px 24px" onclick="openNewTripModal()">Plan my first trip →</button>
       </div>`; return;
   }
 
   // Sort: upcoming first, then by date, complete/post-trip at bottom
-  const statusOrder={'planning':0,'packing':1,'pack-up':2,'pack-away':3,'post-trip':4,'complete':5};
+  const statusOrder={'planning':0,'packing':1,'pack-up':2,'pack-away':3,'post-trip':4,'complete':5}; // pack-up=packing up camp
   const sorted=[...S.trips].sort((a,b)=>{
     const ao=statusOrder[a.status]??3, bo=statusOrder[b.status]??3;
     if(ao!==bo) return ao-bo;
@@ -931,7 +1178,7 @@ function renderTrips(){
     return `<div style="margin-top:10px">
       <div style="display:flex;justify-content:space-between;margin-bottom:4px">
         <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${packed} packed · ${ready} ready · ${total-(packed+ready)} to go</span>
-        <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--sage)">${pct}%</span>
+        <span style="font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--sage)">${pct}%</span>
       </div>
       <div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden;display:flex">
         <div style="width:${Math.round(packed/total*100)}%;background:var(--sage);transition:width .3s"></div>
@@ -940,19 +1187,23 @@ function renderTrips(){
     </div>`;
   }
 
-  // Hero card for upcoming trip
+  // Hero card — pressure-aware, Field direction
+  const pc=pressureCountdown(upcoming?.date, upcoming?.nights);
   const heroHtml=upcoming?`
-    <div onclick="openTrip('${upcoming.id}')" style="background:var(--canvas-2);border:1.5px solid var(--amber-d);border-radius:8px;padding:18px;margin-bottom:16px;cursor:pointer;position:relative;overflow:hidden">
-      <div style="position:absolute;right:12px;top:12px;font-size:36px;opacity:.08;line-height:1;pointer-events:none">⛺</div>
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px">
+    <div onclick="openTrip('${upcoming.id}')" style="background:var(--canvas-2);border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.1);padding:20px;margin-bottom:18px;cursor:pointer;position:relative;overflow:hidden">
+      <div style="position:absolute;right:16px;bottom:16px;font-size:48px;opacity:.05;line-height:1;pointer-events:none;user-select:none">⛺</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
         <span class="tstatus ts-${upcoming.status}">${STLAB[upcoming.status]||upcoming.status}</span>
-        ${countdown(upcoming.date)?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--amber);letter-spacing:.06em">${countdown(upcoming.date)}</span>`:''}
+        ${pc?`<div style="text-align:right">
+          <div style="font-family:'Familjen Grotesk',sans-serif;font-size:22px;font-weight:700;color:${pc.color};line-height:1${pc.pulse?';animation:pulse 2s infinite':''}">${pc.label}</div>
+          ${pc.sub?`<div style="font-size:11px;color:var(--text-m);margin-top:1px">${pc.sub}</div>`:''}
+        </div>`:''}
       </div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;letter-spacing:.04em;color:var(--text);line-height:1.1;margin-bottom:3px">${esc(upcoming.name)}</div>
-      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${upcoming.date?fmtDate(upcoming.date)+' · ':''}${upcoming.nights} night${upcoming.nights!==1?'s':''} · ${SELAB[upcoming.season]||''} · ${SITELAB[upcoming.site]||''}</div>
+      <div style="font-family:'Familjen Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;color:var(--text);line-height:1.15;margin-bottom:4px">${esc(upcoming.name)}</div>
+      <div style="font-size:13px;color:var(--text-m);margin-bottom:10px">${upcoming.nights} night${upcoming.nights!==1?'s':''}${upcoming.date?' · '+fmtDate(upcoming.date):''}${upcoming.dog?' · 🐕 Biscuit coming':''}</div>
       ${peopleAvatars(upcoming)}
       ${packProgress(upcoming)}
-      <div style="margin-top:12px;display:flex;gap:7px">
+      <div style="margin-top:14px;display:flex;gap:7px">
         <button class="btn btn-p btn-sm" onclick="event.stopPropagation();openTrip('${upcoming.id}')">Open trip →</button>
         ${upcoming.status==='planning'?`<button class="btn btn-o btn-sm" onclick="event.stopPropagation();startPacking('${upcoming.id}')">Start packing</button>`:''}
       </div>
@@ -960,7 +1211,7 @@ function renderTrips(){
 
   // Remaining trips as compact cards
   const restHtml=rest.length?`
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);margin-bottom:8px">${upcoming?'Other trips':'All trips'}</div>
+    <div style="font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);margin-bottom:8px">${upcoming?'Other trips':'All trips'}</div>
     <div class="tlist">${rest.map(t=>`
       <div class="tcard" onclick="openTrip('${t.id}')">
         <div>
@@ -976,7 +1227,7 @@ function renderTrips(){
 
   el.innerHTML=`
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-d)">My Trips</span>
+      <span style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-d)">My Trips</span>
       <button class="btn btn-p btn-sm" onclick="openNewTripModal()">+ New Trip</button>
     </div>
     ${heroHtml}
@@ -1011,51 +1262,97 @@ function tripDetail(trip){
   else if(activeTripTab==='actions')   body=actionsBody(trip);
   else if(activeTripTab==='post-trip') body=postTripBody(trip);
   else body=notesBody(trip);
+  // Default view per stage when opening trip
+  if(!body) body=notesBody(trip);
+
+  // ── Stage stepper ──
+  const stages=[
+    {id:'planning',  label:'Plan',        tab:'notes'},
+    {id:'packing',   label:'Packing',     tab:'checklist'},
+    {id:'pack-up',   label:'Packing up',  tab:'pack-up'},
+    {id:'pack-away', label:'Back home',   tab:'pack-away'},
+  ];
+  const stageOrder=stages.map(s=>s.id);
+  const currentIdx=stageOrder.indexOf(trip.status==='complete'?'post-trip':trip.status);
+  const stepperHtml=`<div class="stepper">
+    ${stages.map((s,i)=>{
+      const isDone=i<currentIdx||(trip.status==='complete');
+      const isCurrent=i===currentIdx&&trip.status!=='complete';
+      const cls=isDone?'done':isCurrent?'current':'';
+      return `${i>0?`<div class="step-line ${i<=currentIdx?'done':''}"></div>`:''}
+        <div class="step ${cls}" onclick="advanceStatus('${trip.id}','${s.id}','${s.tab}')">
+          <div class="step-dot">${isDone?'✓':i+1}</div>
+          <div class="step-label">${s.label}</div>
+        </div>`;
+    }).join('')}
+    ${trip.status!=='complete'?`<div class="step-line"></div>
+      <div class="step" onclick="advanceStatus('${trip.id}','complete','notes')">
+        <div class="step-dot">✓</div>
+        <div class="step-label">Done</div>
+      </div>`:`<div class="step-line done"></div><div class="step done"><div class="step-dot">✓</div><div class="step-label">Done</div></div>`}
+  </div>`;
+
+  // ── Human subtitle ──
+  const people=(S.people||[]).map(p=>p.name);
+  const crewStr=people.length<=2?people.join(' & '):people.slice(0,-1).join(', ')+' & '+people[people.length-1];
+  const subtitle=[
+    trip.nights+' night'+(trip.nights!==1?'s':''),
+    trip.date?fmtDate(trip.date):'',
+    crewStr||(trip.dog?'with the dog':''),
+  ].filter(Boolean).join(' · ');
 
   return `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <button class="btn btn-o btn-sm" onclick="closeTrip()">← All Trips</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <button class="tback" onclick="closeTrip()">← My Trips</button>
       <div style="display:flex;gap:5px">
-        <button class="btn btn-o btn-sm" onclick="openEditTripModal('${trip.id}')">✎ Edit</button>
+        <button class="btn btn-o btn-sm" onclick="openEditTripModal('${trip.id}')">Edit</button>
         <button class="btn btn-x" onclick="delTrip('${trip.id}')">Delete</button>
       </div>
     </div>
-    <div class="tdetail">
-      <div class="tdhdr">
-        <div>
-          <div class="tdname">${esc(trip.name)}</div>
-          ${trip.date?`<div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:1px">${fmtDate(trip.date)}</div>`:''}
-          <div class="chips">${chips.map(c=>`<span class="chip">${esc(c)}</span>`).join('')}</div>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
-          <select class="fs" style="font-size:11px;padding:4px 8px;text-transform:uppercase;letter-spacing:.08em" onchange="setTripStatusFromDropdown('${trip.id}',this.value)">
-            <option value="planning"  ${trip.status==='planning'?'selected':''}>Planning</option>
-            <option value="packing"   ${trip.status==='packing'?'selected':''}>Packing</option>
-            <option value="pack-up"   ${trip.status==='pack-up'?'selected':''}>Pack up camp</option>
-            <option value="pack-away" ${trip.status==='pack-away'?'selected':''}>Unpack at home</option>
-            <option value="post-trip" ${trip.status==='post-trip'?'selected':''}>Back home</option>
-            <option value="complete"  ${trip.status==='complete'?'selected':''}>Complete</option>
-          </select>
-          ${statusBtn(trip)}
-        </div>
-      </div>
-      <div class="ttabs">
-        <button class="ttab ${activeTripTab==='checklist'?'on':''}" onclick="setTripTab('checklist')">Packing list</button>
-        <button class="ttab ${activeTripTab==='pack-up'?'on':''}" onclick="setTripTab('pack-up')">Pack up camp</button>
-        <button class="ttab ${activeTripTab==='pack-away'?'on':''}" onclick="setTripTab('pack-away')">Unpack at home</button>
-        <button class="ttab ${activeTripTab==='actions'?'on':''}" onclick="setTripTab('actions')">Reminders</button>
-        <button class="ttab ${activeTripTab==='post-trip'?'on':''}" onclick="setTripTab('post-trip')">Back home</button>
-        <button class="ttab ${activeTripTab==='notes'?'on':''}" onclick="setTripTab('notes')">Notes</button>
-      </div>
-      <div class="tbody">${body}</div>
+    <div class="ttitle">${esc(trip.name)}</div>
+    <div class="tsubtitle">${subtitle}</div>
+    ${stepperHtml}
+    ${(()=>{
+      // Contextual secondary links based on current stage — no tab bar
+      const links={
+        planning:[  {tab:'notes',     label:'Notes'}],
+        packing:[   {tab:'actions',   label:'Reminders'},{tab:'notes',label:'Notes'}],
+        'pack-up':[ {tab:'actions',   label:'Reminders'},{tab:'notes',label:'Notes'}],
+        'pack-away':[{tab:'post-trip',label:'Review'},   {tab:'notes',label:'Notes'}],
+        'post-trip':[{tab:'pack-away',label:'Unpack'},   {tab:'notes',label:'Notes'}],
+        complete:[  {tab:'notes',     label:'Notes'}],
+      };
+      const stageLinks=links[trip.status]||[];
+      if(!stageLinks.length) return '';
+      return `<div style="display:flex;gap:10px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+        ${stageLinks.map(l=>`<button onclick="setTripTab('${l.tab}')" style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;background:transparent;border:none;cursor:pointer;color:${activeTripTab===l.tab?'var(--sage)':'var(--text-m)'};font-weight:${activeTripTab===l.tab?'600':'400'};padding:0;text-decoration:none;transition:color .15s">${l.label}${activeTripTab===l.tab?' ↗':''}</button>`).join('')}
+      </div>`;
+    })()}
+    <div class="tbody">${body}</div>
     </div>`;
+}
+
+function pressureCountdown(dateStr, nights){
+  if(!dateStr) return null;
+  const diff=Math.ceil((new Date(dateStr+'T12:00:00')-new Date())/(1000*60*60*24));
+  if(diff<0){
+    const end=Math.ceil((new Date(dateStr+'T12:00:00')-new Date())/(1000*60*60*24))+(nights||3);
+    if(end>=0) return {label:'You\'re there!', sub:'', color:'var(--sage)', pulse:false};
+    return null;
+  }
+  if(diff===0) return {label:'Today is the day', sub:'Pack the car — you leave today', color:'var(--rust)', pulse:true};
+  if(diff===1) return {label:'Tomorrow', sub:'Everything should be packed tonight', color:'var(--rust)', pulse:false};
+  if(diff<=3)  return {label:diff+' days', sub:'Time to get organised', color:'var(--amber)', pulse:false};
+  if(diff<=7)  return {label:diff+' days', sub:'Start thinking about packing', color:'var(--amber-l)', pulse:false};
+  if(diff<=14) return {label:diff+' days', sub:'Plenty of time — no rush', color:'var(--sage)', pulse:false};
+  return {label:diff+' days', sub:'', color:'var(--text-m)', pulse:false};
 }
 
 function statusBtn(trip){
   if(trip.status==='planning')  return `<button class="btn btn-p btn-sm" onclick="startPacking('${trip.id}')">Start packing →</button>`;
-  if(trip.status==='packing')   return `<button class="btn btn-p btn-sm" onclick="advanceStatus('${trip.id}','pack-up','pack-up')">At camp — Pack up camp →</button>`;
-  if(trip.status==='pack-up')   return `<button class="btn btn-p btn-sm" onclick="advanceStatus('${trip.id}','pack-away','pack-away')">Home — Pack Away →</button>`;
-  if(trip.status==='pack-away') return `<button class="btn btn-g btn-sm" onclick="advanceStatus('${trip.id}','post-trip','post-trip')">Done — Post-trip →</button>`;
+  if(trip.status==='packing')   return `<button class="btn btn-p btn-sm" onclick="advanceStatus('${trip.id}','pack-up','pack-up')">At camp — start packing up →</button>`;
+  if(trip.status==='pack-up')   return `<button class="btn btn-p btn-sm" onclick="advanceStatus('${trip.id}','pack-away','pack-away')">Back home — unpack →</button>`;
+  if(trip.status==='pack-away') return `<button class="btn btn-g btn-sm" onclick="advanceStatus('${trip.id}','post-trip','post-trip')">All done →</button>`;
   return '';
 }
 
@@ -1072,6 +1369,7 @@ function setTripStatusFromDropdown(tripId, status){
   if(!trip) return;
   trip.status=status;
   if(status==='packing' && !trip.checklist) genChecklist(tripId);
+  if(status==='packing')   activeTripTab='checklist';
   if(status==='pack-up')   activeTripTab='pack-up';
   if(status==='pack-away') activeTripTab='pack-away';
   if(status==='post-trip') activeTripTab='post-trip';
@@ -1107,17 +1405,17 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
     <div id="clFilters" style="display:${checklistFiltersOpen?'block':'none'};padding:10px;background:var(--canvas-3);border-radius:3px;margin-bottom:12px">
       ${(S.people&&S.people.length)?`
       <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;align-items:center">
-        <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em">Person:</span>
+        <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em">Person:</span>
         <button class="fb ${checklistPersonFilter==='all'?'on':''}" onclick="setChecklistPersonFilter('all')">All</button>
         ${S.people.map(p=>`<button class="fb" style="${checklistPersonFilter===p.id?`background:${p.color}22;color:${p.color};border-color:${p.color}66`:''}" onclick="setChecklistPersonFilter('${p.id}')">${p.emoji||'👤'} ${p.name}</button>`).join('')}
       </div>`:''}
       <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;align-items:center">
-        <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em">Location:</span>
+        <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em">Location:</span>
         <button class="fb ${checklistLocFilter==='all'?'on':''}" onclick="setChecklistLocFilter('all')">All</button>
         ${getStorageLocs().map(l=>`<button class="fb" style="${checklistLocFilter===l.id?'background:var(--canvas-3);color:var(--amber);border-color:var(--amber-d)':''}" onclick="setChecklistLocFilter('${l.id}')">${l.label}</button>`).join('')}
       </div>
       <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
-        <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em">Sort:</span>
+        <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em">Sort:</span>
         ${[['location','Location'],['category','Category'],['type','Type'],['name','Name'],['restock','Restocking first']].map(([v,l])=>`<button class="fb ${checklistSort===v?'on':''}" onclick="setChecklistSort('${v}')">${l}</button>`).join('')}
         <button class="fb${checklistHidePacked?' on':''}" onclick="toggleHidePacked()" style="${checklistHidePacked?'background:rgba(107,140,90,.15);color:var(--sage);border-color:rgba(107,140,90,.3)':''}">
           ${checklistHidePacked?'👁 Show packed':'👁 Hide packed'}
@@ -1176,7 +1474,7 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
   } else if(checklistSort==='type'){
     groupKey=item=>item.type;
     groupOrder=['always','house','consumable','seasonal'];
-    groupLabel=id=>({always:'Always in kit',house:'Bring from home',consumable:'Needs restocking',seasonal:'Seasonal'}[id]||id);
+    groupLabel=id=>({always:'Always packed',house:'Bring from home',consumable:'Needs restocking',seasonal:'Seasonal'}[id]||id);
     groupIcon=()=>'';
   } else {
     groupKey=null; // no grouping for name / restock
@@ -1195,34 +1493,64 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
   const pbarReadyW=pctR-pctP;
   const pbarPackedW=pctP;
 
+  const hasActiveSort=checklistSort!=='location'||checklistHidePacked||checklistPersonFilter!=='all'||checklistLocFilter!=='all';
   const sortBar=`
-    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em;align-self:center">Sort:</span>
-      ${[['location','Location'],['category','Category'],['type','Type'],['name','Name'],['restock','Restock first']].map(([v,l])=>
-        `<button class="fb ${checklistSort===v?'on':''}" onclick="setChecklistSort('${v}')">${l}</button>`
-      ).join('')}
-      <button class="fb${checklistHidePacked?' on':''}" onclick="toggleHidePacked()" style="${checklistHidePacked?'background:rgba(107,140,90,.15);color:var(--sage);border-color:rgba(107,140,90,.3)':''}">
-        ${checklistHidePacked?'👁 Show packed':'👁 Hide packed'}
+    <div style="display:flex;gap:6px;align-items:center;margin-bottom:14px;flex-wrap:wrap">
+      <button class="btn btn-o btn-sm" id="clSortToggle" onclick="toggleChecklistControls()" style="${hasActiveSort?'color:var(--amber);border-color:var(--amber-d)':''}">
+        ⚙ ${hasActiveSort?'Filters active':'Sort & filter'}
       </button>
+      ${checklistHidePacked?`<button class="fb on" onclick="toggleHidePacked()" style="background:rgba(107,140,90,.15);color:var(--sage)">👁 Show packed</button>`:''}
+      ${checklistPersonFilter!=='all'?`<button class="fb on" onclick="setChecklistPersonFilter('all')" style="background:rgba(212,144,42,.1);color:var(--amber)">${(S.people||[]).find(p=>p.id===checklistPersonFilter)?.name||'Person'} ✕</button>`:''}
+      ${checklistLocFilter!=='all'?`<button class="fb on" onclick="setChecklistLocFilter('all')" style="background:rgba(212,144,42,.1);color:var(--amber)">${labMap(getStorageLocs())[checklistLocFilter]||checklistLocFilter} ✕</button>`:''}
+    </div>
+    <div id="clControls" style="display:none;background:var(--canvas-2);border-radius:12px;padding:12px 14px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.07)">
+      <div style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);margin-bottom:8px">Group by</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px">
+        ${[['location','📍 Location'],['category','Category'],['type','Type'],['name','Name'],['restock','Restock first']].map(([v,l])=>
+          `<button class="fb ${checklistSort===v?'on':''}" onclick="setChecklistSort('${v}')">${l}</button>`
+        ).join('')}
+      </div>
+      <div style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);margin-bottom:8px">Filter by person</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px">
+        <button class="fb ${checklistPersonFilter==='all'?'on':''}" onclick="setChecklistPersonFilter('all')">Everyone</button>
+        ${(S.people||[]).map(p=>`<button class="fb" style="${checklistPersonFilter===p.id?'background:'+p.color+'22;color:'+p.color+';border-color:'+p.color+'66':''}" onclick="setChecklistPersonFilter('${p.id}')">${p.emoji||'👤'} ${p.name}</button>`).join('')}
+      </div>
+      <div style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);margin-bottom:8px">Filter by location</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px">
+        <button class="fb ${checklistLocFilter==='all'?'on':''}" onclick="setChecklistLocFilter('all')">All</button>
+        ${getStorageLocs().map(l=>`<button class="fb ${checklistLocFilter===l.id?'on':''}" onclick="setChecklistLocFilter('${l.id}')">${l.label}</button>`).join('')}
+      </div>
+      <label class="ck" style="font-size:12px"><input type="checkbox" ${checklistHidePacked?'checked':''} onchange="toggleHidePacked()"> Hide packed items</label>
     </div>`;
 
   const itemsHtml=groupKey
     ? (groupOrder||[]).filter(k=>groups[k]?.length).map(k=>{
         const groupId='clgrp-'+checklistSort+'-'+k;
-        const open=!collapsedLocs.has(groupId);
         const packedCount=groups[k].filter(x=>x.ci.state==='packed').length;
-        // Count includes sub-items for accurate total
         const subTotal=groups[k].reduce((s,{item})=>s+subItems(item.id).filter(si=>!isExcluded(si,trip)).length,0);
         const totalCount=groups[k].length+subTotal;
+        const allDone=packedCount===groups[k].length&&groups[k].length>0;
+        // Auto-collapse completed groups
+        if(allDone && !collapsedLocs.has(groupId)) collapsedLocs.add(groupId);
+        const open=!collapsedLocs.has(groupId);
+        const pct=totalCount?Math.round(packedCount/totalCount*100):0;
         return `<div class="cloc-group">
           <div class="cloc-hdr" onclick="toggleLocGroup('${groupId}')">
-            <span class="cg-toggle ${open?'open':'closed'}" style="font-size:9px">▼</span>
-            <span class="cloc-title">${groupIcon(k)}${groupLabel(k)}</span>
-            <span class="cg-count">${packedCount}/${totalCount}</span>
+            <span class="cg-toggle ${open?'open':'closed'}" style="font-size:9px;color:var(--text-m)">▼</span>
+            <span class="cloc-title">${groupLabel(k)}</span>
+            ${allDone
+              ? `<span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;color:var(--sage);letter-spacing:.06em">✓ All packed</span>`
+              : `<div class="cloc-progress"><div class="cloc-progress-fill" style="width:${pct}%"></div></div>
+                 <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${packedCount}/${totalCount}</span>`}
           </div>
-          <div id="clg-${groupId}" style="display:${open?'block':'none'}">
-            ${groups[k].map(({ci,item})=>ciRow(ci,item,trip,hl)).join('')}
-          </div>
+          ${allDone && !open
+            ? `<div class="cloc-group-done">
+                <span style="font-size:16px">✅</span>
+                <span style="font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:700;color:var(--sage);letter-spacing:.06em;text-transform:uppercase">${groupLabel(k)} — all ${totalCount} item${totalCount!==1?'s':''} packed</span>
+               </div>`
+            : `<div id="clg-${groupId}" style="display:${open?'block':'none'}">
+                ${groups[k].map(({ci,item})=>ciRow(ci,item,trip,hl)).join('')}
+               </div>`}
         </div>`;
       }).join('')
     : filteredCIs.map(({ci,item})=>ciRow(ci,item,trip,hl)).join('');
@@ -1240,8 +1568,9 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
         <div class="pbar-packed" style="width:${pbarPackedW}%"></div>
         <div class="pbar-ready" style="width:${pbarReadyW}%"></div>
       </div>
-      <div class="cprog-hint">Tap once = ✓ Ready · Tap again = ✓ Packed · Tap again = uncheck</div>
-      ${hlCount?`<div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--amber);letter-spacing:.05em;margin-top:4px">▲ ${hlCount} items highlighted for this trip</div>`:''}
+      <div class="cprog-hint">Tap once = ready · tap again = packed · tap again = clear</div>
+      ${pctP===100?`<div class="cprog-complete">🎉 Everything packed — you're good to go!</div>`:''}
+      ${hlCount?`<div style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--amber);letter-spacing:.05em;margin-top:4px">▲ ${hlCount} items highlighted for this trip</div>`:''}
     </div>
     ${itemsHtml}
     <div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap">
@@ -1275,10 +1604,10 @@ function ciRow(ci,item,trip,hl){
     const subPacked=subCIs.filter(c=>c.state==='packed').length;
     const subReady=subCIs.filter(c=>c.state==='ready').length;
     return `
-      <div style="margin:4px 0 2px;padding:6px 8px;background:var(--canvas-3);border-left:2px solid var(--amber-d);border-radius:2px">
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-d)">${esc(item.name)}</span>
-          <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${subPacked} packed · ${subReady} ready · ${visibleSubs.length} total</span>
+      <div style="margin:0 0 4px;padding:8px 14px 6px;border-bottom:1px solid rgba(0,0,0,.06)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+          <span style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text)">${esc(item.name)}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);flex-shrink:0">${subPacked}/${visibleSubs.length}</span>
         </div>
       </div>
       ${visibleSubs.map(sub=>{
@@ -1294,7 +1623,7 @@ function ciRow(ci,item,trip,hl){
   // Regular item
   const needsRestock=item.restock||item.qty===0;
   const packsRoute=item.packsInto&&item.packsInto!==item.location
-    ?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--text-m)">${locMap[item.location]||item.location} → ${locMap[item.packsInto]||item.packsInto}</span>`
+    ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${locMap[item.location]||item.location} → ${locMap[item.packsInto]||item.packsInto}</span>`
     :`<span class="lbadge lb-${item.location}" style="font-size:8px;padding:1px 4px">${locMap[item.location]||item.location}</span>`;
 
   // Visible sub-items (respects person filter)
@@ -1308,32 +1637,31 @@ function ciRow(ci,item,trip,hl){
     <div class="ci ${ci.state||''} ${isHL?'hl':''}" style="position:relative" onclick="cycleState('${trip.id}','${ci.itemId}')">
       <div class="ci-state ${ci.state||''}">${ci.state==='packed'||ci.state==='ready'?'✓':''}</div>
       <div class="ci-body">
-        <div class="ci-name ${ci.state||''}">${esc(item.name)}${needsRestock?` <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--amber)">⚠ low stock</span>`:''}${(()=>{
+        <div class="ci-name ${ci.state||''}">${esc(item.name)}${needsRestock?` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--amber)">⚠ low stock</span>`:''}${(()=>{
           const prePending=(item.actions||[]).filter(a=>a.stage==='pre-trip');
           const tripActions=(trip.actionStates||{});
           const incomplete=prePending.filter(a=>!tripActions[item.id+'::'+a.id]);
           return (ci.state==='packed'||ci.state==='ready')&&incomplete.length
-            ? ` <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--rust)">⚡ ${incomplete.length} pre-trip action${incomplete.length!==1?'s':''} incomplete</span>`
+            ? ` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--rust)">⚡ ${incomplete.length} pre-trip action${incomplete.length!==1?'s':''} incomplete</span>`
             : incomplete.length
-              ? ` <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--teal)">⚡ ${incomplete.length} to do</span>`
+              ? ` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--teal)">⚡ ${incomplete.length} to do</span>`
               : '';
         })()}</div>
         <div class="ci-meta">
           ${qty>1?`<span class="ci-qty">×${qty}</span>`:''}
           ${packsRoute}
-          ${(S.people||[]).filter(p=>(item.personIds||[]).includes(p.id)).map(p=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55">${p.name}</span>`).join('')}
+          ${(S.people||[]).filter(p=>(item.personIds||[]).includes(p.id)).map(p=>`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55">${p.name}</span>`).join('')}
           ${isHL?`<span class="hl-tag">▲ ${(hl[item.id]||[]).join(', ')}</span>`:''}
           ${item.notes?`<span class="ci-note">${esc(item.notes)}</span>`:''}
         </div>
+        ${inlineActions(item,trip,['pre-trip','during'])}
       </div>
-      <div style="position:relative;flex-shrink:0" onclick="event.stopPropagation()">
-        <button class="btn-ic" style="padding:2px 6px;font-size:13px;border:1px solid var(--border);border-radius:2px" onclick="toggleCIMenu('ci-menu-${ci.itemId}',event)">•••</button>
-        <div id="ci-menu-${ci.itemId}" style="display:none;position:absolute;right:0;top:100%;margin-top:2px;background:var(--canvas-3);border:1px solid var(--border-l);border-radius:3px;z-index:50;min-width:130px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.4)">
-          <button onclick="closeCIMenu('ci-menu-${ci.itemId}');removeFromChecklist('${trip.id}','${ci.itemId}')" style="display:block;width:100%;padding:8px 14px;background:transparent;border:none;color:var(--rust);font-size:12px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;text-align:left;cursor:pointer;text-transform:uppercase">✕ Remove from trip</button>
-        </div>
+      <div style="flex-shrink:0">
+        <button class="btn-ic" style="padding:2px 6px;font-size:13px;opacity:.5"
+          onclick="event.stopPropagation();_ciMenu(this,'${trip.id}','${ci.itemId}')">•••</button>
       </div>
     </div>
-    ${visibleSubs.length?`<div style="padding:2px 5px 0 32px;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-m);letter-spacing:.08em;text-transform:uppercase">includes:</div>`:''}
+    ${visibleSubs.length?`<div style="padding:3px 0 0 46px;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-m);letter-spacing:.08em;text-transform:uppercase">includes:</div>`:''}
     ${visibleSubs.map(sub=>{
       let sci=cl.find(c=>c.itemId===sub.id);
       if(!sci){
@@ -1341,29 +1669,32 @@ function ciRow(ci,item,trip,hl){
         trip.checklist.push(sci);
       }
       return ciSubRow(sci,sub,trip,hl,locMap);
-    }).join('')}
-    ${inlineActions(item,trip,['pre-trip','during'])}`;
+    }).join('')}`;
 }
 
 function ciSubRow(sci,sub,trip,hl,locMap){
   const isSubHL=!!hl[sub.id];
   const needsRestock=sub.restock||sub.qty===0;
   const packsRoute=sub.packsInto&&sub.packsInto!==sub.location
-    ?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--text-m)">${locMap[sub.location]||sub.location} → ${locMap[sub.packsInto]||sub.packsInto}</span>`
+    ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${locMap[sub.location]||sub.location} → ${locMap[sub.packsInto]||sub.packsInto}</span>`
     :`<span class="lbadge lb-${sub.location}" style="font-size:8px;padding:1px 4px">${locMap[sub.location]||sub.location}</span>`;
-  return `<div class="ci sub-ci ${sci.state||''} ${isSubHL?'hl':''}" onclick="cycleState('${trip.id}','${sci.itemId}')">
+  return `<div class="ci sub-ci ${sci.state||''} ${isSubHL?'hl':''}" style="position:relative" onclick="cycleState('${trip.id}','${sci.itemId}')">
     <div class="ci-state ${sci.state||''}">${sci.state==='packed'||sci.state==='ready'?'✓':''}</div>
     <div class="ci-body">
-      <div class="ci-name ${sci.state||''}">${esc(sub.name)}${needsRestock?` <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--amber)">⚠ low stock</span>`:''}</div>
+      <div class="ci-name ${sci.state||''}">${esc(sub.name)}${needsRestock?` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--amber)">⚠ low stock</span>`:''}</div>
       <div class="ci-meta">
         ${packsRoute}
-        ${(S.people||[]).filter(p=>(sub.personIds||[]).includes(p.id)).map(p=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55">${p.name}</span>`).join('')}
+        ${(S.people||[]).filter(p=>(sub.personIds||[]).includes(p.id)).map(p=>`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55">${p.name}</span>`).join('')}
         ${isSubHL?`<span class="hl-tag">▲ ${(hl[sub.id]||[]).join(', ')}</span>`:''}
         ${sub.notes?`<span class="ci-note">${esc(sub.notes)}</span>`:''}
       </div>
+      ${inlineActions(sub,trip,['pre-trip','during'])}
     </div>
-  </div>
-  ${inlineActions(sub,trip,['pre-trip','during'])}`;
+    <div style="flex-shrink:0">
+      <button class="btn-ic" style="padding:2px 6px;font-size:13px;opacity:.5"
+        onclick="event.stopPropagation();_ciMenu(this,'${trip.id}','${sci.itemId}')">•••</button>
+    </div>
+  </div>`;
 }
 
 function packAwayBody(trip){
@@ -1414,7 +1745,7 @@ function packAwayBody(trip){
           const done=paStates[item.id]==='packed';
           const dest=item.location;
           const route=item.packsInto&&item.packsInto!==item.location
-            ?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--text-m)">${locMap[item.packsInto]||item.packsInto} → ${locMap[dest]||dest}</span>`
+            ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${locMap[item.packsInto]||item.packsInto} → ${locMap[dest]||dest}</span>`
             :`<span class="lbadge lb-${dest}" style="font-size:8px;padding:1px 4px">→ ${locMap[dest]||dest}</span>`;
           const subs=subItems(item.id).filter(s=>s.type!=='wishlist');
           const subDone=subs.filter(s=>paStates[s.id]==='packed').length;
@@ -1432,7 +1763,7 @@ function packAwayBody(trip){
             const subDoneFlag=paStates[sub.id]==='packed';
             const subDest=sub.location;
             const subRoute=sub.packsInto&&sub.packsInto!==sub.location
-              ?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--text-m)">${locMap[sub.packsInto]||sub.packsInto} → ${locMap[subDest]||subDest}</span>`
+              ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${locMap[sub.packsInto]||sub.packsInto} → ${locMap[subDest]||subDest}</span>`
               :`<span class="lbadge lb-${subDest}" style="font-size:8px;padding:1px 4px">→ ${locMap[subDest]||subDest}</span>`;
             return `<div class="ci sub-ci ${subDoneFlag?'checked':''}" style="${subDoneFlag?'opacity:.4':''}" onclick="cyclePackAwayState('${trip.id}','${sub.id}')">
               <div class="ci-state ${subDoneFlag?'packed':''}">${subDoneFlag?'✓':''}</div>
@@ -1452,12 +1783,12 @@ function packAwayBody(trip){
     <div style="background:var(--canvas-3);border:1px solid var(--border);border-radius:2px;padding:10px 14px;margin-bottom:14px">
       <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px">
         <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-d)">${doneCount} of ${total} stored away</span>
-        <span style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--sage)">${pct}%</span>
+        <span style="font-family:'Familjen Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--sage)">${pct}%</span>
       </div>
       <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
         <div style="width:${pct}%;height:100%;background:var(--sage);transition:width .3s"></div>
       </div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);margin-top:5px;letter-spacing:.05em">
+      <div style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--text-m);margin-top:5px;letter-spacing:.05em">
         Items grouped by where they are now → tap to confirm stored away
       </div>
     </div>
@@ -1509,13 +1840,9 @@ function postTripBody(trip){
   const damaged=trip.damaged||{};
 
   function ptMenu(itemId){
-    return `<td style="position:relative">
-      <button class="btn-ic" style="padding:2px 6px;font-size:12px;border:1px solid var(--border);border-radius:2px" onclick="toggleCIMenu('pt-menu-${itemId}',event)">•••</button>
-      <div id="pt-menu-${itemId}" style="display:none;position:absolute;right:0;top:100%;margin-top:2px;background:var(--canvas-3);border:1px solid var(--border-l);border-radius:3px;z-index:50;min-width:160px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.4)">
-        <button onclick="closeCIMenu('pt-menu-${itemId}');flagLeftAtSite('${trip.id}','${itemId}')" style="display:block;width:100%;padding:7px 14px;background:transparent;border:none;color:var(--rust);font-size:11px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;text-align:left;cursor:pointer;text-transform:uppercase">⚠ Left at site</button>
-        <button onclick="closeCIMenu('pt-menu-${itemId}');flagDamaged('${trip.id}','${itemId}','repair')" style="display:block;width:100%;padding:7px 14px;background:transparent;border:none;color:var(--amber);font-size:11px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;text-align:left;cursor:pointer;text-transform:uppercase">🔧 Needs repair</button>
-        <button onclick="closeCIMenu('pt-menu-${itemId}');flagDamaged('${trip.id}','${itemId}','replace')" style="display:block;width:100%;padding:7px 14px;background:transparent;border:none;color:var(--purple);font-size:11px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;text-align:left;cursor:pointer;text-transform:uppercase">✦ Needs replacing</button>
-      </div>
+    return `<td style="flex-shrink:0">
+      <button class="btn-ic" style="padding:2px 6px;font-size:13px;opacity:.5"
+        onclick="event.stopPropagation();_ptMenu(this,'${trip.id}','${itemId}')">•••</button>
     </td>`;
   }
 
@@ -1526,12 +1853,12 @@ function postTripBody(trip){
     </div>
 
     ${cons.length?`
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--rust);margin-bottom:8px">Restocking</div>
+    <div style="font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--rust);margin-bottom:8px">Restocking</div>
     <table class="itbl" style="margin-bottom:16px">
       <thead><tr><th>Item</th><th>Qty left</th><th>Restock</th><th></th></tr></thead>
       <tbody>${cons.map(item=>`
         <tr class="irow">
-          <td><div class="iname">${esc(item.name)}${damaged[item.id]?` <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:${damaged[item.id]==='repair'?'var(--amber)':'var(--purple)'}">${damaged[item.id]==='repair'?'🔧 repair':'✦ replace'}</span>`:''}</div></td>
+          <td><div class="iname">${esc(item.name)}${damaged[item.id]?` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:${damaged[item.id]==='repair'?'var(--amber)':'var(--purple)'}">${damaged[item.id]==='repair'?'🔧 repair':'✦ replace'}</span>`:''}</div></td>
           <td><div class="qc">
             <button class="qbtn" onclick="ptAdj('${item.id}',-1)">−</button>
             <span id="ptq-${item.id}">${item.qty}</span>
@@ -1544,12 +1871,12 @@ function postTripBody(trip){
     </table>`:''}
 
     ${nonCons.length?`
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-d);margin-bottom:8px">All Items</div>
+    <div style="font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-d);margin-bottom:8px">All Items</div>
     <table class="itbl" style="margin-bottom:16px">
       <thead><tr><th>Item</th><th>Type</th><th>OK?</th><th></th></tr></thead>
       <tbody>${nonCons.map(item=>`
         <tr class="irow">
-          <td><div class="iname">${esc(item.name)}${damaged[item.id]?` <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:${damaged[item.id]==='repair'?'var(--amber)':'var(--purple)'}">${damaged[item.id]==='repair'?'🔧 repair':'✦ replace'}</span>`:''}</div></td>
+          <td><div class="iname">${esc(item.name)}${damaged[item.id]?` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:${damaged[item.id]==='repair'?'var(--amber)':'var(--purple)'}">${damaged[item.id]==='repair'?'🔧 repair':'✦ replace'}</span>`:''}</div></td>
           <td><span class="tpill tp-${item.type}">${TLAB[item.type]||item.type}</span></td>
           <td><label class="ck"><input type="checkbox" ${!damaged[item.id]?'checked':''} onchange="if(this.checked)clearDamaged('${trip.id}','${item.id}')"> Good</label></td>
           ${ptMenu(item.id)}
@@ -1564,7 +1891,7 @@ function postTripBody(trip){
       const leftItems=Object.keys(trip.leftAtSite||{}).map(id=>S.items.find(i=>i.id===id)).filter(Boolean);
       if(!leftItems.length) return '';
       return `<div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border)">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--rust);margin-bottom:10px">⚠ Left at site</div>
+        <div style="font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--rust);margin-bottom:10px">⚠ Left at site</div>
         ${leftItems.map(item=>`
           <div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-bottom:1px solid var(--border);background:rgba(184,92,58,.05)">
             <span style="font-size:13px;font-weight:500;flex:1;color:var(--rust)">${esc(item.name)}</span>
@@ -1586,7 +1913,7 @@ function postTripBody(trip){
       if(!ptActions.length) return '';
       const tripActions=trip.actionStates||{};
       return `<div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border)">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:10px">⚡ Post-trip Actions</div>
+        <div style="font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:10px">⚡ Post-trip Actions</div>
         ${ptActions.map(({item,action})=>{
           const key=item.id+'::'+action.id;
           const done=!!tripActions[key];
@@ -1594,7 +1921,7 @@ function postTripBody(trip){
             <div style="width:18px;height:18px;border-radius:3px;border:1px solid ${done?'var(--sage)':'var(--border)'};background:${done?'rgba(107,140,90,.25)':'var(--canvas-3)'};display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--sage);flex-shrink:0">${done?'✓':''}</div>
             <div>
               <div style="font-size:12px;font-weight:500;${done?'text-decoration:line-through':''}">${esc(action.label)}</div>
-              <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.06em">${esc(item.name)}</div>
+              <div style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.06em">${esc(item.name)}</div>
             </div>
           </div>`;
         }).join('')}
@@ -1612,7 +1939,7 @@ function notesBody(trip){
       <div class="fg" style="margin-top:12px">
         <label class="fl">Activities</label>
         <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:5px">
-          ${trip.activities.map(a=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--teal);border:1px solid rgba(90,154,138,.3);background:rgba(90,154,138,.08);padding:2px 9px;border-radius:2px;text-transform:uppercase;letter-spacing:.08em">${a}</span>`).join('')}
+          ${trip.activities.map(a=>`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:11px;color:var(--teal);border:1px solid rgba(90,154,138,.3);background:rgba(90,154,138,.08);padding:2px 9px;border-radius:2px;text-transform:uppercase;letter-spacing:.08em">${a}</span>`).join('')}
         </div>
       </div>`:''}`;
 }
@@ -1627,7 +1954,7 @@ function renderRestock(){
   const byLoc={};
   ri.forEach(i=>{ if(!byLoc[i.location]) byLoc[i.location]=[]; byLoc[i.location].push(i); });
   el.innerHTML=`
-    <div style="margin-bottom:12px"><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--rust)">${ri.length} item${ri.length!==1?'s':''} to restock</span></div>
+    <div style="margin-bottom:12px"><span style="font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--rust)">${ri.length} item${ri.length!==1?'s':''} to restock</span></div>
     ${getStorageLocs().filter(l=>byLoc[l.id]).map(loc=>`
       <div class="cg">
         <div class="cg-hdr" style="cursor:default">
@@ -1662,7 +1989,7 @@ function renderWishlist(){
   items.forEach(i=>{ if(!g[i.category]) g[i.category]=[]; g[i.category].push(i); });
   el.innerHTML=`
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)">✦ ${items.length} Want list Item${items.length!==1?'s':''}</span>
+      <span style="font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)">✦ ${items.length} Want list Item${items.length!==1?'s':''}</span>
       <button class="btn btn-p btn-sm" onclick="openAddWishModal()">+ Add Item</button>
     </div>
     ${getCats().filter(c=>g[c.id]?.length).map(c=>`
@@ -1807,7 +2134,16 @@ function ptAdj(id,delta){
   renderStats();
 }
 
-function openTrip(id){ activeTripId=id; activeTripTab='checklist'; checklistLocFilter='all'; checklistPersonFilter='all'; checklistSort='location'; checklistHidePacked=false; checklistFiltersOpen=false; renderTrips(); }
+function openTrip(id){
+  activeTripId=id;
+  checklistLocFilter='all'; checklistPersonFilter='all';
+  checklistSort='location'; checklistHidePacked=false; checklistFiltersOpen=false;
+  // Open the right view for the current journey stage
+  const trip=S.trips.find(t=>t.id===id);
+  const stageTab={planning:'notes',packing:'checklist','pack-up':'pack-up','pack-away':'pack-away','post-trip':'post-trip',complete:'notes'};
+  activeTripTab=trip?(stageTab[trip.status]||'checklist'):'checklist';
+  renderTrips();
+}
 function closeTrip(){ activeTripId=null; renderTrips(); }
 function setTripTab(tab){ activeTripTab=tab; renderTrips(); }
 
@@ -1848,7 +2184,7 @@ function packUpBody(trip){
   // Sort controls reuse checklistSort state
   const sortBar=`
     <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em;align-self:center">Group:</span>
+      <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em;align-self:center">Group:</span>
       ${[['location','By location'],['category','By category'],['type','By type'],['name','By name']].map(([v,l])=>
         `<button class="fb ${checklistSort===v?'on':''}" onclick="setChecklistSort('${v}')">${l}</button>`
       ).join('')}
@@ -1867,7 +2203,7 @@ function packUpBody(trip){
   } else if(checklistSort==='type'){
     groupKey=item=>item.type;
     groupOrder=['always','house','consumable','seasonal'];
-    groupLabel=id=>({always:'Always in kit',house:'Bring from home',consumable:'Needs restocking',seasonal:'Seasonal'}[id]||id);
+    groupLabel=id=>({always:'Always packed',house:'Bring from home',consumable:'Needs restocking',seasonal:'Seasonal'}[id]||id);
     groupIcon=()=>'';
   } else if(checklistSort==='name'){
     groupKey=null;
@@ -1921,12 +2257,12 @@ function packUpBody(trip){
     <div style="background:var(--canvas-3);border:1px solid var(--border);border-radius:2px;padding:10px 14px;margin-bottom:14px">
       <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px">
         <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-d)">${doneCount} of ${total} packed away</span>
-        <span style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--sage)">${pct}%</span>
+        <span style="font-family:'Familjen Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--sage)">${pct}%</span>
       </div>
       <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
         <div style="width:${pct}%;height:100%;background:var(--sage);transition:width .3s"></div>
       </div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);margin-top:5px;letter-spacing:.05em">
+      <div style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--text-m);margin-top:5px;letter-spacing:.05em">
         Items are shown at their current packed location → tap to confirm packed away to storage
       </div>
     </div>
@@ -1963,7 +2299,7 @@ function packUpRow(item, trip, locMap){
   const done=state==='packed';
   const currentLoc=item.packsInto||item.location;
   const route=item.packsInto&&item.packsInto!==item.location
-    ?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--text-m)">${locMap[currentLoc]||currentLoc} → ${locMap[item.location]||item.location}</span>`
+    ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${locMap[currentLoc]||currentLoc} → ${locMap[item.location]||item.location}</span>`
     :`<span class="lbadge lb-${item.location}" style="font-size:8px;padding:1px 4px">${locMap[item.location]||item.location}</span>`;
 
   // sub-items
@@ -1984,7 +2320,7 @@ function packUpRow(item, trip, locMap){
     ${subs.map(sub=>{
       const subDone=(paStates[sub.id]||'unchecked')==='packed';
       const subRoute=sub.packsInto&&sub.packsInto!==sub.location
-        ?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--text-m)">${locMap[sub.packsInto]||sub.packsInto} → ${locMap[sub.location]||sub.location}</span>`
+        ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${locMap[sub.packsInto]||sub.packsInto} → ${locMap[sub.location]||sub.location}</span>`
         :`<span class="lbadge lb-${sub.location}" style="font-size:8px;padding:1px 4px">${locMap[sub.location]||sub.location}</span>`;
       return `<div class="ci sub-ci ${subDone?'checked':''}" style="${subDone?'opacity:.4':''}" onclick="cyclePackUpState('${trip.id}','${sub.id}')">
         <div class="ci-state ${subDone?'packed':''}">${subDone?'✓':''}</div>
@@ -2012,6 +2348,14 @@ function getAllLocs(){ return getLocs(); } // alias used in packAwayBody
 // ══════════════════════════════════════════════════
 // ITEM ACTIONS
 // ══════════════════════════════════════════════════
+function toggleRestock(id){
+  const item=S.items.find(i=>i.id===id);
+  if(!item) return;
+  item.restock=!item.restock;
+  save(); renderInv(); renderStats();
+  showToast(item.restock?'Added to shopping list 🛒':'Removed from shopping list');
+}
+
 function qAdj(id,delta){
   const item=S.items.find(i=>i.id===id);
   if(!item) return;
@@ -2214,6 +2558,15 @@ function clearChecklistFilters(){
   renderTrips();
 }
 
+function toggleChecklistControls(){
+  const el=document.getElementById('clControls');
+  if(!el) return;
+  const open=el.style.display==='block';
+  el.style.display=open?'none':'block';
+  const btn=document.getElementById('clSortToggle');
+  if(btn) btn.style.fontWeight=open?'':'700';
+}
+
 function setChecklistSort(val){
   checklistSort=val;
   renderTrips();
@@ -2354,15 +2707,17 @@ function closeMOver(e,id){ if(e.target===document.getElementById(id)) closeM(id)
 // NAV
 // ══════════════════════════════════════════════════
 function setTab(tab,btn){
+  if(tab==='people') tab='settings'; // People moved into Settings
   mainTab=tab;
-  document.querySelectorAll('.mtab').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
+  document.querySelectorAll('.hnav,.mtab').forEach(b=>b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
   ['inv','trips','restock','wishlist','people','settings'].forEach(t=>{ const el=document.getElementById('pg-'+t); if(el) el.style.display=t===tab?'block':'none'; });
   if(tab==='trips') renderTrips();
   if(tab==='inv') renderInv();
   if(tab==='wishlist') renderWishlist();
   if(tab==='people') renderPeople();
   if(tab==='settings') renderSettings();
+  if(tab==='settings'&&mainTab==='people') setTimeout(()=>{ const el=document.getElementById('settingsPeopleSection'); if(el) el.scrollIntoView({behavior:'smooth'}); },100);
 }
 
 function setTF(f,btn){
@@ -2387,15 +2742,15 @@ function inlineActions(item, trip, stages){
   const tripActions=trip.actionStates||{};
   const actions=(item.actions||[]).filter(a=>stages.includes(a.stage));
   if(!actions.length) return '';
-  return `<div style="padding:3px 6px 3px 32px;background:var(--canvas-3);border-left:2px solid var(--border-l)">
+  // Rendered as part of the ci card — visually nested, no stage label noise
+  return `<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,0.06)">
     ${actions.map(a=>{
       const key=item.id+'::'+a.id;
       const done=!!tripActions[key];
-      const sl=STAGE_LABELS[a.stage];
-      return `<div style="display:flex;align-items:center;gap:7px;padding:4px 0;cursor:pointer;border-bottom:1px solid var(--border);${done?'opacity:.45':''}" onclick="event.stopPropagation();toggleTripAction('${trip.id}','${item.id}','${a.id}')">
-        <div style="width:14px;height:14px;border-radius:2px;border:1px solid ${done?'var(--sage)':'var(--border)'};background:${done?'rgba(107,140,90,.25)':'transparent'};display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--sage);flex-shrink:0">${done?'✓':''}</div>
-        <span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:${sl?.color||'var(--text-m)'};text-transform:uppercase;letter-spacing:.06em;min-width:60px">${sl?.icon||''} ${sl?.label||a.stage}</span>
-        <span style="font-size:11px;${done?'text-decoration:line-through':''}">${esc(a.label)}</span>
+      return `<div style="display:flex;align-items:center;gap:10px;padding:5px 0;cursor:pointer;transition:opacity .15s;${done?'opacity:.4':''}"
+          onclick="event.stopPropagation();toggleTripAction('${trip.id}','${item.id}','${a.id}')">
+        <div style="width:20px;height:20px;border-radius:6px;border:2px solid ${done?'var(--sage)':'var(--border-l)'};background:${done?'var(--sage)':'transparent'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;transition:all .2s">${done?'✓':''}</div>
+        <span style="font-size:12px;font-weight:500;color:var(--text-m);${done?'text-decoration:line-through':''};flex:1">${esc(a.label)}</span>
       </div>`;
     }).join('')}
   </div>`;
@@ -2440,7 +2795,7 @@ function actionsBody(trip){
             <div style="width:20px;height:20px;border-radius:3px;border:1px solid ${done?'var(--sage)':'var(--border)'};background:${done?'rgba(107,140,90,.25)':'var(--canvas-3)'};display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--sage);flex-shrink:0">${done?'✓':''}</div>
             <div style="flex:1">
               <div style="font-size:13px;font-weight:500;${done?'text-decoration:line-through':''}">${esc(action.label)}</div>
-              <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.06em;margin-top:1px">${esc(item.name)}</div>
+              <div style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.06em;margin-top:1px">${esc(item.name)}</div>
             </div>
           </div>`;
         }).join('')}
@@ -2515,7 +2870,7 @@ function renderItemActionsList(){
   if(!actions.length){ el.innerHTML=''; return; }
   el.innerHTML=actions.map((a,i)=>`
     <div style="display:flex;align-items:center;gap:7px;padding:5px 7px;background:var(--canvas-3);border:1px solid var(--border);border-radius:2px;margin-bottom:4px">
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:${STAGE_LABELS[a.stage]?.color||'var(--text-m)'};text-transform:uppercase;letter-spacing:.06em;min-width:90px">${STAGE_LABELS[a.stage]?.icon||''} ${STAGE_LABELS[a.stage]?.label||a.stage}</span>
+      <span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:${STAGE_LABELS[a.stage]?.color||'var(--text-m)'};text-transform:uppercase;letter-spacing:.06em;min-width:90px">${STAGE_LABELS[a.stage]?.icon||''} ${STAGE_LABELS[a.stage]?.label||a.stage}</span>
       <span style="flex:1;font-size:12px">${esc(a.label)}</span>
       <button class="btn-ic" style="color:var(--rust);font-size:13px" onclick="removeItemAction(${i})">✕</button>
     </div>`).join('');
@@ -2535,6 +2890,110 @@ function removeItemAction(idx){
   if(!window._itemActions) return;
   window._itemActions.splice(idx,1);
   renderItemActionsList();
+}
+
+// ══════════════════════════════════════════════════
+// SHOPPING LIST
+// ══════════════════════════════════════════════════
+function openShoppingList(){
+  const items=S.items.filter(i=>i.restock||i.qty===0).sort((a,b)=>{
+    // Group by category
+    const ci=getCats().findIndex(c=>c.id===a.category);
+    const cj=getCats().findIndex(c=>c.id===b.category);
+    return ci-cj||a.name.localeCompare(b.name);
+  });
+  if(!items.length){ showToast('Nothing needs restocking right now ✓'); return; }
+
+  const catMap=emojiLabMap(getCats());
+  const byCat={};
+  items.forEach(i=>{ if(!byCat[i.category]) byCat[i.category]=[]; byCat[i.category].push(i); });
+
+  const rows=getCats().filter(c=>byCat[c.id]).map(c=>`
+    <div style="margin-bottom:18px">
+      <div style="font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid rgba(0,0,0,.07)">${c.emoji||''} ${c.label}</div>
+      ${byCat[c.id].map(item=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(0,0,0,.05)" id="slrow-${item.id}">
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:700;color:var(--text)">${esc(item.name)}</div>
+            ${item.notes?`<div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:2px">${esc(item.notes)}</div>`:''}
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <button onclick="slAdj('${item.id}',-1)" style="width:28px;height:28px;border-radius:8px;border:none;background:var(--canvas-3);color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700">−</button>
+            <span id="slqty-${item.id}" style="font-family:'DM Mono',monospace;font-size:14px;font-weight:700;min-width:24px;text-align:center">${item.qty}</span>
+            <button onclick="slAdj('${item.id}',1)" style="width:28px;height:28px;border-radius:8px;border:none;background:var(--canvas-3);color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700">+</button>
+          </div>
+          <button onclick="markRestocked('${item.id}')" style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;border-radius:8px;border:none;background:rgba(107,140,90,.12);color:var(--sage);cursor:pointer;white-space:nowrap">✓ Got it</button>
+        </div>`).join('')}
+    </div>`).join('');
+
+  const html=`
+    <div id="slModalOverlay" style="position:fixed;inset:0;background:rgba(10,10,8,.7);z-index:2000;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)" onclick="if(event.target===this)closeShoppingList()">
+      <div style="background:var(--canvas-2);width:100%;max-width:600px;border-radius:20px 20px 0 0;padding:24px 20px 36px;max-height:85vh;overflow-y:auto;animation:modalSlideUp .25s ease">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+          <div>
+            <div style="font-family:'Familjen Grotesk',sans-serif;font-size:20px;font-weight:800;letter-spacing:.06em;text-transform:uppercase">🛒 Shopping List</div>
+            <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-m);margin-top:2px">${items.length} item${items.length!==1?'s':''} to restock</div>
+          </div>
+          <button onclick="closeShoppingList()" style="background:var(--canvas-3);border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;color:var(--text-m)">✕</button>
+        </div>
+        ${rows}
+        <div style="display:flex;gap:8px;margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,0,0,.07)">
+          <button class="btn btn-p" onclick="shareShoppingList()" style="flex:1">📤 Share list</button>
+          <button class="btn btn-o" onclick="markAllRestocked()">✓ All restocked</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+
+function closeShoppingList(){
+  const ov=document.getElementById('slModalOverlay');
+  if(ov) ov.remove();
+}
+
+function slAdj(itemId, delta){
+  const item=S.items.find(i=>i.id===itemId);
+  if(!item) return;
+  item.qty=Math.max(0, (item.qty||0)+delta);
+  const el=document.getElementById('slqty-'+itemId);
+  if(el) el.textContent=item.qty;
+  save();
+}
+
+function markRestocked(itemId){
+  const item=S.items.find(i=>i.id===itemId);
+  if(!item) return;
+  item.restock=false;
+  save();
+  const row=document.getElementById('slrow-'+itemId);
+  if(row){ row.style.transition='all .3s'; row.style.opacity='0'; row.style.transform='translateX(20px)'; setTimeout(()=>{ row.remove(); renderStats(); },300); }
+  else { closeShoppingList(); renderStats(); }
+}
+
+function markAllRestocked(){
+  if(!confirm('Mark everything as restocked?')) return;
+  S.items.forEach(i=>{ if(i.restock||i.qty===0) i.restock=false; });
+  save();
+  closeShoppingList();
+  renderStats();
+  showToast('All items marked as restocked ✓');
+}
+
+async function shareShoppingList(){
+  const items=S.items.filter(i=>i.restock||i.qty===0).sort((a,b)=>a.name.localeCompare(b.name));
+  if(!items.length){ showToast('Nothing to share'); return; }
+  const text='NeverLeft — Shopping List\n\n'+items.map(i=>('• '+i.name+(i.qty>1?' ×'+i.qty:''))).join('\n');
+  if(navigator.share){
+    try{ await navigator.share({title:'NeverLeft Shopping List', text}); return; }
+    catch(e){ if(e.name==='AbortError') return; }
+  }
+  // Fallback — clipboard
+  try{
+    await navigator.clipboard.writeText(text);
+    showToast('Shopping list copied to clipboard');
+  }catch(e){
+    showToast('Could not share — try copying manually');
+  }
 }
 
 // ══════════════════════════════════════════════════
@@ -2558,7 +3017,7 @@ function openQuickAddModal(tripId){
         <div style="display:flex;gap:9px">
           <div class="fg" style="flex:1"><label class="fl">Type</label>
             <select class="fs" id="qaType">
-              <option value="always">Always in kit</option>
+              <option value="always">Always packed</option>
               <option value="house">From House</option>
               <option value="consumable">Consumable</option>
               <option value="seasonal">Seasonal</option>
@@ -2612,6 +3071,11 @@ function saveQuickAdd(tripId){
 // SETTINGS
 // ══════════════════════════════════════════════════
 function renderSettings(){
+  // Also render people section if it exists in settings
+  setTimeout(()=>{
+    const pc=document.getElementById('settingsPeopleContent');
+    if(pc) pc.innerHTML=renderPeopleHTML();
+  },0);
   const el=document.getElementById('settingsContent');
   if(!el) return;
 
@@ -2624,15 +3088,15 @@ function renderSettings(){
 
     return `<div style="margin-bottom:28px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">
-        <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--amber)">${title}</span>
+        <span style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--amber)">${title}</span>
         <button class="btn btn-p btn-sm" onclick="openSettingsItemModal('${key}',null)">+ Add</button>
       </div>
       ${items.map(item=>{
         const count=usageCounts[item.id]||0;
         const isDefault=defaultSettings()[key].some(d=>d.id===item.id);
         const locFlags=key==='locations'?`
-          <span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:2px;background:${item.isStorageLoc!==false?'rgba(107,140,90,.15)':'var(--canvas-3)'};color:${item.isStorageLoc!==false?'var(--sage)':'var(--text-m)'};border:1px solid ${item.isStorageLoc!==false?'rgba(107,140,90,.3)':'var(--border)'}">Storage</span>
-          <span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:2px;background:${item.isPackInto?'rgba(90,122,184,.15)':'var(--canvas-3)'};color:${item.isPackInto?'var(--blue)':'var(--text-m)'};border:1px solid ${item.isPackInto?'rgba(90,122,184,.3)':'var(--border)'}">Pack into</span>`:'';
+          <span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:2px;background:${item.isStorageLoc!==false?'rgba(107,140,90,.15)':'var(--canvas-3)'};color:${item.isStorageLoc!==false?'var(--sage)':'var(--text-m)'};border:1px solid ${item.isStorageLoc!==false?'rgba(107,140,90,.3)':'var(--border)'}">Storage</span>
+          <span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:2px;background:${item.isPackInto?'rgba(90,122,184,.15)':'var(--canvas-3)'};color:${item.isPackInto?'var(--blue)':'var(--text-m)'};border:1px solid ${item.isPackInto?'rgba(90,122,184,.3)':'var(--border)'}">Pack into</span>`:'';
         return `<div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-bottom:1px solid var(--border);background:var(--canvas-2);margin-bottom:2px;border-radius:2px">
           ${hasEmoji?`<span style="font-size:16px;width:24px;text-align:center">${item.emoji||'•'}</span>`:''}
           <span style="flex:1;font-size:13px;font-weight:500">${esc(item.label)}</span>
@@ -2647,13 +3111,19 @@ function renderSettings(){
 
   el.innerHTML=`
     <div style="margin-bottom:18px">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--text-m);letter-spacing:.05em">Manage the lists used throughout Base Camp. Changes apply immediately everywhere.</div>
+      <div style="font-family:'Familjen Grotesk',sans-serif;font-size:12px;color:var(--text-m);letter-spacing:.05em">Manage the lists used throughout NeverLeft. Changes apply immediately everywhere.</div>
     </div>
     ${listSection('Categories', 'categories', true)}
     ${listSection('Locations', 'locations', false)}
     ${listSection('Activities', 'activities', true)}
-    <div style="margin-top:28px;padding-top:20px;border-top:2px solid var(--border)">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--rust);margin-bottom:8px">Data</div>
+    <div id="settingsPeopleSection" style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border)">
+      <div style="font-family:'Familjen Grotesk',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px">The crew</div>
+      <div style="font-size:12px;color:var(--text-m);margin-bottom:14px">Who's coming on your trips. Items can be assigned to each person.</div>
+      <div id="settingsPeopleContent"></div>
+    </div>
+
+    <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border)">
+      <div style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--rust);margin-bottom:8px">Data</div>
       <div style="font-size:12px;color:var(--text-m);margin-bottom:14px;line-height:1.5">Reset clears all your items, trips, people and settings. Your display preferences (light/dark mode) are kept. This cannot be undone.</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn" style="background:transparent;color:var(--rust);border:1px solid var(--rust);font-size:11px;padding:7px 14px" onclick="resetAllData()">🗑 Start fresh — clear all data</button>
@@ -2766,7 +3236,7 @@ function exportData(){
   const blob=new Blob([json],{type:'application/json'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
-  a.href=url; a.download=`basecamp-${new Date().toISOString().slice(0,10)}.json`;
+  a.href=url; a.download=`neverleft-${new Date().toISOString().slice(0,10)}.json`;
   a.click(); URL.revokeObjectURL(url);
   // Record last export time
   localStorage.setItem('basecamp_last_export', new Date().toISOString());
@@ -2774,14 +3244,14 @@ function exportData(){
 
 async function shareBackup(){
   const json=JSON.stringify({version:3,exported:new Date().toISOString(),...S},null,2);
-  const filename=`basecamp-${new Date().toISOString().slice(0,10)}.json`;
+  const filename=`neverleft-${new Date().toISOString().slice(0,10)}.json`;
   const file=new File([json], filename, {type:'application/json'});
   // Try Web Share API with file (iOS 15+, works with Files, WhatsApp, Mail, etc.)
   if(navigator.canShare && navigator.canShare({files:[file]})){
     try{
       await navigator.share({
-        title:'Base Camp Backup',
-        text:'Base Camp camping inventory backup — '+new Date().toLocaleDateString('en-GB')+'. Open with Base Camp to restore.',
+        title:'NeverLeft Backup',
+        text:'NeverLeft camping inventory backup — '+new Date().toLocaleDateString('en-GB')+'. Open with NeverLeft to restore.',
         files:[file]
       });
       localStorage.setItem('basecamp_last_export', new Date().toISOString());
@@ -2809,41 +3279,57 @@ function checkBackupReminder(){
 
 function showBackupModal(){
   const last=localStorage.getItem('basecamp_last_export');
-  const lastStr=last?new Date(last).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'Never';
+  const lastStr=last?new Date(last).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):'Never backed up';
   const daysSince=last?Math.floor((Date.now()-new Date(last).getTime())/(1000*60*60*24)):null;
   const urgency=!last||daysSince>30;
+
+  const heading=urgency?'Time to back up':'Back up your kit';
+  const subheading=urgency
+    ?'Your data has not been backed up'+(daysSince>0?' in '+daysSince+' days':'')+'. Browsers can clear local data without warning.'
+    :'Your data lives on this device. A quick backup keeps everything safe if your browser clears its storage.';
+
   const modalHtml=`
-    <div id="backupModalOverlay" style="position:fixed;inset:0;background:rgba(10,10,8,.88);z-index:2000;display:flex;align-items:center;justify-content:center;padding:16px">
-      <div style="background:var(--canvas-2);border:1px solid var(--border-l);border-top:3px solid ${urgency?'var(--rust)':'var(--amber)'};width:100%;max-width:440px;border-radius:3px;padding:22px">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:${urgency?'var(--rust)':'var(--amber)'};margin-bottom:8px">
-          ${urgency?'⚠ Backup Overdue':'💾 Time to Back Up'}
+    <div id="backupModalOverlay" onclick="if(event.target===this)closeBackupModal()"
+      style="position:fixed;inset:0;background:rgba(10,10,8,.6);z-index:2000;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)">
+      <div style="background:var(--canvas-2);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:28px 24px 36px;animation:modalSlideUp .25s ease">
+
+        <!-- Handle -->
+        <div style="width:36px;height:4px;border-radius:2px;background:var(--border-l);margin:0 auto 22px"></div>
+
+        <!-- Header -->
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px">
+          <div style="font-family:'Familjen Grotesk',sans-serif;font-size:20px;font-weight:600;letter-spacing:-.015em;color:var(--text);line-height:1.2">${heading}</div>
+          <button onclick="closeBackupModal()" style="background:var(--canvas-3);border:none;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-m);font-size:14px;flex-shrink:0;margin-left:12px;margin-top:2px">✕</button>
         </div>
-        <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-d);margin-bottom:6px">
-          Last backup: <strong>${lastStr}</strong>${daysSince!==null?' ('+daysSince+' day'+(daysSince!==1?'s':'')+' ago)':''}
-        </div>
-        <div style="font-size:12px;color:var(--text-m);margin-bottom:18px;line-height:1.5">
-          Your data is saved on this device only. Browsers can clear it without warning — a regular backup keeps your inventory, trips, and settings safe.
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
-          <button class="btn btn-p" onclick="shareBackup()" style="text-align:left;display:flex;align-items:center;gap:8px;padding:10px 14px">
-            <span style="font-size:18px">📤</span>
+        <div style="font-size:14px;color:var(--text-m);margin-bottom:6px;line-height:1.55">${subheading}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:${urgency?'var(--rust)':'var(--text-m)'};margin-bottom:22px">Last backup: ${lastStr}</div>
+
+        <!-- Actions -->
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+          <button onclick="shareBackup()"
+            style="width:100%;padding:14px 16px;background:var(--text);color:var(--canvas-2);border:none;border-radius:10px;cursor:pointer;text-align:left;font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:500;display:flex;justify-content:space-between;align-items:center;transition:opacity .15s">
             <div>
-              <div style="font-size:12px">Share or save a backup</div>
-              <div style="font-size:10px;font-weight:400;opacity:.7;text-transform:none;letter-spacing:0">Save to iCloud, Google Drive, WhatsApp, email and more…</div>
+              <div>Share or save a backup</div>
+              <div style="font-size:12px;opacity:.55;margin-top:2px;font-weight:400">iCloud, Google Drive, WhatsApp, email…</div>
             </div>
+            <span style="font-size:18px;opacity:.6">→</span>
           </button>
-          <button class="btn btn-o" onclick="exportData();closeBackupModal()" style="text-align:left;display:flex;align-items:center;gap:8px;padding:10px 14px">
-            <span style="font-size:18px">⬇️</span>
+          <button onclick="exportData();closeBackupModal()"
+            style="width:100%;padding:14px 16px;background:var(--canvas-3);color:var(--text);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:500;display:flex;justify-content:space-between;align-items:center;transition:all .15s">
             <div>
-              <div style="font-size:12px">Download backup file</div>
-              <div style="font-size:10px;font-weight:400;opacity:.7;text-transform:none;letter-spacing:0">Save to your Downloads folder</div>
+              <div>Download backup file</div>
+              <div style="font-size:12px;opacity:.5;margin-top:2px;font-weight:400">Saves to your Downloads folder</div>
             </div>
+            <span style="font-size:18px;opacity:.4">↓</span>
           </button>
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--border)">
-          <button class="btn btn-o btn-sm" onclick="snoozeBackup()">Remind me tomorrow</button>
-          <button class="btn btn-o btn-sm" onclick="closeBackupModal()">Not now</button>
+
+        <!-- Footer -->
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <button onclick="snoozeBackup()" style="background:transparent;border:none;cursor:pointer;font-family:'Familjen Grotesk',sans-serif;font-size:13px;color:var(--text-m);padding:0">Remind me tomorrow</button>
+          <button onclick="closeBackupModal()" style="background:transparent;border:none;cursor:pointer;font-family:'Familjen Grotesk',sans-serif;font-size:13px;color:var(--text-m);padding:0">Not now</button>
         </div>
+
       </div>
     </div>`;
   document.body.insertAdjacentHTML('beforeend', modalHtml);
@@ -2869,7 +3355,7 @@ function importData(event){
       const data=JSON.parse(e.target.result);
       // Accept any object with an items array — v1, v2, v3
       const rawItems=Array.isArray(data.items)?data.items:Array.isArray(data)?data:null;
-      if(!rawItems){ alert('This file doesn\'t look like a Base Camp backup. Please choose a file you exported from Base Camp.'); return; }
+      if(!rawItems){ alert('This file doesn\'t look like a NeverLeft backup. Please choose a file you exported from NeverLeft.'); return; }
       if(!confirm('Restore '+rawItems.length+' items and '+(data.trips||[]).length+' trips from this backup? This will replace all your current data.')) return;
 
       // Migrate items — fill in all fields with safe defaults
@@ -2949,8 +3435,36 @@ function importData(event){
 // ══════════════════════════════════════════════════
 // RENDER ALL
 // ══════════════════════════════════════════════════
+function renderPeopleHTML(){
+  if(!S.people) S.people=[];
+  if(!S.people.length) return `<div class="empty" style="margin-top:0;border:none;text-align:left;padding:0">
+    <button class="btn btn-p btn-sm" onclick="openPersonModal()">+ Add person</button></div>`;
+  return `<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+    ${S.people.map(p=>{
+      const count=S.items.filter(i=>(i.personIds||[]).includes(p.id)).length;
+      return `<div style="background:var(--canvas-2);border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.07);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:24px">${p.emoji||'👤'}</span>
+          <div>
+            <div style="font-family:'Familjen Grotesk',sans-serif;font-size:15px;font-weight:700;color:${p.color}">${esc(p.name)}</div>
+            <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:2px">${count} item${count!==1?'s':''} assigned</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:5px">
+          <button class="btn-ic" onclick="openPersonModal('${p.id}')">✎</button>
+          <button class="btn-ic" style="color:var(--rust)" onclick="deletePerson('${p.id}')">✕</button>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>
+  <button class="btn btn-o btn-sm" onclick="openPersonModal()">+ Add person</button>`;
+}
+
 function renderPeople(){
   if(!S.people) S.people=[];
+  // Refresh in settings if visible
+  const spc=document.getElementById('settingsPeopleContent');
+  if(spc) spc.innerHTML=renderPeopleHTML();
   const el=document.getElementById('peopleContent');
   const EMOJIS=['👤','🧑','👩','👨','🧒','👦','👧','🐕'];
   if(!S.people.length){
@@ -2959,7 +3473,7 @@ function renderPeople(){
   } else {
     el.innerHTML=`
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-        <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-d)">${S.people.length} Person${S.people.length!==1?'s':''}</span>
+        <span style="font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-d)">${S.people.length} Person${S.people.length!==1?'s':''}</span>
         <button class="btn btn-p btn-sm" onclick="openPersonModal()">+ Add Person</button>
       </div>
       ${S.people.map(p=>{
@@ -2968,7 +3482,7 @@ function renderPeople(){
           <div style="display:flex;align-items:center;gap:10px">
             <span style="font-size:22px">${p.emoji||'👤'}</span>
             <div>
-              <div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.06em;color:${p.color}">${esc(p.name)}</div>
+              <div style="font-family:'Familjen Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:.06em;color:${p.color}">${esc(p.name)}</div>
               <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:2px">${count} item${count!==1?'s':''} assigned</div>
             </div>
           </div>
@@ -3128,7 +3642,7 @@ function printChecklist(tripId, mode){
   } else if(checklistSort==='type'){
     groupKey=item=>item.type;
     groupOrder=['always','house','consumable','seasonal'];
-    groupLabel=id=>({always:'Always in kit',house:'Bring from home',consumable:'Needs restocking',seasonal:'Seasonal'}[id]||id);
+    groupLabel=id=>({always:'Always packed',house:'Bring from home',consumable:'Needs restocking',seasonal:'Seasonal'}[id]||id);
     groupIcon='';
   } else {
     groupKey=null;
@@ -3159,7 +3673,7 @@ function printChecklist(tripId, mode){
   // ── Trip meta ──
   const chips=[
     trip.nights+'n',
-    ({summer:'Summer',shoulder:'Shoulder',winter:'Winter'}[trip.season]||''),
+    ({summer:'Summer',shoulder:'Spring / Autumn',winter:'Winter'}[trip.season]||''),
     ({hookup:'Full hookup',basic:'Basic',wild:'Wild camping'}[trip.site]||''),
     ({local:'Local',regional:'Regional',remote:'Remote'}[trip.distance]||''),
     trip.dog?'\uD83D\uDC15 Dog':'',
@@ -3240,7 +3754,7 @@ function printChecklist(tripId, mode){
 <head>
 <meta charset="UTF-8">
 <title>${esc(listTitle)} \u2014 ${esc(trip.name)}</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Nunito:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#1a1a12;--ink-l:#4a4a38;--ink-f:#8a8a74;
@@ -3248,24 +3762,24 @@ function printChecklist(tripId, mode){
     --accent:#6b4c1e;--accent-l:#9a7040;--green:#4a6b3a;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Nunito',sans-serif;background:var(--paper);color:var(--ink);font-size:9.5pt;line-height:1.35}
+  body{font-family:'Familjen Grotesk',sans-serif;background:var(--paper);color:var(--ink);font-size:9.5pt;line-height:1.35}
 
   /* COVER — compact horizontal strip */
   .cover{background:var(--ink);color:var(--paper);padding:6mm 14mm 5mm;display:flex;align-items:center;gap:10pt}
   .cover-deco{font-size:30pt;opacity:.15;flex-shrink:0;line-height:1}
   .cover-left{flex:1}
-  .cover-label{font-family:'Barlow Condensed',sans-serif;font-size:6.5pt;letter-spacing:.25em;text-transform:uppercase;color:var(--paper-r);margin-bottom:1pt}
-  .cover-title{font-family:'Barlow Condensed',sans-serif;font-size:16pt;font-weight:800;letter-spacing:.06em;text-transform:uppercase;line-height:1;margin-bottom:1pt}
-  .cover-mode{font-family:'Barlow Condensed',sans-serif;font-size:9pt;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-l);margin-bottom:3pt}
+  .cover-label{font-family:'Familjen Grotesk',sans-serif;font-size:6.5pt;letter-spacing:.25em;text-transform:uppercase;color:var(--paper-r);margin-bottom:1pt}
+  .cover-title{font-family:'Familjen Grotesk',sans-serif;font-size:16pt;font-weight:800;letter-spacing:.06em;text-transform:uppercase;line-height:1;margin-bottom:1pt}
+  .cover-mode{font-family:'Familjen Grotesk',sans-serif;font-size:9pt;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-l);margin-bottom:3pt}
   .cover-trip{font-family:'DM Mono',monospace;font-size:8.5pt;font-weight:700}
   .cover-date{font-family:'DM Mono',monospace;font-size:7.5pt;color:var(--paper-r);margin-top:1pt}
   .cover-right{text-align:right;flex-shrink:0}
   .chips{display:flex;flex-wrap:wrap;gap:2pt;margin-top:3pt;justify-content:flex-end}
-  .chip{font-family:'Barlow Condensed',sans-serif;font-size:6.5pt;letter-spacing:.07em;text-transform:uppercase;padding:1pt 4pt;border:0.5pt solid rgba(255,255,255,.2);border-radius:2pt;color:rgba(255,255,255,.6)}
+  .chip{font-family:'Familjen Grotesk',sans-serif;font-size:6.5pt;letter-spacing:.07em;text-transform:uppercase;padding:1pt 4pt;border:0.5pt solid rgba(255,255,255,.2);border-radius:2pt;color:rgba(255,255,255,.6)}
 
   /* STATS BAR */
   .statsbar{background:var(--paper-d);border-bottom:1pt solid var(--paper-r);padding:2pt 14mm;display:flex;gap:14pt;align-items:center}
-  .stat-item{font-family:'Barlow Condensed',sans-serif;font-size:7pt;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-l)}
+  .stat-item{font-family:'Familjen Grotesk',sans-serif;font-size:7pt;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-l)}
   .stat-item strong{color:var(--accent);font-size:9pt;margin-right:2pt}
   .filter-note{font-family:'DM Mono',monospace;font-size:7pt;color:var(--accent-l);margin-left:auto;font-style:italic}
 
@@ -3276,7 +3790,7 @@ function printChecklist(tripId, mode){
   /* SECTION */
   .section{margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
   .section-header{display:flex;align-items:center;gap:4pt;margin-bottom:3pt;padding-bottom:3pt;border-bottom:1.5pt solid var(--ink)}
-  .section-title{font-family:'Barlow Condensed',sans-serif;font-size:10pt;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);flex:1}
+  .section-title{font-family:'Familjen Grotesk',sans-serif;font-size:10pt;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);flex:1}
   .section-count{font-family:'DM Mono',monospace;font-size:7pt;color:var(--ink-f)}
 
   /* ITEMS */
@@ -3295,15 +3809,15 @@ function printChecklist(tripId, mode){
   /* ACTIONS */
   .action-row{display:flex;align-items:center;gap:4pt;padding:1.5pt 0 1.5pt 14pt;border-left:1.5pt solid var(--accent-l);margin-left:14pt;margin-bottom:1pt}
   .action-done .action-label{text-decoration:line-through;opacity:.6}
-  .action-stage{font-family:'Barlow Condensed',sans-serif;font-size:6.5pt;text-transform:uppercase;letter-spacing:.07em;color:var(--accent-l);min-width:8pt}
+  .action-stage{font-family:'Familjen Grotesk',sans-serif;font-size:6.5pt;text-transform:uppercase;letter-spacing:.07em;color:var(--accent-l);min-width:8pt}
   .action-label{font-size:8.5pt;color:var(--ink-l)}
 
   /* FOOTER */
   .footer{position:fixed;bottom:6mm;left:14mm;right:14mm;display:flex;justify-content:space-between;border-top:.5pt solid var(--paper-r);padding-top:3pt}
-  .footer span{font-family:'Barlow Condensed',sans-serif;font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-f)}
+  .footer span{font-family:'Familjen Grotesk',sans-serif;font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-f)}
 
   /* PRINT BUTTON */
-  .print-btn{display:block;margin:8mm auto 0;padding:8pt 20pt;background:var(--ink);color:var(--paper);font-family:'Barlow Condensed',sans-serif;font-size:11pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;border-radius:3pt;cursor:pointer}
+  .print-btn{display:block;margin:8mm auto 0;padding:8pt 20pt;background:var(--ink);color:var(--paper);font-family:'Familjen Grotesk',sans-serif;font-size:11pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;border-radius:3pt;cursor:pointer}
   .print-btn:hover{background:var(--accent)}
 
   @media print{
@@ -3321,7 +3835,7 @@ function printChecklist(tripId, mode){
 <div class="cover">
   <div class="cover-deco">&#x26FA;</div>
   <div class="cover-left">
-    <div class="cover-label">Base Camp Field Notes</div>
+    <div class="cover-label">NeverLeft Field Notes</div>
     <div class="cover-title">${esc(listTitle)}</div>
     <div class="cover-mode">${esc(modeDesc)}</div>
     <div class="cover-trip">${esc(trip.name)}</div>
@@ -3345,7 +3859,7 @@ function printChecklist(tripId, mode){
 </div>
 
 <div class="footer">
-  <span>Base Camp \u00B7 ${esc(listTitle)} \u00B7 ${esc(trip.name)}</span>
+  <span>NeverLeft \u00B7 ${esc(listTitle)} \u00B7 ${esc(trip.name)}</span>
   <span>${today}</span>
 </div>
 
@@ -3497,7 +4011,7 @@ function demoData(){
     // ── WISH LIST ──
     {id:u(),parentId:null,name:'Lightweight camp chairs',type:'wishlist',category:'other',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:null,personIds:[],notes:'Current ones are too heavy',actions:[]},
     {id:u(),parentId:null,name:'Portable solar panel',type:'wishlist',category:'other',location:'car',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:null,personIds:[],notes:'For charging phones off-grid',actions:[]},
-    {id:u(),parentId:null,name:'3-season sleeping bag upgrade',type:'wishlist',category:'sleep',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:null,personIds:[],notes:'Current bags not warm enough for shoulder season',actions:[]},
+    {id:u(),parentId:null,name:'3-season sleeping bag upgrade',type:'wishlist',category:'sleep',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:null,personIds:[],notes:'Current bags not warm enough for spring or autumn',actions:[]},
   ];
 
   // ── TRIP ──
@@ -3547,11 +4061,108 @@ function demoData(){
 }
 
 // ── LIGHT MODE ──
+// ── RESPONSIVE HEADER OVERFLOW ──
+function initHeaderOverflow(){
+  const hdr=document.querySelector('.hdr');
+  const hdrR=document.getElementById('hdrR');
+  const overflowBtn=document.getElementById('utilMenuBtn');
+  const overflowItems=document.getElementById('overflowItems');
+  const staticBackup=document.getElementById('staticBackup');
+  if(!hdr||!hdrR||!overflowBtn) return;
+
+  // All collapsible buttons sorted by priority descending (highest collapses first)
+  const collapsible=[...hdrR.querySelectorAll('.hdr-collapsible')]
+    .sort((a,b)=>parseInt(b.dataset.priority||0)-parseInt(a.dataset.priority||0));
+
+  function measureAndCollapse(){
+    // First show everything to measure natural width
+    collapsible.forEach(b=>{ if(b.id!=='shopListBtn') b.style.display='flex'; });
+    overflowBtn.style.display='none';
+    overflowItems.innerHTML='';
+    // Show static backup only when overflow is visible — hide it now
+    if(staticBackup) staticBackup.style.display='block';
+
+    const hdrWidth=hdr.offsetWidth;
+    const logoWidth=document.querySelector('.logo')?.offsetWidth||140;
+    const navWidth=document.getElementById('hdrNav')?.offsetWidth||0;
+    const primaryWidth=document.getElementById('addItemBtn')?.offsetWidth||100;
+    const gaps=48; // padding + gaps
+    let available=hdrWidth-logoWidth-navWidth-primaryWidth-gaps;
+
+    // Measure each collapsible button
+    const measured=collapsible
+      .filter(b=>b.id!=='shopListBtn'||b.style.display!=='none')
+      .map(b=>({ el:b, w:b.offsetWidth+6 }));
+
+    // Greedily collapse from highest priority down
+    let used=measured.reduce((s,x)=>s+x.w, 0);
+    const toHide=[];
+    for(const {el,w} of measured){
+      if(used>available){
+        toHide.push(el);
+        used-=w;
+      }
+    }
+
+    if(toHide.length){
+      // Need overflow btn (add its width)
+      overflowBtn.style.display='flex';
+      if(staticBackup) staticBackup.style.display='block';
+      toHide.forEach(btn=>{
+        btn.style.display='none';
+        // Add to overflow menu
+        const label=btn.dataset.label||btn.textContent.trim();
+        const action=btn.dataset.action||btn.getAttribute('onclick')||'';
+        // Skip shop list if it was already hidden
+        if(btn.id==='shopListBtn'&&btn.getAttribute('data-was-hidden')==='true') return;
+        const item=document.createElement('button');
+        item.className='umenu-item';
+        item.textContent=label;
+        item.onclick=()=>{ closeUtilMenu(); try{ eval(action); }catch(e){} };
+        overflowItems.appendChild(item);
+      });
+      // If backup is also in overflow, hide the static one to avoid duplicate
+      const backupInOverflow=toHide.some(b=>b.dataset.label==='Backup');
+      if(staticBackup) staticBackup.style.display=backupInOverflow?'none':'block';
+    } else {
+      // Everything fits — hide overflow btn, show static backup in menu
+      overflowBtn.style.display='none';
+    }
+  }
+
+  // Track shopListBtn visibility separately
+  const origShopObserver=new MutationObserver(()=>{
+    const shopBtn=document.getElementById('shopListBtn');
+    if(shopBtn) shopBtn.setAttribute('data-was-hidden', shopBtn.style.display==='none'?'true':'false');
+  });
+  const shopBtn=document.getElementById('shopListBtn');
+  if(shopBtn) origShopObserver.observe(shopBtn, {attributes:true,attributeFilter:['style']});
+
+  const ro=new ResizeObserver(()=>requestAnimationFrame(measureAndCollapse));
+  ro.observe(hdr);
+  measureAndCollapse();
+}
+
+function toggleUtilMenu(){
+  const m=document.getElementById('utilMenu');
+  if(!m) return;
+  const open=m.style.display==='block';
+  m.style.display=open?'none':'block';
+}
+function closeUtilMenu(){
+  const m=document.getElementById('utilMenu');
+  if(m) m.style.display='none';
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#utilMenuBtn')&&!e.target.closest('#utilMenu')){
+    closeUtilMenu();
+  }
+});
+
 function toggleLightMode(){
   const isLight=document.body.classList.toggle('light');
   localStorage.setItem('basecamp_theme', isLight?'light':'dark');
-  document.getElementById('lightBtn').textContent=isLight?'🌙':'☀️';
-  document.getElementById('lightBtn').title=isLight?'Switch to dark mode':'Switch to light mode';
+  const lb=document.getElementById('lightBtn'); if(lb) lb.textContent=isLight?'Dark':'Light';
 }
 
 function initTheme(){
@@ -3560,10 +4171,9 @@ function initTheme(){
   const useDark=saved?saved==='dark':false;
   if(!useDark){
     document.body.classList.add('light');
-    document.getElementById('lightBtn').textContent='🌙';
-    document.getElementById('lightBtn').title='Switch to dark mode';
+    const lbx=document.getElementById('lightBtn'); if(lbx){ lbx.textContent='Dark'; lbx.title='Switch to dark mode'; }
   } else {
-    document.getElementById('lightBtn').title='Switch to light mode';
+    const lb2=document.getElementById('lightBtn'); if(lb2) lb2.textContent='Light';
   }
 }
 
@@ -3571,6 +4181,7 @@ load();
 renderAll();
 initTheme();
 initDemoBanner();
+initHeaderOverflow();
 document.getElementById('fileImport').addEventListener('change', importData, false);
 checkBackupReminder();
 </script>
