@@ -135,6 +135,23 @@ body{font-family:'Familjen Grotesk',sans-serif;background:var(--canvas);color:va
 .stat:hover{transform:translateY(-1px)}
 .stat-v{font-family:'Familjen Grotesk',sans-serif;font-size:26px;font-weight:800;color:var(--amber);line-height:1}
 .stat-l{font-size:10px;color:var(--text-m);text-transform:none;letter-spacing:0;margin-top:3px;font-family:'Familjen Grotesk',sans-serif;line-height:1.25}
+.stat-sub{font-size:9px;color:var(--text-m);opacity:.85;margin-top:5px;line-height:1.35;font-family:'DM Mono',monospace}
+.stat-clickable{cursor:pointer}
+.stat-clickable .stat-l{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.stat-clickable:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.stat-dual{display:flex;flex-direction:column;align-items:stretch;gap:0;padding:0;overflow:hidden}
+.stat-link{display:block;width:100%;border:none;background:transparent;text-align:left;cursor:pointer;font:inherit;color:inherit;padding:12px 14px;transition:background .15s}
+.stat-link:hover{background:rgba(212,144,42,.08)}
+.stat-link:focus-visible{outline:2px solid var(--amber);outline-offset:-2px}
+.stat-link-main{padding-bottom:6px}
+.stat-link-sub{padding:0 14px 12px;font-family:'DM Mono',monospace;font-size:9px;color:var(--amber-d);text-decoration:underline;text-underline-offset:2px}
+.stat-link-sub:hover{color:var(--amber)}
+.stat-triple .stat-link-main{padding-bottom:4px}
+.stat-triple .stat-link-sub{padding:3px 14px 0}
+.stat-triple .stat-link-sub:last-child{padding-bottom:11px}
+.kit-trip-banner{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 12px;margin-bottom:12px;background:rgba(212,144,42,.1);border:1px solid rgba(212,144,42,.28);border-radius:8px;font-size:12px;line-height:1.4}
+.kit-trip-banner strong{font-family:'Familjen Grotesk',sans-serif;font-weight:700;color:var(--text)}
+.kit-trip-banner-actions{display:flex;gap:8px;flex-shrink:0}
 @media(min-width:520px){
   .stats{grid-template-columns:repeat(4,1fr)}
 }
@@ -312,6 +329,10 @@ select:focus{border-color:var(--amber-d)}
 .tcard-name{font-family:'Familjen Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.01em;color:var(--text);line-height:1.15;margin-bottom:4px}
 .tcard-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)}
 .tcard-r{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.trip-feature-btn{background:transparent;border:none;cursor:pointer;font-size:16px;line-height:1;padding:2px 4px;border-radius:4px;color:var(--text-m);flex-shrink:0}
+.trip-feature-btn:hover{color:var(--amber)}
+.trip-feature-btn.on{color:var(--amber)}
+.trip-featured-pill{font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);background:rgba(212,144,42,.12);border:1px solid rgba(212,144,42,.35);padding:2px 7px;border-radius:10px}
 @media(min-width:800px){
   .tcard{padding:18px 22px;gap:16px;align-items:center}
   .tcard-name{font-size:17px}
@@ -740,6 +761,9 @@ select:focus{border-color:var(--amber-d)}
       <select id="personF" onchange="setPersonFilter(this.value)" style="display:none">
         <option value="all">All People</option>
       </select>
+      <select id="tripKitF" onchange="setKitTripFilter(this.value)" title="Show kit lines relevant to a trip">
+        <option value="all">All kit</option>
+      </select>
     </div>
     <div class="legend" style="margin-bottom:12px">
       <div class="li"><div class="ld" style="background:var(--sage)"></div>Always packed</div>
@@ -748,6 +772,7 @@ select:focus{border-color:var(--amber-d)}
       <div class="li"><div class="ld" style="background:var(--purple)"></div>Seasonal</div>
     </div>
   </div>
+  <div id="kitTripBanner" style="display:none" aria-live="polite"></div>
   <div id="invContent"></div>
 </div>
 
@@ -863,12 +888,19 @@ select:focus{border-color:var(--amber-d)}
     <div class="fg"><label class="fl">Site Type</label>
       <select class="fs" id="tSite"><option value="hookup">Full hookup</option><option value="basic">Basic / no hookup</option><option value="wild">Wild camping</option></select>
     </div>
-    <div class="fg"><label class="fl">Extra People</label><input class="fi" id="tExtra" type="number" min="0" max="20" value="0"></div>
+    <div class="fg"><label class="fl">Extra People</label><input class="fi" id="tExtra" type="number" min="0" max="20" value="0">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:4px;line-height:1.4">Headcount only for notes and print — it does not add packing lines yet (consumables later).</div>
+    </div>
     <div class="fg"><label class="fl">Distance from Home</label>
       <select class="fs" id="tDist"><option value="local">Local (&lt;1hr)</option><option value="regional">Regional (1–2hr)</option><option value="remote">Remote (2hr+)</option></select>
     </div>
   </div>
   <div class="fg"><label class="fl" style="margin-bottom:5px">Dog coming?</label><label class="ck"><input type="checkbox" id="tDog" checked> Yes, include dog kit</label></div>
+  <div class="fg">
+    <label class="fl">Who's on this trip</label>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-bottom:6px;line-height:1.45">If you don't select anyone, everyone in <strong>The crew</strong> is included for packing. Tick people to limit the list to them (and shared kit).</div>
+    <div class="agrid" id="tAttendeeGrid"></div>
+  </div>
   <div class="fg"><label class="fl">Activities</label>
     <div class="agrid" id="tActGrid"></div>
   </div>
@@ -910,11 +942,13 @@ let collapsedLocs = new Set();   // checklist locations
 /** Checklist group ids (clgrp-*) user expanded while fully packed — stops auto re-collapse on each render. */
 let expandedPackedChecklistGroups = new Set();
 let personFilter = 'all';        // inventory person filter
+let kitTripFilter = 'all';       // inventory trip filter ('all' | trip id)
 let checklistPersonFilter = 'all'; // checklist person filter
 let checklistLocFilter = 'all';    // checklist location filter
 let checklistSort = 'location';    // checklist sort order
 let checklistHidePacked = false;   // hide packed items
 let checklistFiltersOpen = false;  // filter panel open state
+let _invTripPickTripId = null;     // active trip for “Add from inventory” modal
 
 const CATS    = ['shelter','sleep','kitchen','clothing','hygiene','dog','other'];
 const CLAB    = { shelter:'⛺ Shelter', sleep:'🛌 Sleep', kitchen:'🍳 Kitchen', clothing:'🧥 Clothing', hygiene:'🪥 Hygiene', dog:'🐕 Dog', other:'📦 Other' };
@@ -1001,7 +1035,15 @@ function load(){
     }
     if(!S.items) S.items=[];
     if(!S.trips) S.trips=[];
+    S.trips.forEach(t=>{
+      if(!Array.isArray(t.manualIncludeIds)) t.manualIncludeIds=[];
+      else{
+        const ok=new Set(kitItems().map(i=>i.id));
+        t.manualIncludeIds=t.manualIncludeIds.filter(id=>ok.has(id));
+      }
+    });
     if(!S.people) S.people=[];
+    if(S.featuredTripId&&!S.trips.some(t=>t.id===S.featuredTripId)) S.featuredTripId=null;
     if(!S.settings) S.settings=defaultSettings();
     else {
       if(!S.settings.categories||!S.settings.categories.length) S.settings.categories=defaultSettings().categories;
@@ -1079,6 +1121,11 @@ function kitItems(){ return S.items.filter(i=>i.type!=='wishlist'); }
 function subItems(parentId){ return S.items.filter(i=>i.parentId===parentId); }
 function wishItems(){ return S.items.filter(i=>i.type==='wishlist'); }
 
+/** Same as kitItems — use for trip checklist / “add from inventory” (wishlist never included). */
+function kitItemsForTripInventoryPicker(){
+  return kitItems();
+}
+
 function isExcluded(item, trip){
   if(item.type==='wishlist') return true;
   if(item.category==='dog' && !trip.dog) return true;
@@ -1089,6 +1136,70 @@ function isExcluded(item, trip){
   }
   if(item.activity && (!trip.activities||!trip.activities.includes(item.activity))) return true;
   return false;
+}
+
+/** Person ids treated as on this trip for kit rules. Empty/missing trip.attendeeIds = whole crew (all S.people). */
+function effectiveTripAttendeeIds(trip){
+  const raw=(trip.attendeeIds||[]).filter(Boolean);
+  if(raw.length) return new Set(raw);
+  return new Set((S.people||[]).map(p=>p.id));
+}
+
+/** S.people rows on this trip (same order as The crew). */
+function tripRosterPeople(trip){
+  const ids=effectiveTripAttendeeIds(trip);
+  return(S.people||[]).filter(p=>ids.has(p.id));
+}
+
+function ensureChecklistPersonFilterValidForTrip(trip){
+  if(checklistPersonFilter==='all'||!trip) return;
+  if(!effectiveTripAttendeeIds(trip).has(checklistPersonFilter)) checklistPersonFilter='all';
+}
+
+function tripManualExtraBadge(trip,itemId){
+  if(!(trip.manualIncludeIds||[]).includes(itemId)) return '';
+  return ` <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:600;color:var(--amber);letter-spacing:.04em">EXTRA</span>`;
+}
+
+/** Sub-items under a parent that count for this trip (exclusions + roster — same rules as generate checklist). */
+function checklistSubsForTrip(item,trip){
+  return subItems(item.id).filter(s=>!isExcluded(s,trip)&&isItemIncludedAutomaticForTrip(s,trip));
+}
+
+/** Inventory line included by trip rules (exclusions + roster). Does not apply trip.manualIncludeIds — see itemIdsForTripChecklist. */
+function isItemIncludedAutomaticForTrip(item, trip){
+  if(!item||item.type==='wishlist') return false;
+  if(isExcluded(item,trip)) return false;
+  const roster=effectiveTripAttendeeIds(trip);
+  const pids=item.personIds||[];
+  if(!pids.length) return true;
+  for(let i=0;i<pids.length;i++){ if(roster.has(pids[i])) return true; }
+  return false;
+}
+
+/** Ordered checklist item ids: automatic set ∪ manual includes (with parent chain for any manual line). */
+function itemIdsForTripChecklist(trip){
+  const kitIds=new Set(kitItems().map(i=>i.id));
+  const manualRaw=(trip.manualIncludeIds||[]).filter(id=>kitIds.has(id));
+  const automatic=[];
+  S.items.forEach(i=>{
+    if(isItemIncludedAutomaticForTrip(i,trip)) automatic.push(i.id);
+  });
+  const all=new Set(automatic);
+  function addChain(id){
+    let cur=S.items.find(i=>i.id===id);
+    while(cur&&cur.type!=='wishlist'){
+      all.add(cur.id);
+      if(!cur.parentId) break;
+      cur=S.items.find(i=>i.id===cur.parentId);
+    }
+  }
+  manualRaw.forEach(addChain);
+  const out=[];
+  S.items.forEach(i=>{
+    if(all.has(i.id)) out.push(i.id);
+  });
+  return out;
 }
 
 /** Checklist rows that count toward packing % (omit container parents — progress is on their children only). */
@@ -1137,6 +1248,287 @@ function adjQty(item, trip){
 // ══════════════════════════════════════════════════
 // STATS
 // ══════════════════════════════════════════════════
+function sortTripsByFocusPriority(trips){
+  const statusOrder={planning:0,packing:1,'pack-up':2,'pack-away':3,'post-trip':4,complete:5};
+  return [...trips].sort((a,b)=>{
+    const ao=statusOrder[a.status]??3, bo=statusOrder[b.status]??3;
+    if(ao!==bo) return ao-bo;
+    return (a.date||'9999')<(b.date||'9999')?-1:1;
+  });
+}
+
+function getFeaturedTrip(){
+  const id=S.featuredTripId;
+  if(!id) return null;
+  const t=(S.trips||[]).find(x=>x.id===id);
+  if(!t){ S.featuredTripId=null; save(); return null; }
+  return t;
+}
+
+/** Closest dated active trip on or after today; else best active fallback. */
+function closestFutureTrip(){
+  const active=(S.trips||[]).filter(t=>t.status!=='complete');
+  if(!active.length) return null;
+  const today=new Date();
+  today.setHours(0,0,0,0);
+  const future=active.filter(t=>t.date&&new Date(t.date+'T12:00:00')>=today);
+  if(future.length){
+    future.sort((a,b)=>(a.date<b.date?-1:a.date>b.date?1:0));
+    return future[0];
+  }
+  return sortTripsByFocusPriority(active)[0]||null;
+}
+
+/** Trip NeverLeft focuses on: featured wins, else closest future active trip. */
+function focusTripForDashboard(){
+  return getFeaturedTrip()||closestFutureTrip();
+}
+
+function upcomingTripForDashboard(){
+  return focusTripForDashboard();
+}
+
+function isFeaturedTrip(tripId){
+  return !!tripId&&S.featuredTripId===tripId;
+}
+
+function toggleFeaturedTrip(tripId){
+  if(!tripId) return;
+  if(S.featuredTripId===tripId) S.featuredTripId=null;
+  else S.featuredTripId=tripId;
+  save();
+  renderStats();
+  updateKitTripFilterSelect();
+  renderTrips();
+}
+
+function openKitTab(){
+  const btn=document.getElementById('navKitBtn');
+  setTab('inv',btn||null);
+}
+
+function showKitFiltersPanel(){
+  const kf=document.getElementById('kitFilters');
+  const ftb=document.getElementById('filterToggleBtn');
+  if(kf) kf.style.display='block';
+  if(ftb){
+    ftb.style.background='var(--canvas-3)';
+    ftb.style.color='var(--amber)';
+    ftb.style.borderColor='var(--amber-d)';
+  }
+}
+
+function openKitForTrip(tripId){
+  kitTripFilter=tripId||'all';
+  openKitTab();
+  showKitFiltersPanel();
+  updateKitTripFilterSelect();
+  renderInv();
+}
+
+function openKitAll(){
+  kitTripFilter='all';
+  setKitTypeFilter('all');
+  openKitTab();
+  updateKitTripFilterSelect();
+  renderInv();
+}
+
+function setKitTypeFilter(typeVal){
+  tf=typeVal||'all';
+  document.querySelectorAll('.fb').forEach(b=>{
+    b.classList.remove('on');
+    const oc=b.getAttribute('onclick')||'';
+    if(typeVal==='all'&&oc.indexOf("setTF('all'")>=0) b.classList.add('on');
+    else if(oc.indexOf("setTF('"+typeVal+"'")>=0) b.classList.add('on');
+  });
+}
+
+function countKitLinesOfTypeOnTrip(trip,type){
+  if(!trip) return 0;
+  const ids=new Set(itemIdsForTripChecklist(trip));
+  return kitItems().filter(i=>i.type===type&&ids.has(i.id)).length;
+}
+
+function openKitAlwaysForTrip(tripId){
+  kitTripFilter=tripId||'all';
+  setKitTypeFilter('always');
+  openKitTab();
+  showKitFiltersPanel();
+  updateKitTripFilterSelect();
+  renderInv();
+}
+
+function openKitAlwaysLayer(){
+  kitTripFilter='all';
+  setKitTypeFilter('always');
+  openKitTab();
+  showKitFiltersPanel();
+  updateKitTripFilterSelect();
+  renderInv();
+}
+
+function openKitHouseForTrip(tripId){
+  kitTripFilter=tripId||'all';
+  setKitTypeFilter('house');
+  openKitTab();
+  showKitFiltersPanel();
+  updateKitTripFilterSelect();
+  renderInv();
+}
+
+function openKitHouseLayer(){
+  kitTripFilter='all';
+  setKitTypeFilter('house');
+  openKitTab();
+  showKitFiltersPanel();
+  updateKitTripFilterSelect();
+  renderInv();
+}
+
+function openRestockView(){
+  kitTripFilter='all';
+  setKitTypeFilter('all');
+  setTab('restock',null);
+  renderRestock();
+}
+
+function openKitConsumablesLayer(){
+  kitTripFilter='all';
+  setKitTypeFilter('consumable');
+  openKitTab();
+  showKitFiltersPanel();
+  updateKitTripFilterSelect();
+  renderInv();
+}
+
+function setKitTripFilter(val){
+  kitTripFilter=val||'all';
+  renderInv();
+}
+
+function kitTripFilterIdSet(){
+  if(kitTripFilter==='all'||!kitTripFilter) return null;
+  const trip=S.trips.find(t=>t.id===kitTripFilter);
+  if(!trip){ kitTripFilter='all'; return null; }
+  return new Set(itemIdsForTripChecklist(trip));
+}
+
+function itemMatchesTripKitFilter(item){
+  const set=kitTripFilterIdSet();
+  if(!set) return true;
+  if(set.has(item.id)) return true;
+  return subItems(item.id).some(s=>set.has(s.id));
+}
+
+function subVisibleInInvFilters(sub){
+  if(personFilter!=='all'&&!(sub.personIds||[]).includes(personFilter)) return false;
+  const set=kitTripFilterIdSet();
+  if(set&&!set.has(sub.id)) return false;
+  return true;
+}
+
+function updateKitTripFilterSelect(){
+  const sel=document.getElementById('tripKitF');
+  if(!sel) return;
+  const cur=kitTripFilter;
+  const statusOrder={planning:0,packing:1,'pack-up':2,'pack-away':3,'post-trip':4,complete:5};
+  const trips=[...(S.trips||[])].sort((a,b)=>{
+    const ao=statusOrder[a.status]??3, bo=statusOrder[b.status]??3;
+    if(ao!==bo) return ao-bo;
+    return (a.date||'9999')<(b.date||'9999')?-1:1;
+  });
+  sel.innerHTML='<option value="all">All kit</option>'+trips.map(t=>{
+    return '<option value="'+t.id+'">'+esc(t.name||'Unnamed trip')+'</option>';
+  }).join('');
+  if(cur!=='all'&&trips.some(t=>t.id===cur)) sel.value=cur;
+  else sel.value='all';
+}
+
+function renderKitTripBanner(){
+  const el=document.getElementById('kitTripBanner');
+  if(!el) return;
+  if(kitTripFilter==='all'||!kitTripFilter){
+    el.style.display='none';
+    el.innerHTML='';
+    el.className='';
+    return;
+  }
+  const trip=S.trips.find(t=>t.id===kitTripFilter);
+  if(!trip){ kitTripFilter='all'; el.style.display='none'; el.innerHTML=''; el.className=''; return; }
+  const n=itemIdsForTripChecklist(trip).length;
+  const total=kitItems().length;
+  el.style.display='flex';
+  el.className='kit-trip-banner';
+  el.innerHTML='<span><strong>Trip kit:</strong> '+esc(trip.name||'Trip')+' — showing <strong>'+n+'</strong> of '+total+' lines (packing-list rules; not packed state).</span>'
+    +'<span class="kit-trip-banner-actions"><button type="button" class="btn btn-o btn-sm" onclick="openKitAll()">View full kit</button></span>';
+}
+
+function statItemsTileHtml(kitTotal){
+  const upcoming=upcomingTripForDashboard();
+  if(upcoming){
+    const n=itemIdsForTripChecklist(upcoming).length;
+    const tripLabel=esc(upcoming.name||'Next trip');
+    const tid=esc(upcoming.id);
+    return '<div class="stat stat-dual">'
+      +'<button type="button" class="stat-link stat-link-main" title="Open Kit filtered to this trip" onclick="openKitForTrip(\''+tid+'\')">'
+      +'<div class="stat-v">'+n+'</div><div class="stat-l">For '+tripLabel+' — trip kit</div></button>'
+      +'<button type="button" class="stat-link stat-link-sub" title="Open full Kit ('+kitTotal+' lines)" onclick="openKitAll()">'
+      +kitTotal+' in full kit →</button></div>';
+  }
+  return '<div class="stat stat-dual">'
+    +'<button type="button" class="stat-link stat-link-main" title="Open Kit" onclick="openKitAll()">'
+    +'<div class="stat-v">'+kitTotal+'</div><div class="stat-l">Items — open Kit</div></button></div>';
+}
+
+function statAlwaysTileHtml(){
+  const alwaysTotal=kitItems().filter(i=>i.type==='always').length;
+  const upcoming=upcomingTripForDashboard();
+  if(upcoming){
+    const onTrip=countKitLinesOfTypeOnTrip(upcoming,'always');
+    const tripLabel=esc(upcoming.name||'Next trip');
+    const tid=esc(upcoming.id);
+    return '<div class="stat stat-dual">'
+      +'<button type="button" class="stat-link stat-link-main" title="Always-packed lines on this trip checklist" onclick="openKitAlwaysForTrip(\''+tid+'\')">'
+      +'<div class="stat-v" style="color:var(--sage)">'+onTrip+'</div><div class="stat-l">Always · '+tripLabel+'</div></button>'
+      +'<button type="button" class="stat-link stat-link-sub" title="All always-packed lines in Kit ('+alwaysTotal+')" onclick="openKitAlwaysLayer()">'
+      +alwaysTotal+' in always layer →</button></div>';
+  }
+  return '<div class="stat stat-dual">'
+    +'<button type="button" class="stat-link stat-link-main" title="Open always-packed items in Kit" onclick="openKitAlwaysLayer()">'
+    +'<div class="stat-v" style="color:var(--sage)">'+alwaysTotal+'</div><div class="stat-l">Always packed</div></button></div>';
+}
+
+function statHouseTileHtml(){
+  const houseTotal=kitItems().filter(i=>i.type==='house').length;
+  const upcoming=upcomingTripForDashboard();
+  if(upcoming){
+    const onTrip=countKitLinesOfTypeOnTrip(upcoming,'house');
+    const tripLabel=esc(upcoming.name||'Next trip');
+    const tid=esc(upcoming.id);
+    return '<div class="stat stat-dual">'
+      +'<button type="button" class="stat-link stat-link-main" title="From-home lines on this trip checklist" onclick="openKitHouseForTrip(\''+tid+'\')">'
+      +'<div class="stat-v" style="color:var(--blue)">'+onTrip+'</div><div class="stat-l">From home · '+tripLabel+'</div></button>'
+      +'<button type="button" class="stat-link stat-link-sub" title="All from-home lines in Kit ('+houseTotal+')" onclick="openKitHouseLayer()">'
+      +houseTotal+' in from-home layer →</button></div>';
+  }
+  return '<div class="stat stat-dual">'
+    +'<button type="button" class="stat-link stat-link-main" title="Open from-home items in Kit" onclick="openKitHouseLayer()">'
+    +'<div class="stat-v" style="color:var(--blue)">'+houseTotal+'</div><div class="stat-l">From home</div></button></div>';
+}
+
+function statRestockTileHtml(rc){
+  const consumableTotal=kitItems().filter(i=>i.type==='consumable').length;
+  const rust=rc>0?' style="color:var(--rust)"':'';
+  const mainLabel=rc>0?'Need restock':'Restock — all good';
+  return '<div class="stat stat-dual stat-triple">'
+    +'<button type="button" class="stat-link stat-link-main" title="Restock list by storage location" onclick="openRestockView()">'
+    +'<div class="stat-v"'+rust+'>'+rc+'</div><div class="stat-l">'+mainLabel+'</div></button>'
+    +'<button type="button" class="stat-link stat-link-sub" title="All consumable lines in Kit" onclick="openKitConsumablesLayer()">'
+    +consumableTotal+' consumables →</button>'
+    +'<button type="button" class="stat-link stat-link-sub" title="Shopping list to take to the store" onclick="openShoppingList()">'
+    +'Shopping list →</button></div>';
+}
 function renderStats(){
   const kit=kitItems();
   const rc=itemsNeedingRestock().length;
@@ -1145,10 +1537,10 @@ function renderStats(){
   const bar=document.getElementById('statsBar');
   if(!bar) return;
   bar.innerHTML=`
-    <div class="stat"><div class="stat-v">${kit.length}</div><div class="stat-l">Items</div></div>
-    <div class="stat"><div class="stat-v">${kit.filter(i=>i.type==='always').length}</div><div class="stat-l">Always packed</div></div>
-    <div class="stat"><div class="stat-v">${kit.filter(i=>i.type==='house').length}</div><div class="stat-l">From home</div></div>
-    <div class="stat"><div class="stat-v" style="${rc>0?'color:var(--rust)':''}">${rc}</div><div class="stat-l">Restock</div></div>
+    ${statItemsTileHtml(kit.length)}
+    ${statAlwaysTileHtml()}
+    ${statHouseTileHtml()}
+    ${statRestockTileHtml(rc)}
     <div class="stat"><div class="stat-v" style="${ac>0?'color:var(--amber)':''}">${ac}</div><div class="stat-l">Active Trips</div></div>
     <div class="stat"><div class="stat-v" style="${wc>0?'color:var(--gold)':''}">${wc}</div><div class="stat-l">Want list</div></div>`;
   // badges — restockBtn removed from nav, show restock count on My Kit filter toggle
@@ -1167,7 +1559,16 @@ function renderStats(){
   }
   // Show restock count on filter toggle button in My Kit
   const ftb=document.getElementById('filterToggleBtn');
-  if(ftb){ ftb.querySelectorAll('.tbadge').forEach(b=>b.remove()); if(rc>0) ftb.innerHTML=`⚙ Filter <span class="tbadge" style="background:var(--rust)">${rc}</span>`; else ftb.textContent='⚙ Filter'; }
+  if(ftb){
+    ftb.querySelectorAll('.tbadge').forEach(b=>b.remove());
+    const tripOn=kitTripFilter!=='all'&&kitTripFilter;
+    if(rc>0||tripOn){
+      let html='⚙ Filter';
+      if(tripOn) html+=` <span class="tbadge" style="background:var(--amber-d)">Trip</span>`;
+      if(rc>0) html+=` <span class="tbadge" style="background:var(--rust)">${rc}</span>`;
+      ftb.innerHTML=html;
+    } else ftb.textContent='⚙ Filter';
+  }
   const wb=document.getElementById('wishBtn');
   if(wb){ wb.querySelectorAll('.tbadge').forEach(b=>b.remove()); if(wc>0) wb.innerHTML=`Want list <span class="tbadge" style="background:var(--gold)">${wc}</span>`; }
 }
@@ -1203,9 +1604,7 @@ function itemMatchesLocFilter(item, lf){
   return subItems(item.id).some(s=>s.location===lf);
 }
 function visibleSubCountForInv(item){
-  const subs=subItems(item.id);
-  if(personFilter==='all') return subs.length;
-  return subs.filter(s=>(s.personIds||[]).includes(personFilter)).length;
+  return subItems(item.id).filter(s=>subVisibleInInvFilters(s)).length;
 }
 function lineNeedsRestockForSort(item){
   return (item.restock||Number(item.qty)===0)||subItems(item.id).some(s=>s.restock||Number(s.qty)===0);
@@ -1213,6 +1612,8 @@ function lineNeedsRestockForSort(item){
 
 function renderInv(){
   populateDynamicDropdowns(null, null, null); // keep locF in sync
+  updateKitTripFilterSelect();
+  renderKitTripBanner();
   const srch=document.getElementById('srch').value.toLowerCase();
   const lf=document.getElementById('locF').value;
   const sort=document.getElementById('sortS').value;
@@ -1223,7 +1624,8 @@ function renderInv(){
     return textMatch
       &&itemMatchesTypeFilter(i, tf)
       &&itemMatchesLocFilter(i, lf)
-      &&pMatch;
+      &&pMatch
+      &&itemMatchesTripKitFilter(i);
   });
   if(sort==='name') items.sort((a,b)=>a.name.localeCompare(b.name));
   else if(sort==='location') items.sort((a,b)=>a.location.localeCompare(b.location));
@@ -1231,7 +1633,11 @@ function renderInv(){
   else items.sort((a,b)=>getCats().findIndex(c=>c.id===a.category)-getCats().findIndex(c=>c.id===b.category)||a.name.localeCompare(b.name));
 
   const el=document.getElementById('invContent');
-  if(!items.length){ el.innerHTML=`<div class="empty">No items match — adjust filters or add one above.</div>`; return; }
+  if(!items.length){
+    const tripHint=kitTripFilter!=='all'?' Try “All kit” or pick another trip.':'';
+    el.innerHTML=`<div class="empty">No items match — adjust filters or add one above.${tripHint}</div>`;
+    return;
+  }
 
   if(sort==='category'){
     const g={};
@@ -1264,7 +1670,7 @@ function invTable(rows){
 function itemRow(item, isSub){
   // When filtering by person, only show sub-items that match
   const allSubs=subItems(item.id);
-  const subs=personFilter==='all'?allSubs:allSubs.filter(s=>(s.personIds||[]).includes(personFilter));
+  const subs=allSubs.filter(s=>subVisibleInInvFilters(s));
   const restock=item.restock||item.qty===0;
   const isWish=item.type==='wishlist';
   const assignedPeople=(S.people||[]).filter(p=>(item.personIds||[]).includes(p.id));
@@ -1411,6 +1817,7 @@ function renderTrips(){
   const el=document.getElementById('tripsContent');
   const statsBar=document.getElementById('statsBar');
   if(statsBar) statsBar.style.display=activeTripId?'none':'';
+  if(!activeTripId) renderStats();
   if(activeTripId){
     const trip=S.trips.find(t=>t.id===activeTripId);
     if(trip){ el.innerHTML=tripDetail(trip); return; }
@@ -1428,17 +1835,10 @@ function renderTrips(){
       </div>`; return;
   }
 
-  // Sort: upcoming first, then by date, complete/post-trip at bottom
-  const statusOrder={'planning':0,'packing':1,'pack-up':2,'pack-away':3,'post-trip':4,'complete':5}; // pack-up=packing up camp
-  const sorted=[...S.trips].sort((a,b)=>{
-    const ao=statusOrder[a.status]??3, bo=statusOrder[b.status]??3;
-    if(ao!==bo) return ao-bo;
-    return (a.date||'9999')<(b.date||'9999')?-1:1;
-  });
-
-  // Upcoming = first non-complete trip
-  const upcoming=sorted.find(t=>t.status!=='complete');
+  const sorted=sortTripsByFocusPriority(S.trips);
+  const upcoming=focusTripForDashboard();
   const rest=sorted.filter(t=>t!==upcoming);
+  const upcomingIsFeatured=upcoming&&isFeaturedTrip(upcoming.id);
 
   function countdown(dateStr){
     if(!dateStr) return null;
@@ -1450,10 +1850,14 @@ function renderTrips(){
   }
 
   function peopleAvatars(trip){
-    if(!S.people||!S.people.length) return '';
+    const roster=tripRosterPeople(trip);
+    if(!roster.length&&!trip.dog) return '';
+    const dogPid=findLikelyDogPersonId();
+    const rosterHasDog=dogPid&&effectiveTripAttendeeIds(trip).has(dogPid);
+    const showDogIcon=trip.dog&&!rosterHasDog;
     return `<div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:6px">
-      ${S.people.map(p=>`<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:${p.color}33;border:1.5px solid ${p.color};font-size:13px" title="${esc(p.name)}">${p.emoji||'👤'}</span>`).join('')}
-      ${trip.dog?`<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#c8a84a33;border:1.5px solid #c8a84a;font-size:13px">🐕</span>`:''}
+      ${roster.map(p=>`<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:${p.color}33;border:1.5px solid ${p.color};font-size:13px" title="${esc(p.name)}">${p.emoji||'👤'}</span>`).join('')}
+      ${showDogIcon?`<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#c8a84a33;border:1.5px solid #c8a84a;font-size:13px" title="Dog kit">🐕</span>`:''}
     </div>`;
   }
 
@@ -1478,15 +1882,27 @@ function renderTrips(){
   const heroHtml=upcoming?`
     <div class="trip-hero" onclick="openTrip('${upcoming.id}')" style="background:var(--canvas-2);border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.1);padding:20px;margin-bottom:18px;cursor:pointer;position:relative;overflow:hidden">
       <div style="position:absolute;right:16px;bottom:16px;font-size:48px;opacity:.05;line-height:1;pointer-events:none;user-select:none">⛺</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <span class="tstatus ts-${upcoming.status}">${STLAB[upcoming.status]||upcoming.status}</span>
+        ${upcomingIsFeatured?'<span class="trip-featured-pill">★ Featured</span>':''}
+        </div>
         ${pc?`<div style="text-align:right">
           <div style="font-family:'Familjen Grotesk',sans-serif;font-size:22px;font-weight:700;color:${pc.color};line-height:1${pc.pulse?';animation:pulse 2s infinite':''}">${esc(pc.label)}</div>
           ${pc.sub?`<div style="font-size:11px;color:var(--text-m);margin-top:1px">${esc(pc.sub)}</div>`:''}
         </div>`:''}
       </div>
       <div style="font-family:'Familjen Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;color:var(--text);line-height:1.15;margin-bottom:4px">${esc(upcoming.name)}</div>
-      <div style="font-size:13px;color:var(--text-m);margin-bottom:10px">${upcoming.nights} night${upcoming.nights!==1?'s':''}${upcoming.date?' · '+fmtDate(upcoming.date):''}${upcoming.dog?' · 🐕 Biscuit coming':''}</div>
+      <div style="font-size:13px;color:var(--text-m);margin-bottom:10px">${upcoming.nights} night${upcoming.nights!==1?'s':''}${upcoming.date?' · '+fmtDate(upcoming.date):''}${(()=>{
+        const pid=findLikelyDogPersonId();
+        const ids=effectiveTripAttendeeIds(upcoming);
+        if(!upcoming.dog) return '';
+        if(pid&&ids.has(pid)){
+          const p=(S.people||[]).find(x=>x.id===pid);
+          return p?' · '+esc(p.name)+' coming':'';
+        }
+        return ' · Dog kit';
+      })()}</div>
       ${peopleAvatars(upcoming)}
       ${packProgress(upcoming)}
       <div style="margin-top:14px;display:flex;gap:7px">
@@ -1498,17 +1914,22 @@ function renderTrips(){
   // Remaining trips as compact cards
   const restHtml=rest.length?`
     <div style="font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);margin-bottom:8px">${upcoming?'Other trips':'All trips'}</div>
-    <div class="tlist">${rest.map(t=>`
+    <div class="tlist">${rest.map(t=>{
+      const feat=isFeaturedTrip(t.id);
+      return `
       <div class="tcard" onclick="openTrip('${t.id}')">
-        <div>
+        <div style="display:flex;align-items:flex-start;gap:8px;min-width:0">
+          <button type="button" class="trip-feature-btn${feat?' on':''}" title="${feat?'Featured — click to unpin':'Feature this trip'}" aria-label="${feat?'Unpin featured trip':'Feature this trip'}" onclick="event.stopPropagation();toggleFeaturedTrip('${t.id}')">${feat?'★':'☆'}</button>
+          <div style="min-width:0">
           <div class="tcard-name">${esc(t.name)}</div>
           <div class="tcard-meta">${t.date?fmtDate(t.date)+' · ':''}${t.nights}n · ${SELAB[t.season]||''}${t.dog?' · 🐕':''}</div>
+          </div>
         </div>
         <div class="tcard-r">
           ${t.checklist?(()=>{ const p=checklistProgressTotals(t); return `<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${p.packed}/${p.total}</span>`; })():''}
           <span class="tstatus ts-${t.status}">${STLAB[t.status]||t.status}</span>
         </div>
-      </div>`).join('')}
+      </div>`;}).join('')}
     </div>`:'';
 
   el.innerHTML=`
@@ -1563,19 +1984,26 @@ function tripDetail(trip){
       </div>`:`<div class="step-line done"></div><div class="step done"><div class="step-dot">✓</div><div class="step-label">Done</div></div>`}
   </div>`;
 
-  // ── Human subtitle ──
-  const people=(S.people||[]).map(p=>esc(p.name));
-  const crewStr=people.length<=2?people.join(' & '):people.slice(0,-1).join(', ')+' & '+people[people.length-1];
+  // ── Human subtitle (trip roster, not whole app crew) ──
+  const roster=tripRosterPeople(trip);
+  const names=roster.map(p=>esc(p.name));
+  let crewStr=names.length===0?'':names.length<=2?names.join(' & '):names.slice(0,-1).join(', ')+' & '+names[names.length-1];
+  if(trip.dog){
+    const dp=findLikelyDogPersonId();
+    const dogInRoster=dp&&roster.some(p=>p.id===dp);
+    if(!dogInRoster) crewStr=crewStr?crewStr+' · Dog kit':'Dog kit';
+  }
   const subtitle=[
     trip.nights+' night'+(trip.nights!==1?'s':''),
     trip.date?fmtDate(trip.date):'',
-    crewStr||(trip.dog?'with the dog':''),
+    crewStr,
   ].filter(Boolean).join(' · ');
 
   return `
     <div class="trip-toolbar">
       <button class="tback" onclick="closeTrip()">← My Trips</button>
       <div style="display:flex;gap:5px">
+        <button class="btn btn-o btn-sm" onclick="toggleFeaturedTrip('${trip.id}')" style="${isFeaturedTrip(trip.id)?'color:var(--amber);border-color:var(--amber-d)':''}">${isFeaturedTrip(trip.id)?'★ Featured':'☆ Feature'}</button>
         <button class="btn btn-o btn-sm" onclick="openEditTripModal('${trip.id}')">Edit</button>
         <button class="btn btn-x" onclick="delTrip('${trip.id}')">Delete</button>
       </div>
@@ -1647,45 +2075,124 @@ function setTripStatusFromDropdown(tripId, status){
   save(); renderTrips();
 }
 
-/** Sub-rows shown under a parent on the packing checklist (same rules as ciRow). */
-function checklistVisibleSubsForRow(trip, item){
-  let subs=subItems(item.id).filter(s=>!isExcluded(s,trip));
+/** Packing / pack-up / pack-away row state for filters and print. */
+function checklistRowState(trip,itemId,mode){
+  if(mode==='packup') return (trip.packUpStates||{})[itemId]==='packed'?'packed':'unchecked';
+  if(mode==='packaway') return (trip.packAwayStates||{})[itemId]==='packed'?'packed':'unchecked';
+  const ci=(trip.checklist||[]).find(c=>c.itemId===itemId);
+  return (ci&&ci.state)||'unchecked';
+}
+function checklistRowIsPacked(trip,itemId,mode){ return checklistRowState(trip,itemId,mode)==='packed'; }
+function checklistLocationKey(item,mode){
+  if(mode==='packup'||mode==='packaway') return item.packsInto||item.location;
+  return item.location;
+}
+
+/** Sub-rows shown under a parent (person filter + hide-packed; matches on-screen checklist). */
+function checklistVisibleSubsForRow(trip,item,mode){
+  mode=mode||'packing';
+  let subs=checklistSubsForTrip(item,trip);
   if(checklistPersonFilter!=='all'){
     subs=subs.filter(s=>{
       const ownIds=s.personIds&&s.personIds.length?s.personIds:null;
       return ownIds?ownIds.includes(checklistPersonFilter):(item.personIds||[]).includes(checklistPersonFilter);
     });
   }
-  if(checklistHidePacked){
-    const cl=trip.checklist||[];
-    subs=subs.filter(s=>{
-      const sci=cl.find(c=>c.itemId===s.id);
-      return !sci||sci.state!=='packed';
-    });
-  }
+  if(checklistHidePacked) subs=subs.filter(s=>!checklistRowIsPacked(trip,s.id,mode));
   return subs;
 }
 
-/** Packed / ready / total lines for one parent row (container = children only). */
-function packingProgressContribution(trip, ci, item){
+/** Top-level checklist rows after active sort/filter (shared by UI + print). */
+function collectFilteredChecklistParents(trip,mode){
+  mode=mode||'packing';
   const cl=trip.checklist||[];
-  const vis=checklistVisibleSubsForRow(trip, item);
+  const rows=[];
+  cl.forEach(ci=>{
+    const item=S.items.find(i=>i.id===ci.itemId);
+    if(!item||item.parentId||item.type==='wishlist') return;
+    if(checklistHidePacked){
+      if(item.isContainer){
+        if(!checklistVisibleSubsForRow(trip,item,mode).length) return;
+      } else if(checklistRowIsPacked(trip,item.id,mode)) return;
+    }
+    if(checklistPersonFilter!=='all'){
+      const itemMatches=(item.personIds||[]).includes(checklistPersonFilter);
+      const subMatches=checklistSubsForTrip(item,trip).some(s=>{
+        const ownIds=s.personIds&&s.personIds.length?s.personIds:null;
+        return ownIds?ownIds.includes(checklistPersonFilter):(item.personIds||[]).includes(checklistPersonFilter);
+      });
+      if(!itemMatches&&!subMatches) return;
+    }
+    if(checklistLocFilter!=='all'&&checklistLocationKey(item,mode)!==checklistLocFilter) return;
+    if(item.isContainer&&!checklistVisibleSubsForRow(trip,item,mode).length) return;
+    rows.push({ci,item});
+  });
+  return rows;
+}
+
+function sortFilteredChecklistParents(rows,mode){
+  mode=mode||'packing';
+  if(checklistSort==='category'){
+    rows.sort((a,b)=>getCats().findIndex(c=>c.id===a.item.category)-getCats().findIndex(c=>c.id===b.item.category)||a.item.name.localeCompare(b.item.name));
+  } else if(checklistSort==='type'){
+    const typeOrder=['always','house','consumable','seasonal'];
+    rows.sort((a,b)=>typeOrder.indexOf(a.item.type)-typeOrder.indexOf(b.item.type)||a.item.name.localeCompare(b.item.name));
+  } else if(checklistSort==='restock'){
+    rows.sort((a,b)=>((b.item.restock||b.item.qty===0)?1:0)-((a.item.restock||a.item.qty===0)?1:0)||a.item.name.localeCompare(b.item.name));
+  } else if(checklistSort==='name'){
+    rows.sort((a,b)=>a.item.name.localeCompare(b.item.name));
+  } else {
+    const locOrder=(mode==='packup'||mode==='packaway')?getLocs().map(l=>l.id):getStorageLocs().map(l=>l.id);
+    rows.sort((a,b)=>locOrder.indexOf(checklistLocationKey(a.item,mode))-locOrder.indexOf(checklistLocationKey(b.item,mode))||a.item.name.localeCompare(b.item.name));
+  }
+  return rows;
+}
+
+function getChecklistGroupConfig(mode){
+  if(checklistSort==='location'){
+    const locOrder=(mode==='packup'||mode==='packaway')?getLocs().map(l=>l.id):getStorageLocs().map(l=>l.id);
+    return {
+      groupKey:item=>checklistLocationKey(item,mode),
+      groupOrder:locOrder,
+      groupLabel:id=>{ const l=getLocs().find(x=>x.id===id); return l?(mode==='packing'?'\uD83D\uDCCD '+l.label:l.label):id; },
+    };
+  }
+  if(checklistSort==='category'){
+    return {
+      groupKey:item=>item.category,
+      groupOrder:getCats().map(c=>c.id),
+      groupLabel:id=>{ const c=getCats().find(x=>x.id===id); return c?(c.emoji?c.emoji+' ':'')+c.label:id; },
+    };
+  }
+  if(checklistSort==='type'){
+    return {
+      groupKey:item=>item.type,
+      groupOrder:['always','house','consumable','seasonal'],
+      groupLabel:id=>({always:'Always packed',house:'Bring from home',consumable:'Consumable',seasonal:'Seasonal'}[id]||id),
+    };
+  }
+  return { groupKey:null, groupOrder:null, groupLabel:null };
+}
+
+/** Packed / ready / total lines for one parent row (container = children only). */
+function packingProgressContribution(trip, ci, item, mode){
+  mode=mode||'packing';
+  const vis=checklistVisibleSubsForRow(trip, item, mode);
   if(item.isContainer){
     let packed=0, ready=0;
     vis.forEach(sub=>{
-      const sci=cl.find(c=>c.itemId===sub.id);
-      const st=(sci&&sci.state)||'unchecked';
+      const st=checklistRowState(trip, sub.id, mode);
       if(st==='packed') packed++;
       else if(st==='ready') ready++;
     });
     return{packed, ready, total:vis.length};
   }
-  let packed=ci.state==='packed'?1:0;
-  let ready=ci.state==='ready'?1:0;
+  const parentSt=checklistRowState(trip, item.id, mode);
+  let packed=parentSt==='packed'?1:0;
+  let ready=parentSt==='ready'?1:0;
   let total=1;
   vis.forEach(sub=>{
-    const sci=cl.find(c=>c.itemId===sub.id);
-    const st=(sci&&sci.state)||'unchecked';
+    const st=checklistRowState(trip, sub.id, mode);
     total++;
     if(st==='packed') packed++;
     else if(st==='ready') ready++;
@@ -1700,6 +2207,9 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
       No checklist yet.<br>
       <button class="btn btn-p" style="margin-top:10px" onclick="genChecklist('${trip.id}')">Generate Checklist from Inventory</button>
     </div>`;
+
+  ensureChecklistPersonFilterValidForTrip(trip);
+  const rosterPills=tripRosterPeople(trip);
 
   const locMap=labMap(getLocs());
   const locMap2=labMap(getLocs());
@@ -1720,11 +2230,11 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
       ${hasActiveFilter?`<button class="btn btn-o btn-sm" style="color:var(--rust);border-color:var(--rust)" onclick="clearChecklistFilters()">✕ Clear</button>`:''}
     </div>
     <div id="clFilters" style="display:${checklistFiltersOpen?'block':'none'};padding:10px;background:var(--canvas-3);border-radius:3px;margin-bottom:12px">
-      ${(S.people&&S.people.length)?`
+      ${rosterPills.length?`
       <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;align-items:center">
         <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em">Person:</span>
         <button class="fb ${checklistPersonFilter==='all'?'on':''}" onclick="setChecklistPersonFilter('all')">All</button>
-        ${S.people.map(p=>`<button class="fb" style="${checklistPersonFilter===p.id?`background:${p.color}22;color:${p.color};border-color:${p.color}66`:''}" onclick="setChecklistPersonFilter('${p.id}')">${p.emoji||'👤'} ${esc(p.name)}</button>`).join('')}
+        ${rosterPills.map(p=>`<button class="fb" style="${checklistPersonFilter===p.id?`background:${p.color}22;color:${p.color};border-color:${p.color}66`:''}" onclick="setChecklistPersonFilter('${p.id}')">${p.emoji||'👤'} ${esc(p.name)}</button>`).join('')}
       </div>`:''}
       <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;align-items:center">
         <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em">Location:</span>
@@ -1742,60 +2252,9 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
 
   const peoplePills=''; const locPills='';
 
-  // ── BUILD FILTERED ITEM LIST ──
-  const filteredCIs=[];
-  cl.forEach(ci=>{
-    const item=S.items.find(i=>i.id===ci.itemId);
-    if(!item||item.parentId) return; // sub-items render under parent
-    if(checklistHidePacked && ci.state==='packed') return;
-    if(checklistPersonFilter!=='all'){
-      const itemMatches=(item.personIds||[]).includes(checklistPersonFilter);
-      const subMatches=subItems(item.id).some(s=>{
-        const ownIds=s.personIds&&s.personIds.length?s.personIds:null;
-        return ownIds?ownIds.includes(checklistPersonFilter):(item.personIds||[]).includes(checklistPersonFilter);
-      });
-      if(!itemMatches&&!subMatches) return;
-    }
-    if(checklistLocFilter!=='all'&&item.location!==checklistLocFilter) return;
-    filteredCIs.push({ci,item});
-  });
-
-  // ── SORT ──
-  if(checklistSort==='category'){
-    filteredCIs.sort((a,b)=>getCats().findIndex(c=>c.id===a.item.category)-getCats().findIndex(c=>c.id===b.item.category)||a.item.name.localeCompare(b.item.name));
-  } else if(checklistSort==='type'){
-    const typeOrder=['always','house','consumable','seasonal'];
-    filteredCIs.sort((a,b)=>typeOrder.indexOf(a.item.type)-typeOrder.indexOf(b.item.type)||a.item.name.localeCompare(b.item.name));
-  } else if(checklistSort==='restock'){
-    filteredCIs.sort((a,b)=>((b.item.restock||b.item.qty===0)?1:0)-((a.item.restock||a.item.qty===0)?1:0)||a.item.name.localeCompare(b.item.name));
-  } else if(checklistSort==='name'){
-    filteredCIs.sort((a,b)=>a.item.name.localeCompare(b.item.name));
-  } else {
-    // default: by location
-    filteredCIs.sort((a,b)=>getStorageLocs().findIndex(l=>l.id===a.item.location)-getStorageLocs().findIndex(l=>l.id===b.item.location)||a.item.name.localeCompare(b.item.name));
-  }
-
-  // ── GROUP by sort key ──
-  // Build ordered group keys and label map based on sort mode
-  let groupKey, groupOrder, groupLabel, groupIcon;
-  if(checklistSort==='location'){
-    groupKey=item=>item.location;
-    groupOrder=getStorageLocs().map(l=>l.id);
-    groupLabel=id=>{ const l=getStorageLocs().find(x=>x.id===id); return l?l.label:id; };
-    groupIcon=()=>'📍 ';
-  } else if(checklistSort==='category'){
-    groupKey=item=>item.category;
-    groupOrder=getCats().map(c=>c.id);
-    groupLabel=id=>{ const c=getCats().find(x=>x.id===id); return c?(c.emoji?c.emoji+' ':'')+c.label:id; };
-    groupIcon=()=>'';
-  } else if(checklistSort==='type'){
-    groupKey=item=>item.type;
-    groupOrder=['always','house','consumable','seasonal'];
-    groupLabel=id=>({always:'Always packed',house:'Bring from home',consumable:'Consumable',seasonal:'Seasonal'}[id]||id);
-    groupIcon=()=>'';
-  } else {
-    groupKey=null; // no grouping for name / restock
-  }
+  const filteredCIs=sortFilteredChecklistParents(collectFilteredChecklistParents(trip,'packing'),'packing');
+  const {groupKey,groupOrder,groupLabel}=getChecklistGroupConfig('packing');
+  const groupIcon=checklistSort==='location'?()=>'📍 ':()=>'';
 
   const groups={};
   if(groupKey){
@@ -1830,7 +2289,7 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
       <div style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);margin-bottom:8px">Filter by person</div>
       <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px">
         <button class="fb ${checklistPersonFilter==='all'?'on':''}" onclick="setChecklistPersonFilter('all')">Everyone</button>
-        ${(S.people||[]).map(p=>`<button class="fb" style="${checklistPersonFilter===p.id?'background:'+p.color+'22;color:'+p.color+';border-color:'+p.color+'66':''}" onclick="setChecklistPersonFilter('${p.id}')">${p.emoji||'👤'} ${esc(p.name)}</button>`).join('')}
+        ${rosterPills.map(p=>`<button class="fb" style="${checklistPersonFilter===p.id?'background:'+p.color+'22;color:'+p.color+';border-color:'+p.color+'66':''}" onclick="setChecklistPersonFilter('${p.id}')">${p.emoji||'👤'} ${esc(p.name)}</button>`).join('')}
       </div>
       <div style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);margin-bottom:8px">Filter by location</div>
       <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px">
@@ -1904,6 +2363,7 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
       <button class="btn btn-o btn-sm" onclick="regenChecklist('${trip.id}')">↺ Rebuild list</button>
       <button class="btn btn-o btn-sm" onclick="uncheckAll('${trip.id}')" title="Clears every checklist row and all action reminder ticks for items on this list">Uncheck all</button>
       <button class="btn btn-p btn-sm" onclick="openQuickAddModal('${trip.id}')">+ Quick add item</button>
+      <button class="btn btn-o btn-sm" onclick="openInventoryToTripModal('${trip.id}')">+ From inventory</button>
       <button class="btn btn-o btn-sm" onclick="printChecklist('${trip.id}','packing')">🖨 Print</button>
     </div>`;
 }
@@ -1929,7 +2389,7 @@ function ciRow(ci,item,trip,hl){
 
   // Container items: show as group header, no state toggle — progress from children
   if(item.isContainer){
-    const allSubs=subItems(item.id).filter(s=>!isExcluded(s,trip));
+    const allSubs=checklistSubsForTrip(item,trip);
     let visibleSubs=checklistPersonFilter==='all'?allSubs:allSubs.filter(s=>{
       const ownIds=s.personIds&&s.personIds.length?s.personIds:null;
       return ownIds?ownIds.includes(checklistPersonFilter):(item.personIds||[]).includes(checklistPersonFilter);
@@ -1946,16 +2406,13 @@ function ciRow(ci,item,trip,hl){
     return `
       <div style="margin:0 0 4px;padding:8px 14px 6px;border-bottom:1px solid rgba(0,0,0,.06)" id="clitem-${trip.id}-${item.id}">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-          <span style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text)">${esc(item.name)}</span>
+          <span style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text)">${esc(item.name)}${tripManualExtraBadge(trip,item.id)}</span>
           <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);flex-shrink:0">${subPacked}/${visibleSubs.length}</span>
         </div>
       </div>
       ${visibleSubs.map(sub=>{
         let sci=cl.find(c=>c.itemId===sub.id);
-        if(!sci){
-          sci={itemId:sub.id,state:'unchecked'};
-          trip.checklist.push(sci);
-        }
+        if(!sci) sci={itemId:sub.id,state:'unchecked'};
         return ciSubRow(sci,sub,trip,hl,locMap);
       }).join('')}`;
   }
@@ -1967,7 +2424,7 @@ function ciRow(ci,item,trip,hl){
     :`<span class="lbadge lb-${item.location}" style="font-size:8px;padding:1px 4px">${esc(locMap[item.location]||item.location)}</span>`;
 
   // Visible sub-items (respects person filter)
-  const allSubs=subItems(item.id).filter(s=>!isExcluded(s,trip));
+  const allSubs=checklistSubsForTrip(item,trip);
   const visibleSubs=checklistPersonFilter==='all'?allSubs:allSubs.filter(s=>{
     const ownIds=s.personIds&&s.personIds.length?s.personIds:null;
     return ownIds?ownIds.includes(checklistPersonFilter):(item.personIds||[]).includes(checklistPersonFilter);
@@ -1980,7 +2437,7 @@ function ciRow(ci,item,trip,hl){
     <div class="ci ${ci.state||''} ${isHL?'hl':''}" id="clitem-${trip.id}-${ci.itemId}" style="position:relative" onclick="cycleState('${trip.id}','${ci.itemId}')">
       <div class="ci-state ${stateCls}">${ci.state==='packed'?'✓':''}</div>
       <div class="ci-body">
-        <div class="ci-name ${ci.state||''}">${esc(item.name)}${needsRestock?` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--amber)">⚠ low stock</span>`:''}${(()=>{
+        <div class="ci-name ${ci.state||''}">${esc(item.name)}${tripManualExtraBadge(trip,item.id)}${needsRestock?` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--amber)">⚠ low stock</span>`:''}${(()=>{
           const prePending=(item.actions||[]).filter(a=>a.stage==='pre-trip');
           const tripActions=(trip.actionStates||{});
           const incomplete=prePending.filter(a=>!tripActions[item.id+'::'+a.id]);
@@ -2008,10 +2465,7 @@ function ciRow(ci,item,trip,hl){
     ${visibleSubs.length?`<div style="padding:3px 0 0 46px;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-m);letter-spacing:.08em;text-transform:uppercase">includes:</div>`:''}
     ${visibleSubs.map(sub=>{
       let sci=cl.find(c=>c.itemId===sub.id);
-      if(!sci){
-        sci={itemId:sub.id,state:'unchecked'};
-        trip.checklist.push(sci);
-      }
+      if(!sci) sci={itemId:sub.id,state:'unchecked'};
       return ciSubRow(sci,sub,trip,hl,locMap);
     }).join('')}`;
 }
@@ -2027,7 +2481,7 @@ function ciSubRow(sci,sub,trip,hl,locMap){
   return `<div class="ci sub-ci ${sci.state||''} ${isSubHL?'hl':''}" id="clitem-${trip.id}-${sci.itemId}" style="position:relative" onclick="cycleState('${trip.id}','${sci.itemId}')">
     <div class="ci-state ${subStateCls}">${sci.state==='packed'?'✓':''}</div>
     <div class="ci-body">
-      <div class="ci-name ${sci.state||''}">${esc(sub.name)}${needsRestock?` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--amber)">⚠ low stock</span>`:''}</div>
+      <div class="ci-name ${sci.state||''}">${esc(sub.name)}${tripManualExtraBadge(trip,sub.id)}${needsRestock?` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--amber)">⚠ low stock</span>`:''}</div>
       ${subTapNudge}
       <div class="ci-meta">
         ${packsRoute}
@@ -2083,7 +2537,7 @@ function packAwayBody(trip){
     let grpDone=0, grpTot=0;
     groups[k].forEach(item=>{
       grpTot++; if(paStates[item.id]==='packed') grpDone++;
-      subItems(item.id).filter(s=>s.type!=='wishlist').forEach(s=>{
+      checklistSubsForTrip(item,trip).forEach(s=>{
         grpTot++; if(paStates[s.id]==='packed') grpDone++;
       });
     });
@@ -2100,7 +2554,7 @@ function packAwayBody(trip){
           const route=item.packsInto&&item.packsInto!==item.location
             ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${esc(locMap[item.packsInto]||item.packsInto)} → ${esc(locMap[dest]||dest)}</span>`
             :`<span class="lbadge lb-${dest}" style="font-size:8px;padding:1px 4px">→ ${esc(locMap[dest]||dest)}</span>`;
-          const subs=subItems(item.id).filter(s=>s.type!=='wishlist');
+          const subs=checklistSubsForTrip(item,trip);
           const subDone=subs.filter(s=>paStates[s.id]==='packed').length;
           return `<div class="ci ${done?'checked':''}" style="${done?'opacity:.4':''}" onclick="cyclePackAwayState('${trip.id}','${item.id}')">
             <div class="ci-state ${done?'packed':'unchecked'}">${done?'✓':''}</div>
@@ -2368,21 +2822,21 @@ function renderWishlist(){
       </div>`).join('')}`;
 }
 
+/** Set trip.checklist to canonical id list from inventory rules + manual includes; preserve row state. */
+function applyTripChecklistMerge(trip){
+  const ids=itemIdsForTripChecklist(trip);
+  const existing={};
+  (trip.checklist||[]).forEach(c=>existing[c.itemId]=c.state);
+  trip.checklist=ids.map(itemId=>({itemId,state:existing[itemId]||'unchecked'}));
+}
+
 // ══════════════════════════════════════════════════
 // TRIP ACTIONS
 // ══════════════════════════════════════════════════
 function genChecklist(tripId){
   const trip=S.trips.find(t=>t.id===tripId);
   if(!trip) return;
-  // Every non–wish list line on the trip (parents + sub-items); each has its own checklist row.
-  const included=S.items.filter(i=>i.type!=='wishlist'&&!isExcluded(i,trip));
-  // Preserve state for any items already in checklist (don't reset existing progress)
-  const existing={};
-  (trip.checklist||[]).forEach(c=>existing[c.itemId]=c.state);
-  trip.checklist=included.map(item=>({
-    itemId:item.id,
-    state:existing[item.id]||'unchecked'
-  }));
+  applyTripChecklistMerge(trip);
   save(); renderTrips();
 }
 
@@ -2390,8 +2844,8 @@ function hardRegenChecklist(tripId){
   // Full reset — used by the Regenerate button
   const trip=S.trips.find(t=>t.id===tripId);
   if(!trip) return;
-  const included=S.items.filter(i=>i.type!=='wishlist'&&!isExcluded(i,trip));
-  trip.checklist=included.map(item=>({ itemId:item.id, state:'unchecked' }));
+  const ids=itemIdsForTripChecklist(trip);
+  trip.checklist=ids.map(itemId=>({ itemId, state:'unchecked' }));
   save(); renderTrips();
 }
 
@@ -2403,8 +2857,13 @@ function regenChecklist(tripId){
 function cycleState(tripId, itemId){
   const trip=S.trips.find(t=>t.id===tripId);
   if(!trip?.checklist) return;
-  const ci=trip.checklist.find(c=>c.itemId===itemId);
-  if(!ci) return;
+  let ci=trip.checklist.find(c=>c.itemId===itemId);
+  if(!ci){
+    const allowed=new Set(itemIdsForTripChecklist(trip));
+    if(!allowed.has(itemId)) return;
+    ci={itemId,state:'unchecked'};
+    trip.checklist.push(ci);
+  }
   const currentState=ci.state||'unchecked';
   // Hard block: moving from unchecked→ready requires all pre-trip actions complete
   if(currentState==='unchecked'){
@@ -2519,6 +2978,7 @@ function setTripTab(tab){ activeTripTab=tab; renderTrips(); }
 function delTrip(id){
   if(!confirm('Delete this trip?')) return;
   S.trips=S.trips.filter(t=>t.id!==id);
+  if(S.featuredTripId===id) S.featuredTripId=null;
   activeTripId=null; expandedPackedChecklistGroups.clear(); save(); renderTrips();
 }
 
@@ -2611,7 +3071,7 @@ function packUpBody(trip){
         let grpDone=0, grpTot=0;
         groups[k].forEach(({item})=>{
           grpTot++; if(paStates[item.id]==='packed') grpDone++;
-          subItems(item.id).filter(s=>s.type!=='wishlist').forEach(s=>{
+          checklistSubsForTrip(item,trip).forEach(s=>{
             grpTot++; if(paStates[s.id]==='packed') grpDone++;
           });
         });
@@ -2678,7 +3138,7 @@ function packUpRow(item, trip, locMap){
     :`<span class="lbadge lb-${item.location}" style="font-size:8px;padding:1px 4px">${esc(locMap[item.location]||item.location)}</span>`;
 
   // sub-items
-  const subs=subItems(item.id).filter(s=>s.type!=='wishlist');
+  const subs=checklistSubsForTrip(item,trip);
   const subsDoneCount=subs.filter(s=>(paStates[s.id]||'unchecked')==='packed').length;
 
   return `
@@ -2955,7 +3415,14 @@ function toggleHidePacked(){
 function removeFromChecklist(tripId, itemId){
   const trip=S.trips.find(t=>t.id===tripId);
   if(!trip) return;
-  trip.checklist=trip.checklist.filter(c=>c.itemId!==itemId);
+  trip.manualIncludeIds=(trip.manualIncludeIds||[]).filter(id=>id!==itemId);
+  trip.checklist=(trip.checklist||[]).filter(c=>c.itemId!==itemId);
+  if(trip.actionStates){
+    const prefix=itemId+'::';
+    Object.keys(trip.actionStates).forEach(k=>{
+      if(k.startsWith(prefix)) delete trip.actionStates[k];
+    });
+  }
   save(); renderTrips();
 }
 
@@ -3004,6 +3471,46 @@ function saveItem(){
 }
 
 // ══════════════════════════════════════════════════
+// TRIP MODAL — attendees
+// ══════════════════════════════════════════════════
+function findLikelyDogPersonId(){
+  const people=S.people||[];
+  const hit=people.find(p=>['🐕','🐶','🐩'].includes(p.emoji));
+  return hit?hit.id:null;
+}
+
+/** When at least one attendee is selected, keep dog person row in sync with “Dog kit” checkbox. Whole crew (no boxes) leaves array empty. */
+function applyDogPersonToAttendeeIds(attendeeIds, dogChecked){
+  const dogPid=findLikelyDogPersonId();
+  if(!dogPid||!attendeeIds.length) return attendeeIds.slice();
+  const next=new Set(attendeeIds);
+  if(dogChecked) next.add(dogPid);
+  else next.delete(dogPid);
+  return [...next];
+}
+
+function readTripAttendeeIdsFromForm(){
+  const wrap=document.getElementById('tAttendeeGrid');
+  if(!wrap) return [];
+  return [...wrap.querySelectorAll('input[type=checkbox]:checked')].map(i=>i.value);
+}
+
+function populateTripAttendeeGrid(trip){
+  const wrap=document.getElementById('tAttendeeGrid');
+  if(!wrap) return;
+  const people=S.people||[];
+  if(!people.length){
+    wrap.innerHTML='<span style="font-size:12px;color:var(--text-m)">Add people under Settings → The crew first.</span>';
+    return;
+  }
+  const saved=(trip&&trip.attendeeIds&&trip.attendeeIds.length)?new Set(trip.attendeeIds):null;
+  wrap.innerHTML=people.map(p=>{
+    const on=saved&&saved.has(p.id);
+    return `<label class="ck" style="display:inline-flex;align-items:center;gap:6px;margin:4px 12px 4px 0"><input type="checkbox" name="tAtt" value="${p.id}"${on?' checked':''}><span>${p.emoji||'👤'}</span><span>${esc(p.name)}</span></label>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════
 // TRIP MODAL
 // ══════════════════════════════════════════════════
 function openNewTripModal(){
@@ -3018,6 +3525,7 @@ function openNewTripModal(){
   document.getElementById('tDist').value='regional';
   document.getElementById('tDog').checked=true;
   populateTripActGrid([]);
+  populateTripAttendeeGrid(null);
   openM('tripModal');
   setTimeout(()=>document.getElementById('tName').focus(),50);
 }
@@ -3037,6 +3545,7 @@ function openEditTripModal(id){
   document.getElementById('tDog').checked=!!trip.dog;
   document.getElementById('tNotes').value=trip.notes||'';
   populateTripActGrid(trip.activities||[]);
+  populateTripAttendeeGrid(trip);
   openM('tripModal');
 }
 
@@ -3044,6 +3553,9 @@ function saveTrip(){
   const name=document.getElementById('tName').value.trim();
   if(!name){ document.getElementById('tName').focus(); return; }
   const activities=[...document.querySelectorAll('#tActGrid input[type=checkbox]:checked')].map(cb=>cb.value);
+  let attendeeIds=readTripAttendeeIdsFromForm();
+  const dogOn=document.getElementById('tDog').checked;
+  if(attendeeIds.length) attendeeIds=applyDogPersonToAttendeeIds(attendeeIds,dogOn);
   const data={
     name,
     date:document.getElementById('tDate').value,
@@ -3052,8 +3564,9 @@ function saveTrip(){
     site:document.getElementById('tSite').value,
     extraPeople:parseInt(document.getElementById('tExtra').value)||0,
     distance:document.getElementById('tDist').value,
-    dog:document.getElementById('tDog').checked,
+    dog:dogOn,
     activities,
+    attendeeIds,
     notes:document.getElementById('tNotes').value.trim()
   };
   if(editTripId){
@@ -3064,7 +3577,7 @@ function saveTrip(){
     if(hadCL&&confirm('Trip config changed — regenerate checklist?')) genChecklist(editTripId);
     else{ save(); renderTrips(); }
   } else {
-    const t={id:uid(),status:'planning',...data};
+    const t={id:uid(),status:'planning',manualIncludeIds:[],...data};
     S.trips.push(t);
     activeTripId=t.id;
     save(); closeM('tripModal'); renderTrips();
@@ -3126,10 +3639,10 @@ function searchAll(q){
     if(h.toLowerCase().includes(t)) people.push(p);
   });
   (S.trips||[]).forEach(trip=>{
-    (trip.checklist||[]).forEach(ci=>{
-      const item=S.items.find(i=>i.id===ci.itemId);
-      if(!item||item.type==='wishlist') return;
-      if(isExcluded(item,trip)) return;
+    const onIds=new Set(itemIdsForTripChecklist(trip));
+    (S.items||[]).forEach(item=>{
+      if(item.type==='wishlist') return;
+      if(!onIds.has(item.id)) return;
       if(!_gsearchHaystackItem(item).includes(t)) return;
       const key=trip.id+'::'+item.id;
       if(onTripSeen.has(key)) return;
@@ -3626,6 +4139,67 @@ function closeQAModal(){
   if(ov) ov.remove();
 }
 
+function closeInvTripModal(){
+  document.getElementById('invTripModalOverlay')?.remove();
+  _invTripPickTripId=null;
+}
+
+function invTripFilterRows(){
+  const q=_gsearchToken(document.getElementById('invTripSearch')?.value);
+  document.querySelectorAll('.inv-trip-row').forEach(row=>{
+    const txt=row.textContent.toLowerCase();
+    row.style.display=!q||txt.includes(q)?'flex':'none';
+  });
+}
+
+function invTripConfirmAdd(){
+  const trip=S.trips.find(t=>t.id===_invTripPickTripId);
+  if(!trip){ closeInvTripModal(); return; }
+  const ids=[...document.querySelectorAll('#invTripList input.inv-trip-cb:checked:not(:disabled)')].map(b=>b.value);
+  if(!ids.length){ closeInvTripModal(); return; }
+  const set=new Set(trip.manualIncludeIds||[]);
+  ids.forEach(id=>set.add(id));
+  trip.manualIncludeIds=[...set];
+  applyTripChecklistMerge(trip);
+  save(); closeInvTripModal(); renderTrips();
+}
+
+function openInventoryToTripModal(tripId){
+  closeInvTripModal();
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  _invTripPickTripId=tripId;
+  const onSet=new Set(itemIdsForTripChecklist(trip));
+  const rows=kitItemsForTripInventoryPicker().slice().sort((a,b)=>{
+    const an=(S.items.find(i=>i.id===a.parentId)||{}).name||'';
+    const bn=(S.items.find(i=>i.id===b.parentId)||{}).name||'';
+    return (an+' '+a.name).toLowerCase().localeCompare((bn+' '+b.name).toLowerCase());
+  });
+  const rowHtml=rows.map(it=>{
+    const parent=S.items.find(i=>i.id===it.parentId);
+    const lab=parent?`<span style="color:var(--text-m)">${esc(parent.name)} · </span>${esc(it.name)}`:esc(it.name);
+    const on=onSet.has(it.id);
+    return `<label class="inv-trip-row" style="display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-bottom:1px solid var(--border);cursor:pointer;${on?'opacity:.5':''}">
+      <input type="checkbox" class="inv-trip-cb" value="${it.id}" ${on?'disabled':''} style="margin-top:3px;flex-shrink:0">
+      <span style="flex:1;font-size:13px;line-height:1.35">${lab}</span>${on?'<span style="font-size:10px;color:var(--text-m);white-space:nowrap">On list</span>':''}
+    </label>`;
+  }).join('');
+  document.body.insertAdjacentHTML('beforeend',`
+    <div id="invTripModalOverlay" style="position:fixed;inset:0;background:rgba(10,10,8,.88);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px" onclick="if(event.target===this)closeInvTripModal()">
+      <div style="background:var(--canvas-2);border:1px solid var(--border-l);border-top:3px solid var(--amber);width:100%;max-width:440px;border-radius:3px;padding:20px;max-height:90vh;display:flex;flex-direction:column" onclick="event.stopPropagation()">
+        <div class="mtitle">Add from inventory</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);line-height:1.45;margin:6px 0 10px 0">Lines you add here are forced onto this trip even when season, activity, dog kit, or person rules would normally leave them off. Wishlist lines are not listed.</div>
+        <input class="fi" id="invTripSearch" placeholder="Filter…" oninput="invTripFilterRows()" style="margin-bottom:10px">
+        <div id="invTripList" style="overflow:auto;flex:1;min-height:120px;max-height:50vh;border:1px solid var(--border);border-radius:3px;margin-bottom:14px;background:var(--canvas-3)">${rowHtml}</div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--border);padding-top:14px">
+          <button type="button" class="btn btn-o" onclick="closeInvTripModal()">Cancel</button>
+          <button type="button" class="btn btn-p" onclick="invTripConfirmAdd()">Add to trip</button>
+        </div>
+      </div>
+    </div>`);
+  setTimeout(()=>{ const el=document.getElementById('invTripSearch'); if(el) el.focus(); },50);
+}
+
 function saveQuickAdd(tripId){
   const name=document.getElementById('qaName').value.trim();
   if(!name) return;
@@ -4020,7 +4594,9 @@ function importData(event){
         packUpStates:    t.packUpStates||{},
         packAwayStates:  t.packAwayStates||{},
         leftAtSite:      t.leftAtSite||{},
-        damaged:         t.damaged||{}
+        damaged:         t.damaged||{},
+        attendeeIds:     Array.isArray(t.attendeeIds)?t.attendeeIds.filter(Boolean):[],
+        manualIncludeIds:Array.isArray(t.manualIncludeIds)?t.manualIncludeIds.filter(Boolean):[]
       }));
 
       // Migrate people
@@ -4059,7 +4635,8 @@ function importData(event){
 function renderPeopleHTML(){
   if(!S.people) S.people=[];
   if(!S.people.length) return `<div class="empty" style="margin-top:0;border:none;text-align:left;padding:0">
-    <button class="btn btn-p btn-sm" onclick="openPersonModal()">+ Add person</button></div>`;
+    <button class="btn btn-p btn-sm" onclick="openPersonModal()">+ Add person</button>
+    <div style="margin-top:10px"><button class="btn btn-o btn-sm" onclick="openOrphanAssignmentsModal()">Orphaned assignments…</button></div></div>`;
   return `<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
     ${S.people.map(p=>{
       const count=S.items.filter(i=>(i.personIds||[]).includes(p.id)).length;
@@ -4078,7 +4655,47 @@ function renderPeopleHTML(){
       </div>`;
     }).join('')}
   </div>
-  <button class="btn btn-o btn-sm" onclick="openPersonModal()">+ Add person</button>`;
+  <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:4px">
+    <button class="btn btn-o btn-sm" onclick="openPersonModal()">+ Add person</button>
+    <button class="btn btn-o btn-sm" onclick="openOrphanAssignmentsModal()">Orphaned assignments…</button>
+  </div>`;
+}
+
+function orphanAssignedItemRows(){
+  const valid=new Set((S.people||[]).map(p=>p.id));
+  const out=[];
+  (S.items||[]).forEach(item=>{
+    const bad=(item.personIds||[]).filter(pid=>!valid.has(pid));
+    if(bad.length) out.push({item,bad});
+  });
+  return out;
+}
+
+function closeOrphanAssignmentsModal(){
+  document.getElementById('orphanReportOverlay')?.remove();
+}
+
+function openOrphanAssignmentsModal(){
+  closeOrphanAssignmentsModal();
+  const rows=orphanAssignedItemRows();
+  const inner=rows.length
+    ? rows.map(({item,bad})=>`<div style="padding:10px 0;border-bottom:1px solid var(--border);font-size:13px">
+        <div style="font-weight:600">${esc(item.name)}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:4px">Unknown id(s): ${bad.map(esc).join(', ')}</div>
+        <button type="button" class="btn btn-o btn-sm" style="margin-top:8px" onclick="closeOrphanAssignmentsModal();setTab('inv',null);openEditItemModal('${item.id}')">Edit item in My Kit</button>
+      </div>`).join('')
+    : '<p style="font-size:13px;color:var(--text-m);margin:0">No orphaned person assignments. If you delete someone from The crew, their assignees are cleared from items automatically.</p>';
+  document.body.insertAdjacentHTML('beforeend',`
+    <div id="orphanReportOverlay" style="position:fixed;inset:0;background:rgba(10,10,8,.88);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px" onclick="if(event.target===this)closeOrphanAssignmentsModal()">
+      <div style="background:var(--canvas-2);border:1px solid var(--border-l);border-top:3px solid var(--amber);width:100%;max-width:420px;border-radius:3px;padding:20px;max-height:85vh;overflow:auto" onclick="event.stopPropagation()">
+        <div class="mtitle">Orphaned assignments</div>
+        <p style="font-size:12px;color:var(--text-m);line-height:1.5;margin:0 0 12px 0">Kit lines still pointing at a person id that is not in The crew (e.g. after a restore or hand-edited data). Edit the item to fix assignees.</p>
+        ${inner}
+        <div style="display:flex;justify-content:flex-end;margin-top:16px;padding-top:12px;border-top:1px solid var(--border)">
+          <button type="button" class="btn btn-p" onclick="closeOrphanAssignmentsModal()">Done</button>
+        </div>
+      </div>
+    </div>`);
 }
 
 function renderPeople(){
@@ -4198,9 +4815,53 @@ function deletePerson(id){
 // ══════════════════════════════════════════════════
 // PRINT
 // ══════════════════════════════════════════════════
+/** Open generated HTML for printing (blob: + hidden <a> breaks on file:// and some browsers). */
+function openHtmlPrintPreview(html){
+  const w=window.open('about:blank','_blank');
+  if(w){
+    try{
+      w.document.open();
+      w.document.write(html);
+      w.document.close();
+      return true;
+    }catch(e){
+      try{ w.close(); }catch(_){}
+    }
+  }
+  try{
+    const url=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
+    const w2=window.open(url,'_blank');
+    if(w2){
+      setTimeout(()=>URL.revokeObjectURL(url),120000);
+      return true;
+    }
+    URL.revokeObjectURL(url);
+  }catch(e){}
+  let frame=document.getElementById('nlPrintFrame');
+  let closeBtn=document.getElementById('nlPrintFrameClose');
+  if(!frame){
+    frame=document.createElement('iframe');
+    frame.id='nlPrintFrame';
+    frame.title='Print preview';
+    frame.style.cssText='position:fixed;inset:0;z-index:10000;width:100%;height:100%;border:0;background:#f7f4ec';
+    document.body.appendChild(frame);
+    closeBtn=document.createElement('button');
+    closeBtn.id='nlPrintFrameClose';
+    closeBtn.type='button';
+    closeBtn.textContent='✕ Close preview';
+    closeBtn.style.cssText="position:fixed;top:12px;right:12px;z-index:10001;padding:8px 14px;font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:700;background:var(--ink);color:var(--paper);border:none;border-radius:3px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25)";
+    closeBtn.onclick=()=>{ frame.remove(); closeBtn.remove(); };
+    document.body.appendChild(closeBtn);
+  }
+  frame.srcdoc=html;
+  showToast('Print preview opened here — use Print this page, or allow pop-ups for a new tab.');
+  return true;
+}
+
 function printChecklist(tripId, mode){
   const trip=S.trips.find(t=>t.id===tripId);
   if(!trip) return;
+  ensureChecklistPersonFilterValidForTrip(trip);
   const cl=trip.checklist||[];
   const locMap=labMap(getLocs());
 
@@ -4212,64 +4873,8 @@ function printChecklist(tripId, mode){
   const modeDesc=modeDescs[mode]||'';
   const actionStages=actionStagesMap[mode]||[];
 
-  // ── Use same filter/sort/group as current app state ──
-  // Build filtered item list matching exactly what is on screen
-  const filteredCIs=[];
-  cl.forEach(ci=>{
-    const item=S.items.find(i=>i.id===ci.itemId);
-    if(!item||item.parentId||item.type==='wishlist') return;
-    // Respect hide-packed setting
-    if(checklistHidePacked && ci.state==='packed') return;
-    // Respect person filter
-    if(checklistPersonFilter!=='all'){
-      const itemMatches=(item.personIds||[]).includes(checklistPersonFilter);
-      const subMatches=subItems(item.id).some(s=>{
-        const ownIds=s.personIds&&s.personIds.length?s.personIds:null;
-        return ownIds?ownIds.includes(checklistPersonFilter):(item.personIds||[]).includes(checklistPersonFilter);
-      });
-      if(!itemMatches&&!subMatches) return;
-    }
-    // Respect location filter
-    if(checklistLocFilter!=='all'&&item.location!==checklistLocFilter) return;
-    filteredCIs.push({ci,item});
-  });
-
-  // ── Same sort as app ──
-  if(checklistSort==='category'){
-    filteredCIs.sort((a,b)=>getCats().findIndex(c=>c.id===a.item.category)-getCats().findIndex(c=>c.id===b.item.category)||a.item.name.localeCompare(b.item.name));
-  } else if(checklistSort==='type'){
-    const typeOrder=['always','house','consumable','seasonal'];
-    filteredCIs.sort((a,b)=>typeOrder.indexOf(a.item.type)-typeOrder.indexOf(b.item.type)||a.item.name.localeCompare(b.item.name));
-  } else if(checklistSort==='restock'){
-    filteredCIs.sort((a,b)=>((b.item.restock||b.item.qty===0)?1:0)-((a.item.restock||a.item.qty===0)?1:0)||a.item.name.localeCompare(b.item.name));
-  } else if(checklistSort==='name'){
-    filteredCIs.sort((a,b)=>a.item.name.localeCompare(b.item.name));
-  } else {
-    filteredCIs.sort((a,b)=>getStorageLocs().findIndex(l=>l.id===a.item.location)-getStorageLocs().findIndex(l=>l.id===b.item.location)||a.item.name.localeCompare(b.item.name));
-  }
-
-  // ── Same grouping as app ──
-  let groupKey,groupOrder,groupLabel,groupIcon;
-  if(checklistSort==='location'){
-    groupKey=item=>item.location;
-    groupOrder=getStorageLocs().map(l=>l.id);
-    groupLabel=id=>{ const l=getStorageLocs().find(x=>x.id===id); return l?'\uD83D\uDCCD '+l.label:id; };
-    groupIcon='';
-  } else if(checklistSort==='category'){
-    groupKey=item=>item.category;
-    groupOrder=getCats().map(c=>c.id);
-    groupLabel=id=>{ const c=getCats().find(x=>x.id===id); return c?(c.emoji?c.emoji+' ':'')+c.label:id; };
-    groupIcon='';
-  } else if(checklistSort==='type'){
-    groupKey=item=>item.type;
-    groupOrder=['always','house','consumable','seasonal'];
-    groupLabel=id=>({always:'Always packed',house:'Bring from home',consumable:'Consumable',seasonal:'Seasonal'}[id]||id);
-    groupIcon='';
-  } else {
-    groupKey=null;
-  }
-
-  // Build group map
+  const filteredCIs=sortFilteredChecklistParents(collectFilteredChecklistParents(trip,mode),mode);
+  const {groupKey,groupOrder,groupLabel}=getChecklistGroupConfig(mode);
   const groupMap={};
   if(groupKey){
     filteredCIs.forEach(({ci,item})=>{
@@ -4278,6 +4883,8 @@ function printChecklist(tripId, mode){
       groupMap[k].push({ci,item});
     });
   }
+  const personForTitle=checklistPersonFilter!=='all'?S.people.find(x=>x.id===checklistPersonFilter):null;
+  const printTripTitle=personForTitle?trip.name+' \u2014 '+personForTitle.name:trip.name;
 
   // ── Active filter labels for header ──
   const filterLabels=[];
@@ -4289,7 +4896,7 @@ function printChecklist(tripId, mode){
     const l=getStorageLocs().find(x=>x.id===checklistLocFilter);
     if(l) filterLabels.push('\uD83D\uDCCD '+l.label);
   }
-  if(checklistHidePacked) filterLabels.push('Unpacked only');
+  if(checklistHidePacked) filterLabels.push(mode==='packing'?'Unpacked only':mode==='packup'?'Not yet packed up':'Not yet stored');
 
   // ── Trip meta ──
   const chips=[
@@ -4304,7 +4911,7 @@ function printChecklist(tripId, mode){
   const today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
   let printPacked=0, printReady=0, printLineTotal=0;
   filteredCIs.forEach(x=>{
-    const st=packingProgressContribution(trip,x.ci,x.item);
+    const st=packingProgressContribution(trip,x.ci,x.item,mode);
     printPacked+=st.packed;
     printReady+=st.ready;
     printLineTotal+=st.total;
@@ -4312,7 +4919,9 @@ function printChecklist(tripId, mode){
 
   // ── Build item HTML ──
   function personBadges(item){
-    return (S.people||[]).filter(p=>(item.personIds||[]).includes(p.id))
+    let people=(S.people||[]).filter(p=>(item.personIds||[]).includes(p.id));
+    if(checklistPersonFilter!=='all') people=people.filter(p=>p.id===checklistPersonFilter);
+    return people
       .map(p=>`<span style="display:inline-block;font-family:sans-serif;font-size:6.5pt;font-weight:700;padding:0.5pt 4pt;border-radius:8pt;background:${p.color}22;color:${p.color};border:0.5pt solid ${p.color}55;margin-left:3pt">${esc(p.name)}</span>`)
       .join('');
   }
@@ -4323,42 +4932,59 @@ function printChecklist(tripId, mode){
     return '<span style="display:inline-block;width:10pt;height:10pt;border:1pt solid #1a1a12;border-radius:1pt;margin-right:3pt;vertical-align:middle"></span>';
   }
 
+  function buildSubRows(parentItem){
+    return checklistVisibleSubsForRow(trip,parentItem,mode).map(s=>{
+      const st=checklistRowState(trip,s.id,mode);
+      return `<div class="sub-item">
+          ${stateIndicator(st)}
+          <div class="item-body">
+            <div class="item-name sub-name">${esc(s.name)}${personBadges(s)}</div>
+            ${s.notes?`<div class="item-meta">${esc(s.notes)}</div>`:''}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
   function buildItems(items){
     return items.map(({ci,item})=>{
-      const subs=subItems(item.id).filter(s=>s.type!=='wishlist');
       const acts=(item.actions||[]).filter(a=>actionStages.includes(a.stage));
       const route=item.packsInto&&item.packsInto!==item.location?' \u2192 '+(locMap[item.packsInto]||item.packsInto):'';
       const meta=[locMap[item.location]||item.location,route?route.trim():'',item.notes||''].filter(Boolean).join(' \u00B7 ');
-      const packed=ci.state==='packed';
+      const actionHtml=acts.map(a=>{
+        const done=!!(trip.actionStates||{})[item.id+'::'+a.id];
+        return `<div class="action-row${done?' action-done':''}">
+            <span style="display:inline-block;width:8pt;height:8pt;border:0.75pt solid #9a7040;border-radius:1pt;margin-right:4pt;vertical-align:middle;${done?'background:#9a7040':''}">${done?'<span style=\'color:#fff;font-size:7pt;line-height:8pt;display:block;text-align:center\'>\u2713</span>':''}</span>
+            <span class="action-stage">${STAGE_LABELS[a.stage]&&STAGE_LABELS[a.stage].icon?STAGE_LABELS[a.stage].icon+' ':''}</span>
+            <span class="action-label">${esc(a.label)}</span>
+          </div>`;
+      }).join('');
+      if(item.isContainer){
+        return `<div class="item">
+          <div class="item-main" style="margin-bottom:2pt">
+            <div class="item-body">
+              <div class="item-name" style="font-size:9.5pt;letter-spacing:.06em;text-transform:uppercase">${esc(item.name)}</div>
+            </div>
+          </div>
+          ${buildSubRows(item)}
+          ${actionHtml}
+        </div>`;
+      }
+      const rowState=checklistRowState(trip,item.id,mode);
+      const packed=rowState==='packed';
       return `<div class="item${packed?' item-packed':''}">
         <div class="item-main">
-          ${stateIndicator(ci.state)}
+          ${stateIndicator(rowState)}
           <div class="item-body">
             <div class="item-name">${esc(item.name)}${personBadges(item)}</div>
             ${meta?`<div class="item-meta">${esc(meta)}</div>`:''}
             ${!packed?'<div class="notes-line"></div>':''}
           </div>
         </div>
-        ${subs.map(s=>`
-        <div class="sub-item">
-          ${stateIndicator((trip.checklist||[]).find(c=>c.itemId===s.id)?.state||'unchecked')}
-          <div class="item-body">
-            <div class="item-name sub-name">${esc(s.name)}${personBadges(s)}</div>
-            ${s.notes?`<div class="item-meta">${esc(s.notes)}</div>`:''}
-          </div>
-        </div>`).join('')}
-        ${acts.map(a=>{
-          const done=!!(trip.actionStates||{})[item.id+'::'+a.id];
-          return `<div class="action-row${done?' action-done':''}">
-            <span style="display:inline-block;width:8pt;height:8pt;border:0.75pt solid #9a7040;border-radius:1pt;margin-right:4pt;vertical-align:middle;${done?'background:#9a7040':''}">${done?'<span style=\'color:#fff;font-size:7pt;line-height:8pt;display:block;text-align:center\'>\u2713</span>':''}</span>
-            <span class="action-stage">${STAGE_LABELS[a.stage]&&STAGE_LABELS[a.stage].icon?STAGE_LABELS[a.stage].icon+' ':''}</span>
-            <span class="action-label">${esc(a.label)}</span>
-          </div>`;
-        }).join('')}
+        ${buildSubRows(item)}
+        ${actionHtml}
       </div>`;
     }).join('');
   }
-
   // ── Build sections ──
   function buildSections(){
     if(!groupKey){
@@ -4380,7 +5006,7 @@ function printChecklist(tripId, mode){
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>${esc(listTitle)} \u2014 ${esc(trip.name)}</title>
+<title>${esc(listTitle)} \u2014 ${esc(printTripTitle)}</title>
 <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -4465,7 +5091,7 @@ function printChecklist(tripId, mode){
     <div class="cover-label">NeverLeft Field Notes</div>
     <div class="cover-title">${esc(listTitle)}</div>
     <div class="cover-mode">${esc(modeDesc)}</div>
-    <div class="cover-trip">${esc(trip.name)}</div>
+    <div class="cover-trip">${esc(printTripTitle)}</div>
     <div class="cover-date">${trip.date?fmtDate(trip.date)+' \u00B7 ':''}${trip.nights} night${trip.nights!==1?'s':''} \u00B7 Printed ${today}</div>
   </div>
   ${chips.length?`<div class="cover-right"><div class="chips">${chips.map(c=>`<span class="chip">${esc(c)}</span>`).join('')}</div></div>`:''}
@@ -4486,7 +5112,7 @@ function printChecklist(tripId, mode){
 </div>
 
 <div class="footer">
-  <span>NeverLeft \u00B7 ${esc(listTitle)} \u00B7 ${esc(trip.name)}</span>
+  <span>NeverLeft \u00B7 ${esc(listTitle)} \u00B7 ${esc(printTripTitle)}</span>
   <span>${today}</span>
 </div>
 
@@ -4495,11 +5121,7 @@ function printChecklist(tripId, mode){
 </body>
 </html>`;
 
-  const blob=new Blob([html],{type:'text/html'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url; a.target='_blank'; a.rel='noopener'; a.click();
-  setTimeout(()=>URL.revokeObjectURL(url),60000);
+  openHtmlPrintPreview(html);
 }
 
 function renderAll(){
@@ -4514,7 +5136,7 @@ function renderAll(){
 }
 
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){ closeM('itemModal'); closeM('tripModal'); closeSearchDrawer(); }
+  if(e.key==='Escape'){ closeM('itemModal'); closeM('tripModal'); closeSearchDrawer(); closeOrphanAssignmentsModal(); closeInvTripModal(); }
   if(e.key==='Enter'&&e.target.id==='iActionLabel'){ e.preventDefault(); addItemAction(); }
   const sm=document.getElementById('searchModal');
   if(sm?.classList.contains('on')&&e.key==='Tab'){
@@ -4660,16 +5282,8 @@ function demoData(){
   ];
 
   // ── TRIP ──
-  // Build checklist from all non-wishlist items
-  const cl=items.filter(i=>i.type!=='wishlist').map(i=>({itemId:i.id,state:'unchecked'}));
-  // Mark tent, tent pegs, mallet, gas check action as ready; sleeping bags as packed for demo
   const markReady=[tentId];
   const markPacked=[sbDadId,sbMumId,smDadId,smMumId,speakerId,lightId];
-  cl.forEach(c=>{
-    if(markReady.includes(c.itemId)) c.state='ready';
-    if(markPacked.includes(c.itemId)) c.state='packed';
-  });
-  // Pre-trip actions — mark speaker charge and mat checks as done
   const actionStates={};
   items.forEach(item=>{
     (item.actions||[]).forEach(a=>{
@@ -4678,7 +5292,7 @@ function demoData(){
     });
   });
 
-  const trips=[{
+  const tripBase={
     id:uid(),
     name:'Easter Weekend — Peak District',
     date: (() => {
@@ -4694,13 +5308,29 @@ function demoData(){
     activities:['hiking'],
     notes:'Campsite: Fieldhead Campsite, Edale. Booking ref: FC-2847. Near Kinder Scout — great walking. Dogs welcome.',
     status:'packing',
-    checklist:cl,
     actionStates,
     packUpStates:{},
     packAwayStates:{},
     leftAtSite:{},
-    damaged:{}
-  }];
+    damaged:{},
+    attendeeIds:[],
+    manualIncludeIds:[]
+  };
+  const _Si=S.items,_Sp=S.people,_St=S.trips;
+  S.items=items;
+  S.people=people;
+  S.trips=[];
+  const idList=itemIdsForTripChecklist(tripBase);
+  S.items=_Si;
+  S.people=_Sp;
+  S.trips=_St;
+  const checklist=idList.map(itemId=>{
+    let state='unchecked';
+    if(markReady.includes(itemId)) state='ready';
+    if(markPacked.includes(itemId)) state='packed';
+    return {itemId,state};
+  });
+  const trips=[{...tripBase, checklist}];
 
   return {items, people, trips, settings:defaultSettings()};
 }
