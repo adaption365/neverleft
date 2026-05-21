@@ -316,6 +316,34 @@ select:focus{border-color:var(--amber-d)}
 .trips-section--logbook{margin-top:28px;padding-top:4px;border-top:1px solid var(--border)}
 .trips-section-intro{font-family:'Newsreader',serif;font-style:italic;font-size:13px;color:var(--text-m);margin:-4px 0 12px;line-height:1.5;max-width:32em}
 .tcard--logbook{background:var(--canvas-3);box-shadow:0 1px 5px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.03)}
+.tcard--idea{background:rgba(138,106,184,.08);box-shadow:0 2px 8px rgba(0,0,0,.06),0 0 0 1px rgba(138,106,184,.22)}
+body.light .tcard--idea{background:rgba(106,74,152,.06);box-shadow:0 2px 8px rgba(0,0,0,.05),0 0 0 1px rgba(106,74,152,.18)}
+.trips-filter{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.trips-filter-btn{font-family:'DM Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:7px 12px;border-radius:999px;border:1px solid var(--border);background:var(--canvas-3);color:var(--text-m);cursor:pointer;transition:background var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out)}
+.trips-filter-btn:hover{color:var(--text);border-color:var(--border-l)}
+.trips-filter-btn.on{background:rgba(107,140,90,.12);border-color:rgba(107,140,90,.4);color:var(--sage)}
+.trip-wizard-modal .tw-head{margin-bottom:14px}
+.trip-wizard-modal{max-height:90vh}
+.trip-wizard-modal .tw-pane-site-rules .site-rule-picker{max-height:120px;overflow-y:auto}
+.trip-wizard-more{margin-top:8px;border:1px solid var(--border);border-radius:8px;padding:0 12px 12px}
+.trip-wizard-more>summary{font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:600;padding:10px 0;cursor:pointer;color:var(--text-m)}
+.trip-wizard-more .fg{margin-top:10px;margin-bottom:0}
+.trip-wizard-edit-links{display:inline-flex;flex-wrap:wrap;gap:4px 10px;margin-left:8px;vertical-align:middle}
+.trip-wizard-edit-links button{font-family:'DM Mono',monospace;font-size:9px;color:var(--text-m);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.trip-wizard-edit-links button:hover{color:var(--sage)}
+.tw-step-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:4px;letter-spacing:.04em}
+.tw-pane{display:block}
+.tw-pane[hidden]{display:none!important}
+.tw-lead{font-family:'Newsreader',serif;font-style:italic;font-size:15px;line-height:1.5;color:var(--text-d);margin:0 0 16px}
+.tw-choices{display:flex;flex-direction:column;gap:10px}
+.tw-choice{display:flex;flex-direction:column;align-items:flex-start;gap:4px;width:100%;text-align:left;padding:14px 16px;border-radius:12px;border:1px solid var(--border);background:var(--canvas-3);cursor:pointer;transition:border-color var(--dur-fast) var(--ease-out),background var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
+.tw-choice:hover{border-color:var(--amber-d);background:var(--canvas-2)}
+.tw-choice:active{transform:scale(0.99)}
+.tw-choice-title{font-family:'Familjen Grotesk',sans-serif;font-size:15px;font-weight:700;color:var(--text)}
+.tw-choice-sub{font-size:12px;color:var(--text-m);line-height:1.4}
+.tw-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
+.tw-actions .btn-back{margin-right:auto}
+.tw-hint{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:10px;line-height:1.45}
 .tcard-logbook-hint{font-family:'DM Mono',monospace;font-size:9px;color:var(--text-m);margin-top:8px;line-height:1.35;opacity:.9}
 .trip-experience{margin-bottom:18px}
 .trip-experience-glance{padding:14px 16px;background:var(--canvas-2);border-radius:12px;box-shadow:0 1px 5px rgba(0,0,0,.06);margin-bottom:10px}
@@ -324,14 +352,17 @@ select:focus{border-color:var(--amber-d)}
 .trip-experience-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .trip-experience-chip{font-family:'DM Mono',monospace;font-size:9px;padding:4px 9px;border-radius:999px;border:1px solid var(--border);color:var(--text-m);background:rgba(255,255,255,.04)}
 .trip-experience-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.trip-exp-tabs{display:flex;gap:6px;margin:12px 0 0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:2px 0}
+.trip-exp-bar{display:flex;align-items:flex-start;gap:8px;margin:12px 0 0}
+.trip-exp-tabs{display:flex;flex:1;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:2px 0;min-width:0}
 .trip-exp-tabs::-webkit-scrollbar{display:none}
-.trip-exp-tab{flex:1 1 0;min-width:4.5rem;font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:600;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--canvas-3);color:var(--text-m);cursor:pointer;white-space:nowrap;text-align:center;transition:background var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out)}
+.trip-exp-tab{flex:1 1 0;min-width:4.5rem;font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:600;padding:10px 10px;border-radius:10px;border:1px solid var(--border);background:var(--canvas-3);color:var(--text-m);cursor:pointer;white-space:nowrap;text-align:center;transition:background var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out)}
 .trip-exp-tab:hover{color:var(--text);border-color:var(--border-l)}
 .trip-exp-tab.on{background:var(--canvas-2);color:var(--text);border-color:var(--sage);box-shadow:0 0 0 1px rgba(107,140,90,.25)}
 body.light .trip-exp-tab.on{box-shadow:0 1px 6px rgba(74,107,58,.12)}
+.trip-exp-tab-caret{display:inline-block;margin-left:4px;font-size:9px;opacity:.75;vertical-align:1px}
+.trip-exp-hide{flex-shrink:0;font-family:'DM Mono',monospace;font-size:10px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text-m);cursor:pointer;white-space:nowrap;transition:color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out)}
+.trip-exp-hide:hover{color:var(--text);border-color:var(--border-l)}
 .trip-exp-panel{border:1px solid var(--border);border-radius:12px;background:var(--canvas-2);padding:14px 16px;margin-top:10px;font-size:12px;line-height:1.5;color:var(--text);box-shadow:0 1px 5px rgba(0,0,0,.06)}
-.trip-exp-panel--connected{margin-top:8px;border-top-left-radius:12px;border-top-right-radius:12px}
 .trip-exp-tabs--connected .trip-exp-tab.on{border-bottom-color:var(--canvas-2);border-radius:10px 10px 0 0;margin-bottom:-1px;padding-bottom:11px;z-index:1;position:relative}
 .trip-exp-tabs--connected+.trip-exp-panel{margin-top:0;border-top:none;border-top-left-radius:0;border-top-right-radius:0}
 .trip-experience-row{margin-bottom:10px}
@@ -545,6 +576,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(154,95,16,.1),0 1px 0 rgba(255,
 
 /* ── TRIP STATUS PILLS ── */
 .tstatus{font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:600;letter-spacing:0;text-transform:none;padding:3px 10px;border-radius:10px;white-space:nowrap}
+.ts-idea{background:rgba(138,106,184,.12);color:var(--purple);border:1px solid rgba(138,106,184,.28)}
 .ts-planning{background:rgba(90,122,184,.12);color:var(--blue);border:1px solid rgba(90,122,184,.25)}
 .ts-packing{background:rgba(212,144,42,.12);color:var(--amber);border:1px solid rgba(212,144,42,.25)}
 .ts-pack-up{background:rgba(138,106,184,.12);color:var(--purple);border:1px solid rgba(138,106,184,.25)}
@@ -1040,92 +1072,164 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(154,95,16,.1),0 1px 0 rgba(255,
  </div>
 </div>
 
-<!-- ═══ TRIP MODAL ═══ -->
+<!-- ═══ TRIP MODAL (companion wizard) ═══ -->
 <div class="mover" id="tripModal" onclick="closeMOver(event,'tripModal')">
- <div class="modal modal-wide">
-  <div class="mtitle" id="tmt">New Trip</div>
-  <div class="fg"><label class="fl">Trip Name *</label><input class="fi" id="tName" placeholder="e.g. Lake District May Bank Holiday"></div>
-  <div class="frow">
-    <div class="fg"><label class="fl">Departure Date</label><input class="fi" id="tDate" type="date"></div>
-    <div class="fg"><label class="fl">Duration (nights)</label><input class="fi" id="tNights" type="number" min="1" max="30" value="3"></div>
+ <div class="modal modal-wide trip-wizard-modal">
+  <div class="tw-head">
+    <div class="mtitle" id="tmt">Plan a trip</div>
+    <div class="tw-step-label" id="twStepLabel"></div>
   </div>
-  <div class="cfg-grid">
-    <div class="fg"><label class="fl">Season / Weather</label>
-      <select class="fs" id="tSeason"><option value="summer">Summer (warm)</option><option value="shoulder">Spring / Autumn (mixed)</option><option value="winter">Winter (cold)</option></select>
+
+  <div id="twFork" class="tw-pane">
+    <p class="tw-lead">No pressure — just tell us where you are in the journey.</p>
+    <div class="tw-choices">
+      <button type="button" class="tw-choice" onclick="chooseTripWizardPath('booked')">
+        <span class="tw-choice-title">A booked trip</span>
+        <span class="tw-choice-sub">I know where/when we&rsquo;re going</span>
+      </button>
+      <button type="button" class="tw-choice" onclick="chooseTripWizardPath('idea')">
+        <span class="tw-choice-title">A possible trip</span>
+        <span class="tw-choice-sub">We&rsquo;re still figuring it out</span>
+      </button>
     </div>
-    <div class="fg"><label class="fl">Site Type</label>
-      <select class="fs" id="tSite"><option value="hookup">Full hookup</option><option value="basic">Basic / no hookup</option><option value="wild">Wild camping</option></select>
-    </div>
-    <div class="fg"><label class="fl">Extra People</label><input class="fi" id="tExtra" type="number" min="0" max="20" value="0">
-      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:4px;line-height:1.4">Headcount only for notes and print — it does not add packing lines yet (consumables later).</div>
-    </div>
-    <div class="fg"><label class="fl">Distance from Home</label>
-      <select class="fs" id="tDist"><option value="local">Local (&lt;1hr)</option><option value="regional">Regional (1–2hr)</option><option value="remote">Remote (2hr+)</option></select>
+    <div class="tw-actions">
+      <button type="button" class="btn btn-o" onclick="closeM('tripModal')">Cancel</button>
     </div>
   </div>
-  <div class="fg"><label class="fl" style="margin-bottom:5px">Dog coming?</label><label class="ck"><input type="checkbox" id="tDog" checked> Yes, include dog kit</label></div>
-  <div class="fg">
-    <label class="fl">Who's on this trip</label>
-    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-bottom:6px;line-height:1.45">If you don't select anyone, everyone in <strong>The crew</strong> is included for packing. Tick people to limit the list to them (and shared kit).</div>
-    <div class="agrid" id="tAttendeeGrid"></div>
+
+  <div id="twBooked1" class="tw-pane" hidden>
+    <p class="tw-lead">The essentials — enough to start planning calmly.</p>
+    <div class="fg"><label class="fl">What should we call this trip?</label><input class="fi" id="tName" placeholder="e.g. Lake District May bank holiday"></div>
+    <div class="frow">
+      <div class="fg"><label class="fl">When do you leave?</label><input class="fi" id="tDate" type="date"></div>
+      <div class="fg"><label class="fl">How many nights?</label><input class="fi" id="tNights" type="number" min="1" max="30" value="3"></div>
+    </div>
+    <div class="fg">
+      <label class="fl">Who&rsquo;s coming?</label>
+      <div class="tw-hint" style="margin-top:0;margin-bottom:6px">Leave everyone ticked if the whole crew is going — or pick just who&rsquo;s on this trip.</div>
+      <div class="agrid" id="tAttendeeGrid"></div>
+    </div>
+    <div class="fg"><label class="ck"><input type="checkbox" id="tDog" checked> Dog coming along</label></div>
+    <div class="tw-actions">
+      <button type="button" class="btn btn-o btn-back" onclick="tripWizardBack()">Back</button>
+      <button type="button" class="btn btn-o" onclick="saveTripWizard('more')">Add more trip details</button>
+      <button type="button" class="btn btn-p" onclick="saveTripWizard('start')">Start planning</button>
+    </div>
   </div>
-  <div class="fg"><label class="fl">Activities</label>
-    <div class="agrid" id="tActGrid"></div>
+
+  <div id="twBooked2" class="tw-pane" hidden>
+    <p class="tw-lead">These help NeverLeft suggest the right kit. You can skip this and change it later.</p>
+    <div class="frow">
+      <div class="fg"><label class="fl">What weather are you expecting?</label>
+        <select class="fs" id="tSeason"><option value="summer">Summer — warm &amp; sunny</option><option value="shoulder">Spring / autumn — mixed</option><option value="winter">Winter — cold nights</option></select>
+      </div>
+      <div class="fg"><label class="fl">What type of site?</label>
+        <select class="fs" id="tSite"><option value="hookup">Full hookup</option><option value="basic">Basic pitch</option><option value="wild">Wild / off-grid</option></select>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">How far from home?</label>
+      <select class="fs" id="tDist"><option value="local">Local — under an hour</option><option value="regional">Regional — a couple of hours</option><option value="remote">Remote — proper road trip</option></select>
+    </div>
+    <div class="fg"><label class="fl">What might you get up to?</label>
+      <div class="tw-hint" style="margin-top:0;margin-bottom:6px">Tick anything that might affect what you pack.</div>
+      <div class="agrid" id="tActGrid"></div>
+    </div>
+    <div class="tw-actions">
+      <button type="button" class="btn btn-o btn-back" onclick="tripWizardBack()">Back</button>
+      <button type="button" class="btn btn-o" onclick="saveTripWizard('start')">Start planning now</button>
+      <button type="button" class="btn btn-p" onclick="saveTripWizard('continue')">Continue</button>
+    </div>
   </div>
-  <details class="trip-modal-details">
-    <summary>Site &amp; booking (optional)</summary>
-    <div class="fg"><label class="fl">Site / campsite name</label><input class="fi" id="tVenueName" placeholder="e.g. Great Langdale NT"></div>
-    <div class="fg"><label class="fl">Location for maps &amp; forecast</label><input class="fi" id="tVenueAddress" placeholder="Postcode is best (e.g. LA22 9SE). Site name + town also works."></div>
+
+  <div id="twBooked3" class="tw-pane" hidden>
+    <p class="tw-lead">Handy when you&rsquo;re offline or packing in a rush — all optional, add what you have.</p>
+    <div class="fg"><label class="fl">Campsite or place</label><input class="fi" id="tVenueName" placeholder="e.g. Great Langdale NT"></div>
+    <div class="fg"><label class="fl">Location for maps &amp; forecast</label><input class="fi" id="tVenueAddress" placeholder="Postcode is best (e.g. LA22 9SE)"></div>
+    <div class="fg"><label class="fl">Booking reference</label><input class="fi" id="tBookingRef" placeholder="Confirmation number — if you have it"></div>
     <div class="frow">
       <div class="fg"><label class="fl">Check-in from</label><input class="fi" id="tCheckIn" type="time"></div>
       <div class="fg"><label class="fl">Check-out by</label><input class="fi" id="tCheckOut" type="time"></div>
     </div>
-    <div class="fg"><label class="fl">Booking reference</label><input class="fi" id="tBookingRef" placeholder="Confirmation number"></div>
-    <div class="frow">
-      <div class="fg"><label class="fl">Site email</label><input class="fi" id="tVenueEmail" type="email" placeholder="info@campsite…"></div>
-      <div class="fg"><label class="fl">Website</label><input class="fi" id="tVenueWeb" type="url" placeholder="https://…"></div>
-    </div>
-    <div class="fg">
+    <div class="fg tw-pane-site-rules">
       <label class="fl">Site rules</label>
-      <div class="trip-experience-muted" style="margin-top:0;margin-bottom:6px">Tap standard rules from the site. Add your own — optionally save them for future trips.</div>
+      <div class="tw-hint" style="margin-top:0;margin-bottom:6px">Tap any that apply — helps on the trip page at a glance.</div>
       <div id="tSiteRulesStandard" class="site-rule-picker"></div>
       <div id="tSiteRulesTripCustom" class="site-rule-custom-list"></div>
       <div class="site-rule-add-row">
-        <input class="fi" id="tSiteRuleCustomIn" type="text" placeholder="Custom rule, e.g. No generators after 9pm" maxlength="80" onkeydown="if(event.key==='Enter'){event.preventDefault();addTripCustomSiteRule();}">
+        <input class="fi" id="tSiteRuleCustomIn" type="text" placeholder="Your own rule, e.g. Quiet after 10pm" maxlength="80" onkeydown="if(event.key==='Enter'){event.preventDefault();addTripCustomSiteRule();}">
         <button type="button" class="btn btn-o btn-sm" onclick="addTripCustomSiteRule()">Add</button>
       </div>
-      <label class="ck site-rule-save-preset"><input type="checkbox" id="tSiteRuleSavePreset"> Save new rule to my list for future trips</label>
+      <label class="ck site-rule-save-preset"><input type="checkbox" id="tSiteRuleSavePreset"> Save new rule for future trips</label>
       <div id="tSiteRulesPresets" class="site-rule-presets"></div>
     </div>
-    <div class="fg"><label class="fl">Site notes</label><textarea class="fta" id="tSiteNotes" rows="2" placeholder="Pitch number, gate code, anything else about the site…"></textarea></div>
-  </details>
-  <details class="trip-modal-details">
-    <summary>Travel (optional)</summary>
+    <div class="fg"><label class="fl">Anything else about the site?</label><textarea class="fta" id="tSiteNotes" rows="2" placeholder="Pitch number, gate code, where to meet…"></textarea></div>
+    <details class="trip-wizard-more">
+      <summary>Site contact (optional)</summary>
+      <div class="frow">
+        <div class="fg"><label class="fl">Email</label><input class="fi" id="tVenueEmail" type="email" placeholder="info@campsite…"></div>
+        <div class="fg"><label class="fl">Website</label><input class="fi" id="tVenueWeb" type="url" placeholder="https://…"></div>
+      </div>
+    </details>
+    <div class="tw-actions">
+      <button type="button" class="btn btn-o btn-back" onclick="tripWizardBack()">Back</button>
+      <button type="button" class="btn btn-o" onclick="saveTripWizard('start')">Start planning now</button>
+      <button type="button" class="btn btn-p" onclick="saveTripWizard('continue')">Continue</button>
+    </div>
+  </div>
+
+  <div id="twBooked4" class="tw-pane" hidden>
+    <p class="tw-lead">Anything you&rsquo;ll want to see before you leave — all optional.</p>
+    <div class="fg"><label class="fl">Before-you-go notes</label><textarea class="fta" id="tNotes" rows="3" placeholder="Shopping, charge batteries, tell the neighbours…"></textarea></div>
+    <div class="fg"><label class="fl">Travel</label>
+      <div class="frow" style="margin-top:0">
+        <div class="fg"><label class="fl" style="font-size:10px;color:var(--text-m)">Miles (optional)</label><input class="fi" id="tRouteMiles" type="number" min="0" step="1" placeholder="e.g. 95"></div>
+        <div class="fg" style="display:flex;align-items:flex-end;padding-bottom:2px"><label class="ck"><input type="checkbox" id="tAvoidMotorways"> Prefer to avoid motorways</label></div>
+      </div>
+      <div class="fg" style="margin-top:8px"><label class="fl" style="font-size:10px;color:var(--text-m)">Favourite directions link (optional)</label><input class="fi" id="tDirectionsUrl" type="url" placeholder="Paste from Google or Apple Maps"></div>
+      <p class="tw-hint">We&rsquo;ll open Maps from your site location on the trip page when you&rsquo;re online.</p>
+    </div>
+    <div class="fg">
+      <label class="fl">Site conditions</label>
+      <input class="fi" id="tWeatherPlanning" placeholder="Exposed pitch, valley fog, windy ridge…">
+      <p class="tw-hint">Day-by-day forecast: use <em>Save forecast</em> on your trip page when you&rsquo;re online.</p>
+      <div id="tWeatherSnapshotNote" class="trip-experience-muted" style="display:none;margin-top:8px;padding:8px 10px;background:var(--canvas-3);border-radius:8px"></div>
+      <label class="ck" id="tWeatherClearSnapshotWrap" style="display:none;margin-top:8px"><input type="checkbox" id="tWeatherClearSnapshot"> Remove saved day-by-day forecast from this trip</label>
+    </div>
+    <div class="tw-weather-compat" hidden aria-hidden="true">
+      <select id="tWeatherMode"><option value="estimate">estimate</option><option value="manual">manual</option></select>
+      <input type="text" id="tWeatherSummary" tabindex="-1" aria-hidden="true">
+    </div>
+    <div class="tw-actions">
+      <button type="button" class="btn btn-o btn-back" onclick="tripWizardBack()">Back</button>
+      <button type="button" class="btn btn-o" onclick="saveTripWizard('start')">Start planning now</button>
+      <button type="button" class="btn btn-p" onclick="saveTripWizard('finish')">Finish trip setup</button>
+    </div>
+  </div>
+
+  <div id="twIdea1" class="tw-pane" hidden>
+    <p class="tw-lead">Capture the dream — you can firm up dates when you&rsquo;re ready.</p>
+    <div class="fg"><label class="fl">What might you call this trip?</label><input class="fi" id="tIdeaName" placeholder="e.g. Cornwall coast someday"></div>
+    <div class="fg">
+      <label class="fl">Who might come?</label>
+      <div class="tw-hint" style="margin-top:0;margin-bottom:6px">Optional — helps when you start packing later.</div>
+      <div class="agrid" id="tIdeaAttendeeGrid"></div>
+    </div>
     <div class="frow">
-      <div class="fg"><label class="fl">Distance (miles, optional)</label><input class="fi" id="tRouteMiles" type="number" min="0" step="1" placeholder="e.g. 95"></div>
-      <div class="fg"><label class="fl" style="margin-bottom:5px">&nbsp;</label><label class="ck"><input type="checkbox" id="tAvoidMotorways"> Avoid motorways where possible</label></div>
+      <div class="fg"><label class="fl">Rough season</label>
+        <select class="fs" id="tIdeaSeason"><option value="summer">Summer — warm &amp; light</option><option value="shoulder">Spring / autumn — mixed</option><option value="winter">Winter — cold &amp; cosy kit</option></select>
+      </div>
+      <div class="fg"><label class="fl">Rough site type</label>
+        <select class="fs" id="tIdeaSite"><option value="hookup">Campsite with hookup</option><option value="basic">Simple pitch</option><option value="wild">Wild / off-grid</option></select>
+      </div>
     </div>
-    <div class="fg"><label class="fl">Directions link (optional)</label><input class="fi" id="tDirectionsUrl" type="url" placeholder="Paste Google/Apple directions URL"></div>
-    <div class="trip-experience-muted" style="margin-top:0">When you’re online, we’ll offer Maps from the address on the trip page. Save a directions link if you use a favourite route.</div>
-  </details>
-  <details class="trip-modal-details">
-    <summary>Weather (optional)</summary>
-    <div class="trip-experience-muted" style="margin-top:0;margin-bottom:8px"><strong>On the trip page:</strong> use <em>Save forecast</em> when online for day-by-day detail (needs location above). <strong>Here:</strong> site conditions always apply; choose season hint or paste your own note below.</div>
-    <div id="tWeatherSnapshotNote" class="trip-experience-muted" style="display:none;margin-bottom:8px;padding:8px 10px;background:var(--bg2);border-radius:8px"></div>
-    <div class="fg"><label class="fl">Site conditions</label><input class="fi" id="tWeatherPlanning" placeholder="Exposed pitch, valley fog, windy ridge…"></div>
-    <div class="fg"><label class="fl">Forecast on trip page</label>
-      <select class="fs" id="tWeatherMode" style="margin-bottom:8px" onchange="syncTripWeatherForm()">
-        <option value="estimate">Season estimate (until you save a forecast on the trip)</option>
-        <option value="manual">My own note (paste from Met Office / app — overrides season &amp; saved forecast)</option>
-      </select>
-      <label class="ck" id="tWeatherClearSnapshotWrap" style="display:none;margin-bottom:8px"><input type="checkbox" id="tWeatherClearSnapshot"> Remove saved day-by-day forecast from this trip</label>
-      <input class="fi" id="tWeatherSummary" placeholder="Paste from Met Office / app — e.g. Heavy rain Saturday">
+    <div class="tw-actions">
+      <button type="button" class="btn btn-o btn-back" onclick="tripWizardBack()">Back</button>
+      <button type="button" class="btn btn-p" onclick="saveTripWizard('idea')">Save this idea</button>
     </div>
-  </details>
-  <div class="fg"><label class="fl">Trip notes</label><textarea class="fta" id="tNotes" rows="3" placeholder="General reminders — not shown on maps"></textarea></div>
-  <div class="factions">
-    <button class="btn btn-o" onclick="closeM('tripModal')">Cancel</button>
-    <button class="btn btn-p" onclick="saveTrip()">Save Trip</button>
+  </div>
+
+  <div id="tripFormLegacy" hidden aria-hidden="true">
+  <div class="fg"><label class="fl">Extra People</label><input class="fi" id="tExtra" type="number" min="0" max="20" value="0"></div>
   </div>
  </div>
 </div>
@@ -1156,8 +1260,11 @@ let S = { items:[], trips:[] };
 let editItemId = null, editTripId = null;
 let tf = 'all', mainTab = 'trips';
 let activeTripId = null, activeTripTab = 'checklist';
-let activeExperienceTab = 'weather';
+let activeExperienceTab = null;
 let activeExperienceForTripId = null;
+let tripWizardStep = 'fork';
+let tripWizardPath = null;
+let tripsTypeFilter = 'all';
 let collapsedCats = new Set();   // inventory category sections
 let collapsedInvLocs = new Set(); // inventory location sections (kit “by place” view)
 let expandedInvGroups = new Set(); // kit item groups user opened (default collapsed)
@@ -1182,7 +1289,7 @@ const LLAB    = { shed:'Shed', duffle:'Duffle Bag', house:'House', car:'Car' };
 const SELAB   = { summer:'Summer', shoulder:'Spring / Autumn', winter:'Winter', all:'All' };
 const SITELAB = { hookup:'Full hookup', basic:'Basic', wild:'Wild' };
 const DISTLAB = { local:'Local', regional:'Regional', remote:'Remote' };
-const STLAB   = { planning:'Plan', packing:'Packing', 'pack-up':'Packing up', 'pack-away':'Back home', 'post-trip':'Back home', complete:'Done' };
+const STLAB   = { idea:'Idea', planning:'Plan', packing:'Packing', 'pack-up':'Packing up', 'pack-away':'Back home', 'post-trip':'Back home', complete:'Done' };
 const SITE_RULE_CHIPS=[
   {id:'no-dogs',label:'No dogs'},
   {id:'no-fires',label:'No open fires'},
@@ -1606,7 +1713,7 @@ function adjQty(item, trip){
 // STATS
 // ══════════════════════════════════════════════════
 function sortTripsByFocusPriority(trips){
-  const statusOrder={planning:0,packing:1,'pack-up':2,'pack-away':3,'post-trip':4,complete:5};
+  const statusOrder={idea:0,planning:1,packing:2,'pack-up':3,'pack-away':4,'post-trip':5,complete:6};
   return [...trips].sort((a,b)=>{
     const ao=statusOrder[a.status]??3, bo=statusOrder[b.status]??3;
     if(ao!==bo) return ao-bo;
@@ -1624,7 +1731,7 @@ function getFeaturedTrip(){
 
 /** Closest dated active trip on or after today; else best active fallback. */
 function closestFutureTrip(){
-  const active=(S.trips||[]).filter(t=>t.status!=='complete');
+  const active=(S.trips||[]).filter(t=>t.status!=='complete'&&t.status!=='idea');
   if(!active.length) return null;
   const today=new Date();
   today.setHours(0,0,0,0);
@@ -1638,7 +1745,33 @@ function closestFutureTrip(){
 
 /** Trip NeverLeft focuses on: featured wins, else closest future active trip. */
 function focusTripForDashboard(){
-  return getFeaturedTrip()||closestFutureTrip();
+  const feat=getFeaturedTrip();
+  if(feat&&feat.status!=='idea') return feat;
+  return closestFutureTrip();
+}
+
+function matchesTripsTypeFilter(trip){
+  if(!trip) return false;
+  if(tripsTypeFilter==='all') return true;
+  if(tripsTypeFilter==='ideas') return trip.status==='idea';
+  if(tripsTypeFilter==='trips') return trip.status!=='idea';
+  return true;
+}
+
+function setTripsTypeFilter(f){
+  tripsTypeFilter=f;
+  renderTrips();
+}
+
+function renderTripsFilterHtml(){
+  const opts=[
+    {id:'all',label:'All'},
+    {id:'trips',label:'Trips'},
+    {id:'ideas',label:'Ideas'},
+  ];
+  return `<div class="trips-filter" role="group" aria-label="Filter trips">
+    ${opts.map(o=>`<button type="button" class="trips-filter-btn${tripsTypeFilter===o.id?' on':''}" onclick="setTripsTypeFilter('${o.id}')">${o.label}</button>`).join('')}
+  </div>`;
 }
 
 function upcomingTripForDashboard(){
@@ -1696,16 +1829,23 @@ function logbookCardHint(trip){
 function renderTripListCard(t, variant){
   const feat=isFeaturedTrip(t.id);
   const logbook=variant==='logbook';
+  const idea=t.status==='idea';
   const hint=logbook?logbookCardHint(t):'';
   const showFeature=!logbook;
-  const showProgress=!logbook&&t.checklist;
+  const showProgress=!logbook&&!idea&&t.checklist;
+  const metaParts=[];
+  if(idea) metaParts.push('Idea');
+  if(t.date) metaParts.push(fmtDate(t.date));
+  if(t.nights) metaParts.push(t.nights+'n');
+  if(t.season&&SELAB[t.season]) metaParts.push(SELAB[t.season]);
+  if(t.dog) metaParts.push('🐕');
   return `
-      <div class="tcard${logbook?' tcard--logbook':''}" onclick="openTrip('${t.id}')">
+      <div class="tcard${logbook?' tcard--logbook':''}${idea?' tcard--idea':''}" onclick="openTrip('${t.id}')">
         <div style="display:flex;align-items:flex-start;gap:8px;min-width:0">
           ${showFeature?`<button type="button" class="trip-feature-btn${feat?' on':''}" title="${feat?'Featured — click to unpin':'Feature this trip'}" aria-label="${feat?'Unpin featured trip':'Feature this trip'}" onclick="event.stopPropagation();toggleFeaturedTrip('${t.id}')">${feat?'★':'☆'}</button>`:''}
           <div style="min-width:0;${showFeature?'':'flex:1'}">
           <div class="tcard-name">${formatTripHeroTitle(t.name)}</div>
-          <div class="tcard-meta">${t.date?fmtDate(t.date)+' · ':''}${t.nights}n · ${SELAB[t.season]||''}${t.dog?' · 🐕':''}</div>
+          <div class="tcard-meta">${metaParts.join(' · ')}</div>
           ${showProgress?(()=>{ const p=checklistProgressTotals(t); const tot=p.total||1; return `<div class="tcard-progress" aria-hidden="true"><div style="width:${Math.round(p.packed/tot*100)}%;background:var(--sage)"></div><div style="width:${Math.round(p.ready/tot*100)}%;background:var(--amber)"></div></div>`; })():''}
           ${hint?`<div class="tcard-logbook-hint">${esc(hint)}</div>`:''}
           </div>
@@ -2603,10 +2743,11 @@ function renderTrips(){
       </div>`; return;
   }
 
-  const upcoming=focusTripForDashboard();
+  let upcoming=focusTripForDashboard();
+  if(upcoming&&!matchesTripsTypeFilter(upcoming)) upcoming=null;
   const others=(S.trips||[]).filter(t=>t!==upcoming);
-  const alsoPlanned=others.filter(t=>isAlsoPlannedTrip(t));
-  const logbook=others.filter(t=>isTripLogbookEntry(t));
+  const alsoPlanned=others.filter(t=>isAlsoPlannedTrip(t)&&matchesTripsTypeFilter(t));
+  const logbook=others.filter(t=>isTripLogbookEntry(t)&&matchesTripsTypeFilter(t));
   const upcomingIsFeatured=upcoming&&isFeaturedTrip(upcoming.id);
 
   function countdown(dateStr){
@@ -2650,25 +2791,33 @@ function renderTrips(){
   const pc=pressureCountdown(upcoming?.date, upcoming?.nights);
   const heroHtml=upcoming?renderTripHeroCard(upcoming, pc, upcomingIsFeatured):' ';
 
-  const alsoPlannedIntro=upcoming
+  const alsoPlannedIntro=tripsTypeFilter==='ideas'
+    ? 'Trips you\u2019re dreaming about — no dates needed yet.'
+    :upcoming
     ? 'Other trips still ahead on the calendar — not done yet.'
     : 'Trips still ahead on the calendar — not marked done.';
   const logbookIntro='Past trips and ones you\u2019ve marked done — open for notes and reference.';
-  const alsoPlannedHtml=renderTripsListSection('Also planned', alsoPlannedIntro, alsoPlanned, 'planned');
-  const logbookHtml=logbook.length
+  const alsoLabel=tripsTypeFilter==='ideas'?'Ideas':tripsTypeFilter==='trips'?'Upcoming trips':'Also planned';
+  const alsoPlannedHtml=renderTripsListSection(alsoLabel, alsoPlannedIntro, alsoPlanned, 'planned');
+  const logbookHtml=logbook.length&&tripsTypeFilter!=='ideas'
     ? `<div class="trips-section--logbook">${renderTripsListSection('From the logbook', logbookIntro, logbook, 'logbook')}</div>`
     : '';
   const restHtml=alsoPlannedHtml+logbookHtml;
+  const emptyFilter=!heroHtml.trim()&&!alsoPlanned.length&&!logbookHtml.trim();
+  const emptyFilterMsg=tripsTypeFilter==='ideas'
+    ? '<p class="trips-section-intro">No ideas yet — tap <strong>+ New trip</strong> and choose <em>A possible trip</em>.</p>'
+    :'<p class="trips-section-intro">Nothing in this view — try another filter or add a trip.</p>';
 
   el.innerHTML=`
     <div class="trips-heading">
       <span class="trips-heading-title">My Trips</span>
-      <button class="btn btn-p btn-sm" onclick="openNewTripModal()">+ New Trip</button>
+      <button class="btn btn-p btn-sm" onclick="openNewTripModal()">+ New trip</button>
     </div>
+    ${renderTripsFilterHtml()}
     ${tripsDateEyebrowHtml()}
     ${tripsEditorialHtml(upcoming)}
     ${heroHtml}
-    ${restHtml}`;
+    ${emptyFilter?emptyFilterMsg:restHtml}`;
 }
 
 function tripDetail(trip){
@@ -2687,6 +2836,12 @@ function tripDetail(trip){
   // Default view per stage when opening trip
   if(!body) body=notesBody(trip);
 
+  const isIdea=trip.status==='idea';
+  const ideaBanner=isIdea?`<div class="trip-idea-banner" style="margin-bottom:16px;padding:14px 16px;border-radius:12px;background:rgba(138,106,184,.1);border:1px solid rgba(138,106,184,.25)">
+    <p style="margin:0 0 10px;font-family:'Newsreader',serif;font-style:italic;font-size:14px;line-height:1.5;color:var(--text-d)">Still an idea — no rush. When you&rsquo;ve booked, we&rsquo;ll help with dates and packing.</p>
+    <button type="button" class="btn btn-p btn-sm" onclick="graduateTripIdea('${trip.id}')">We&rsquo;ve booked it →</button>
+  </div>`:'';
+
   // ── Stage stepper ──
   const stages=[
     {id:'planning',  label:'Plan',        tab:'notes'},
@@ -2696,7 +2851,7 @@ function tripDetail(trip){
   ];
   const stageOrder=stages.map(s=>s.id);
   const currentIdx=stageOrder.indexOf(trip.status==='complete'?'post-trip':trip.status);
-  const stepperHtml=`<div class="stepper">
+  const stepperHtml=isIdea?'':`<div class="stepper">
     ${stages.map((s,i)=>{
       const isDone=i<currentIdx||(trip.status==='complete');
       const isCurrent=i===currentIdx&&trip.status!=='complete';
@@ -2723,11 +2878,13 @@ function tripDetail(trip){
     const dogInRoster=dp&&roster.some(p=>p.id===dp);
     if(!dogInRoster) crewStr=crewStr?crewStr+' · Dog kit':'Dog kit';
   }
-  const subtitle=[
-    trip.nights+' night'+(trip.nights!==1?'s':''),
-    trip.date?fmtDate(trip.date):'',
-    crewStr,
-  ].filter(Boolean).join(' · ');
+  const subtitle=isIdea
+    ?['Idea',SELAB[trip.season]||'',crewStr].filter(Boolean).join(' · ')
+    :[
+      trip.nights+' night'+(trip.nights!==1?'s':''),
+      trip.date?fmtDate(trip.date):'',
+      crewStr,
+    ].filter(Boolean).join(' · ');
 
   return `
     <div class="trip-toolbar">
@@ -2740,11 +2897,13 @@ function tripDetail(trip){
     </div>
     <div class="ttitle">${esc(trip.name)}</div>
     <div class="tsubtitle">${subtitle}</div>
+    ${ideaBanner}
     ${renderTripExperiencePanel(trip)}
     ${stepperHtml}
     ${(()=>{
       // Contextual secondary links based on current stage — no tab bar
       const links={
+        idea:[      {tab:'notes',     label:'Notes'}],
         planning:[  {tab:'notes',     label:'Notes'}],
         packing:[   {tab:'actions',   label:'Reminders'},{tab:'notes',label:'Notes'}],
         'pack-up':[ {tab:'actions',   label:'Reminders'},{tab:'notes',label:'Notes'}],
@@ -3759,7 +3918,7 @@ function openTrip(id){
   checklistSort='location'; checklistHidePacked=false; checklistFiltersOpen=false;
   // Open the right view for the current journey stage
   const trip=S.trips.find(t=>t.id===id);
-  const stageTab={planning:'notes',packing:'checklist','pack-up':'pack-up','pack-away':'pack-away','post-trip':'post-trip',complete:'notes'};
+  const stageTab={idea:'notes',planning:'notes',packing:'checklist','pack-up':'pack-up','pack-away':'pack-away','post-trip':'post-trip',complete:'notes'};
   activeTripTab=trip?(stageTab[trip.status]||'checklist'):'checklist';
   renderTrips();
 }
@@ -3767,17 +3926,22 @@ function closeTrip(){ activeTripId=null; checklistSearch=''; expandedPackedCheck
 function setTripTab(tab){ activeTripTab=tab; renderTrips(); }
 
 function setExperienceTab(tab){
-  activeExperienceTab=tab;
+  activeExperienceTab=activeExperienceTab===tab?null:tab;
+  renderTrips();
+}
+
+function collapseExperiencePanel(){
+  activeExperienceTab=null;
   renderTrips();
 }
 
 function resolveExperienceTab(tripId,tabIds){
-  if(!tabIds.length) return '';
+  if(!tabIds.length) return null;
   if(activeExperienceForTripId!==tripId){
     activeExperienceForTripId=tripId;
-    activeExperienceTab=tabIds.includes('weather')?'weather':tabIds[0];
-  }else if(!tabIds.includes(activeExperienceTab)){
-    activeExperienceTab=tabIds.includes('weather')?'weather':tabIds[0];
+    activeExperienceTab=null;
+  }else if(activeExperienceTab&&!tabIds.includes(activeExperienceTab)){
+    activeExperienceTab=null;
   }
   return activeExperienceTab;
 }
@@ -4631,14 +4795,14 @@ function applyDogPersonToAttendeeIds(attendeeIds, dogChecked){
   return [...next];
 }
 
-function readTripAttendeeIdsFromForm(){
-  const wrap=document.getElementById('tAttendeeGrid');
+function readTripAttendeeIdsFromForm(gridId){
+  const wrap=document.getElementById(gridId||(tripWizardPath==='idea'?'tIdeaAttendeeGrid':'tAttendeeGrid'));
   if(!wrap) return [];
   return [...wrap.querySelectorAll('input[type=checkbox]:checked')].map(i=>i.value);
 }
 
-function populateTripAttendeeGrid(trip){
-  const wrap=document.getElementById('tAttendeeGrid');
+function populateTripAttendeeGrid(trip,gridId){
+  const wrap=document.getElementById(gridId||(tripWizardPath==='idea'?'tIdeaAttendeeGrid':'tAttendeeGrid'));
   if(!wrap) return;
   const people=S.people||[];
   if(!people.length){
@@ -4653,85 +4817,267 @@ function populateTripAttendeeGrid(trip){
 }
 
 // ══════════════════════════════════════════════════
-// TRIP MODAL
+// TRIP MODAL — companion wizard (chunk 1)
 // ══════════════════════════════════════════════════
-function openNewTripModal(){
-  editTripId=null;
-  document.getElementById('tmt').textContent='New Trip';
-  ['tName','tNotes'].forEach(x=>document.getElementById(x).value='');
-  document.getElementById('tDate').value='';
-  document.getElementById('tNights').value='3';
-  document.getElementById('tSeason').value='summer';
-  document.getElementById('tSite').value='basic';
-  document.getElementById('tExtra').value='0';
-  document.getElementById('tDist').value='regional';
-  document.getElementById('tDog').checked=true;
-  populateTripActGrid([]);
-  populateTripAttendeeGrid(null);
-  clearTripExperienceForm();
-  openM('tripModal');
-  setTimeout(()=>document.getElementById('tName').focus(),50);
+const TRIP_WIZARD_PANES=['twFork','twBooked1','twBooked2','twBooked3','twBooked4','twIdea1'];
+
+function showTripWizardStep(step){
+  tripWizardStep=step;
+  TRIP_WIZARD_PANES.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.hidden=id!==step;
+  });
+  const label=document.getElementById('twStepLabel');
+  if(label){
+    const labels={
+      twFork:'',
+      twBooked1:'1 of 4 · Essentials',
+      twBooked2:'2 of 4 · What you\u2019ll need',
+      twBooked3:'3 of 4 · The site',
+      twBooked4:'4 of 4 · Before you go',
+      twIdea1:'Capture an idea',
+    };
+    label.textContent=labels[step]||'';
+  }
+  if(step==='twBooked2'){
+    const trip=editTripId?S.trips.find(t=>t.id===editTripId):null;
+    populateTripActGrid(trip?.activities||[]);
+  }
+  if(step==='twBooked3'){
+    const trip=editTripId?S.trips.find(t=>t.id===editTripId):null;
+    setTripRulesDraft(trip?.venue?.rules||[],trip?.venue?.customRules||[]);
+    paintTripSiteRulesEditor();
+  }
+  if(step==='twBooked4'){
+    const trip=editTripId?S.trips.find(t=>t.id===editTripId):null;
+    if(trip) fillTripExperienceForm(trip);
+    else syncTripWeatherForm();
+  }
 }
 
-function openEditTripModal(id){
-  const trip=S.trips.find(t=>t.id===id);
+function resetTripWizardForm(){
+  const set=(id,v)=>{ const el=document.getElementById(id); if(el) el.value=v??''; };
+  set('tName','');
+  set('tIdeaName','');
+  set('tDate','');
+  set('tNights','3');
+  set('tSeason','summer');
+  set('tSite','basic');
+  set('tIdeaSeason','summer');
+  set('tIdeaSite','basic');
+  set('tExtra','0');
+  set('tDist','regional');
+  set('tNotes','');
+  const dog=document.getElementById('tDog');
+  if(dog) dog.checked=true;
+  populateTripActGrid([]);
+  populateTripAttendeeGrid(null,'tAttendeeGrid');
+  populateTripAttendeeGrid(null,'tIdeaAttendeeGrid');
+  clearTripExperienceForm();
+  const wm=document.getElementById('tWeatherMode');
+  if(wm) wm.value='estimate';
+  const ws=document.getElementById('tWeatherSummary');
+  if(ws) ws.value='';
+}
+
+function openNewTripModal(){
+  editTripId=null;
+  tripWizardPath=null;
+  document.getElementById('tmt').textContent='Plan a trip';
+  resetTripWizardForm();
+  showTripWizardStep('twFork');
+  openM('tripModal');
+}
+
+function chooseTripWizardPath(path){
+  tripWizardPath=path;
+  if(path==='booked'){
+    document.getElementById('tmt').textContent=editTripId?'Edit trip':'A booked trip';
+    showTripWizardStep('twBooked1');
+    populateTripAttendeeGrid(editTripId?S.trips.find(t=>t.id===editTripId):null,'tAttendeeGrid');
+    setTimeout(()=>document.getElementById('tName')?.focus(),50);
+  }else{
+    document.getElementById('tmt').textContent=editTripId?'Edit idea':'A possible trip';
+    showTripWizardStep('twIdea1');
+    populateTripAttendeeGrid(editTripId?S.trips.find(t=>t.id===editTripId):null,'tIdeaAttendeeGrid');
+    setTimeout(()=>document.getElementById('tIdeaName')?.focus(),50);
+  }
+}
+
+function tripWizardBack(){
+  if(tripWizardStep==='twBooked4'){ showTripWizardStep('twBooked3'); return; }
+  if(tripWizardStep==='twBooked3'){ showTripWizardStep('twBooked2'); return; }
+  if(tripWizardStep==='twBooked2'){ showTripWizardStep('twBooked1'); return; }
+  if(tripWizardStep==='twBooked1'){
+    if(editTripId){ closeM('tripModal'); return; }
+    tripWizardPath=null;
+    document.getElementById('tmt').textContent='Plan a trip';
+    showTripWizardStep('twFork');
+    return;
+  }
+  if(editTripId){ closeM('tripModal'); return; }
+  tripWizardPath=null;
+  document.getElementById('tmt').textContent='Plan a trip';
+  showTripWizardStep('twFork');
+}
+
+function validateBookedEssentials(){
+  const name=document.getElementById('tName')?.value.trim();
+  const date=document.getElementById('tDate')?.value;
+  const nights=parseInt(document.getElementById('tNights')?.value,10);
+  if(!name){ document.getElementById('tName')?.focus(); showToast('Give your trip a name'); return false; }
+  if(!date){ document.getElementById('tDate')?.focus(); showToast('When do you leave?'); return false; }
+  if(!nights||nights<1){ document.getElementById('tNights')?.focus(); showToast('How many nights are you away?'); return false; }
+  return true;
+}
+
+function collectTripDataFromWizard(){
+  const isIdea=tripWizardPath==='idea';
+  const name=isIdea?(document.getElementById('tIdeaName')?.value||'').trim():(document.getElementById('tName')?.value||'').trim();
+  const activities=[...document.querySelectorAll('#tActGrid input[type=checkbox]:checked')].map(cb=>cb.value);
+  let attendeeIds=readTripAttendeeIdsFromForm(isIdea?'tIdeaAttendeeGrid':'tAttendeeGrid');
+  const dogOn=isIdea?false:!!document.getElementById('tDog')?.checked;
+  if(attendeeIds.length) attendeeIds=applyDogPersonToAttendeeIds(attendeeIds,dogOn);
+  const exp=readTripExperienceFromForm(editTripId?S.trips.find(t=>t.id===editTripId):null);
+  return {
+    name,
+    date:isIdea?'':(document.getElementById('tDate')?.value||''),
+    nights:isIdea?3:(parseInt(document.getElementById('tNights')?.value,10)||3),
+    season:isIdea?(document.getElementById('tIdeaSeason')?.value||'summer'):(document.getElementById('tSeason')?.value||'summer'),
+    site:isIdea?(document.getElementById('tIdeaSite')?.value||'basic'):(document.getElementById('tSite')?.value||'basic'),
+    extraPeople:parseInt(document.getElementById('tExtra')?.value,10)||0,
+    distance:document.getElementById('tDist')?.value||'regional',
+    dog:dogOn,
+    activities,
+    attendeeIds,
+    notes:document.getElementById('tNotes')?.value.trim(),
+    venue:exp.venue,
+    route:exp.route,
+    weather:exp.weather,
+  };
+}
+
+function persistTripWizardDraft(){
+  const data=collectTripDataFromWizard();
+  const newStatus=tripWizardPath==='idea'?'idea':'planning';
+  if(editTripId){
+    const idx=S.trips.findIndex(t=>t.id===editTripId);
+    const prev=S.trips[idx];
+    const status=prev.status==='idea'&&tripWizardPath==='booked'?'planning':prev.status;
+    S.trips[idx]={...prev,...data,status,route:{...(prev.route||{}),...data.route}};
+    normalizeTripExperience(S.trips[idx]);
+  }else{
+    const t={id:uid(),status:newStatus,manualIncludeIds:[],...data};
+    S.trips.push(t);
+    editTripId=t.id;
+  }
+  save();
+  return editTripId;
+}
+
+function finishTripWizard(goTripPage){
+  const data=collectTripDataFromWizard();
+  const hadCL=editTripId?!!S.trips.find(t=>t.id===editTripId)?.checklist:false;
+  persistTripWizardDraft();
+  const tripId=editTripId;
+  closeM('tripModal');
+  if(hadCL&&tripWizardPath==='booked'&&confirm('Trip config changed — regenerate checklist?')) genChecklist(tripId);
+  else{
+    save();
+    if(goTripPage) activeTripId=tripId;
+    renderTrips();
+  }
+}
+
+function saveTripWizard(mode){
+  if(tripWizardPath==='idea'){
+    const name=document.getElementById('tIdeaName')?.value.trim();
+    if(!name){ document.getElementById('tIdeaName')?.focus(); showToast('Give your idea a name'); return; }
+    persistTripWizardDraft();
+    activeTripId=editTripId;
+    closeM('tripModal');
+    save();
+    renderTrips();
+    return;
+  }
+  if(tripWizardPath!=='booked') return;
+
+  if(mode==='more'&&tripWizardStep==='twBooked1'){
+    if(!validateBookedEssentials()) return;
+    persistTripWizardDraft();
+    showTripWizardStep('twBooked2');
+    return;
+  }
+  if(mode==='continue'&&tripWizardStep==='twBooked2'){
+    persistTripWizardDraft();
+    showTripWizardStep('twBooked3');
+    return;
+  }
+  if(mode==='continue'&&tripWizardStep==='twBooked3'){
+    persistTripWizardDraft();
+    showTripWizardStep('twBooked4');
+    return;
+  }
+  if(mode==='start'||mode==='finish'){
+    if(tripWizardStep==='twBooked1'&&!validateBookedEssentials()) return;
+    persistTripWizardDraft();
+    finishTripWizard(true);
+    if(mode==='finish') showToast('Trip setup complete — you\u2019re ready to plan');
+    return;
+  }
+}
+
+function loadTripIntoWizardForm(trip){
   if(!trip) return;
-  editTripId=id;
-  document.getElementById('tmt').textContent='Edit Trip';
-  document.getElementById('tName').value=trip.name;
+  document.getElementById('tName').value=trip.name||'';
+  document.getElementById('tIdeaName').value=trip.name||'';
   document.getElementById('tDate').value=trip.date||'';
   document.getElementById('tNights').value=trip.nights||3;
   document.getElementById('tSeason').value=trip.season||'summer';
   document.getElementById('tSite').value=trip.site||'basic';
+  document.getElementById('tIdeaSeason').value=trip.season||'summer';
+  document.getElementById('tIdeaSite').value=trip.site||'basic';
   document.getElementById('tExtra').value=trip.extraPeople||0;
   document.getElementById('tDist').value=trip.distance||'regional';
   document.getElementById('tDog').checked=!!trip.dog;
   document.getElementById('tNotes').value=trip.notes||'';
   fillTripExperienceForm(trip);
   populateTripActGrid(trip.activities||[]);
-  populateTripAttendeeGrid(trip);
+}
+
+const TRIP_WIZARD_EDIT_STEPS={essentials:'twBooked1',kit:'twBooked2',site:'twBooked3',remember:'twBooked4'};
+
+function openEditTripModal(id,wizardStage){
+  const trip=S.trips.find(t=>t.id===id);
+  if(!trip) return;
+  editTripId=id;
+  tripWizardPath=trip.status==='idea'?'idea':'booked';
+  resetTripWizardForm();
+  loadTripIntoWizardForm(trip);
   openM('tripModal');
+  if(trip.status==='idea'){
+    document.getElementById('tmt').textContent='Edit idea';
+    showTripWizardStep('twIdea1');
+    populateTripAttendeeGrid(trip,'tIdeaAttendeeGrid');
+    return;
+  }
+  document.getElementById('tmt').textContent='Edit trip';
+  const step=TRIP_WIZARD_EDIT_STEPS[wizardStage]||'twBooked1';
+  showTripWizardStep(step);
+  populateTripAttendeeGrid(trip,'tAttendeeGrid');
 }
 
 function saveTrip(){
-  const name=document.getElementById('tName').value.trim();
-  if(!name){ document.getElementById('tName').focus(); return; }
-  const activities=[...document.querySelectorAll('#tActGrid input[type=checkbox]:checked')].map(cb=>cb.value);
-  let attendeeIds=readTripAttendeeIdsFromForm();
-  const dogOn=document.getElementById('tDog').checked;
-  if(attendeeIds.length) attendeeIds=applyDogPersonToAttendeeIds(attendeeIds,dogOn);
-  const exp=readTripExperienceFromForm(editTripId?S.trips.find(t=>t.id===editTripId):null);
-  const data={
-    name,
-    date:document.getElementById('tDate').value,
-    nights:parseInt(document.getElementById('tNights').value)||3,
-    season:document.getElementById('tSeason').value,
-    site:document.getElementById('tSite').value,
-    extraPeople:parseInt(document.getElementById('tExtra').value)||0,
-    distance:document.getElementById('tDist').value,
-    dog:dogOn,
-    activities,
-    attendeeIds,
-    notes:document.getElementById('tNotes').value.trim(),
-    venue:exp.venue,
-    route:exp.route,
-    weather:exp.weather,
-  };
-  if(editTripId){
-    const idx=S.trips.findIndex(t=>t.id===editTripId);
-    const hadCL=!!S.trips[idx].checklist;
-    const prev=S.trips[idx];
-    S.trips[idx]={...prev,...data,route:{...(prev.route||{}),...data.route}};
-    normalizeTripExperience(S.trips[idx]);
-    closeM('tripModal');
-    if(hadCL&&confirm('Trip config changed — regenerate checklist?')) genChecklist(editTripId);
-    else{ save(); renderTrips(); }
-  } else {
-    const t={id:uid(),status:'planning',manualIncludeIds:[],...data};
-    S.trips.push(t);
-    activeTripId=t.id;
-    save(); closeM('tripModal'); renderTrips();
-  }
+  saveTripWizard('start');
+}
+
+function graduateTripIdea(tripId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip||trip.status!=='idea') return;
+  trip.status='planning';
+  save();
+  showToast('Brilliant — add your dates when you\u2019re ready');
+  openEditTripModal(tripId);
 }
 
 // ══════════════════════════════════════════════════
@@ -5685,7 +6031,7 @@ function fillTripExperienceForm(trip){
   if(snapNote){
     if(hasSnap){
       snapNote.style.display='block';
-      snapNote.innerHTML='Day-by-day forecast saved on this trip (<strong>'+w.days.length+' day'+(w.days.length===1?'':'s')+'</strong>). Refresh it on the trip page. Use the checkbox below only if you want to remove it.';
+      snapNote.innerHTML='Saved forecast on this trip (<strong>'+w.days.length+' day'+(w.days.length===1?'':'s')+'</strong>) — refresh on the trip page when online.';
     }else{
       snapNote.style.display='none';
       snapNote.textContent='';
@@ -5794,7 +6140,8 @@ function renderTripExperiencePanel(trip){
   const tabIds=expTabs.map(t=>t.id);
   const active=resolveExperienceTab(trip.id,tabIds);
   const panels={site:siteBlock,booking:bookingBlock,weather:weatherBlock,travel:travelBlock};
-  const panelHtml=panels[active]||weatherBlock;
+  const panelHtml=active?panels[active]:'';
+  const tabsConnected=!!active;
 
   return `<div class="trip-experience">
     <div class="trip-experience-glance">
@@ -5803,11 +6150,25 @@ function renderTripExperiencePanel(trip){
       ${chips.length?`<div class="trip-experience-chips">${chips.map(c=>`<span class="trip-experience-chip${c.custom?' trip-experience-chip--custom':''}">${esc(c.label)}</span>`).join('')}</div>`:''}
       ${actions.length?`<div class="trip-experience-actions">${actions.join('')}</div>`:''}
     </div>
-    <div class="trip-exp-tabs trip-exp-tabs--connected" role="tablist" aria-label="Trip details">
-      ${expTabs.map(t=>`<button type="button" class="trip-exp-tab${active===t.id?' on':''}" role="tab" aria-selected="${active===t.id?'true':'false'}" onclick="setExperienceTab('${t.id}')">${esc(t.label)}</button>`).join('')}
+    <div class="trip-exp-bar">
+      <div class="trip-exp-tabs${tabsConnected?' trip-exp-tabs--connected':''}" role="tablist" aria-label="Trip details">
+        ${expTabs.map(t=>{
+          const on=active===t.id;
+          return `<button type="button" class="trip-exp-tab${on?' on':''}" role="tab" aria-expanded="${on?'true':'false'}" onclick="setExperienceTab('${t.id}')">${esc(t.label)}${on?'<span class="trip-exp-tab-caret" aria-hidden="true">▴</span>':''}</button>`;
+        }).join('')}
+      </div>
+      ${active?`<button type="button" class="trip-exp-hide" onclick="collapseExperiencePanel()" aria-label="Hide trip details panel">Hide</button>`:''}
     </div>
-    <div class="trip-exp-panel trip-exp-panel--connected" role="tabpanel">${panelHtml}</div>
-    <p class="trip-experience-muted" style="margin-top:10px"><button type="button" class="btn btn-o btn-sm" onclick="openEditTripModal('${trip.id}')">Edit trip details</button></p>
+    ${!active?`<p class="trip-experience-muted" style="margin:6px 0 0;font-size:10px">Tap a section to expand · tap again or Hide to collapse</p>`:''}
+    ${panelHtml?`<div class="trip-exp-panel" role="tabpanel">${panelHtml}</div>`:''}
+    <p class="trip-experience-muted" style="margin-top:10px;line-height:1.8">
+      <button type="button" class="btn btn-o btn-sm" onclick="openEditTripModal('${trip.id}')">Edit trip setup</button>${trip.status!=='idea'?`<span class="trip-wizard-edit-links">
+        <button type="button" onclick="openEditTripModal('${trip.id}','essentials')">Essentials</button>
+        <button type="button" onclick="openEditTripModal('${trip.id}','kit')">Kit</button>
+        <button type="button" onclick="openEditTripModal('${trip.id}','site')">Site</button>
+        <button type="button" onclick="openEditTripModal('${trip.id}','remember')">Remember</button>
+      </span>`:''}
+    </p>
   </div>`;
 }
 
