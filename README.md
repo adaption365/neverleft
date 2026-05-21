@@ -14,6 +14,10 @@ When served over **HTTPS** (e.g. [neverleft.netlify.app](https://neverleft.netli
 2. Optionally bump **`FONT_CACHE`** if you change font caching behaviour.
 3. Deploy; users may need a **second visit** or reload to pick up the new worker.
 
+### Cursor skills (UI polish)
+
+Design-engineering guidance for agents lives in [`.cursor/skills/`](.cursor/skills/README.md) (`emil-design-eng` from [emilkowalski/skill](https://github.com/emilkowalski/skill), plus `neverleft-ui-polish` for this codebase). Refresh upstream with `npx skills add emilkowalski/skill --skill emil-design-eng`.
+
 ### Repo layout
 
 | File | Purpose |

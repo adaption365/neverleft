@@ -1,0 +1,10 @@
+---
+description: Use repo plans/ as source of truth for NeverLeft planning
+alwaysApply: true
+---
+
+# Planning (NeverLeft)
+
+- **Source of truth:** [`plans/`](plans/) in this repository, especially [`plans/forgotten_item_feature_ux_d218206d.plan.md`](plans/forgotten_item_feature_ux_d218206d.plan.md) for the active roadmap.
+- When planning features or using Plan mode: read and update those markdown files; do not rely only on `~/.cursor/plans/` on the local machine.
+- After changing a plan, keep `plans/README.md` build order / status table accurate when scope or priority shifts.
