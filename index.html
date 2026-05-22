@@ -7580,6 +7580,14 @@ function printChecklist(tripId, mode){
     ...(trip.activities||[])
   ].filter(Boolean);
   const today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  normalizeTripExperience(trip);
+  const venue=trip.venue||{};
+  const printVenueHtml=(mode==='packing'&&(venue.name||venue.address||venue.bookingRef))?`
+    <div class="cover-venue">
+      ${venue.name?`<div class="cover-site">${esc(venue.name)}</div>`:''}
+      ${venue.address?`<div class="cover-address">${esc(venue.address)}</div>`:''}
+      ${venue.bookingRef?`<div class="cover-booking">Booking ref ${esc(venue.bookingRef)}</div>`:''}
+    </div>`:'';
   let printPacked=0, printReady=0, printLineTotal=0;
   filteredCIs.forEach(x=>{
     const st=packingProgressContribution(trip,x.ci,x.item,mode);
@@ -7697,6 +7705,10 @@ function printChecklist(tripId, mode){
   .cover-mode{font-family:'Familjen Grotesk',sans-serif;font-size:9pt;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-l);margin-bottom:3pt}
   .cover-trip{font-family:'DM Mono',monospace;font-size:8.5pt;font-weight:700}
   .cover-date{font-family:'DM Mono',monospace;font-size:7.5pt;color:var(--paper-r);margin-top:1pt}
+  .cover-venue{margin-top:4pt;padding-top:3pt;border-top:0.5pt solid rgba(255,255,255,.18);max-width:72mm}
+  .cover-site{font-family:'DM Mono',monospace;font-size:7.5pt;font-weight:700;color:var(--paper);margin-bottom:1pt;line-height:1.3}
+  .cover-address{font-family:'DM Mono',monospace;font-size:7pt;color:rgba(255,255,255,.78);line-height:1.35}
+  .cover-booking{font-family:'DM Mono',monospace;font-size:7pt;color:var(--accent-l);margin-top:2pt;letter-spacing:.04em}
   .cover-right{text-align:right;flex-shrink:0}
   .chips{display:flex;flex-wrap:wrap;gap:2pt;margin-top:3pt;justify-content:flex-end}
   .chip{font-family:'Familjen Grotesk',sans-serif;font-size:6.5pt;letter-spacing:.07em;text-transform:uppercase;padding:1pt 4pt;border:0.5pt solid rgba(255,255,255,.2);border-radius:2pt;color:rgba(255,255,255,.6)}
@@ -7764,6 +7776,7 @@ function printChecklist(tripId, mode){
     <div class="cover-mode">${esc(modeDesc)}</div>
     <div class="cover-trip">${esc(printTripTitle)}</div>
     <div class="cover-date">${trip.date?fmtDate(trip.date)+' \u00B7 ':''}${trip.nights} night${trip.nights!==1?'s':''} \u00B7 Printed ${today}</div>
+    ${printVenueHtml}
   </div>
   ${chips.length?`<div class="cover-right"><div class="chips">${chips.map(c=>`<span class="chip">${esc(c)}</span>`).join('')}</div></div>`:''}
 </div>

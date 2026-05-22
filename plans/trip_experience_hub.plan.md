@@ -55,7 +55,7 @@ trip.weather = {
 
 - **Rule chips (done):** Standard toggles in trip edit; `trip.venue.customRules`; saved presets in `S.settings.customSiteRules`
 - Hero card on Trips home: site name, check-in (≤7 days), up to 2 headline rules in meta; notes hidden when site set (done)
-- Print/export block: booking ref + address on packing print cover (next)
+- Print/export block: booking ref + address on packing print cover (done)
 - Settings UI to rename/delete saved custom rules (optional)
 
 ## Phase 3 (weather — partial)
