@@ -1348,13 +1348,63 @@ function getCustomSiteRulePresets(){
 
 function addCustomSiteRulePreset(label){
   const norm=String(label||'').trim().slice(0,80);
-  if(!norm) return;
+  if(!norm) return false;
   if(!S.settings) S.settings=defaultSettings();
   if(!Array.isArray(S.settings.customSiteRules)) S.settings.customSiteRules=[];
   const lower=norm.toLowerCase();
-  if(S.settings.customSiteRules.some(r=>String(r).trim().toLowerCase()===lower)) return;
+  if(S.settings.customSiteRules.some(r=>String(r).trim().toLowerCase()===lower)) return false;
   S.settings.customSiteRules.push(norm);
   save();
+  return true;
+}
+
+function customSiteRuleTripCount(label){
+  const lower=String(label).trim().toLowerCase();
+  return (S.trips||[]).filter(t=>{
+    normalizeTripExperience(t);
+    return (t.venue?.customRules||[]).some(r=>String(r).trim().toLowerCase()===lower);
+  }).length;
+}
+
+function renameCustomSiteRulePreset(index,newLabel){
+  if(!Array.isArray(S.settings?.customSiteRules)) return false;
+  const oldLabel=String(S.settings.customSiteRules[index]||'').trim();
+  if(!oldLabel) return false;
+  const norm=String(newLabel||'').trim().slice(0,80);
+  if(!norm) return false;
+  const oldLower=oldLabel.toLowerCase();
+  const newLower=norm.toLowerCase();
+  if(S.settings.customSiteRules.some((r,i)=>i!==index&&String(r).trim().toLowerCase()===newLower)){
+    showToast('A saved rule with that name already exists.');
+    return false;
+  }
+  S.settings.customSiteRules[index]=norm;
+  if(oldLower!==newLower){
+    (S.trips||[]).forEach(t=>{
+      normalizeTripExperience(t);
+      const rules=t.venue.customRules;
+      for(let i=0;i<rules.length;i++){
+        if(String(rules[i]).trim().toLowerCase()===oldLower) rules[i]=norm;
+      }
+    });
+  }
+  save();
+  return true;
+}
+
+function deleteCustomSiteRulePreset(index){
+  if(!Array.isArray(S.settings?.customSiteRules)) return;
+  const label=String(S.settings.customSiteRules[index]||'').trim();
+  if(!label) return;
+  const trips=customSiteRuleTripCount(label);
+  const msg=trips
+    ? `"${label}" is on ${trips} trip${trips!==1?'s':''}. Remove from saved presets? Trips will keep the rule until you edit them.`
+    : `Delete saved rule "${label}"?`;
+  if(!confirm(msg)) return;
+  S.settings.customSiteRules.splice(index,1);
+  save();
+  renderSettings();
+  if(document.getElementById('tSiteRulesPresets')) paintTripSiteRulesEditor();
 }
 
 // Live accessors — always read from S.settings so changes are instant
@@ -6806,6 +6856,30 @@ function renderSettingsDataSection(){
     </div>`;
 }
 
+function renderSettingsCustomSiteRulesSection(){
+  if(!S.settings) S.settings=defaultSettings();
+  if(!Array.isArray(S.settings.customSiteRules)) S.settings.customSiteRules=[];
+  const rows=S.settings.customSiteRules.map((r,i)=>{
+    const label=String(r).trim();
+    if(!label) return '';
+    const trips=customSiteRuleTripCount(label);
+    return `<div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-bottom:1px solid var(--border);background:var(--canvas-2);margin-bottom:2px;border-radius:2px">
+      <span class="site-rule-chip site-rule-chip--custom" style="cursor:default;flex-shrink:0">${esc(label)}</span>
+      <span style="flex:1;font-size:12px;color:var(--text-m)">${trips?`${trips} trip${trips!==1?'s':''} using this`:''}</span>
+      <button class="btn-ic" onclick="openCustomSiteRuleModal(${i})" title="Rename">✎</button>
+      <button class="btn-ic" style="color:var(--rust)" onclick="deleteCustomSiteRulePreset(${i})" title="Delete">✕</button>
+    </div>`;
+  }).filter(Boolean).join('')||`<div style="font-size:12px;color:var(--text-m);padding:8px 0;line-height:1.45">No saved rules yet. Add custom site rules when editing a trip, or create one here.</div>`;
+  return `<div style="margin-bottom:28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">
+      <span style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--amber)">Saved site rules</span>
+      <button class="btn btn-p btn-sm" onclick="openCustomSiteRuleModal(null)">+ Add</button>
+    </div>
+    <div style="font-size:12px;color:var(--text-m);margin-bottom:10px;line-height:1.45">Custom campsite rules you can reuse when setting up trips (e.g. &ldquo;No generators after 10pm&rdquo;).</div>
+    ${rows}
+  </div>`;
+}
+
 function renderSettings(){
   // Also render people section if it exists in settings
   setTimeout(()=>{
@@ -6852,6 +6926,7 @@ function renderSettings(){
     ${listSection('Categories', 'categories', true)}
     ${listSection('Locations', 'locations', false)}
     ${listSection('Activities', 'activities', true)}
+    ${renderSettingsCustomSiteRulesSection()}
     <div id="settingsPeopleSection" style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border)">
       <div style="font-family:'Familjen Grotesk',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px">The crew</div>
       <div style="font-size:12px;color:var(--text-m);margin-bottom:14px">Who's coming on your trips. Items can be assigned to each person.</div>
@@ -6863,6 +6938,52 @@ function renderSettings(){
 }
 
 let settingsEditKey=null, settingsEditId=null;
+let customSiteRuleEditIndex=null;
+
+function openCustomSiteRuleModal(index){
+  customSiteRuleEditIndex=index;
+  const isEdit=index!==null&&index!==undefined;
+  const current=isEdit?String(S.settings.customSiteRules[index]||''):'';
+  const modalHtml=`
+    <div id="customSiteRuleModalOverlay" class="dialog-overlay" onclick="if(event.target===this)closeCustomSiteRuleModal()">
+      <div class="dialog-panel dialog-panel--380">
+        <div class="mtitle">${isEdit?'Rename':'Add'} saved site rule</div>
+        <div class="fg">
+          <label class="fl">Rule text *</label>
+          <input class="fi" id="customSiteRuleLabel" value="${isEdit?esc(current):''}" placeholder="e.g. Quiet hours 10pm–7am" maxlength="80">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:3px">Shown as a chip when setting up trips. Renaming updates trips that use this rule.</div>
+        </div>
+        <div style="display:flex;gap:7px;justify-content:flex-end;margin-top:16px;padding-top:12px;border-top:1px solid var(--border)">
+          <button class="btn btn-o" onclick="closeCustomSiteRuleModal()">Cancel</button>
+          <button class="btn btn-p" onclick="saveCustomSiteRuleModal()">Save</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend',modalHtml);
+  setTimeout(()=>document.getElementById('customSiteRuleLabel').focus(),50);
+}
+
+function closeCustomSiteRuleModal(){
+  const ov=document.getElementById('customSiteRuleModalOverlay');
+  if(ov) ov.remove();
+  customSiteRuleEditIndex=null;
+}
+
+function saveCustomSiteRuleModal(){
+  const label=(document.getElementById('customSiteRuleLabel')?.value||'').trim();
+  if(!label){ document.getElementById('customSiteRuleLabel')?.focus(); return; }
+  const isEdit=customSiteRuleEditIndex!==null&&customSiteRuleEditIndex!==undefined;
+  let ok;
+  if(isEdit) ok=renameCustomSiteRulePreset(customSiteRuleEditIndex,label);
+  else ok=addCustomSiteRulePreset(label);
+  if(!ok){
+    showToast(isEdit?'Could not rename — check for duplicate names.':'That rule is already saved.');
+    return;
+  }
+  closeCustomSiteRuleModal();
+  renderSettings();
+  if(document.getElementById('tSiteRulesPresets')) paintTripSiteRulesEditor();
+}
 
 function openSettingsItemModal(key, id){
   settingsEditKey=key;

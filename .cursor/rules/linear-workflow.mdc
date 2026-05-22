@@ -1,0 +1,39 @@
+---
+description: Linear issue status workflow when implementing NeverLeft backlog items
+alwaysApply: true
+---
+
+# Linear workflow (Aperture / Neverleft)
+
+When working from a Linear issue (see [`plans/README.md`](plans/README.md) for APE ↔ plan mapping), use the **user-Linear** MCP to keep status accurate. Team: **Aperture**. Project: **Neverleft**.
+
+## When starting work
+
+As soon as you select or begin an issue:
+
+1. Move it to **In Progress** (`save_issue` with `state: "In Progress"`).
+2. Read the linked plan file in `plans/` for full spec — Linear holds todos only.
+
+## When implementation is complete
+
+Do **not** mark **Done** yet.
+
+1. Move the issue to **Ready for testing**.
+2. Post a short **test plan** comment (`save_comment`) with concrete checks, e.g.:
+   - Where to navigate in the app
+   - Mobile vs desktop if layout changed
+   - Demo mode / backup flows if data-related
+3. Update `plans/README.md` (and plan frontmatter todos if applicable) to reflect shipped scope — but leave Linear at **Ready for testing**.
+
+## When to mark Done
+
+Only after the **user explicitly confirms** testing passed:
+
+1. Move the issue to **Done**.
+2. Ensure plan docs and Linear status stay aligned.
+
+## Do not
+
+- Skip **In Progress** when actively implementing.
+- Mark **Done** on merge or “code looks complete” without user sign-off.
+- Duplicate full plan bodies into Linear — link to `plans/*.plan.md` only.
