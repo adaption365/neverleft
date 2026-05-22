@@ -25,13 +25,13 @@ todos:
     status: pending
   - id: demo-graduate-ux
     content: "Reframe demo banner + Settings copy; primary CTA 'Use as my kit' calls graduateFromDemo(); keep Start fresh as secondary"
-    status: pending
+    status: completed
   - id: demo-graduate-logic
     content: "graduateFromDemo() clears basecamp_demo flag, persists; optional S.meta.dataSource; import/backup must not re-flag unless explicit Reload demo"
-    status: pending
+    status: completed
   - id: backup-before-wipe
     content: "Gate all destructive data actions behind in-flow backup (exportData/shareBackup); no skip; then run reset/clear/reload demo"
-    status: pending
+    status: completed
 isProject: false
 ---
 

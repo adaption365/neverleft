@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>NeverLeft</title>
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#1a1a14">
+<meta name="theme-color" content="#eff4ea">
 <link rel="apple-touch-icon" href="/icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Newsreader:ital,wght@0,400;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -42,11 +42,11 @@
 }
 /* ── LIGHT MODE OVERRIDES ── */
 body.light {
-  --canvas:    #f5f2ea;
-  --canvas-2:  #edeadf;
-  --canvas-3:  #e4e0d3;
-  --border:    #ccc8b8;
-  --border-l:  #b8b4a4;
+  --canvas:    #eff4ea;
+  --canvas-2:  #ffffff;
+  --canvas-3:  #e4ebe0;
+  --border:    #c5d4bc;
+  --border-l:  #b0c4a6;
   --amber:     #9a5f10;
   --amber-l:   #b87020;
   --amber-d:   #7a4808;
@@ -57,13 +57,13 @@ body.light {
   --purple:    #6a4a98;
   --teal:      #3a7a6a;
   --gold:      #9a7820;
-  --text:      #1a1a12;
-  --text-d:    #4a4840;
-  --text-m:    #6a6858;
-  --hero-bg: linear-gradient(152deg, #faf0e4 0%, #f0e4d2 38%, var(--canvas-2) 100%);
-  --hero-border: rgba(154,95,16,.16);
-  --hero-divider: rgba(154,95,16,.14);
-  --hero-glow: rgba(212,144,42,.12);
+  --text:      #1a1f1a;
+  --text-d:    #3d463d;
+  --text-m:    #4f5c4f;
+  --hero-bg:   #dce8d4;
+  --hero-border: rgba(74,107,58,.38);
+  --hero-divider: rgba(74,107,58,.22);
+  --hero-glow: rgba(74,107,58,.14);
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -317,11 +317,11 @@ select:focus{border-color:var(--amber-d)}
 .trips-section-intro{font-family:'Newsreader',serif;font-style:italic;font-size:13px;color:var(--text-m);margin:-4px 0 12px;line-height:1.5;max-width:32em}
 .tcard--logbook{background:var(--canvas-3);box-shadow:0 1px 5px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.03)}
 .tcard--idea{background:rgba(138,106,184,.08);box-shadow:0 2px 8px rgba(0,0,0,.06),0 0 0 1px rgba(138,106,184,.22)}
-body.light .tcard--idea{background:rgba(106,74,152,.06);box-shadow:0 2px 8px rgba(0,0,0,.05),0 0 0 1px rgba(106,74,152,.18)}
+body.light .tcard--idea{background:rgba(106,74,152,.09);box-shadow:0 2px 8px rgba(0,0,0,.05),0 0 0 1px rgba(106,74,152,.18)}
 .trips-filter{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
 .trips-filter-btn{font-family:'DM Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:7px 12px;border-radius:999px;border:1px solid var(--border);background:var(--canvas-3);color:var(--text-m);cursor:pointer;transition:background var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out)}
 .trips-filter-btn:hover{color:var(--text);border-color:var(--border-l)}
-.trips-filter-btn.on{background:rgba(107,140,90,.12);border-color:rgba(107,140,90,.4);color:var(--sage)}
+.trips-filter-btn.on{background:rgba(74,107,58,.16);border-color:rgba(74,107,58,.4);color:var(--sage)}
 .trip-wizard-modal .tw-head{margin-bottom:14px}
 .trip-wizard-modal{max-height:90vh}
 .trip-wizard-modal .tw-pane-site-rules .site-rule-picker{max-height:120px;overflow-y:auto}
@@ -426,14 +426,17 @@ body.light .trip-hero-tag{background:rgba(255,255,255,.45)}
 .trip-hero-pressure-pct{font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--sage);margin-bottom:6px}
 .trip-hero-progress-wrap .pbar-wrap{height:8px;margin-top:0}
 .trip-hero-sec--trip{position:relative}
-.trip-hero-weather-chip{position:absolute;top:16px;right:16px;z-index:2;display:inline-flex;align-items:center;gap:5px;max-width:min(46%,11rem);padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.06);color:var(--text);font-family:'DM Mono',monospace;font-size:10px;line-height:1.25;letter-spacing:.02em;pointer-events:none}
+.trip-hero-weather-chip{position:static;z-index:1;display:inline-flex;align-items:center;gap:5px;max-width:min(100%,14rem);margin-left:auto;padding:6px 11px;border-radius:999px;background:rgba(255,255,255,.06);color:var(--text);font-family:'DM Mono',monospace;font-size:10px;line-height:1.25;letter-spacing:.02em;pointer-events:none;flex:0 1 auto}
+.trip-hero-weather-chip--desktop{display:none}
 body.light .trip-hero-weather-chip{background:rgba(255,255,255,.55)}
 .trip-hero-weather-chip--snap{background:rgba(107,140,90,.12)}
 .trip-hero-weather-chip-ico{flex-shrink:0;font-size:12px;line-height:1}
 .trip-hero-weather-chip-txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
-.trip-hero-sec--trip:has(.trip-hero-weather-chip) .trip-hero-trip-head{padding-right:7.5rem}
-.trip-hero-sec--trip:has(.trip-hero-weather-chip) .trip-hero-title{padding-right:6.5rem}
-.trip-hero-sec--trip .trip-hero-actions{margin-top:16px;padding:0;display:flex;gap:8px;flex-wrap:wrap}
+.trip-hero-sec--trip .trip-hero-actions{margin-top:16px;padding:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;width:100%}
+@media(min-width:900px){
+  .trip-hero-weather-chip--desktop{display:inline-flex;position:absolute;top:22px;right:24px;z-index:3;margin-left:0;max-width:min(38%,12rem);flex:none}
+  .trip-hero-weather-chip--mobile{display:none}
+}
 @media(max-width:899px){
   .trip-hero-sec--trip,.trip-hero-sec--countdown{position:relative}
   .trip-hero-sec--trip::after,.trip-hero-sec--countdown::after{
@@ -484,8 +487,8 @@ body.light .trip-hero-weather-chip{background:rgba(255,255,255,.55)}
 .kit-view-toggle-hint{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);flex:1;min-width:140px;line-height:1.4}
 .kit-intro-title em{font-family:'Newsreader',serif}
 .kit-stat{transition:transform var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out)}
-body.light .kit-stat{box-shadow:0 1px 6px rgba(26,26,18,.06)}
-body.light .trip-hero{box-shadow:0 6px 28px rgba(154,95,16,.1),0 1px 0 rgba(255,255,255,.8) inset}
+body.light .kit-stat{box-shadow:0 1px 6px rgba(26,31,26,.06)}
+body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255,255,255,.85) inset}
 
 /* ── CHECKLIST ITEMS ── */
 .ci{display:flex;align-items:flex-start;gap:13px;padding:14px;background:var(--canvas-2);border:none;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07);cursor:pointer;margin-bottom:8px;transition:background .2s,box-shadow .2s,opacity .25s,transform .15s;position:relative;-webkit-tap-highlight-color:transparent}
@@ -907,15 +910,16 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(154,95,16,.1),0 1px 0 rgba(255,
 <!-- nav moved into header -->
 
 <!-- INVENTORY -->
-<div id="demoBanner" style="display:none;background:linear-gradient(135deg,#d4902a,#9a6820);color:#1a1a14;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+<div id="demoBanner" style="display:none;background:linear-gradient(135deg,#d4902a,#9a6820);color:#1a1a14;padding:10px 18px;align-items:center;gap:12px;flex-wrap:wrap">
   <span style="font-size:16px">🏕</span>
   <div style="flex:1;min-width:0">
-    <div style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Demo Mode</div>
-    <div style="font-size:11px;opacity:.85">This is sample data so you can explore all features. Clear it when you're ready to add your own kit.</div>
+    <div style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Sample kit</div>
+    <div style="font-size:11px;opacity:.85;line-height:1.45">Explore or edit anything. When you&rsquo;re ready, use it as your kit &mdash; nothing is deleted.</div>
   </div>
-  <div style="display:flex;gap:7px;flex-shrink:0">
-    <button class="btn" style="background:rgba(0,0,0,.2);color:#1a1a14;font-size:10px;border:1px solid rgba(0,0,0,.2)" onclick="clearDemoData()">🗑 Clear demo data</button>
-    <button class="btn" style="background:transparent;color:#1a1a14;font-size:16px;border:none;padding:2px 6px;line-height:1" onclick="dismissDemoBanner()" title="Dismiss">✕</button>
+  <div style="display:flex;gap:7px;flex-shrink:0;flex-wrap:wrap;align-items:center">
+    <button class="btn" style="background:#1a1a14;color:#faf0e4;font-size:11px;font-weight:600;border:none;padding:7px 14px" onclick="graduateFromDemo()">Use as my kit</button>
+    <button class="btn" style="background:rgba(0,0,0,.12);color:#1a1a14;font-size:10px;border:1px solid rgba(0,0,0,.18)" onclick="requestResetAllData()">Start empty</button>
+    <button class="btn" style="background:transparent;color:#1a1a14;font-size:16px;border:none;padding:2px 6px;line-height:1" onclick="dismissDemoBanner()" title="Hide for now">✕</button>
   </div>
 </div>
 
@@ -1431,21 +1435,60 @@ function load(){
   }
 }
 
+function isDemoMode(){
+  return localStorage.getItem('basecamp_demo')==='1';
+}
+
 function initDemoBanner(){
-  if(localStorage.getItem('basecamp_demo')==='1'){
-    const b=document.getElementById('demoBanner');
-    if(b) b.style.display='flex';
-  }
+  if(!isDemoMode()) return;
+  if(sessionStorage.getItem('basecamp_demo_banner_hidden')==='1') return;
+  const b=document.getElementById('demoBanner');
+  if(b) b.style.display='flex';
 }
 
 function dismissDemoBanner(){
   const b=document.getElementById('demoBanner');
   if(b) b.style.display='none';
+  if(isDemoMode()) sessionStorage.setItem('basecamp_demo_banner_hidden','1');
+}
+
+function graduateFromDemo(){
+  if(!isDemoMode()){
+    dismissDemoBanner();
+    return;
+  }
+  localStorage.removeItem('basecamp_demo');
+  sessionStorage.removeItem('basecamp_demo_banner_hidden');
+  if(!S.meta||typeof S.meta!=='object'||Array.isArray(S.meta)) S.meta={};
+  S.meta.dataSource='user';
+  S.meta.graduatedAt=new Date().toISOString();
+  save();
+  dismissDemoBanner();
+  showToast('This is your kit now.');
+  const pg=document.getElementById('pg-settings');
+  if(pg&&pg.style.display!=='none') renderSettings();
 }
 
 function clearDemoData(){
-  if(!confirm('Clear all demo data and start fresh? This cannot be undone.')) return;
-  resetAllData();
+  requestResetAllData();
+}
+
+function requestResetAllData(){
+  requestDestructiveDataAction({
+    title:'Start fresh?',
+    body:'This removes your kit, trips, people and settings from this device. Download or share a backup below first \u2014 then you can clear everything.',
+    confirmLabel:'Clear all data',
+    onConfirmed:()=>resetAllData()
+  });
+}
+
+function requestLoadDemoDataAgain(){
+  requestDestructiveDataAction({
+    title:'Replace with demo data?',
+    body:'This replaces your current kit with sample data. Save a backup below first so you can restore if you change your mind.',
+    confirmLabel:'Replace with demo',
+    onConfirmed:()=>loadDemoDataAgain()
+  });
 }
 
 function resetAllData(){
@@ -1464,13 +1507,12 @@ function resetAllData(){
 }
 
 function loadDemoDataAgain(){
-  if(!confirm('Load demo data? This will replace your current data.')) return;
   const demo=demoData();
   S={ items:demo.items, trips:demo.trips, people:demo.people, settings:demo.settings };
   localStorage.setItem('basecamp_demo','1');
+  sessionStorage.removeItem('basecamp_demo_banner_hidden');
   save();
-  const b=document.getElementById('demoBanner');
-  if(b) b.style.display='flex';
+  initDemoBanner();
   renderAll();
 }
 function save(){
@@ -2635,14 +2677,15 @@ function tripHeroWeatherIcon(trip){
   return {summer:'☀️',shoulder:'🌦️',winter:'❄️'}[trip.season]||'🌤️';
 }
 
-function tripHeroWeatherChipHtml(trip){
+function tripHeroWeatherChipHtml(trip, placement){
   const line=tripHeroWeatherLine(trip);
   if(!line) return '';
   const w=trip.weather||{};
   const snap=w.mode==='snapshot'&&w.days?.length;
   const title=snap?line+' · saved forecast':line;
   const short=line.length>24?line.slice(0,22)+'…':line;
-  return `<div class="trip-hero-weather-chip${snap?' trip-hero-weather-chip--snap':''}" title="${esc(title)}"><span class="trip-hero-weather-chip-ico" aria-hidden="true">${tripHeroWeatherIcon(trip)}</span><span class="trip-hero-weather-chip-txt">${esc(short)}</span></div>`;
+  const place=placement?` trip-hero-weather-chip--${placement}`:'';
+  return `<div class="trip-hero-weather-chip${snap?' trip-hero-weather-chip--snap':''}${place}" title="${esc(title)}"><span class="trip-hero-weather-chip-ico" aria-hidden="true">${tripHeroWeatherIcon(trip)}</span><span class="trip-hero-weather-chip-txt">${esc(short)}</span></div>`;
 }
 
 function tripHeroTagsHtml(trip){
@@ -2692,17 +2735,20 @@ function heroPackProgressColumn(trip){
   </div>`;
 }
 function renderTripHeroCard(trip, pc, featured){
+  const weatherDesktop=tripHeroWeatherChipHtml(trip,'desktop');
+  const weatherMobile=tripHeroWeatherChipHtml(trip,'mobile');
   const actions=`<div class="trip-hero-actions">
         <button class="btn btn-p btn-sm" onclick="event.stopPropagation();openTrip('${trip.id}')">Open trip →</button>
         ${trip.status==='planning'?`<button class="btn btn-o btn-sm" onclick="event.stopPropagation();startPacking('${trip.id}')">Start packing</button>`:''}
+        ${weatherMobile}
       </div>`;
   return `
     <div class="trips-next-label">Next up</div>
     <div class="trip-hero" onclick="openTrip('${trip.id}')">
+      ${weatherDesktop}
       <div class="trip-hero-deco" aria-hidden="true">⛺</div>
       <div class="trip-hero-inner">
         <section class="trip-hero-sec trip-hero-sec--trip">
-          ${tripHeroWeatherChipHtml(trip)}
           <div class="trip-hero-trip-head">
             ${tripHeroStatusPill(trip)}
             ${featured?'<span class="trip-featured-pill">★ Featured</span>':''}
@@ -6744,6 +6790,22 @@ function saveQuickAdd(tripId){
 // ══════════════════════════════════════════════════
 // SETTINGS
 // ══════════════════════════════════════════════════
+function renderSettingsDataSection(){
+  const demo=isDemoMode();
+  const intro=demo
+    ? 'You\u2019re exploring with a sample kit. Edit trips and items freely, then use <strong>Use as my kit</strong> when it feels yours. Start fresh only if you want an empty slate (backup required).'
+    : 'Your kit lives on this device. Export backups from the menu anytime. Reset or reload demo replaces everything (backup required first).';
+  return `<div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border)">
+      <div style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--rust);margin-bottom:8px">Data</div>
+      <div style="font-size:12px;color:var(--text-m);margin-bottom:14px;line-height:1.5">${intro}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${demo?`<button class="btn btn-p btn-sm" onclick="graduateFromDemo()">Use as my kit</button>`:''}
+        <button class="btn" style="background:transparent;color:var(--rust);border:1px solid var(--rust);font-size:11px;padding:7px 14px" onclick="requestResetAllData()">Start fresh \u2014 clear all data</button>
+        <button class="btn btn-o btn-sm" onclick="requestLoadDemoDataAgain()">Reload demo data</button>
+      </div>
+    </div>`;
+}
+
 function renderSettings(){
   // Also render people section if it exists in settings
   setTimeout(()=>{
@@ -6796,14 +6858,7 @@ function renderSettings(){
       <div id="settingsPeopleContent"></div>
     </div>
 
-    <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border)">
-      <div style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--rust);margin-bottom:8px">Data</div>
-      <div style="font-size:12px;color:var(--text-m);margin-bottom:14px;line-height:1.5">Reset clears all your items, trips, people and settings. Your display preferences (light/dark mode) are kept. This cannot be undone.</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn" style="background:transparent;color:var(--rust);border:1px solid var(--rust);font-size:11px;padding:7px 14px" onclick="resetAllData()">🗑 Start fresh — clear all data</button>
-        <button class="btn btn-o btn-sm" onclick="loadDemoDataAgain()">↺ Reload demo data</button>
-      </div>
-    </div>
+    ${renderSettingsDataSection()}
   `;
 }
 
@@ -6905,22 +6960,114 @@ function deleteSettingsItem(key, id, usageCount){
 // ══════════════════════════════════════════════════
 // IMPORT / EXPORT
 // ══════════════════════════════════════════════════
-function exportData(){
-  const json=JSON.stringify({version:3,exported:new Date().toISOString(),...S},null,2);
-  const blob=new Blob([json],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url; a.download=`neverleft-${new Date().toISOString().slice(0,10)}.json`;
-  a.click(); URL.revokeObjectURL(url);
-  // Record last export time
-  localStorage.setItem('basecamp_last_export', new Date().toISOString());
+const DESTRUCTIVE_GATE_KEY='basecamp_destructive_gate_ok';
+let _destructiveGateOnConfirmed=null;
+
+function isDestructiveGateUnlocked(){
+  return sessionStorage.getItem(DESTRUCTIVE_GATE_KEY)==='1';
 }
 
-async function shareBackup(){
+function markDestructiveGateBackupDone(){
+  sessionStorage.setItem(DESTRUCTIVE_GATE_KEY,'1');
+  refreshDestructiveBackupModal();
+}
+
+function clearDestructiveGateSession(){
+  sessionStorage.removeItem(DESTRUCTIVE_GATE_KEY);
+  _destructiveGateOnConfirmed=null;
+}
+
+function requestDestructiveDataAction(cfg){
+  clearDestructiveGateSession();
+  _destructiveGateOnConfirmed=cfg.onConfirmed;
+  renderDestructiveBackupModal(cfg);
+}
+
+function renderDestructiveBackupModal(cfg){
+  closeDestructiveBackupModal();
+  const last=localStorage.getItem('basecamp_last_export');
+  const lastStr=last?new Date(last).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):'Never backed up';
+  const unlocked=isDestructiveGateUnlocked();
+  const modalHtml=`
+    <div id="destructiveBackupOverlay" class="sheet-overlay" onclick="if(event.target===this)closeDestructiveBackupModal()">
+      <div class="sheet-panel sheet-panel--wide">
+        <div class="sheet-handle"></div>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px">
+          <div style="font-family:'Familjen Grotesk',sans-serif;font-size:20px;font-weight:600;letter-spacing:-.015em;color:var(--text);line-height:1.2">${esc(cfg.title)}</div>
+          <button type="button" onclick="closeDestructiveBackupModal()" style="background:var(--canvas-3);border:none;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-m);font-size:14px;flex-shrink:0;margin-left:12px;margin-top:2px" aria-label="Close">✕</button>
+        </div>
+        <div style="font-size:14px;color:var(--text-m);margin-bottom:6px;line-height:1.55">${esc(cfg.body)}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-m);margin-bottom:18px">Last backup: ${lastStr} \u00b7 a fresh backup is required here</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px">
+          <button type="button" class="backup-action-btn backup-action-btn--primary" onclick="shareBackup({fromDestructiveGate:true})">
+            <div>
+              <div>Share or save a backup</div>
+              <div style="font-size:12px;opacity:.55;margin-top:2px;font-weight:400">iCloud, Google Drive, WhatsApp, email\u2026</div>
+            </div>
+            <span style="font-size:18px;opacity:.6">\u2192</span>
+          </button>
+          <button type="button" class="backup-action-btn backup-action-btn--secondary" onclick="exportData({fromDestructiveGate:true})">
+            <div>
+              <div>Download backup file</div>
+              <div style="font-size:12px;opacity:.5;margin-top:2px;font-weight:400">Saves to your Downloads folder</div>
+            </div>
+            <span style="font-size:18px;opacity:.4">\u2193</span>
+          </button>
+        </div>
+        <p id="destructiveGateBackupHint" style="font-size:12px;color:var(--text-m);margin-bottom:14px;line-height:1.5">${unlocked?'Backup saved in this flow. You can continue \u2014 this still cannot be undone.':'Download or share a backup above to unlock the next step.'}</p>
+        <button type="button" id="destructiveGateConfirmBtn" class="backup-action-btn backup-action-btn--primary" style="margin-bottom:10px;background:var(--rust);color:#fff;opacity:${unlocked?1:0.45};cursor:${unlocked?'pointer':'not-allowed'}" ${unlocked?'':'disabled'} onclick="confirmDestructiveGateAction()">${esc(cfg.confirmLabel)}</button>
+        <button type="button" onclick="closeDestructiveBackupModal()" style="background:transparent;border:none;cursor:pointer;font-family:'Familjen Grotesk',sans-serif;font-size:13px;color:var(--text-m);padding:0;width:100%;text-align:center">Cancel</button>
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend',modalHtml);
+}
+
+function refreshDestructiveBackupModal(){
+  const btn=document.getElementById('destructiveGateConfirmBtn');
+  const hint=document.getElementById('destructiveGateBackupHint');
+  if(!btn) return;
+  const unlocked=isDestructiveGateUnlocked();
+  btn.disabled=!unlocked;
+  btn.style.opacity=unlocked?'1':'0.45';
+  btn.style.cursor=unlocked?'pointer':'not-allowed';
+  if(hint) hint.textContent=unlocked?'Backup saved in this flow. You can continue \u2014 this still cannot be undone.':'Download or share a backup above to unlock the next step.';
+}
+
+function closeDestructiveBackupModal(){
+  const ov=document.getElementById('destructiveBackupOverlay');
+  if(ov) ov.remove();
+  clearDestructiveGateSession();
+}
+
+function confirmDestructiveGateAction(){
+  if(!isDestructiveGateUnlocked()) return;
+  const fn=_destructiveGateOnConfirmed;
+  closeDestructiveBackupModal();
+  if(typeof fn==='function') fn();
+}
+
+function exportData(opts){
+  try{
+    const json=JSON.stringify({version:3,exported:new Date().toISOString(),...S},null,2);
+    const blob=new Blob([json],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=`neverleft-${new Date().toISOString().slice(0,10)}.json`;
+    a.click(); URL.revokeObjectURL(url);
+    localStorage.setItem('basecamp_last_export', new Date().toISOString());
+    if(opts&&opts.fromDestructiveGate) markDestructiveGateBackupDone();
+    else closeBackupModal();
+    return true;
+  }catch(e){
+    showToast('Could not create backup. Try again or free browser storage before clearing data.');
+    return false;
+  }
+}
+
+async function shareBackup(opts){
   const json=JSON.stringify({version:3,exported:new Date().toISOString(),...S},null,2);
   const filename=`neverleft-${new Date().toISOString().slice(0,10)}.json`;
   const file=new File([json], filename, {type:'application/json'});
-  // Try Web Share API with file (iOS 15+, works with Files, WhatsApp, Mail, etc.)
   if(navigator.canShare && navigator.canShare({files:[file]})){
     try{
       await navigator.share({
@@ -6929,15 +7076,16 @@ async function shareBackup(){
         files:[file]
       });
       localStorage.setItem('basecamp_last_export', new Date().toISOString());
-      closeBackupModal();
+      if(opts&&opts.fromDestructiveGate) markDestructiveGateBackupDone();
+      else closeBackupModal();
       return;
     }catch(e){
-      if(e.name==='AbortError') return; // user cancelled — don't fall through
+      if(e.name==='AbortError') return;
+      showToast('Share failed. Try downloading a backup instead.');
+      return;
     }
   }
-  // Fallback — plain download
-  exportData();
-  closeBackupModal();
+  exportData(opts);
 }
 
 function checkBackupReminder(){
@@ -7136,7 +7284,13 @@ function importData(event){
       };
 
       S={ items, trips, people, settings };
+      if(data.meta&&typeof data.meta==='object'&&!Array.isArray(data.meta)) S.meta=data.meta;
+      else S.meta={ dataSource:'user', importedAt:new Date().toISOString() };
+      if(S.meta.dataSource==='demo') localStorage.setItem('basecamp_demo','1');
+      else localStorage.removeItem('basecamp_demo');
+      sessionStorage.removeItem('basecamp_demo_banner_hidden');
       save(); renderAll();
+      initDemoBanner();
       alert('✓ Restored successfully — '+items.length+' items, '+trips.length+' trips, '+people.length+' people.');
     }catch(err){
       alert('Could not read file: '+err.message);
@@ -7858,6 +8012,11 @@ function demoData(){
 const HDR_IC_MOON='<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
 const HDR_IC_SUN='<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>';
 
+function syncThemeColorMeta(){
+  const meta=document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.content=document.body.classList.contains('light')?'#eff4ea':'#1a1a14';
+}
+
 function syncLightModeBtnLabels(){
   const isLight=document.body.classList.contains('light');
   const actionLabel=isLight?'Dark mode':'Light mode';
@@ -7967,6 +8126,7 @@ function toggleLightMode(){
   document.body.classList.toggle('light');
   const isLight=document.body.classList.contains('light');
   localStorage.setItem('basecamp_theme', isLight?'light':'dark');
+  syncThemeColorMeta();
   syncLightModeBtnLabels();
 }
 
@@ -7978,6 +8138,7 @@ function initTheme(){
   } else {
     document.body.classList.remove('light');
   }
+  syncThemeColorMeta();
   syncLightModeBtnLabels();
 }
 
