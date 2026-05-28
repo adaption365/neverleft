@@ -32,10 +32,13 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 
 **Build order** (Linear priority): demo graduation + backup (APE-12–14, APE-13) → trip experience polish (APE-11, APE-25–27, APE-26) → camp mode (APE-15–17, APE-23) → qty rules (APE-21, APE-18) → kit UX (APE-20, APE-22, APE-24).
 
+**Batched delivery (retrospective):** [backlog_batches_wave1_wave2.plan.md](backlog_batches_wave1_wave2.plan.md) — Wave 1 Done; Wave 2 Batch C Done (APE-43, 45, 46) criteria-gated stepper + `at-camp`.
+
 ## NeverLeft (this app)
 
 | File | Status | Summary |
 |------|--------|---------|
+| [backlog_batches_wave1_wave2.plan.md](backlog_batches_wave1_wave2.plan.md) | Living | Retrospective batch order (Wave 1–2 shipped + Wave 2 Batch C scope) |
 | [forgotten_item_feature_ux_d218206d.plan.md](forgotten_item_feature_ux_d218206d.plan.md) | Planned | Camp mode, trip learnings, qty rules, demo graduation, mandatory backup before wipe |
 | [packable_parent_vs_group_container.plan.md](packable_parent_vs_group_container.plan.md) | Partial | Kit grouping vs packable bag/box; editor copy + add-sub prompt; checklist dual-row UX done |
 | [kit_parent_picker_ux.plan.md](kit_parent_picker_ux.plan.md) | Partial | Searchable / A–Z group picker + locked “Add to group”; “Move to group” menu deferred |

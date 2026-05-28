@@ -583,6 +583,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 .ts-idea{background:rgba(138,106,184,.12);color:var(--purple);border:1px solid rgba(138,106,184,.28)}
 .ts-planning{background:rgba(90,122,184,.12);color:var(--blue);border:1px solid rgba(90,122,184,.25)}
 .ts-packing{background:rgba(212,144,42,.12);color:var(--amber);border:1px solid rgba(212,144,42,.25)}
+.ts-at-camp{background:rgba(90,154,138,.12);color:var(--teal);border:1px solid rgba(90,154,138,.25)}
 .ts-pack-up{background:rgba(138,106,184,.12);color:var(--purple);border:1px solid rgba(138,106,184,.25)}
 .ts-pack-away{background:rgba(90,154,138,.12);color:var(--teal);border:1px solid rgba(90,154,138,.25)}
 .ts-post-trip{background:rgba(107,140,90,.12);color:var(--sage);border:1px solid rgba(107,140,90,.25)}
@@ -612,6 +613,8 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 .step.done .step-label{color:var(--sage)}
 .step-line{flex:1 1 0;min-width:6px;height:2px;background:var(--border);align-self:center}
 .step-line.done{background:var(--sage)}
+.step.step-locked .step-dot{border-style:dashed;opacity:.65}
+.step.step-locked .step-label{opacity:.7}
 
 .ttabs{display:flex;gap:0;background:var(--canvas-3);border:none;border-radius:10px;padding:3px;margin-bottom:16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .ttabs::-webkit-scrollbar{display:none}
@@ -1295,7 +1298,16 @@ const LLAB    = { shed:'Shed', duffle:'Duffle Bag', house:'House', car:'Car' };
 const SELAB   = { summer:'Summer', shoulder:'Spring / Autumn', winter:'Winter', all:'All' };
 const SITELAB = { hookup:'Full hookup', basic:'Basic', wild:'Wild' };
 const DISTLAB = { local:'Local', regional:'Regional', remote:'Remote' };
-const STLAB   = { idea:'Idea', planning:'Plan', packing:'Packing', 'pack-up':'Packing up', 'pack-away':'Back home', 'post-trip':'Back home', complete:'Done' };
+const STLAB   = { idea:'Idea', planning:'Plan', packing:'Packing', 'at-camp':'At camp', 'pack-up':'Packing up', 'pack-away':'Back home', 'post-trip':'Back home', complete:'Done' };
+/** Journey steps shown on the trip stepper (status ids). */
+const TRIP_JOURNEY_STAGES=[
+  {id:'planning',  label:'Plan',       tab:'notes'},
+  {id:'packing',   label:'Packing',    tab:'checklist'},
+  {id:'at-camp',   label:'At camp',    tab:'at-camp'},
+  {id:'pack-up',   label:'Packing up', tab:'pack-up'},
+  {id:'pack-away', label:'Back home',  tab:'pack-away'},
+];
+const TRIP_STAGE_IDS=TRIP_JOURNEY_STAGES.map(s=>s.id);
 const SITE_RULE_CHIPS=[
   {id:'no-dogs',label:'No dogs'},
   {id:'no-fires',label:'No open fires'},
@@ -1475,6 +1487,7 @@ function load(){
       }
       normalizeTripLearnings(t);
       normalizeTripExperience(t);
+      normalizeTripStages(t);
     });
     if(!S.people) S.people=[];
     if(S.featuredTripId&&!S.trips.some(t=>t.id===S.featuredTripId)) S.featuredTripId=null;
@@ -1818,7 +1831,7 @@ function adjQty(item, trip){
 // STATS
 // ══════════════════════════════════════════════════
 function sortTripsByFocusPriority(trips){
-  const statusOrder={idea:0,planning:1,packing:2,'pack-up':3,'pack-away':4,'post-trip':5,complete:6};
+  const statusOrder={idea:0,planning:1,packing:2,'at-camp':3,'pack-up':4,'pack-away':5,'post-trip':6,complete:7};
   return [...trips].sort((a,b)=>{
     const ao=statusOrder[a.status]??3, bo=statusOrder[b.status]??3;
     if(ao!==bo) return ao-bo;
@@ -2115,7 +2128,7 @@ function updateKitTripFilterSelect(){
   const sel=document.getElementById('tripKitF');
   if(!sel) return;
   const cur=kitTripFilter;
-  const statusOrder={planning:0,packing:1,'pack-up':2,'pack-away':3,'post-trip':4,complete:5};
+  const statusOrder={planning:0,packing:1,'at-camp':2,'pack-up':3,'pack-away':4,'post-trip':5,complete:6};
   const trips=[...(S.trips||[])].sort((a,b)=>{
     const ao=statusOrder[a.status]??3, bo=statusOrder[b.status]??3;
     if(ao!==bo) return ao-bo;
@@ -2592,7 +2605,7 @@ function tripsEditorialHtml(upcoming){
   let detail='';
   if(upcoming){
     const {packed, ready, total}=checklistProgressTotals(upcoming);
-    if(total>0&&(upcoming.status==='packing'||upcoming.status==='planning')){
+    if(total>0&&(upcoming.status==='packing'||upcoming.status==='planning'||upcoming.status==='at-camp')){
       const done=packed+ready;
       const pct=Math.round(done/total*100);
       const shortName=(upcoming.name||'').split('—')[0].trim()||(upcoming.name||'Your trip');
@@ -2935,20 +2948,249 @@ function renderTrips(){
     ${emptyFilter?emptyFilterMsg:restHtml}`;
 }
 
+function normalizeTripStages(trip){
+  if(!trip||trip.status==='idea') return;
+  if(!Array.isArray(trip.completedStages)) trip.completedStages=[];
+  const valid=new Set(TRIP_STAGE_IDS.concat(['post-trip','complete']));
+  trip.completedStages=trip.completedStages.filter(id=>valid.has(id));
+  if(trip._stagesV2){ syncTripStageCompletion(trip); return; }
+  const cur=trip.status==='complete'?'post-trip':trip.status;
+  let idx=TRIP_STAGE_IDS.indexOf(cur);
+  if(cur==='post-trip') idx=TRIP_STAGE_IDS.length;
+  if(trip.completedStages.length===0&&idx>0){
+    for(let i=0;i<idx;i++){
+      const sid=TRIP_STAGE_IDS[i];
+      if(sid==='at-camp'&&cur==='pack-up') continue;
+      trip.completedStages.push(sid);
+    }
+  }
+  trip._stagesV2=true;
+  syncTripStageCompletion(trip);
+}
+
+function isTripStageComplete(trip, stageId){
+  return !!(trip.completedStages||[]).includes(stageId);
+}
+
+function tripChecklistParentItems(trip){
+  const out=[];
+  (trip.checklist||[]).forEach(ci=>{
+    const item=S.items.find(i=>i.id===ci.itemId);
+    if(!item||item.parentId||item.type==='wishlist') return;
+    out.push(item);
+  });
+  return out;
+}
+
+function eachChecklistRowWithSubs(trip, fn){
+  tripChecklistParentItems(trip).forEach(item=>{
+    fn(item);
+    checklistSubsForTrip(item,trip).forEach(sub=>fn(sub));
+  });
+}
+
+function tripPreTripActionsComplete(trip){
+  const tripActions=trip.actionStates||{};
+  let ok=true;
+  eachChecklistRowWithSubs(trip, item=>{
+    (item.actions||[]).filter(a=>a.stage==='pre-trip').forEach(a=>{
+      if(!tripActions[item.id+'::'+a.id]) ok=false;
+    });
+  });
+  return ok;
+}
+
+function tripPackingListFullyPacked(trip){
+  const {packed,total}=checklistProgressTotals(trip);
+  return total>0&&packed===total;
+}
+
+function tripPackingStageCriteriaMet(trip){
+  return tripPackingListFullyPacked(trip)&&tripPreTripActionsComplete(trip);
+}
+
+function tripPackUpListProgress(trip){
+  const paStates=trip.packUpStates||{};
+  let total=0, packed=0;
+  eachChecklistRowWithSubs(trip, item=>{
+    total++;
+    if(paStates[item.id]==='packed') packed++;
+  });
+  return {packed,total};
+}
+
+function tripPackAwayListProgress(trip){
+  const paStates=trip.packAwayStates||{};
+  let total=0, packed=0;
+  eachChecklistRowWithSubs(trip, item=>{
+    total++;
+    if(paStates[item.id]==='packed') packed++;
+  });
+  return {packed,total};
+}
+
+function tripStageCriteriaMet(trip, stageId){
+  switch(stageId){
+    case 'planning': return true;
+    case 'packing': return tripPackingStageCriteriaMet(trip);
+    case 'at-camp': return true;
+    case 'pack-up':{
+      const p=tripPackUpListProgress(trip);
+      return p.total>0&&p.packed===p.total;
+    }
+    case 'pack-away':{
+      const p=tripPackAwayListProgress(trip);
+      return p.total>0&&p.packed===p.total;
+    }
+    default: return false;
+  }
+}
+
+function tripStageCriteriaHint(trip, stageId){
+  if(stageId==='packing'){
+    if(!trip.checklist?.length) return 'Generate a packing list first';
+    if(!tripPackingListFullyPacked(trip)) return 'Pack every line on the list';
+    if(!tripPreTripActionsComplete(trip)) return 'Finish all pre-trip actions on the list';
+    return '';
+  }
+  if(stageId==='pack-up'){
+    const p=tripPackUpListProgress(trip);
+    if(!p.total) return 'Generate a packing list first';
+    if(p.packed<p.total) return `Pack up ${p.total-p.packed} more item${p.total-p.packed===1?'':'s'}`;
+    return '';
+  }
+  if(stageId==='pack-away'){
+    const p=tripPackAwayListProgress(trip);
+    if(!p.total) return 'Generate a packing list first';
+    if(p.packed<p.total) return `Store away ${p.total-p.packed} more item${p.total-p.packed===1?'':'s'}`;
+    return '';
+  }
+  return '';
+}
+
+function invalidateTripStagesFrom(trip, fromStageId){
+  const idx=TRIP_STAGE_IDS.indexOf(fromStageId);
+  if(idx<0) return;
+  const drop=new Set(TRIP_STAGE_IDS.slice(idx));
+  trip.completedStages=(trip.completedStages||[]).filter(id=>!drop.has(id));
+  if(trip.status==='complete'){
+    const firstOpen=TRIP_STAGE_IDS.find(s=>!isTripStageComplete(trip,s));
+    trip.status=firstOpen||'post-trip';
+    activeTripTab=tripStageDefaultTab(trip.status);
+  }
+}
+
+/** Drop step ✓s when list/action progress no longer satisfies that step (and later steps). */
+function syncTripStageCompletion(trip){
+  if(!trip||trip.status==='idea') return;
+  if(!Array.isArray(trip.completedStages)) trip.completedStages=[];
+  trip.completedStages=trip.completedStages.filter(id=>TRIP_STAGE_IDS.includes(id));
+  for(const sid of TRIP_STAGE_IDS){
+    if(isTripStageComplete(trip,sid)&&!tripStageCriteriaMet(trip,sid)){
+      invalidateTripStagesFrom(trip,sid);
+      break;
+    }
+  }
+}
+
+function allTripJourneyStagesComplete(trip){
+  return TRIP_STAGE_IDS.every(id=>isTripStageComplete(trip,id));
+}
+
+function tripProgressChanged(tripId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(trip) syncTripStageCompletion(trip);
+}
+
+function tripStageDefaultTab(status){
+  const m={planning:'notes',packing:'checklist','at-camp':'at-camp','pack-up':'pack-up','pack-away':'pack-away','post-trip':'post-trip',complete:'notes'};
+  return m[status]||'checklist';
+}
+
+function actionStagesForTripStatus(status){
+  if(status==='planning'||status==='packing') return ['pre-trip'];
+  if(status==='at-camp') return ['during'];
+  if(status==='pack-up') return ['before-pack-away'];
+  if(status==='pack-away'||status==='post-trip') return ['post-trip'];
+  return null;
+}
+
+function goToTripStage(tripId, status, tab){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  trip.status=status;
+  activeTripTab=tab||tripStageDefaultTab(status);
+  if(status==='packing'&&!trip.checklist) genChecklist(tripId);
+  save(); renderTrips();
+}
+
+/** Mark the current journey step complete (criteria required) and advance to the next step. */
+function completeTripStage(tripId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip||trip.status==='idea'||trip.status==='complete') return;
+  syncTripStageCompletion(trip);
+  const cur=trip.status;
+  if(!TRIP_STAGE_IDS.includes(cur)){
+    if(cur==='post-trip'){ markTripJourneyDone(tripId); return; }
+    save(); renderTrips();
+    return;
+  }
+  if(!tripStageCriteriaMet(trip,cur)){
+    const hint=tripStageCriteriaHint(trip,cur);
+    showToast(hint||'This step is not ready to complete yet');
+    return;
+  }
+  if(!trip.completedStages) trip.completedStages=[];
+  if(!isTripStageComplete(trip,cur)) trip.completedStages.push(cur);
+  const idx=TRIP_STAGE_IDS.indexOf(cur);
+  const next=TRIP_STAGE_IDS[idx+1];
+  if(next){
+    const def=TRIP_JOURNEY_STAGES.find(s=>s.id===next);
+    goToTripStage(tripId, next, def?def.tab:tripStageDefaultTab(next));
+    return;
+  }
+  if(cur==='pack-away') goToTripStage(tripId,'post-trip','post-trip');
+  else save(); renderTrips();
+}
+
+function markTripJourneyDone(tripId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  syncTripStageCompletion(trip);
+  if(!allTripJourneyStagesComplete(trip)){
+    showToast('Complete Plan → Packing → At camp → Packing up → Back home before marking the trip done');
+    return;
+  }
+  trip.status='complete';
+  activeTripTab='notes';
+  save(); renderTrips();
+}
+
+function markAllChecklistPacked(tripId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip?.checklist?.length) return;
+  if(!confirm('Mark every packing list line as packed? Pre-trip actions must still be ticked before you can finish the Packing step.')) return;
+  trip.checklist.forEach(c=>{ c.state='packed'; });
+  tripProgressChanged(tripId);
+  save(); renderTrips();
+}
+
 function tripDetail(trip){
+  syncTripStageCompletion(trip);
   const hl=getHL(trip);
   const {ready, packed, total}=checklistProgressTotals(trip);
   const pctR=total?Math.round((ready+packed)/total*100):0;
   const pctP=total?Math.round(packed/total*100):0;
+  const stageFilter=actionStagesForTripStatus(trip.status);
 
   let body='';
   if(activeTripTab==='checklist')  body=checklistBody(trip,hl,ready,packed,total,pctR,pctP);
+  else if(activeTripTab==='at-camp')   body=atCampBody(trip);
   else if(activeTripTab==='pack-up')   body=packUpBody(trip);
   else if(activeTripTab==='pack-away') body=packAwayBody(trip);
-  else if(activeTripTab==='actions')   body=actionsBody(trip);
+  else if(activeTripTab==='actions')   body=actionsBody(trip, stageFilter);
   else if(activeTripTab==='post-trip') body=postTripBody(trip);
   else body=notesBody(trip);
-  // Default view per stage when opening trip
   if(!body) body=notesBody(trip);
 
   const isIdea=trip.status==='idea';
@@ -2957,29 +3199,23 @@ function tripDetail(trip){
     <button type="button" class="btn btn-p btn-sm" onclick="graduateTripIdea('${trip.id}')">We&rsquo;ve booked it →</button>
   </div>`:'';
 
-  // ── Stage stepper ──
-  const stages=[
-    {id:'planning',  label:'Plan',        tab:'notes'},
-    {id:'packing',   label:'Packing',     tab:'checklist'},
-    {id:'pack-up',   label:'Packing up',  tab:'pack-up'},
-    {id:'pack-away', label:'Back home',   tab:'pack-away'},
-  ];
-  const stageOrder=stages.map(s=>s.id);
-  const currentIdx=stageOrder.indexOf(trip.status==='complete'?'post-trip':trip.status);
+  const stages=TRIP_JOURNEY_STAGES;
+  const journeyDone=allTripJourneyStagesComplete(trip);
   const stepperHtml=isIdea?'':`<div class="stepper">
     ${stages.map((s,i)=>{
-      const isDone=i<currentIdx||(trip.status==='complete');
-      const isCurrent=i===currentIdx&&trip.status!=='complete';
+      const isDone=isTripStageComplete(trip,s.id);
+      const isCurrent=trip.status===s.id&&trip.status!=='complete';
       const cls=isDone?'done':isCurrent?'current':'';
-      return `${i>0?`<div class="step-line ${i<=currentIdx?'done':''}"></div>`:''}
-        <div class="step ${cls}" onclick="advanceStatus('${trip.id}','${s.id}','${s.tab}')">
+      const lineDone=i>0&&isTripStageComplete(trip,stages[i-1].id);
+      return `${i>0?`<div class="step-line ${lineDone?'done':''}"></div>`:''}
+        <div class="step ${cls}" onclick="goToTripStage('${trip.id}','${s.id}','${s.tab}')" title="Jump to this step">
           <div class="step-dot">${isDone?'✓':i+1}</div>
           <div class="step-label">${s.label}</div>
         </div>`;
     }).join('')}
-    ${trip.status!=='complete'?`<div class="step-line"></div>
-      <div class="step" onclick="advanceStatus('${trip.id}','complete','notes')">
-        <div class="step-dot">✓</div>
+    ${trip.status!=='complete'?`<div class="step-line ${isTripStageComplete(trip,'pack-away')?'done':''}"></div>
+      <div class="step${journeyDone?'':' step-locked'}" onclick="markTripJourneyDone('${trip.id}')" title="${journeyDone?'Mark trip complete':'Finish all journey steps first'}">
+        <div class="step-dot">${journeyDone?'✓':'○'}</div>
         <div class="step-label">Done</div>
       </div>`:`<div class="step-line done"></div><div class="step done"><div class="step-dot">✓</div><div class="step-label">Done</div></div>`}
   </div>`;
@@ -3015,13 +3251,14 @@ function tripDetail(trip){
     ${ideaBanner}
     ${renderTripExperiencePanel(trip)}
     ${stepperHtml}
+    ${!isIdea?`<div style="margin-bottom:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">${statusBtn(trip)}<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">Tap a step number to jump · use the button when this step is really finished</span></div>`:''}
     ${(()=>{
-      // Contextual secondary links based on current stage — no tab bar
       const links={
         idea:[      {tab:'notes',     label:'Notes'}],
-        planning:[  {tab:'notes',     label:'Notes'}],
-        packing:[   {tab:'actions',   label:'Reminders'},{tab:'notes',label:'Notes'}],
-        'pack-up':[ {tab:'actions',   label:'Reminders'},{tab:'notes',label:'Notes'}],
+        planning:[  {tab:'actions',   label:'To-do'},{tab:'notes',label:'Notes'}],
+        packing:[   {tab:'actions',   label:'Before you go'},{tab:'notes',label:'Notes'}],
+        'at-camp':[ {tab:'checklist', label:'Packing list'},{tab:'notes',label:'Notes'}],
+        'pack-up':[ {tab:'actions',   label:'Before loading up'},{tab:'notes',label:'Notes'}],
         'pack-away':[{tab:'post-trip',label:'Review'},   {tab:'notes',label:'Notes'}],
         'post-trip':[{tab:'pack-away',label:'Unpack'},   {tab:'notes',label:'Notes'}],
         complete:[  {tab:'notes',     label:'Notes'}],
@@ -3053,31 +3290,45 @@ function pressureCountdown(dateStr, nights){
 }
 
 function statusBtn(trip){
-  if(trip.status==='planning')  return `<button class="btn btn-p btn-sm" onclick="startPacking('${trip.id}')">Start packing →</button>`;
-  if(trip.status==='packing')   return `<button class="btn btn-p btn-sm" onclick="advanceStatus('${trip.id}','pack-up','pack-up')">At camp — start packing up →</button>`;
-  if(trip.status==='pack-up')   return `<button class="btn btn-p btn-sm" onclick="advanceStatus('${trip.id}','pack-away','pack-away')">Back home — unpack →</button>`;
-  if(trip.status==='pack-away') return `<button class="btn btn-g btn-sm" onclick="advanceStatus('${trip.id}','post-trip','post-trip')">All done →</button>`;
+  const id=trip.id;
+  if(trip.status==='planning'){
+    return `<button class="btn btn-o btn-sm" onclick="completeTripStage('${id}')">Mark plan complete →</button>
+      <button class="btn btn-p btn-sm" onclick="startPacking('${id}')">Open packing list →</button>`;
+  }
+  if(trip.status==='packing'){
+    const met=tripPackingStageCriteriaMet(trip);
+    const hint=tripStageCriteriaHint(trip,'packing');
+    return `<button class="btn btn-p btn-sm" onclick="completeTripStage('${id}')" ${met?'':'disabled'} title="${esc(hint)}">Packing done — at camp →</button>
+      <button class="btn btn-o btn-sm" onclick="markAllChecklistPacked('${id}')">Mark all packed</button>
+      ${hint?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${esc(hint)}</span>`:''}`;
+  }
+  if(trip.status==='at-camp'){
+    return `<button class="btn btn-p btn-sm" onclick="completeTripStage('${id}')">At camp — start packing up →</button>`;
+  }
+  if(trip.status==='pack-up'){
+    const met=tripStageCriteriaMet(trip,'pack-up');
+    const hint=tripStageCriteriaHint(trip,'pack-up');
+    return `<button class="btn btn-p btn-sm" onclick="completeTripStage('${id}')" ${met?'':'disabled'} title="${esc(hint)}">Packing up done — back home →</button>
+      ${hint?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${esc(hint)}</span>`:''}`;
+  }
+  if(trip.status==='pack-away'){
+    const met=tripStageCriteriaMet(trip,'pack-away');
+    const hint=tripStageCriteriaHint(trip,'pack-away');
+    return `<button class="btn btn-g btn-sm" onclick="completeTripStage('${id}')" ${met?'':'disabled'} title="${esc(hint)}">Back home — review →</button>
+      ${hint?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${esc(hint)}</span>`:''}`;
+  }
+  if(trip.status==='post-trip'){
+    const ok=allTripJourneyStagesComplete(trip);
+    return `<button class="btn btn-g btn-sm" onclick="markTripJourneyDone('${id}')" ${ok?'':'disabled'} title="${ok?'':'Complete every journey step first'}">Mark trip complete →</button>`;
+  }
   return '';
 }
 
-function advanceStatus(tripId, status, tab){
-  const trip=S.trips.find(t=>t.id===tripId);
-  if(!trip) return;
-  trip.status=status;
-  activeTripTab=tab;
-  save(); renderTrips();
-}
+/** @deprecated Use goToTripStage / completeTripStage */
+function advanceStatus(tripId, status, tab){ goToTripStage(tripId, status, tab); }
 
 function setTripStatusFromDropdown(tripId, status){
-  const trip=S.trips.find(t=>t.id===tripId);
-  if(!trip) return;
-  trip.status=status;
-  if(status==='packing' && !trip.checklist) genChecklist(tripId);
-  if(status==='packing')   activeTripTab='checklist';
-  if(status==='pack-up')   activeTripTab='pack-up';
-  if(status==='pack-away') activeTripTab='pack-away';
-  if(status==='post-trip') activeTripTab='post-trip';
-  save(); renderTrips();
+  goToTripStage(tripId, status, tripStageDefaultTab(status));
 }
 
 /** Packing / pack-up / pack-away row state for filters and print. */
@@ -3645,6 +3896,7 @@ function cyclePackAwayState(tripId, itemId){
   if(!trip.packAwayStates) trip.packAwayStates={};
   const cur=trip.packAwayStates[itemId]||'unchecked';
   trip.packAwayStates[itemId]=cur==='unchecked'?'packed':'unchecked';
+  tripProgressChanged(tripId);
   save(); renderTrips();
 }
 
@@ -3656,6 +3908,7 @@ function packAwayAll(tripId){
     const item=S.items.find(i=>i.id===ci.itemId);
     if(item&&item.type!=='wishlist') trip.packAwayStates[item.id]='packed';
   });
+  tripProgressChanged(tripId);
   save(); renderTrips();
 }
 
@@ -3663,6 +3916,7 @@ function unpackAwayAll(tripId){
   const trip=S.trips.find(t=>t.id===tripId);
   if(!trip) return;
   trip.packAwayStates={};
+  tripProgressChanged(tripId);
   save(); renderTrips();
 }
 
@@ -3955,6 +4209,7 @@ function cycleState(tripId, itemId){
   }
   const cycle={ unchecked:'ready', ready:'packed', packed:'unchecked' };
   ci.state=cycle[currentState]||'ready';
+  tripProgressChanged(tripId);
   save(); renderTrips();
 }
 
@@ -3974,6 +4229,7 @@ function uncheckAll(tripId){
   if(!trip?.checklist) return;
   trip.checklist.forEach(c=>c.state='unchecked');
   clearActionTicksForChecklistItems(trip);
+  tripProgressChanged(tripId);
   save(); renderTrips();
 }
 
@@ -3991,10 +4247,8 @@ function toggleLocGroup(loc){
 function startPacking(tripId){
   const trip=S.trips.find(t=>t.id===tripId);
   if(!trip) return;
-  trip.status='packing';
-  activeTripTab='checklist';
-  if(!trip.checklist||!trip.checklist.length){ genChecklist(tripId); return; }
-  save(); renderTrips();
+  if(!trip.checklist||!trip.checklist.length) genChecklist(tripId);
+  goToTripStage(tripId,'packing','checklist');
 }
 
 function completeTrip(tripId){
@@ -4043,8 +4297,7 @@ function openTrip(id){
   checklistSort='location'; checklistHidePacked=false; checklistFiltersOpen=false;
   // Open the right view for the current journey stage
   const trip=S.trips.find(t=>t.id===id);
-  const stageTab={idea:'notes',planning:'notes',packing:'checklist','pack-up':'pack-up','pack-away':'pack-away','post-trip':'post-trip',complete:'notes'};
-  activeTripTab=trip?(stageTab[trip.status]||'checklist'):'checklist';
+  activeTripTab=trip?tripStageDefaultTab(trip.status):'checklist';
   renderTrips();
 }
 function closeTrip(){ activeTripId=null; checklistSearch=''; expandedPackedChecklistGroups.clear(); expandedChecklistGroups.clear(); renderTrips(); }
@@ -4215,6 +4468,7 @@ function packUpAll(tripId){
     const item=S.items.find(i=>i.id===ci.itemId);
     if(item&&item.type!=='wishlist') trip.packUpStates[item.id]='packed';
   });
+  tripProgressChanged(tripId);
   save(); renderTrips();
 }
 
@@ -4222,6 +4476,7 @@ function unpackAll(tripId){
   const trip=S.trips.find(t=>t.id===tripId);
   if(!trip) return;
   trip.packUpStates={};
+  tripProgressChanged(tripId);
   save(); renderTrips();
 }
 
@@ -4311,6 +4566,7 @@ function cyclePackUpState(tripId, itemId){
   if(!trip.packUpStates) trip.packUpStates={};
   const cur=trip.packUpStates[itemId]||'unchecked';
   trip.packUpStates[itemId]=cur==='unchecked'?'packed':'unchecked';
+  tripProgressChanged(tripId);
   save(); renderTrips();
 }
 
@@ -5193,7 +5449,7 @@ function persistTripWizardDraft(){
     S.trips[idx]={...prev,...data,status,route:{...(prev.route||{}),...data.route}};
     normalizeTripExperience(S.trips[idx]);
   }else{
-    const t={id:uid(),status:newStatus,manualIncludeIds:[],excludedItemIds:[],...data};
+    const t={id:uid(),status:newStatus,manualIncludeIds:[],excludedItemIds:[],completedStages:[],...data};
     S.trips.push(t);
     editTripId=t.id;
   }
@@ -5589,8 +5845,7 @@ function inlineActions(item, trip, stages){
   </div>`;
 }
 
-function actionsBody(trip){
-  // Collect all actions from checklist items
+function actionsBody(trip, stagesFilter){
   const byStage={ 'pre-trip':[], 'during':[], 'before-pack-away':[], 'post-trip':[] };
   (trip.checklist||[]).forEach(ci=>{
     const item=S.items.find(i=>i.id===ci.itemId);
@@ -5600,13 +5855,13 @@ function actionsBody(trip){
     });
   });
 
-  const hasAny=Object.values(byStage).some(arr=>arr.length>0);
+  const stageOrder=stagesFilter||['pre-trip','during','before-pack-away','post-trip'];
+  const hasAny=stageOrder.some(s=>byStage[s]&&byStage[s].length>0);
   if(!hasAny) return `
-    <div class="empty">No actions defined for items on this trip.<br>
-    <span style="font-size:11px;display:block;margin-top:4px">Add actions to items in your inventory to see them here.</span></div>`;
+    <div class="empty">No ${stagesFilter?'tasks for this step':'actions'} on this trip yet.<br>
+    <span style="font-size:11px;display:block;margin-top:4px">Add actions to Camping Kit items (pre-trip, while camping, before loading up, when home).</span></div>`;
 
   const tripActions=trip.actionStates||{};
-  const stageOrder=['pre-trip','during','before-pack-away','post-trip'];
 
   return stageOrder.filter(s=>byStage[s].length).map(stage=>{
     const sl=STAGE_LABELS[stage];
@@ -5701,7 +5956,17 @@ function normalizeForgotEntry(e){
 }
 
 function isCampModeStatus(status){
-  return status==='pack-up'||status==='pack-away';
+  return status==='at-camp'||status==='pack-up'||status==='pack-away';
+}
+
+function atCampBody(trip){
+  const todos=actionsBody(trip, ['during']);
+  const checklistLink=`<div style="margin-bottom:14px;padding:10px 12px;border-radius:10px;background:var(--canvas-2);border:1px solid var(--border)">
+    <div style="font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-m);margin-bottom:6px">While you&rsquo;re on site</div>
+    <p style="margin:0 0 8px;font-size:13px;line-height:1.45;color:var(--text-d)">Packing list is done — focus on <strong>while camping</strong> tasks and anything you need on the trip.</p>
+    <button type="button" class="btn btn-o btn-sm" onclick="setTripTab('checklist')">View packing list</button>
+  </div>`;
+  return checklistLink+campLogStrip(trip)+todos;
 }
 
 function forgotResolutionLabel(e){
@@ -6693,6 +6958,7 @@ function toggleTripAction(tripId, itemId, actionId){
   if(!trip.actionStates) trip.actionStates={};
   const key=itemId+'::'+actionId;
   trip.actionStates[key]=!trip.actionStates[key];
+  tripProgressChanged(tripId);
   save(); renderTrips();
 }
 
@@ -7515,7 +7781,8 @@ function importData(event){
         unusedMarks:     Array.isArray(t.unusedMarks)?t.unusedMarks.map(normalizeUnusedMark):[],
         attendeeIds:     Array.isArray(t.attendeeIds)?t.attendeeIds.filter(Boolean):[],
         manualIncludeIds:Array.isArray(t.manualIncludeIds)?t.manualIncludeIds.filter(Boolean):[],
-        excludedItemIds:Array.isArray(t.excludedItemIds)?t.excludedItemIds.filter(Boolean):[]
+        excludedItemIds:Array.isArray(t.excludedItemIds)?t.excludedItemIds.filter(Boolean):[],
+        completedStages:Array.isArray(t.completedStages)?t.completedStages.filter(Boolean):[]
       }));
 
       // Migrate people
@@ -7538,6 +7805,7 @@ function importData(event){
       };
 
       S={ items, trips, people, settings };
+      S.trips.forEach(normalizeTripStages);
       if(data.meta&&typeof data.meta==='object'&&!Array.isArray(data.meta)) S.meta=data.meta;
       else S.meta={ dataSource:'user', importedAt:new Date().toISOString() };
       if(S.meta.dataSource==='demo') localStorage.setItem('basecamp_demo','1');
@@ -8255,7 +8523,8 @@ function demoData(){
     unusedMarks:[],
     attendeeIds:[],
     manualIncludeIds:[],
-    excludedItemIds:[]
+    excludedItemIds:[],
+    completedStages:[]
   };
   const _Si=S.items,_Sp=S.people,_St=S.trips;
   S.items=items;
