@@ -1151,8 +1151,8 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 
   <div id="twBooked3" class="tw-pane" hidden>
     <p class="tw-lead">Handy when you&rsquo;re offline or packing in a rush — all optional, add what you have.</p>
-    <div class="fg"><label class="fl">Campsite or place</label><input class="fi" id="tVenueName" placeholder="e.g. Great Langdale NT"></div>
-    <div class="fg"><label class="fl">Location for maps &amp; forecast</label><input class="fi" id="tVenueAddress" placeholder="Postcode is best (e.g. LA22 9SE)"></div>
+    <div class="fg"><label class="fl">Campsite or place</label><input class="fi" id="tVenueName" placeholder="e.g. Great Langdale NT" oninput="refreshTripTravelLinkPreview()"></div>
+    <div class="fg"><label class="fl">Location for maps &amp; forecast</label><input class="fi" id="tVenueAddress" placeholder="Postcode is best (e.g. LA22 9SE)" oninput="refreshTripTravelLinkPreview()"></div>
     <div class="fg"><label class="fl">Booking reference</label><input class="fi" id="tBookingRef" placeholder="Confirmation number — if you have it"></div>
     <div class="frow">
       <div class="fg"><label class="fl">Check-in from</label><input class="fi" id="tCheckIn" type="time"></div>
@@ -1189,12 +1189,14 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
     <p class="tw-lead">Anything you&rsquo;ll want to see before you leave — all optional.</p>
     <div class="fg"><label class="fl">Before-you-go notes</label><textarea class="fta" id="tNotes" rows="3" placeholder="Shopping, charge batteries, tell the neighbours…"></textarea></div>
     <div class="fg"><label class="fl">Travel</label>
-      <div class="frow" style="margin-top:0">
+      <div class="fg" style="margin-top:0"><label class="fl" style="font-size:10px;color:var(--text-m)">Leave from (optional)</label><input class="fi" id="tLeaveFrom" placeholder="Home postcode or address" oninput="refreshTripTravelLinkPreview()"></div>
+      <div class="frow" style="margin-top:8px">
         <div class="fg"><label class="fl" style="font-size:10px;color:var(--text-m)">Miles (optional)</label><input class="fi" id="tRouteMiles" type="number" min="0" step="1" placeholder="e.g. 95"></div>
-        <div class="fg" style="display:flex;align-items:flex-end;padding-bottom:2px"><label class="ck"><input type="checkbox" id="tAvoidMotorways"> Prefer to avoid motorways</label></div>
+        <div class="fg" style="display:flex;align-items:flex-end;padding-bottom:2px"><label class="ck"><input type="checkbox" id="tAvoidMotorways" onchange="refreshTripTravelLinkPreview()"> Prefer to avoid motorways</label></div>
       </div>
-      <div class="fg" style="margin-top:8px"><label class="fl" style="font-size:10px;color:var(--text-m)">Favourite directions link (optional)</label><input class="fi" id="tDirectionsUrl" type="url" placeholder="Paste from Google or Apple Maps"></div>
-      <p class="tw-hint">We&rsquo;ll open Maps from your site location on the trip page when you&rsquo;re online.</p>
+      <div class="fg" style="margin-top:8px"><label class="fl" style="font-size:10px;color:var(--text-m)">Saved directions link (optional)</label><input class="fi" id="tDirectionsUrl" type="url" placeholder="Paste a link you saved in Maps" oninput="refreshTripTravelLinkPreview()"></div>
+      <p class="tw-hint">On the trip page: <strong>Plan route</strong> uses your preferred maps app from Settings; <strong>Directions</strong> opens your saved link.</p>
+      <div id="tTravelLinkPreview" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center"></div>
     </div>
     <div class="fg">
       <label class="fl">Site conditions</label>
@@ -1352,7 +1354,26 @@ function defaultSettings(){
       {id:'climbing', label:'Climbing', emoji:'🧗'},
     ],
     customSiteRules:[],
+    preferredMapsApp:'google',
   };
+}
+
+const MAPS_APP_OPTIONS=[
+  {id:'google',label:'Google Maps'},
+  {id:'apple',label:'Apple Maps'},
+  {id:'waze',label:'Waze'},
+];
+
+function getPreferredMapsApp(){
+  const a=S.settings?.preferredMapsApp;
+  return MAPS_APP_OPTIONS.some(o=>o.id===a)?a:'google';
+}
+
+function setPreferredMapsApp(app){
+  if(!S.settings) S.settings=defaultSettings();
+  S.settings.preferredMapsApp=MAPS_APP_OPTIONS.some(o=>o.id===app)?app:'google';
+  save();
+  renderSettings();
 }
 
 function getCustomSiteRulePresets(){
@@ -1498,6 +1519,7 @@ function load(){
       else S.settings.locations=S.settings.locations.map(l=>({isStorageLoc:true,...l}));
       if(!S.settings.activities||!S.settings.activities.length) S.settings.activities=defaultSettings().activities;
       if(!Array.isArray(S.settings.customSiteRules)) S.settings.customSiteRules=[];
+      if(!MAPS_APP_OPTIONS.some(o=>o.id===S.settings.preferredMapsApp)) S.settings.preferredMapsApp='google';
     }
   }catch(e){
     const demo=demoData();
@@ -6110,6 +6132,7 @@ function normalizeTripExperience(trip){
   else r.miles=Number(r.miles)||null;
   if(r.driveNotes===undefined) r.driveNotes='';
   if(r.directionsUrl===undefined) r.directionsUrl='';
+  if(r.leaveFrom===undefined||r.leaveFrom===null) r.leaveFrom='';
   if(v.lat===undefined||v.lat===null) v.lat=null;
   else v.lat=Number(v.lat);
   if(v.lng===undefined||v.lng===null) v.lng=null;
@@ -6219,6 +6242,93 @@ function tripWeatherForecastUrl(trip){
   return '';
 }
 
+function tripIsUkLocation(trip){
+  normalizeTripExperience(trip);
+  const v=trip.venue||{};
+  const addr=(v.address||'').trim();
+  const pc=extractPostcodeFromAddress(addr);
+  if(postcodeCountryHint(pc)==='GB') return true;
+  if(/\b(UK|United Kingdom|England|Scotland|Wales|Northern Ireland)\b/i.test(addr)) return true;
+  return false;
+}
+
+/** Met Office (UK) or yr.no — one official forecast link. */
+function tripOfficialForecastUrl(trip){
+  const q=tripWeatherSearchQuery(trip);
+  if(!q) return '';
+  if(tripIsUkLocation(trip))
+    return 'https://www.metoffice.gov.uk/weather/forecast/search?searchQuery='+encodeURIComponent(q);
+  return tripWeatherForecastUrl(trip);
+}
+
+function tripDestinationQuery(trip){
+  normalizeTripExperience(trip);
+  const v=trip.venue||{};
+  const addr=(v.address||'').trim();
+  if(addr) return addr;
+  return (v.name||'').trim();
+}
+
+function tripPlanRouteUrl(trip){
+  normalizeTripExperience(trip);
+  const dest=tripDestinationQuery(trip);
+  if(!dest) return '';
+  const r=trip.route||{};
+  const origin=(r.leaveFrom||'').trim();
+  const avoid=!!r.avoidMotorways;
+  const enc=encodeURIComponent;
+  const app=getPreferredMapsApp();
+  if(app==='google'){
+    let u='https://www.google.com/maps/dir/?api=1&destination='+enc(dest)+'&travelmode=driving';
+    if(origin) u+='&origin='+enc(origin);
+    if(avoid) u+='&avoid=highways';
+    return u;
+  }
+  if(app==='apple'){
+    if(origin) return 'https://maps.apple.com/?saddr='+enc(origin)+'&daddr='+enc(dest)+'&dirflg=d';
+    return 'https://maps.apple.com/?daddr='+enc(dest)+'&dirflg=d';
+  }
+  return 'https://www.waze.com/ul?q='+enc(dest)+'&navigate=yes';
+}
+
+function tripDirectionsSavedUrl(trip){
+  normalizeTripExperience(trip);
+  const raw=(trip.route?.directionsUrl||'').trim();
+  if(!raw) return '';
+  return /^https?:\/\//i.test(raw)?raw:'https://'+raw;
+}
+
+function tripStubFromExperienceForm(){
+  return {
+    venue:{
+      name:(document.getElementById('tVenueName')?.value||'').trim(),
+      address:(document.getElementById('tVenueAddress')?.value||'').trim(),
+    },
+    route:{
+      leaveFrom:(document.getElementById('tLeaveFrom')?.value||'').trim(),
+      avoidMotorways:!!document.getElementById('tAvoidMotorways')?.checked,
+      directionsUrl:(document.getElementById('tDirectionsUrl')?.value||'').trim(),
+    },
+    weather:{},
+  };
+}
+
+function refreshTripTravelLinkPreview(){
+  const el=document.getElementById('tTravelLinkPreview');
+  if(!el) return;
+  const stub=tripStubFromExperienceForm();
+  normalizeTripExperience(stub);
+  const bits=[];
+  const plan=tripPlanRouteUrl(stub);
+  const saved=tripDirectionsSavedUrl(stub);
+  const forecast=tripOfficialForecastUrl(stub);
+  if(plan) bits.push(tripOnlineLinkBtn('Plan route', plan, 'Plan route when online'));
+  if(saved) bits.push(tripOnlineLinkBtn('Directions', saved, 'Saved directions when online'));
+  if(forecast) bits.push(tripOnlineLinkBtn('Official forecast', forecast, 'Forecast when online'));
+  el.innerHTML=bits.length?bits.join('')
+    :'<span class="trip-experience-muted" style="font-size:11px">Add a site name or postcode to preview links.</span>';
+}
+
 function tripWeatherStaleHtml(trip){
   const w=trip.weather||{};
   if(w.mode!=='snapshot'||!w.fetchedAt) return '';
@@ -6250,7 +6360,7 @@ function tripWeatherDaysHtml(days){
 function renderTripWeatherBlock(trip){
   normalizeTripExperience(trip);
   const w=trip.weather||{};
-  const forecastUrl=tripWeatherForecastUrl(trip);
+  const officialForecastUrl=tripOfficialForecastUrl(trip);
   const canFetch=!!((trip.venue?.address||'').trim()||(trip.venue?.name||'').trim());
   let body='';
   if(w.mode==='snapshot'&&w.days?.length){
@@ -6267,7 +6377,7 @@ function renderTripWeatherBlock(trip){
   if((w.planningNote||'').trim())
     body+=`<div class="trip-experience-row" style="margin-top:10px"><span class="fl">Site conditions</span><div>${esc(w.planningNote)}</div></div>`;
   const actions=[];
-  if(forecastUrl) actions.push(tripOnlineLinkBtn('Open forecast', forecastUrl, 'Forecast when online'));
+  if(officialForecastUrl) actions.push(tripOnlineLinkBtn('Official forecast', officialForecastUrl, 'Official forecast when online'));
   actions.push(`<button type="button" class="btn btn-o btn-sm" onclick="refreshTripWeatherSnapshot('${trip.id}')" title="${canFetch?'Needs internet':'Add postcode or site name in trip details'}">${w.mode==='snapshot'?'Refresh forecast':'Save forecast'}</button>`);
   body+=`<div class="trip-weather-actions">${actions.join('')}</div>`;
   if(!canFetch) body+=`<p class="trip-experience-muted">Add a postcode or site name in trip details to save a forecast here.</p>`;
@@ -6407,7 +6517,7 @@ function tripHasExperienceData(trip){
   const w=trip.weather||{};
   return !!(v.name||v.address||v.bookingRef||v.checkIn||v.checkOut||v.website||v.email||v.siteNotes
     ||(v.rules&&v.rules.length)||(v.customRules&&v.customRules.length)
-    ||r.miles||r.directionsUrl||r.avoidMotorways||w.summary||w.planningNote||(w.days&&w.days.length));
+    ||r.miles||r.leaveFrom||r.directionsUrl||r.avoidMotorways||w.summary||w.planningNote||(w.days&&w.days.length));
 }
 
 function setTripRulesDraft(standardIds,customLabels){
@@ -6558,6 +6668,7 @@ function readTripExperienceFromForm(existingTrip){
     },
     route:{
       miles:milesRaw?parseInt(milesRaw,10)||null:null,
+      leaveFrom:(document.getElementById('tLeaveFrom')?.value||'').trim(),
       avoidMotorways:!!document.getElementById('tAvoidMotorways')?.checked,
       directionsUrl:(document.getElementById('tDirectionsUrl')?.value||'').trim(),
       driveNotes:prev.route?.driveNotes||'',
@@ -6578,6 +6689,7 @@ function fillTripExperienceForm(trip){
   set('tCheckIn',v.checkIn);
   set('tCheckOut',v.checkOut);
   set('tDirectionsUrl',r.directionsUrl);
+  set('tLeaveFrom',r.leaveFrom);
   set('tSiteNotes',v.siteNotes);
   set('tRouteMiles',r.miles!=null?r.miles:'');
   const modeEl=document.getElementById('tWeatherMode');
@@ -6608,10 +6720,11 @@ function fillTripExperienceForm(trip){
   setTripRulesDraft(v.rules,v.customRules);
   const savePreset=document.getElementById('tSiteRuleSavePreset');
   if(savePreset) savePreset.checked=false;
+  refreshTripTravelLinkPreview();
 }
 
 function clearTripExperienceForm(){
-  ['tVenueName','tVenueAddress','tVenueWeb','tVenueEmail','tBookingRef','tCheckIn','tCheckOut','tDirectionsUrl','tSiteNotes','tRouteMiles','tWeatherPlanning','tWeatherSummary'].forEach(id=>{
+  ['tVenueName','tVenueAddress','tVenueWeb','tVenueEmail','tBookingRef','tCheckIn','tCheckOut','tDirectionsUrl','tLeaveFrom','tSiteNotes','tRouteMiles','tWeatherPlanning','tWeatherSummary'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value='';
   });
   const wm=document.getElementById('tWeatherMode');
@@ -6627,6 +6740,7 @@ function clearTripExperienceForm(){
   if(clearCb) clearCb.checked=false;
   const am=document.getElementById('tAvoidMotorways'); if(am) am.checked=false;
   setTripRulesDraft([],[]);
+  refreshTripTravelLinkPreview();
 }
 
 function renderTripExperiencePanel(trip){
@@ -6635,9 +6749,10 @@ function renderTripExperiencePanel(trip){
   const siteName=(v.name||'').trim();
   const addr=(v.address||'').trim();
   const mapsUrl=tripMapsSearchUrl(addr);
-  const dirUrl=(r.directionsUrl||'').trim();
+  const savedDirUrl=tripDirectionsSavedUrl(trip);
+  const planRouteUrl=tripPlanRouteUrl(trip);
   const weatherLine=tripWeatherGlanceLine(trip);
-  const forecastUrl=tripWeatherForecastUrl(trip);
+  const officialForecastUrl=tripOfficialForecastUrl(trip);
   const checkParts=[];
   if(v.checkIn) checkParts.push('From '+formatTripTime(v.checkIn));
   if(v.checkOut) checkParts.push('Out by '+formatTripTime(v.checkOut));
@@ -6660,10 +6775,11 @@ function renderTripExperiencePanel(trip){
   const hasGlance=tripHasExperienceData(trip)||siteName;
   const actions=[];
   if(mapsUrl) actions.push(tripOnlineLinkBtn('Open in Maps', mapsUrl, 'Maps when online'));
-  if(dirUrl) actions.push(tripOnlineLinkBtn('Directions', dirUrl, 'Directions when online'));
+  if(planRouteUrl) actions.push(tripOnlineLinkBtn('Plan route', planRouteUrl, 'Plan route when online'));
+  if(savedDirUrl) actions.push(tripOnlineLinkBtn('Directions', savedDirUrl, 'Saved directions when online'));
   if(v.website) actions.push(tripOnlineLinkBtn('Campsite website', v.website.startsWith('http')?v.website:'https://'+v.website, 'Website when online'));
   if(v.email) actions.push(`<a class="btn btn-o btn-sm" href="mailto:${esc(v.email)}">Email site</a>`);
-  if(forecastUrl) actions.push(tripOnlineLinkBtn('Forecast', forecastUrl, 'Forecast when online'));
+  if(officialForecastUrl) actions.push(tripOnlineLinkBtn('Official forecast', officialForecastUrl, 'Official forecast when online'));
 
   const bookingBlock=(v.bookingRef||v.email||v.website||v.checkIn||v.checkOut)?`
     <div class="trip-experience-row">${v.bookingRef?`<div><span class="fl">Booking ref</span><div>${esc(v.bookingRef)}</div></div>`:''}
@@ -6677,11 +6793,13 @@ function renderTripExperiencePanel(trip){
       ${v.siteNotes?`<div style="${addr?'margin-top:8px':''}"><span class="fl">On site</span><div style="white-space:pre-wrap">${esc(v.siteNotes)}</div></div>`:''}
     </div>`:'';
 
-  const travelBlock=(r.miles||r.avoidMotorways||dirUrl)?`
+  const travelBlock=(r.miles||r.leaveFrom||r.avoidMotorways||savedDirUrl||planRouteUrl)?`
     <div class="trip-experience-row">
-      ${r.miles?`<div>${esc(String(r.miles))} miles from home</div>`:''}
+      ${(r.leaveFrom||'').trim()?`<div><span class="fl">Leave from</span><div>${esc(r.leaveFrom)}</div></div>`:''}
+      ${r.miles?`<div style="margin-top:8px">${esc(String(r.miles))} miles from home</div>`:''}
       ${r.avoidMotorways?`<div class="trip-experience-muted">Prefer routes without motorways</div>`:''}
-      ${dirUrl?`<div class="trip-experience-muted" style="word-break:break-all">Saved directions link</div>`:''}
+      ${savedDirUrl?`<div class="trip-experience-muted" style="margin-top:6px">Saved directions link on file</div>`:''}
+      ${!savedDirUrl&&planRouteUrl?`<div class="trip-experience-muted" style="margin-top:6px">Use Plan route above (${MAPS_APP_OPTIONS.find(a=>a.id===getPreferredMapsApp())?.label||'Maps'})</div>`:''}
     </div>`:'';
 
   if(!hasGlance&&!actions.length){
@@ -7324,6 +7442,19 @@ function renderSettingsDataSection(){
     </div>`;
 }
 
+function renderSettingsMapsAppSection(){
+  const cur=getPreferredMapsApp();
+  return `<div style="margin-bottom:28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">
+      <span style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--amber)">Navigation</span>
+    </div>
+    <p style="font-size:12px;color:var(--text-m);margin:0 0 10px;line-height:1.45">Used for <strong>Plan route</strong> on trips. Avoid motorways is applied in Google Maps; Apple and Waze may need you to choose that in the app.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
+      ${MAPS_APP_OPTIONS.map(a=>`<button type="button" class="fb${cur===a.id?' on':''}" onclick="setPreferredMapsApp('${a.id}')">${esc(a.label)}</button>`).join('')}
+    </div>
+  </div>`;
+}
+
 function renderSettingsCustomSiteRulesSection(){
   if(!S.settings) S.settings=defaultSettings();
   if(!Array.isArray(S.settings.customSiteRules)) S.settings.customSiteRules=[];
@@ -7394,6 +7525,7 @@ function renderSettings(){
     ${listSection('Categories', 'categories', true)}
     ${listSection('Locations', 'locations', false)}
     ${listSection('Activities', 'activities', true)}
+    ${renderSettingsMapsAppSection()}
     ${renderSettingsCustomSiteRulesSection()}
     <div id="settingsPeopleSection" style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border)">
       <div style="font-family:'Familjen Grotesk',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px">The crew</div>
@@ -7852,7 +7984,10 @@ function importData(event){
         attendeeIds:     Array.isArray(t.attendeeIds)?t.attendeeIds.filter(Boolean):[],
         manualIncludeIds:Array.isArray(t.manualIncludeIds)?t.manualIncludeIds.filter(Boolean):[],
         excludedItemIds:Array.isArray(t.excludedItemIds)?t.excludedItemIds.filter(Boolean):[],
-        completedStages:Array.isArray(t.completedStages)?t.completedStages.filter(Boolean):[]
+        completedStages:Array.isArray(t.completedStages)?t.completedStages.filter(Boolean):[],
+        venue:    t.venue&&typeof t.venue==='object'?t.venue:{},
+        route:    t.route&&typeof t.route==='object'?t.route:{},
+        weather:  t.weather&&typeof t.weather==='object'?t.weather:{},
       }));
 
       // Migrate people
@@ -7872,6 +8007,8 @@ function importData(event){
           ? data.settings.locations  : ds.locations,
         activities: (data.settings&&data.settings.activities&&data.settings.activities.length)
           ? data.settings.activities : ds.activities,
+        customSiteRules: Array.isArray(data.settings?.customSiteRules)?data.settings.customSiteRules:ds.customSiteRules,
+        preferredMapsApp: MAPS_APP_OPTIONS.some(o=>o.id===data.settings?.preferredMapsApp)?data.settings.preferredMapsApp:ds.preferredMapsApp,
       };
 
       S={ items, trips, people, settings };

@@ -58,11 +58,13 @@ trip.weather = {
 - Print/export block: booking ref + address on packing print cover (done)
 - Settings UI to rename/delete saved custom rules (done)
 
-## Phase 3 (weather — partial)
+## Phase 3 (weather + travel links) — **Done** (APE-25)
 
-- **Done:** Weather `<details>` on trip (open by default); season / manual / Open-Meteo snapshot; `fetchedAt` + stale hint; yr.no / search forecast link; editorial nudge for shoulder/winter
-- Geocode stored on `venue.lat` / `venue.lng` after fetch
-- Optional: Met Office deep link; directions with avoid motorways
+- Weather tab; season / manual / Open-Meteo snapshot; `fetchedAt` + stale hint; geocode on `venue.lat` / `venue.lng`
+- **Official forecast** — Met Office search (UK postcode/address) or yr.no (non-UK); **Save/Refresh forecast** unchanged (Open-Meteo)
+- **Plan route** — built from destination + optional `trip.route.leaveFrom` + `avoidMotorways` (Google `avoid=highways`); **Directions** — saved pasted link only
+- **Settings → Navigation:** `preferredMapsApp` (`google` | `apple` | `waze`)
+- Surfaces: trip experience panel (glance + Travel/Weather), edit/setup wizard stage 4 with live link preview
 
 ## Additional fields worth capturing (backlog)
 
