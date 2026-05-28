@@ -56,6 +56,14 @@ Living record of **batched delivery order** from the Neverleft Linear backlog (M
 
 ---
 
+## Follow-up (UX, not a shipped batch)
+
+| Linear | Title | Notes |
+|--------|-------|--------|
+| [APE-52](https://linear.app/aperturegraph/issue/APE-52) | Trip workflow UX revisit | Simplify stepper / completion / undo after Batch C (APE-43, 45, 46). Discovery → design → implementation issue. |
+
+---
+
 ## Wave 3+ (not started)
 
 | Batch | Focus | Linear (representative) |

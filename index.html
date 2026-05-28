@@ -2992,9 +2992,14 @@ function eachChecklistRowWithSubs(trip, fn){
 function tripPreTripActionsComplete(trip){
   const tripActions=trip.actionStates||{};
   let ok=true;
-  eachChecklistRowWithSubs(trip, item=>{
+  tripChecklistParentItems(trip).forEach(item=>{
     (item.actions||[]).filter(a=>a.stage==='pre-trip').forEach(a=>{
       if(!tripActions[item.id+'::'+a.id]) ok=false;
+    });
+    checklistSubsForTrip(item,trip).forEach(sub=>{
+      (sub.actions||[]).filter(a=>a.stage==='pre-trip').forEach(a=>{
+        if(!tripActions[sub.id+'::'+a.id]) ok=false;
+      });
     });
   });
   return ok;
@@ -3033,14 +3038,15 @@ function tripStageCriteriaMet(trip, stageId){
   switch(stageId){
     case 'planning': return true;
     case 'packing': return tripPackingStageCriteriaMet(trip);
-    case 'at-camp': return true;
+    case 'at-camp':
+      return isTripStageComplete(trip,'packing')&&tripPackingStageCriteriaMet(trip);
     case 'pack-up':{
       const p=tripPackUpListProgress(trip);
-      return p.total>0&&p.packed===p.total;
+      return isTripStageComplete(trip,'at-camp')&&p.total>0&&p.packed===p.total;
     }
     case 'pack-away':{
       const p=tripPackAwayListProgress(trip);
-      return p.total>0&&p.packed===p.total;
+      return isTripStageComplete(trip,'pack-up')&&p.total>0&&p.packed===p.total;
     }
     default: return false;
   }
@@ -3053,13 +3059,20 @@ function tripStageCriteriaHint(trip, stageId){
     if(!tripPreTripActionsComplete(trip)) return 'Finish all pre-trip actions on the list';
     return '';
   }
+  if(stageId==='at-camp'){
+    if(!tripPackingStageCriteriaMet(trip)) return tripStageCriteriaHint(trip,'packing')||'Finish packing first';
+    if(!isTripStageComplete(trip,'packing')) return 'Mark the Packing step complete first';
+    return '';
+  }
   if(stageId==='pack-up'){
+    if(!isTripStageComplete(trip,'at-camp')) return 'Complete the At camp step first';
     const p=tripPackUpListProgress(trip);
     if(!p.total) return 'Generate a packing list first';
     if(p.packed<p.total) return `Pack up ${p.total-p.packed} more item${p.total-p.packed===1?'':'s'}`;
     return '';
   }
   if(stageId==='pack-away'){
+    if(!isTripStageComplete(trip,'pack-up')) return 'Complete the Packing up step first';
     const p=tripPackAwayListProgress(trip);
     if(!p.total) return 'Generate a packing list first';
     if(p.packed<p.total) return `Store away ${p.total-p.packed} more item${p.total-p.packed===1?'':'s'}`;
@@ -3085,8 +3098,9 @@ function syncTripStageCompletion(trip){
   if(!trip||trip.status==='idea') return;
   if(!Array.isArray(trip.completedStages)) trip.completedStages=[];
   trip.completedStages=trip.completedStages.filter(id=>TRIP_STAGE_IDS.includes(id));
+  // First stage whose criteria fail → clear it and all later ✓s (even if that stage was never ticked)
   for(const sid of TRIP_STAGE_IDS){
-    if(isTripStageComplete(trip,sid)&&!tripStageCriteriaMet(trip,sid)){
+    if(!tripStageCriteriaMet(trip,sid)){
       invalidateTripStagesFrom(trip,sid);
       break;
     }
@@ -3121,6 +3135,7 @@ function goToTripStage(tripId, status, tab){
   trip.status=status;
   activeTripTab=tab||tripStageDefaultTab(status);
   if(status==='packing'&&!trip.checklist) genChecklist(tripId);
+  tripProgressChanged(tripId);
   save(); renderTrips();
 }
 
@@ -3128,16 +3143,18 @@ function goToTripStage(tripId, status, tab){
 function completeTripStage(tripId){
   const trip=S.trips.find(t=>t.id===tripId);
   if(!trip||trip.status==='idea'||trip.status==='complete') return;
-  syncTripStageCompletion(trip);
   const cur=trip.status;
   if(!TRIP_STAGE_IDS.includes(cur)){
+    syncTripStageCompletion(trip);
     if(cur==='post-trip'){ markTripJourneyDone(tripId); return; }
     save(); renderTrips();
     return;
   }
   if(!tripStageCriteriaMet(trip,cur)){
+    syncTripStageCompletion(trip);
     const hint=tripStageCriteriaHint(trip,cur);
     showToast(hint||'This step is not ready to complete yet');
+    save(); renderTrips();
     return;
   }
   if(!trip.completedStages) trip.completedStages=[];
@@ -3150,7 +3167,7 @@ function completeTripStage(tripId){
     return;
   }
   if(cur==='pack-away') goToTripStage(tripId,'post-trip','post-trip');
-  else save(); renderTrips();
+  else{ syncTripStageCompletion(trip); save(); renderTrips(); }
 }
 
 function markTripJourneyDone(tripId){
@@ -3166,11 +3183,21 @@ function markTripJourneyDone(tripId){
   save(); renderTrips();
 }
 
+function ensureChecklistEntry(trip,itemId){
+  if(!trip.checklist) trip.checklist=[];
+  let ci=trip.checklist.find(c=>c.itemId===itemId);
+  if(!ci){
+    ci={itemId,state:'unchecked'};
+    trip.checklist.push(ci);
+  }
+  return ci;
+}
+
 function markAllChecklistPacked(tripId){
   const trip=S.trips.find(t=>t.id===tripId);
   if(!trip?.checklist?.length) return;
   if(!confirm('Mark every packing list line as packed? Pre-trip actions must still be ticked before you can finish the Packing step.')) return;
-  trip.checklist.forEach(c=>{ c.state='packed'; });
+  eachChecklistRowWithSubs(trip, item=>{ ensureChecklistEntry(trip,item.id).state='packed'; });
   tripProgressChanged(tripId);
   save(); renderTrips();
 }
@@ -3298,12 +3325,16 @@ function statusBtn(trip){
   if(trip.status==='packing'){
     const met=tripPackingStageCriteriaMet(trip);
     const hint=tripStageCriteriaHint(trip,'packing');
-    return `<button class="btn btn-p btn-sm" onclick="completeTripStage('${id}')" ${met?'':'disabled'} title="${esc(hint)}">Packing done — at camp →</button>
+    const label=isTripStageComplete(trip,'packing')?'Continue to at camp →':'Packing done — at camp →';
+    return `<button class="btn btn-p btn-sm" onclick="completeTripStage('${id}')" ${met?'':'disabled'} title="${esc(hint)}">${label}</button>
       <button class="btn btn-o btn-sm" onclick="markAllChecklistPacked('${id}')">Mark all packed</button>
-      ${hint?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${esc(hint)}</span>`:''}`;
+      ${!met&&hint?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--rust)">${esc(hint)}</span>`:''}`;
   }
   if(trip.status==='at-camp'){
-    return `<button class="btn btn-p btn-sm" onclick="completeTripStage('${id}')">At camp — start packing up →</button>`;
+    const met=tripStageCriteriaMet(trip,'at-camp');
+    const hint=tripStageCriteriaHint(trip,'at-camp');
+    return `<button class="btn btn-p btn-sm" onclick="completeTripStage('${id}')" ${met?'':'disabled'} title="${esc(hint)}">At camp — start packing up →</button>
+      ${!met&&hint?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--rust)">${esc(hint)}</span>`:''}`;
   }
   if(trip.status==='pack-up'){
     const met=tripStageCriteriaMet(trip,'pack-up');
@@ -3336,7 +3367,13 @@ function checklistRowState(trip,itemId,mode){
   if(mode==='packup') return (trip.packUpStates||{})[itemId]==='packed'?'packed':'unchecked';
   if(mode==='packaway') return (trip.packAwayStates||{})[itemId]==='packed'?'packed':'unchecked';
   const ci=(trip.checklist||[]).find(c=>c.itemId===itemId);
-  return (ci&&ci.state)||'unchecked';
+  if(ci) return ci.state||'unchecked';
+  const item=S.items.find(i=>i.id===itemId);
+  if(item?.parentId){
+    const parentCi=(trip.checklist||[]).find(c=>c.itemId===item.parentId);
+    if(parentCi&&(parentCi.state==='packed'||parentCi.state==='ready')) return parentCi.state;
+  }
+  return 'unchecked';
 }
 function checklistRowIsPacked(trip,itemId,mode){ return checklistRowState(trip,itemId,mode)==='packed'; }
 function checklistLocationKey(item,mode){
@@ -3615,7 +3652,13 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
     ?`<div class="empty" style="margin:12px 0">No items match — try a different search or clear filters.</div>`
     :itemsHtml;
 
+  const packingGate=!tripPackingStageCriteriaMet(trip)&&trip.status!=='idea'&&trip.status!=='planning'
+    ?`<div style="margin-bottom:12px;padding:10px 12px;border-radius:10px;background:rgba(184,92,58,.08);border:1px solid rgba(184,92,58,.25);font-family:'Familjen Grotesk',sans-serif;font-size:12px;line-height:1.45;color:var(--rust)">
+        <strong>Packing step not finished.</strong> ${esc(tripStageCriteriaHint(trip,'packing')||'Pack every line and finish pre-trip actions, then use Packing done on the step above.')}
+      </div>`:'';
+
   return `${filterPanel}
+    ${packingGate}
     <div class="cprog">
       <div class="cprog-top">
         <div class="cprog-label">${ready} ready · ${packed} packed · ${total-(ready+packed)} remaining</div>
@@ -4208,9 +4251,33 @@ function cycleState(tripId, itemId){
     }
   }
   const cycle={ unchecked:'ready', ready:'packed', packed:'unchecked' };
-  ci.state=cycle[currentState]||'ready';
+  const newState=cycle[currentState]||'ready';
+  ci.state=newState;
+  cascadeChecklistPackState(trip, itemId, newState);
   tripProgressChanged(tripId);
   save(); renderTrips();
+}
+
+/** Keep packable parent + sub checklist rows aligned (undo/re-pack one group together). */
+function cascadeChecklistPackState(trip, itemId, state){
+  const item=S.items.find(i=>i.id===itemId);
+  if(!item) return;
+  const subs=checklistSubsForTrip(item,trip);
+  if(subs.length) subs.forEach(sub=>{ ensureChecklistEntry(trip,sub.id).state=state; });
+  if(item.parentId){
+    const parent=S.items.find(i=>i.id===item.parentId);
+    if(!parent) return;
+    const vis=checklistSubsForTrip(parent,trip);
+    if(!vis.length) return;
+    const pci=ensureChecklistEntry(trip,parent.id);
+    const states=vis.map(s=>{
+      const sc=trip.checklist.find(c=>c.itemId===s.id);
+      return sc?sc.state:'unchecked';
+    });
+    if(states.every(s=>s==='packed')) pci.state='packed';
+    else if(states.some(s=>s==='ready'||s==='packed')) pci.state='ready';
+    else pci.state='unchecked';
+  }
 }
 
 /** Remove trip.actionStates keys for any item on this trip's checklist (shared key format itemId::actionId). */
@@ -4218,6 +4285,9 @@ function clearActionTicksForChecklistItems(trip){
   if(!trip?.checklist?.length) return;
   if(!trip.actionStates) return;
   const ids=new Set(trip.checklist.map(c=>c.itemId));
+  tripChecklistParentItems(trip).forEach(item=>{
+    checklistSubsForTrip(item,trip).forEach(sub=>ids.add(sub.id));
+  });
   for(const k of Object.keys(trip.actionStates)){
     const itemId=k.split('::')[0];
     if(ids.has(itemId)) delete trip.actionStates[k];
