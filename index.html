@@ -867,7 +867,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
   <div class="logo"><div class="logo-mark">N</div><span class="logo-text">NeverLeft</span></div>
   <div class="hdr-nav" id="hdrNav">
     <button class="hnav on" onclick="setTab('trips',this)" id="tripsBtn">Trips</button>
-    <button class="hnav" id="navKitBtn" onclick="setTab('inv',this)">Kit</button>
+    <button class="hnav" id="navKitBtn" onclick="setTab('inv',this)">Camping Kit</button>
     <button class="hnav" onclick="setTab('wishlist',this)" id="wishBtn">Want list</button>
     <button class="hnav" id="navSettingsBtn" onclick="setTab('settings',this)">Settings</button>
   </div>
@@ -913,11 +913,11 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 <div id="demoBanner" style="display:none;background:linear-gradient(135deg,#d4902a,#9a6820);color:#1a1a14;padding:10px 18px;align-items:center;gap:12px;flex-wrap:wrap">
   <span style="font-size:16px">🏕</span>
   <div style="flex:1;min-width:0">
-    <div style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Sample kit</div>
-    <div style="font-size:11px;opacity:.85;line-height:1.45">Explore or edit anything. When you&rsquo;re ready, use it as your kit &mdash; nothing is deleted.</div>
+    <div style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Sample Camping Kit</div>
+    <div style="font-size:11px;opacity:.85;line-height:1.45">Explore or edit anything. When you&rsquo;re ready, use it as your Camping Kit &mdash; nothing is deleted.</div>
   </div>
   <div style="display:flex;gap:7px;flex-shrink:0;flex-wrap:wrap;align-items:center">
-    <button class="btn" style="background:#1a1a14;color:#faf0e4;font-size:11px;font-weight:600;border:none;padding:7px 14px" onclick="graduateFromDemo()">Use as my kit</button>
+    <button class="btn" style="background:#1a1a14;color:#faf0e4;font-size:11px;font-weight:600;border:none;padding:7px 14px" onclick="graduateFromDemo()">Use as my Camping Kit</button>
     <button class="btn" style="background:rgba(0,0,0,.12);color:#1a1a14;font-size:10px;border:1px solid rgba(0,0,0,.18)" onclick="requestResetAllData()">Start empty</button>
     <button class="btn" style="background:transparent;color:#1a1a14;font-size:16px;border:none;padding:2px 6px;line-height:1" onclick="dismissDemoBanner()" title="Hide for now">✕</button>
   </div>
@@ -926,7 +926,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 <div class="page" id="pg-inv" style="display:none">
   <!-- Search always visible; filters hidden by default -->
   <div style="display:flex;gap:7px;margin-bottom:10px;align-items:center">
-    <div class="sw" style="flex:1"><span class="sw-ic">⌕</span><input type="text" id="srch" placeholder="Search your kit…" oninput="updateSwClear('srch');renderInv()"><button type="button" class="sw-clear" id="srchClear" onclick="clearSwSearch('srch','renderInv')" aria-label="Clear search" hidden>×</button></div>
+    <div class="sw" style="flex:1"><span class="sw-ic">⌕</span><input type="text" id="srch" placeholder="Search your Camping Kit…" oninput="updateSwClear('srch');renderInv()"><button type="button" class="sw-clear" id="srchClear" onclick="clearSwSearch('srch','renderInv')" aria-label="Clear search" hidden>×</button></div>
     <button class="btn btn-o btn-sm" id="filterToggleBtn" onclick="toggleKitFilters()">⚙ Filter</button>
   </div>
   <div id="kitFilters" style="display:none">
@@ -950,8 +950,8 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
       <select id="personF" onchange="setPersonFilter(this.value)" style="display:none">
         <option value="all">All People</option>
       </select>
-      <select id="tripKitF" onchange="setKitTripFilter(this.value)" title="Show kit lines relevant to a trip">
-        <option value="all">All kit</option>
+      <select id="tripKitF" onchange="setKitTripFilter(this.value)" title="Show Camping Kit lines relevant to a trip">
+        <option value="all">All Camping Kit</option>
       </select>
     </div>
     <div class="legend" style="margin-bottom:12px">
@@ -1122,7 +1122,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
   </div>
 
   <div id="twBooked2" class="tw-pane" hidden>
-    <p class="tw-lead">These help NeverLeft suggest the right kit. You can skip this and change it later.</p>
+    <p class="tw-lead">These help NeverLeft suggest the right Camping Kit. You can skip this and change it later.</p>
     <div class="frow">
       <div class="fg"><label class="fl">What weather are you expecting?</label>
         <select class="fs" id="tSeason"><option value="summer">Summer — warm &amp; sunny</option><option value="shoulder">Spring / autumn — mixed</option><option value="winter">Winter — cold nights</option></select>
@@ -1220,7 +1220,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
     </div>
     <div class="frow">
       <div class="fg"><label class="fl">Rough season</label>
-        <select class="fs" id="tIdeaSeason"><option value="summer">Summer — warm &amp; light</option><option value="shoulder">Spring / autumn — mixed</option><option value="winter">Winter — cold &amp; cosy kit</option></select>
+        <select class="fs" id="tIdeaSeason"><option value="summer">Summer — warm &amp; light</option><option value="shoulder">Spring / autumn — mixed</option><option value="winter">Winter — cold &amp; cosy Camping Kit</option></select>
       </div>
       <div class="fg"><label class="fl">Rough site type</label>
         <select class="fs" id="tIdeaSite"><option value="hookup">Campsite with hookup</option><option value="basic">Simple pitch</option><option value="wild">Wild / off-grid</option></select>
@@ -1245,7 +1245,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
    <h2 class="gsearch-panel-title" id="gsearchTitle">Search</h2>
    <button type="button" class="gsearch-close" onclick="closeSearchDrawer()" aria-label="Close search">✕</button>
   </div>
-  <p class="gsearch-intro">Find kit items, trips, and people in one place.</p>
+  <p class="gsearch-intro">Find Camping Kit items, trips, and people in one place.</p>
   <p class="gsearch-sub">Tip: press Esc to close · Ctrl+K to open</p>
   <div class="gsearch-input-wrap">
    <input type="text" class="fi gsearch-fi" id="globalSrch" placeholder="Type to search…" autocomplete="off" enterkeyhint="search" oninput="updateSwClear('globalSrch');scheduleGlobalSearchInput()">
@@ -1466,6 +1466,11 @@ function load(){
         const ok=new Set(kitItems().map(i=>i.id));
         t.manualIncludeIds=t.manualIncludeIds.filter(id=>ok.has(id));
       }
+      if(!Array.isArray(t.excludedItemIds)) t.excludedItemIds=[];
+      else{
+        const ok=new Set(kitItems().map(i=>i.id));
+        t.excludedItemIds=t.excludedItemIds.filter(id=>ok.has(id));
+      }
       normalizeTripLearnings(t);
       normalizeTripExperience(t);
     });
@@ -1514,7 +1519,7 @@ function graduateFromDemo(){
   S.meta.graduatedAt=new Date().toISOString();
   save();
   dismissDemoBanner();
-  showToast('This is your kit now.');
+  showToast('This is your Camping Kit now.');
   const pg=document.getElementById('pg-settings');
   if(pg&&pg.style.display!=='none') renderSettings();
 }
@@ -1526,7 +1531,7 @@ function clearDemoData(){
 function requestResetAllData(){
   requestDestructiveDataAction({
     title:'Start fresh?',
-    body:'This removes your kit, trips, people and settings from this device. Download or share a backup below first \u2014 then you can clear everything.',
+    body:'This removes your Camping Kit, trips, people and settings from this device. Download or share a backup below first \u2014 then you can clear everything.',
     confirmLabel:'Clear all data',
     onConfirmed:()=>resetAllData()
   });
@@ -1535,7 +1540,7 @@ function requestResetAllData(){
 function requestLoadDemoDataAgain(){
   requestDestructiveDataAction({
     title:'Replace with demo data?',
-    body:'This replaces your current kit with sample data. Save a backup below first so you can restore if you change your mind.',
+    body:'This replaces your current Camping Kit with sample data. Save a backup below first so you can restore if you change your mind.',
     confirmLabel:'Replace with demo',
     onConfirmed:()=>loadDemoDataAgain()
   });
@@ -1580,7 +1585,7 @@ function fmtDate(d){ if(!d)return''; try{return new Date(d+'T12:00:00').toLocale
 // ITEM HELPERS
 // ══════════════════════════════════════════════════
 function topItems(){ return S.items.filter(i=>!i.parentId && i.type!=='wishlist'); }
-/** All kit lines (non–wish list) flagged for shopping / low stock — same set as shopping list & Restock tab. */
+/** All Camping Kit lines (non–wish list) flagged for shopping / low stock — same set as shopping list & Restock tab. */
 function itemsNeedingRestock(){ return S.items.filter(i=>i.type!=='wishlist'&&(i.restock||Number(i.qty)===0)); }
 /** Every non–wish list line in the kit (parents + sub-items). */
 function kitItems(){ return S.items.filter(i=>i.type!=='wishlist'); }
@@ -1590,6 +1595,11 @@ function wishItems(){ return S.items.filter(i=>i.type==='wishlist'); }
 /** Same as kitItems — use for trip checklist / “add from inventory” (wishlist never included). */
 function kitItemsForTripInventoryPicker(){
   return kitItems();
+}
+
+/** User removed this line from the trip checklist (persists across merge/regen). */
+function isTripItemRemoved(itemId, trip){
+  return (trip.excludedItemIds||[]).includes(itemId);
 }
 
 function isExcluded(item, trip){
@@ -1719,7 +1729,7 @@ function onChecklistSearchInput(el){
 
 /** Sub-items under a parent that count for this trip (exclusions + roster — same rules as generate checklist). */
 function checklistSubsForTrip(item,trip){
-  return subItems(item.id).filter(s=>!isExcluded(s,trip)&&isItemIncludedAutomaticForTrip(s,trip));
+  return subItems(item.id).filter(s=>!isExcluded(s,trip)&&!isTripItemRemoved(s.id,trip)&&isItemIncludedAutomaticForTrip(s,trip));
 }
 
 /** Inventory line included by trip rules (exclusions + roster). Does not apply trip.manualIncludeIds — see itemIdsForTripChecklist. */
@@ -1739,6 +1749,7 @@ function itemIdsForTripChecklist(trip){
   const manualRaw=(trip.manualIncludeIds||[]).filter(id=>kitIds.has(id));
   const automatic=[];
   S.items.forEach(i=>{
+    if(isTripItemRemoved(i.id,trip)) return;
     if(isItemIncludedAutomaticForTrip(i,trip)) automatic.push(i.id);
   });
   const all=new Set(automatic);
@@ -1758,23 +1769,23 @@ function itemIdsForTripChecklist(trip){
   return out;
 }
 
-/** Checklist rows that count toward packing % (omit container parents — progress is on their children only). */
-function checklistProgressCIs(trip){
-  const cl=trip.checklist||[];
-  return cl.filter(c=>{
-    const it=S.items.find(i=>i.id===c.itemId);
-    if(!it||it.type==='wishlist') return false;
-    if(it.isContainer && subItems(it.id).some(s=>!isExcluded(s,trip))) return false;
-    return true;
-  });
-}
+/** Packing % matches on-screen rows (parent + nested subs, not duplicate checklist child rows). */
 function checklistProgressTotals(trip){
-  const rows=checklistProgressCIs(trip);
-  return{
-    ready:rows.filter(c=>c.state==='ready').length,
-    packed:rows.filter(c=>c.state==='packed').length,
-    total:rows.length
-  };
+  const hp=checklistHidePacked, pf=checklistPersonFilter, lf=checklistLocFilter;
+  checklistHidePacked=false;
+  checklistPersonFilter='all';
+  checklistLocFilter='all';
+  let packed=0, ready=0, total=0;
+  sortFilteredChecklistParents(collectFilteredChecklistParents(trip,'packing'),'packing').forEach(({ci,item})=>{
+    const st=packingProgressContribution(trip,ci,item,'packing');
+    packed+=st.packed;
+    ready+=st.ready;
+    total+=st.total;
+  });
+  checklistHidePacked=hp;
+  checklistPersonFilter=pf;
+  checklistLocFilter=lf;
+  return{packed, ready, total};
 }
 
 function getHL(trip){
@@ -2108,7 +2119,7 @@ function updateKitTripFilterSelect(){
     if(ao!==bo) return ao-bo;
     return (a.date||'9999')<(b.date||'9999')?-1:1;
   });
-  sel.innerHTML='<option value="all">All kit</option>'+trips.map(t=>{
+  sel.innerHTML='<option value="all">All Camping Kit</option>'+trips.map(t=>{
     return '<option value="'+t.id+'">'+esc(t.name||'Unnamed trip')+'</option>';
   }).join('');
   if(cur!=='all'&&trips.some(t=>t.id===cur)) sel.value=cur;
@@ -2130,8 +2141,8 @@ function renderKitTripBanner(){
   const total=kitItems().length;
   el.style.display='flex';
   el.className='kit-trip-banner';
-  el.innerHTML='<span><strong>Trip kit:</strong> '+esc(trip.name||'Trip')+' — showing <strong>'+n+'</strong> of '+total+' lines (packing-list rules; not packed state).</span>'
-    +'<span class="kit-trip-banner-actions"><button type="button" class="btn btn-o btn-sm" onclick="openKitAll()">View full kit</button></span>';
+  el.innerHTML='<span><strong>Trip Camping Kit:</strong> '+esc(trip.name||'Trip')+' — showing <strong>'+n+'</strong> of '+total+' lines (packing-list rules; not packed state).</span>'
+    +'<span class="kit-trip-banner-actions"><button type="button" class="btn btn-o btn-sm" onclick="openKitAll()">View full Camping Kit</button></span>';
 }
 
 function tripsDateEyebrowHtml(){
@@ -2148,9 +2159,9 @@ function tripKitStatsRowHtml(trip, opts){
   const onAlways=countKitLinesOfTypeOnTrip(trip,'always');
   const onHouse=countKitLinesOfTypeOnTrip(trip,'house');
   const short=(trip.name||'').split('—')[0].trim()||'this trip';
-  return `<div class="kit-stats trip-kit-stats" role="group" aria-label="Kit lines for ${esc(short)}">
-    <button type="button" class="kit-stat kit-stat-btn" title="Open Kit filtered to this trip" onclick="${stop}openKitForTrip('${tid}')">
-      <div class="kit-stat-v">${n}</div><div class="kit-stat-l">trip kit lines</div>
+  return `<div class="kit-stats trip-kit-stats" role="group" aria-label="Camping Kit lines for ${esc(short)}">
+    <button type="button" class="kit-stat kit-stat-btn" title="Open Camping Kit filtered to this trip" onclick="${stop}openKitForTrip('${tid}')">
+      <div class="kit-stat-v">${n}</div><div class="kit-stat-l">Camping Kit lines</div>
     </button>
     <button type="button" class="kit-stat kit-stat-btn" title="Always-packed on this trip" onclick="${stop}openKitAlwaysForTrip('${tid}')">
       <div class="kit-stat-v sage">${onAlways}</div><div class="kit-stat-l">always on trip</div>
@@ -2253,14 +2264,14 @@ function renderKitPageHead(){
   const placeCount=new Set(kitItems().map(i=>i.location).filter(Boolean)).size;
   el.innerHTML=`
     <div class="kit-intro">
-      <div class="kit-intro-eyebrow">My kit</div>
+      <div class="kit-intro-eyebrow">My Camping Kit</div>
       <h2 class="kit-intro-title">Everything we <em>own</em>.</h2>
-      <p class="kit-intro-lead">Every piece of kit, where it lives, and what it's part of. Trips pull from here — your kit is the single source of truth.</p>
+      <p class="kit-intro-lead">Every piece of your Camping Kit, where it lives, and what it's part of. Trips pull from here — your Camping Kit is the single source of truth.</p>
     </div>
     <div class="kit-stats">
       <div class="kit-stat">
         <div class="kit-stat-v">${pieces}</div>
-        <div class="kit-stat-l">pieces of kit${placeCount?` · ${placeCount} place${placeCount!==1?'s':''}`:''}</div>
+        <div class="kit-stat-l">Camping Kit pieces${placeCount?` · ${placeCount} place${placeCount!==1?'s':''}`:''}</div>
       </div>
       <div class="kit-stat">
         <div class="kit-stat-v">${groups}</div>
@@ -2272,15 +2283,15 @@ function renderKitPageHead(){
       </button>
     </div>
     <div class="kit-stats kit-stats--layers">
-      <button type="button" class="kit-stat kit-stat-btn" onclick="openKitAlwaysLayer()" title="Always-packed kit">
+      <button type="button" class="kit-stat kit-stat-btn" onclick="openKitAlwaysLayer()" title="Always-packed Camping Kit">
         <div class="kit-stat-v sage">${kitItems().filter(i=>i.type==='always').length}</div>
         <div class="kit-stat-l">always packed</div>
       </button>
-      <button type="button" class="kit-stat kit-stat-btn" onclick="openKitHouseLayer()" title="From-home kit">
+      <button type="button" class="kit-stat kit-stat-btn" onclick="openKitHouseLayer()" title="From-home Camping Kit">
         <div class="kit-stat-v blue">${kitItems().filter(i=>i.type==='house').length}</div>
         <div class="kit-stat-l">from home</div>
       </button>
-      <button type="button" class="kit-stat kit-stat-btn" onclick="openKitConsumablesLayer()" title="Consumables in kit">
+      <button type="button" class="kit-stat kit-stat-btn" onclick="openKitConsumablesLayer()" title="Consumables in Camping Kit">
         <div class="kit-stat-v">${kitItems().filter(i=>i.type==='consumable').length}</div>
         <div class="kit-stat-l">consumables</div>
       </button>
@@ -2319,7 +2330,7 @@ function renderInv(){
   updateSwClear('srch');
   const el=document.getElementById('invContent');
   if(!items.length){
-    const tripHint=kitTripFilter!=='all'?' Try “All kit” or pick another trip.':'';
+    const tripHint=kitTripFilter!=='all'?' Try “All Camping Kit” or pick another trip.':'';
     el.innerHTML=`<div class="empty">No items match — adjust filters or add one above.${tripHint}</div>`;
     return;
   }
@@ -2688,7 +2699,7 @@ function tripHeroMetaLine(trip){
     if(pid&&ids.has(pid)){
       const p=(S.people||[]).find(x=>x.id===pid);
       if(p) parts.push(esc(p.name)+' coming');
-    } else parts.push('Dog kit');
+    } else parts.push('Dog Camping Kit');
   }
   const rules=tripHeroHeadlineRuleLabels(trip,2);
   if(rules.length) parts.push(rules.map(r=>esc(r)).join(' · '));
@@ -2706,7 +2717,7 @@ function tripHeroWeatherLine(trip){
   if(w.mode==='snapshot'&&w.days?.length)
     return (w.summary||buildWeatherSnapshotSummary(w.days)||'').replace(/\s*\(saved forecast\)\s*$/i,'').trim();
   if(w.mode==='manual'&&(w.summary||'').trim()) return w.summary.trim();
-  const short={summer:'Warm — sun & layers',shoulder:'Mixed — pack layers',winter:'Cold — warm kit'};
+  const short={summer:'Warm — sun & layers',shoulder:'Mixed — pack layers',winter:'Cold — warm Camping Kit'};
   return short[trip.season]||seasonWeatherHint(trip);
 }
 
@@ -2757,7 +2768,7 @@ function tripHeroRosterHtml(trip){
   if(!roster.length&&!showDogIcon&&!tripHeroTagsHtml(trip)) return '';
   const av=roster.length||showDogIcon?`<div class="trip-hero-avatars">
       ${roster.map(p=>`<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:${p.color}33;border:1.5px solid ${p.color};font-size:14px" title="${esc(p.name)}">${p.emoji||'👤'}</span>`).join('')}
-      ${showDogIcon?`<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#c8a84a33;border:1.5px solid #c8a84a;font-size:14px" title="Dog kit">🐕</span>`:''}
+      ${showDogIcon?`<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#c8a84a33;border:1.5px solid #c8a84a;font-size:14px" title="Dog Camping Kit">🐕</span>`:''}
     </div>`:'';
   return `<div class="trip-hero-roster">${av}${tripHeroTagsHtml(trip)}</div>`;
 }
@@ -2863,7 +2874,7 @@ function renderTrips(){
     const showDogIcon=trip.dog&&!rosterHasDog;
     return `<div class="trip-hero-avatars" style="display:flex;gap:3px;flex-wrap:wrap">
       ${roster.map(p=>`<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:${p.color}33;border:1.5px solid ${p.color};font-size:13px" title="${esc(p.name)}">${p.emoji||'👤'}</span>`).join('')}
-      ${showDogIcon?`<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#c8a84a33;border:1.5px solid #c8a84a;font-size:13px" title="Dog kit">🐕</span>`:''}
+      ${showDogIcon?`<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#c8a84a33;border:1.5px solid #c8a84a;font-size:13px" title="Dog Camping Kit">🐕</span>`:''}
     </div>`;
   }
 
@@ -2972,7 +2983,7 @@ function tripDetail(trip){
   if(trip.dog){
     const dp=findLikelyDogPersonId();
     const dogInRoster=dp&&roster.some(p=>p.id===dp);
-    if(!dogInRoster) crewStr=crewStr?crewStr+' · Dog kit':'Dog kit';
+    if(!dogInRoster) crewStr=crewStr?crewStr+' · Dog Camping Kit':'Dog Camping Kit';
   }
   const subtitle=isIdea
     ?['Idea',SELAB[trip.season]||'',crewStr].filter(Boolean).join(' · ')
@@ -3074,6 +3085,20 @@ function checklistLocationKey(item,mode){
   return item.location;
 }
 
+/** Hide-packed: omit parent only when parent and all visible subs are packed (packable groups stay if any sub unpacked). */
+function checklistParentHiddenByHidePacked(trip,item,mode){
+  if(!checklistHidePacked) return false;
+  mode=mode||'packing';
+  const subs=checklistSubsForTrip(item,trip);
+  if(item.isContainer) return !checklistVisibleSubsForRow(trip,item,mode).length;
+  if(subs.length){
+    const vis=checklistVisibleSubsForRow(trip,item,mode);
+    if(!vis.length) return true;
+    return checklistRowIsPacked(trip,item.id,mode)&&vis.every(s=>checklistRowIsPacked(trip,s.id,mode));
+  }
+  return checklistRowIsPacked(trip,item.id,mode);
+}
+
 /** Sub-rows shown under a parent (person filter + hide-packed; matches on-screen checklist). */
 function checklistVisibleSubsForRow(trip,item,mode){
   mode=mode||'packing';
@@ -3096,11 +3121,7 @@ function collectFilteredChecklistParents(trip,mode){
   cl.forEach(ci=>{
     const item=S.items.find(i=>i.id===ci.itemId);
     if(!item||item.parentId||item.type==='wishlist') return;
-    if(checklistHidePacked){
-      if(item.isContainer){
-        if(!checklistVisibleSubsForRow(trip,item,mode).length) return;
-      } else if(checklistRowIsPacked(trip,item.id,mode)) return;
-    }
+    if(checklistParentHiddenByHidePacked(trip,item,mode)) return;
     if(checklistPersonFilter!=='all'){
       const itemMatches=(item.personIds||[]).includes(checklistPersonFilter);
       const subMatches=checklistSubsForTrip(item,trip).some(s=>{
@@ -3655,7 +3676,7 @@ function postTripBody(trip){
   return `
     <div class="pt-banner">
       <div class="pt-title">Back home review</div>
-      <div class="pt-sub">Tidy up anything you logged on trip, then check consumables and kit condition. Take your time — this is for next time, not a scorecard.</div>
+      <div class="pt-sub">Tidy up anything you logged on trip, then check consumables and Camping Kit condition. Take your time — this is for next time, not a scorecard.</div>
     </div>
 
     ${postTripLearningsHtml(trip,allItems)}
@@ -3873,7 +3894,7 @@ function toastKitSyncedToTrips(results){
     return;
   }
   const bit=results.map(r=>r.tripName+' ('+r.added+')').join(', ');
-  showToast('Saved — added kit to: '+bit+' (packed items unchanged)');
+  showToast('Saved — added to Camping Kit: '+bit+' (packed items unchanged)');
 }
 
 // ══════════════════════════════════════════════════
@@ -4796,12 +4817,21 @@ function toggleHidePacked(){
 function removeFromChecklist(tripId, itemId){
   const trip=S.trips.find(t=>t.id===tripId);
   if(!trip) return;
-  trip.manualIncludeIds=(trip.manualIncludeIds||[]).filter(id=>id!==itemId);
-  trip.checklist=(trip.checklist||[]).filter(c=>c.itemId!==itemId);
+  const item=S.items.find(i=>i.id===itemId);
+  const removeIds=new Set([itemId]);
+  if(item){
+    subItems(item.id).forEach(s=>removeIds.add(s.id));
+    checklistSubsForTrip(item,trip).forEach(s=>removeIds.add(s.id));
+  }
+  trip.manualIncludeIds=(trip.manualIncludeIds||[]).filter(id=>!removeIds.has(id));
+  const ex=new Set(trip.excludedItemIds||[]);
+  removeIds.forEach(id=>ex.add(id));
+  trip.excludedItemIds=[...ex];
+  trip.checklist=(trip.checklist||[]).filter(c=>!removeIds.has(c.itemId));
   if(trip.actionStates){
-    const prefix=itemId+'::';
     Object.keys(trip.actionStates).forEach(k=>{
-      if(k.startsWith(prefix)) delete trip.actionStates[k];
+      const rowId=k.split('::')[0];
+      if(removeIds.has(rowId)) delete trip.actionStates[k];
     });
   }
   save(); renderTrips();
@@ -4881,7 +4911,7 @@ function findLikelyDogPersonId(){
   return hit?hit.id:null;
 }
 
-/** When at least one attendee is selected, keep dog person row in sync with “Dog kit” checkbox. Whole crew (no boxes) leaves array empty. */
+/** When at least one attendee is selected, keep dog person row in sync with “Dog Camping Kit” checkbox. Whole crew (no boxes) leaves array empty. */
 function applyDogPersonToAttendeeIds(attendeeIds, dogChecked){
   const dogPid=findLikelyDogPersonId();
   if(!dogPid||!attendeeIds.length) return attendeeIds.slice();
@@ -5063,7 +5093,7 @@ function persistTripWizardDraft(){
     S.trips[idx]={...prev,...data,status,route:{...(prev.route||{}),...data.route}};
     normalizeTripExperience(S.trips[idx]);
   }else{
-    const t={id:uid(),status:newStatus,manualIncludeIds:[],...data};
+    const t={id:uid(),status:newStatus,manualIncludeIds:[],excludedItemIds:[],...data};
     S.trips.push(t);
     editTripId=t.id;
   }
@@ -5259,7 +5289,7 @@ function renderGlobalSearchResults(q){
   if(!out) return;
   const t=_gsearchToken(q);
   if(!t){
-    out.innerHTML='<div class="gsearch-empty">Type to search kit, trips, trip packing lists, and people.</div>';
+    out.innerHTML='<div class="gsearch-empty">Type to search Camping Kit, trips, trip packing lists, and people.</div>';
     return;
   }
   const r=searchAll(q);
@@ -5269,7 +5299,7 @@ function renderGlobalSearchResults(q){
   }
   let html='';
   if(r.items.length){
-    html+='<div class="gsearch-sec">Kit</div>';
+    html+='<div class="gsearch-sec">Camping Kit</div>';
     r.items.forEach(item=>{
       let meta='';
       try{
@@ -5278,7 +5308,7 @@ function renderGlobalSearchResults(q){
       }catch(e){ meta=TLAB[item.type]||''; }
       html+=`<button type="button" class="gsearch-result-btn" onclick="navigateGlobalSearchItem('${item.id}')"><span class="gsearch-result-main"><span class="gsearch-result-name">${esc(item.name)}</span><span class="gsearch-result-meta">${esc(meta)}</span></span><span class="gsearch-result-arrow">→</span></button>`;
     });
-    if(r.itemsTotal>GSEARCH_MAX) html+=`<div class="gsearch-hint" style="margin-top:4px;margin-bottom:0">${r.itemsTotal-GSEARCH_MAX} more in kit — narrow your search.</div>`;
+    if(r.itemsTotal>GSEARCH_MAX) html+=`<div class="gsearch-hint" style="margin-top:4px;margin-bottom:0">${r.itemsTotal-GSEARCH_MAX} more in Camping Kit — narrow your search.</div>`;
   }
   if(r.trips.length){
     html+='<div class="gsearch-sec">Trips</div>';
@@ -5578,7 +5608,7 @@ function forgotResolutionLabel(e){
   const r=e.resolution||'pending';
   if(r==='kit'){
     const it=e.resolvedItemId?S.items.find(i=>i.id===e.resolvedItemId):null;
-    return it?'In My Kit · '+it.name:'In My Kit';
+    return it?'In My Camping Kit · '+it.name:'In My Camping Kit';
   }
   if(r==='wishlist'){
     const it=e.resolvedItemId?S.items.find(i=>i.id===e.resolvedItemId):null;
@@ -5669,7 +5699,7 @@ function seasonWeatherHint(trip){
   const map={
     summer:'Warm — sun cream and lighter layers.',
     shoulder:'Mixed — pack layers and a waterproof.',
-    winter:'Cold — warm sleep system and spare dry kit.',
+    winter:'Cold — warm sleep system and spare dry Camping Kit.',
   };
   return map[trip?.season]||map.summer;
 }
@@ -6260,7 +6290,7 @@ function renderTripExperiencePanel(trip){
     <p class="trip-experience-muted" style="margin-top:10px;line-height:1.8">
       <button type="button" class="btn btn-o btn-sm" onclick="openEditTripModal('${trip.id}')">Edit trip setup</button>${trip.status!=='idea'?`<span class="trip-wizard-edit-links">
         <button type="button" onclick="openEditTripModal('${trip.id}','essentials')">Essentials</button>
-        <button type="button" onclick="openEditTripModal('${trip.id}','kit')">Kit</button>
+        <button type="button" onclick="openEditTripModal('${trip.id}','kit')">Camping Kit</button>
         <button type="button" onclick="openEditTripModal('${trip.id}','site')">Site</button>
         <button type="button" onclick="openEditTripModal('${trip.id}','remember')">Remember</button>
       </span>`:''}
@@ -6341,7 +6371,7 @@ function openAddItemFromForgot(tripId,entryId){
   if(!entry) return;
   window._forgotResolve={tripId,entryId};
   editItemId=null;
-  document.getElementById('imt').textContent='Add to My Kit';
+  document.getElementById('imt').textContent='Add to My Camping Kit';
   clearItemForm();
   document.getElementById('iName').value=entry.text;
   document.getElementById('iNotes').value='Needed on trip: '+(trip.name||'');
@@ -6379,7 +6409,7 @@ function openCampLogSheet(tripId){
     <div id="campLogOverlay" class="sheet-overlay" style="align-items:flex-end;padding:0" onclick="if(event.target===this)closeCampLogSheet()">
       <div class="sheet-panel sheet-panel--narrow" onclick="event.stopPropagation()">
         <div class="mtitle">Needed on trip</div>
-        <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);line-height:1.45;margin:8px 0 12px">Quick capture only — add to kit or want list later in Back home review.</p>
+        <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);line-height:1.45;margin:8px 0 12px">Quick capture only — add to Camping Kit or want list later in Back home review.</p>
         <input class="fi" id="campForgotText" placeholder="What did you need?" style="width:100%;margin-bottom:10px" onkeydown="if(event.key==='Enter')addForgotEntry('${tripId}','camp')">
         <button type="button" class="btn btn-p" style="width:100%;margin-bottom:14px" onclick="addForgotEntry('${tripId}','camp')">Save</button>
         ${recent?`<div style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-m);margin-bottom:6px">Recent</div>${recent}`:''}
@@ -6502,7 +6532,7 @@ function postTripLearningsHtml(trip,allItems){
     const badge=`<span class="pt-learn-badge pt-learn-badge--${badgeCls}">${esc(forgotResolutionLabel(e))}</span>`;
     const pendingActions=res==='pending'?`
       <div class="pt-learn-actions">
-        <button type="button" class="btn btn-p btn-sm" onclick="openAddItemFromForgot('${trip.id}','${e.id}')">Add to kit</button>
+        <button type="button" class="btn btn-p btn-sm" onclick="openAddItemFromForgot('${trip.id}','${e.id}')">Add to Camping Kit</button>
         <button type="button" class="btn btn-o btn-sm" onclick="resolveForgotToWishlist('${trip.id}','${e.id}')">Want list</button>
         <button type="button" class="btn btn-o btn-sm" onclick="openLinkForgotModal('${trip.id}','${e.id}')">${e.itemId?'On list':'Was on list?'}</button>
         <button type="button" class="btn btn-o btn-sm" onclick="dismissForgotEntry('${trip.id}','${e.id}')">Not again</button>
@@ -6537,7 +6567,7 @@ function postTripLearningsHtml(trip,allItems){
   return `
     <div class="pt-learn">
       <div class="pt-learn-hdr pt-learn-hdr--forgot">Needed but didn\'t have</div>
-      <div class="pt-learn-sub">${pendingForgotCount?pendingForgotCount+' to sort out — most gaps belong in My Kit or Want list. ':''}No blame, just memory.</div>
+      <div class="pt-learn-sub">${pendingForgotCount?pendingForgotCount+' to sort out — most gaps belong in My Camping Kit or Want list. ':''}No blame, just memory.</div>
       ${forgotRows}
       <div class="pt-learn-add">
         <input class="fi" id="ptForgotText" placeholder="What did you need?" onkeydown="if(event.key==='Enter')addForgotEntry('${trip.id}')">
@@ -6774,6 +6804,8 @@ function invTripConfirmAdd(){
   const set=new Set(trip.manualIncludeIds||[]);
   ids.forEach(id=>set.add(id));
   trip.manualIncludeIds=[...set];
+  const unex=new Set(ids);
+  trip.excludedItemIds=(trip.excludedItemIds||[]).filter(id=>!unex.has(id));
   applyTripChecklistMerge(trip);
   save(); closeInvTripModal(); renderTrips();
 }
@@ -6802,7 +6834,7 @@ function openInventoryToTripModal(tripId){
     <div id="invTripModalOverlay" class="dialog-overlay" onclick="if(event.target===this)closeInvTripModal()">
       <div class="dialog-panel dialog-panel--440" onclick="event.stopPropagation()">
         <div class="mtitle">Add from inventory</div>
-        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);line-height:1.45;margin:6px 0 10px 0">Lines you add here are forced onto this trip even when season, activity, dog kit, or person rules would normally leave them off. Wishlist lines are not listed.</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);line-height:1.45;margin:6px 0 10px 0">Lines you add here are forced onto this trip even when season, activity, Dog Camping Kit, or person rules would normally leave them off. Wishlist lines are not listed.</div>
         <div class="sw" style="margin-bottom:10px"><span class="sw-ic">⌕</span><input type="text" id="invTripSearch" placeholder="Filter…" oninput="invTripFilterRows()"><button type="button" class="sw-clear" id="invTripSearchClear" onclick="clearSwSearch('invTripSearch','invTrip')" aria-label="Clear search" hidden>×</button></div>
         <div id="invTripList" style="overflow:auto;flex:1;min-height:120px;max-height:50vh;border:1px solid var(--border);border-radius:3px;margin-bottom:14px;background:var(--canvas-3)">${rowHtml}</div>
         <div style="display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--border);padding-top:14px">
@@ -6843,13 +6875,13 @@ function saveQuickAdd(tripId){
 function renderSettingsDataSection(){
   const demo=isDemoMode();
   const intro=demo
-    ? 'You\u2019re exploring with a sample kit. Edit trips and items freely, then use <strong>Use as my kit</strong> when it feels yours. Start fresh only if you want an empty slate (backup required).'
-    : 'Your kit lives on this device. Export backups from the menu anytime. Reset or reload demo replaces everything (backup required first).';
+    ? 'You\u2019re exploring with a sample Camping Kit. Edit trips and items freely, then use <strong>Use as my Camping Kit</strong> when it feels yours. Start fresh only if you want an empty slate (backup required).'
+    : 'Your Camping Kit lives on this device. Export backups from the menu anytime. Reset or reload demo replaces everything (backup required first).';
   return `<div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border)">
       <div style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--rust);margin-bottom:8px">Data</div>
       <div style="font-size:12px;color:var(--text-m);margin-bottom:14px;line-height:1.5">${intro}</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        ${demo?`<button class="btn btn-p btn-sm" onclick="graduateFromDemo()">Use as my kit</button>`:''}
+        ${demo?`<button class="btn btn-p btn-sm" onclick="graduateFromDemo()">Use as my Camping Kit</button>`:''}
         <button class="btn" style="background:transparent;color:var(--rust);border:1px solid var(--rust);font-size:11px;padding:7px 14px" onclick="requestResetAllData()">Start fresh \u2014 clear all data</button>
         <button class="btn btn-o btn-sm" onclick="requestLoadDemoDataAgain()">Reload demo data</button>
       </div>
@@ -7226,7 +7258,7 @@ function showBackupModal(){
   const daysSince=last?Math.floor((Date.now()-new Date(last).getTime())/(1000*60*60*24)):null;
   const urgency=!last||daysSince>30;
 
-  const heading=urgency?'Time to back up':'Back up your kit';
+  const heading=urgency?'Time to back up':'Back up your Camping Kit';
   const subheading=urgency
     ?'Your data has not been backed up'+(daysSince>0?' in '+daysSince+' days':'')+'. Browsers can clear local data without warning.'
     :'Your data lives on this device. A quick backup keeps everything safe if your browser clears its storage.';
@@ -7382,7 +7414,8 @@ function importData(event){
         forgotEntries:   Array.isArray(t.forgotEntries)?t.forgotEntries.map(normalizeForgotEntry):[],
         unusedMarks:     Array.isArray(t.unusedMarks)?t.unusedMarks.map(normalizeUnusedMark):[],
         attendeeIds:     Array.isArray(t.attendeeIds)?t.attendeeIds.filter(Boolean):[],
-        manualIncludeIds:Array.isArray(t.manualIncludeIds)?t.manualIncludeIds.filter(Boolean):[]
+        manualIncludeIds:Array.isArray(t.manualIncludeIds)?t.manualIncludeIds.filter(Boolean):[],
+        excludedItemIds:Array.isArray(t.excludedItemIds)?t.excludedItemIds.filter(Boolean):[]
       }));
 
       // Migrate people
@@ -7474,14 +7507,14 @@ function openOrphanAssignmentsModal(){
     ? rows.map(({item,bad})=>`<div style="padding:10px 0;border-bottom:1px solid var(--border);font-size:13px">
         <div style="font-weight:600">${esc(item.name)}</div>
         <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:4px">Unknown id(s): ${bad.map(esc).join(', ')}</div>
-        <button type="button" class="btn btn-o btn-sm" style="margin-top:8px" onclick="closeOrphanAssignmentsModal();setTab('inv',null);openEditItemModal('${item.id}')">Edit item in My Kit</button>
+        <button type="button" class="btn btn-o btn-sm" style="margin-top:8px" onclick="closeOrphanAssignmentsModal();setTab('inv',null);openEditItemModal('${item.id}')">Edit item in My Camping Kit</button>
       </div>`).join('')
     : '<p style="font-size:13px;color:var(--text-m);margin:0">No orphaned person assignments. If you delete someone from The crew, their assignees are cleared from items automatically.</p>';
   document.body.insertAdjacentHTML('beforeend',`
     <div id="orphanReportOverlay" class="dialog-overlay" onclick="if(event.target===this)closeOrphanAssignmentsModal()">
       <div class="dialog-panel dialog-panel--420" style="max-height:85vh;overflow:auto" onclick="event.stopPropagation()">
         <div class="mtitle">Orphaned assignments</div>
-        <p style="font-size:12px;color:var(--text-m);line-height:1.5;margin:0 0 12px 0">Kit lines still pointing at a person id that is not in The crew (e.g. after a restore or hand-edited data). Edit the item to fix assignees.</p>
+        <p style="font-size:12px;color:var(--text-m);line-height:1.5;margin:0 0 12px 0">Camping Kit lines still pointing at a person id that is not in The crew (e.g. after a restore or hand-edited data). Edit the item to fix assignees.</p>
         ${inner}
         <div style="display:flex;justify-content:flex-end;margin-top:16px;padding-top:12px;border-top:1px solid var(--border)">
           <button type="button" class="btn btn-p" onclick="closeOrphanAssignmentsModal()">Done</button>
@@ -8013,7 +8046,7 @@ function demoData(){
     {id:u(),parentId:null,name:'Extra tarp',type:'seasonal',category:'shelter',location:'shed',qty:1,season:'winter',activity:'',restock:false,isContainer:false,packsInto:null,personIds:[],notes:'Bad weather cover',actions:[]},
 
     // ── SLEEP (container) ──
-    {id:bedId,parentId:null,name:'Beds & sleep kit',type:'always',category:'sleep',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:true,packsInto:'car',personIds:[],notes:'',actions:[]},
+    {id:bedId,parentId:null,name:'Beds & sleep Camping Kit',type:'always',category:'sleep',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:true,packsInto:'car',personIds:[],notes:'',actions:[]},
     {id:sbDadId, parentId:bedId,name:"Dad's sleeping bag",  type:'always',category:'sleep',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dadId],notes:'3-season rated',
       actions:[{id:u(),label:'Check zip works',stage:'pre-trip'},{id:u(),label:'Air out before packing',stage:'before-pack-away'}]},
     {id:sbMumId, parentId:bedId,name:"Mum's sleeping bag",  type:'always',category:'sleep',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[mumId],notes:'3-season rated',
@@ -8032,7 +8065,7 @@ function demoData(){
     {id:pilIslaId,parentId:bedId,name:"Isla's pillow",   type:'house',category:'sleep',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[kid2Id],notes:'',actions:[]},
 
     // ── KITCHEN ──
-    {id:kitchenId,parentId:null,name:'Kitchen kit',type:'always',category:'kitchen',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:true,packsInto:'car',personIds:[],notes:'',actions:[]},
+    {id:kitchenId,parentId:null,name:'Kitchen Camping Kit',type:'always',category:'kitchen',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:true,packsInto:'car',personIds:[],notes:'',actions:[]},
     {id:u(),parentId:kitchenId,name:'Camping stove',type:'always',category:'kitchen',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'',
       actions:[{id:u(),label:'Clean burner heads',stage:'post-trip'}]},
     {id:u(),parentId:kitchenId,name:'Gas canisters',type:'consumable',category:'kitchen',location:'duffle',qty:2,season:'all',activity:'',restock:true,notes:'Check level before trip',isContainer:false,packsInto:'car',personIds:[],
@@ -8052,7 +8085,7 @@ function demoData(){
     {id:u(),parentId:null,name:'Insect repellent',type:'consumable',category:'hygiene',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'',actions:[]},
 
     // ── DOG KIT ──
-    {id:dogKitId,parentId:null,name:"Biscuit's kit",type:'always',category:'dog',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:true,packsInto:'car',personIds:[dogId],notes:'',actions:[]},
+    {id:dogKitId,parentId:null,name:"Biscuit's Camping Kit",type:'always',category:'dog',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:true,packsInto:'car',personIds:[dogId],notes:'',actions:[]},
     {id:u(),parentId:dogKitId,name:'Dog lead & harness',type:'always',category:'dog',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dogId],notes:'',actions:[]},
     {id:u(),parentId:dogKitId,name:'Dog food (4 days)',type:'consumable',category:'dog',location:'house',qty:4,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dogId],notes:'Pack from kitchen',actions:[]},
     {id:u(),parentId:dogKitId,name:'Dog water bowl',type:'always',category:'dog',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dogId],notes:'',actions:[]},
@@ -8121,7 +8154,8 @@ function demoData(){
     forgotEntries:[],
     unusedMarks:[],
     attendeeIds:[],
-    manualIncludeIds:[]
+    manualIncludeIds:[],
+    excludedItemIds:[]
   };
   const _Si=S.items,_Sp=S.people,_St=S.trips;
   S.items=items;

@@ -6,7 +6,7 @@ Open [`index.html`](index.html) in your browser for a fully offline-capable sing
 
 ## Hosted PWA (Netlify)
 
-When served over **HTTPS** (e.g. [neverleft.netlify.app](https://neverleft.netlify.app/)), the app registers a **service worker** so the shell can load offline after at least one successful online visit. Your trips and kit still live in **`localStorage`**; use **Download backup** to move data between devices or keep a JSON snapshot.
+When served over **HTTPS** (e.g. [neverleft.netlify.app](https://neverleft.netlify.app/)), the app registers a **service worker** so the shell can load offline after at least one successful online visit. Your trips and Camping Kit still live in **`localStorage`**; use **Download backup** to move data between devices or keep a JSON snapshot.
 
 ### After you change `index.html` or `sw.js`
 
