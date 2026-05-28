@@ -262,6 +262,7 @@ select:focus{border-color:var(--amber-d)}
 .add-sub-row td{width:100%}
 .irow.igroup-parent{cursor:pointer}
 .irow.igroup-parent .iname-cell{display:flex;align-items:flex-start;gap:6px}
+tr.irow.inv-row-focus{box-shadow:0 0 0 2px var(--sage),0 4px 14px rgba(107,140,90,.2)!important}
 .igroup-toggle,.ci-group-chevron{font-size:10px;color:var(--text-m);flex-shrink:0;width:14px;display:inline-block;transition:transform var(--dur-ui) var(--ease-out);transform-origin:50% 55%;line-height:1}
 .igroup-toggle.open,.ci-group-chevron.open{transform:rotate(0deg)}
 .igroup-toggle.closed,.ci-group-chevron.closed{transform:rotate(-90deg)}
@@ -1272,6 +1273,7 @@ let tripsTypeFilter = 'all';
 let collapsedCats = new Set();   // inventory category sections
 let collapsedInvLocs = new Set(); // inventory location sections (kit “by place” view)
 let expandedInvGroups = new Set(); // kit item groups user opened (default collapsed)
+let _focusInvItemId = null; // scroll/highlight after save (cleared after render)
 let expandedChecklistGroups = new Set(); // tripId::itemId — packing list item groups user opened
 let collapsedLocs = new Set();   // checklist locations
 /** Checklist group ids (clgrp-*) user expanded while fully packed — stops auto re-collapse on each render. */
@@ -2331,7 +2333,9 @@ function renderInv(){
   const el=document.getElementById('invContent');
   if(!items.length){
     const tripHint=kitTripFilter!=='all'?' Try “All Camping Kit” or pick another trip.':'';
-    el.innerHTML=`<div class="empty">No items match — adjust filters or add one above.${tripHint}</div>`;
+    const q=String(document.getElementById('srch')?.value||'').trim();
+    const createBtn=q?`<button type="button" class="btn btn-p" style="margin-top:12px" onclick="openAddItemFromSearch()">+ Add “${esc(q)}”</button>`:'';
+    el.innerHTML=`<div class="empty">No items match — adjust filters or add one above.${tripHint}${createBtn}</div>`;
     return;
   }
 
@@ -2378,6 +2382,10 @@ function renderInv(){
 }
 
 function invGroupForceOpen(item, srch){
+  if(_focusInvItemId){
+    if(item.id===_focusInvItemId) return true;
+    if(subItems(item.id).some(s=>s.id===_focusInvItemId)) return true;
+  }
   if(!srch) return false;
   const s=srch.toLowerCase();
   if(item.name.toLowerCase().includes(s)||(item.notes||'').toLowerCase().includes(s)) return true;
@@ -2423,7 +2431,7 @@ function itemRow(item, isSub, srch){
         ${(item.actions&&item.actions.length)?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--teal);text-transform:uppercase;letter-spacing:.06em">⚡ ${item.actions.length} action${item.actions.length!==1?'s':''}</span>`:''}
         ${item.packsInto&&item.packsInto!==item.location?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">→ ${esc(labMap(getLocs())[item.packsInto]||item.packsInto)}</span>`:''}`:'';
   return `
-    <tr class="irow${isSub?' sub-row':''}${hasGroup?' igroup-parent':''}${isWish?' wishlist-item':''}"${hasGroup?` onclick="toggleInvGroup('${item.id}',event)"`:''}>
+    <tr id="invrow-${item.id}" class="irow${isSub?' sub-row':''}${hasGroup?' igroup-parent':''}${isWish?' wishlist-item':''}"${hasGroup?` onclick="toggleInvGroup('${item.id}',event)"`:''}>
       <td>
         <div class="iname-cell">
           ${hasGroup?`<span class="igroup-toggle ${groupOpen?'open':'closed'}" aria-hidden="true">▼</span>`:''}
@@ -4354,6 +4362,48 @@ function stripDuplicateNameSuffix(name){
   return (name||'').replace(/\s+\(copy\)(\s+\d+)?$/i,'').trim();
 }
 
+/** True when item modal is adding a line (not editing an existing id). */
+function isItemModalCreateMode(){
+  if(editItemId) return false;
+  const title=document.getElementById('imt')?.textContent||'';
+  return title!=='Edit Item';
+}
+
+/** Match exact name or same base name after stripping " (copy)" suffixes. */
+function findDuplicateKitItemName(name, excludeItemId){
+  const raw=(name||'').trim().toLowerCase();
+  const norm=stripDuplicateNameSuffix(name).toLowerCase();
+  if(!raw) return null;
+  return S.items.find(i=>{
+    if(excludeItemId&&i.id===excludeItemId) return false;
+    if(i.type==='wishlist') return false;
+    const iRaw=(i.name||'').trim().toLowerCase();
+    const iNorm=stripDuplicateNameSuffix(i.name).toLowerCase();
+    return iRaw===raw||(norm&&iNorm===norm);
+  })||null;
+}
+
+function closeDuplicateNameDialog(){
+  document.getElementById('dupNameOverlay')?.remove();
+}
+
+function showDuplicateNameDialog(name, existing, onSaveAnyway){
+  closeDuplicateNameDialog();
+  document.body.insertAdjacentHTML('beforeend',`
+    <div id="dupNameOverlay" class="dialog-overlay" style="z-index:1100" onclick="if(event.target===this)closeDuplicateNameDialog()">
+      <div class="dialog-panel dialog-panel--440" onclick="event.stopPropagation()">
+        <div class="mtitle">Duplicate name</div>
+        <p style="font-size:14px;line-height:1.5;color:var(--text-d);margin:0 0 16px">
+          You already have <strong>${esc(existing.name)}</strong> in your Camping Kit. Still save <strong>${esc(name)}</strong>?
+        </p>
+        <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">
+          <button type="button" class="btn btn-o" onclick="closeDuplicateNameDialog();document.getElementById('iName')?.focus()">Change name</button>
+          <button type="button" class="btn btn-p" onclick="closeDuplicateNameDialog();onSaveAnyway()">Save anyway</button>
+        </div>
+      </div>
+    </div>`);
+}
+
 function nextDuplicateName(sourceName){
   const stripped=stripDuplicateNameSuffix(sourceName)||sourceName;
   const existing=new Set(S.items.map(i=>i.name.toLowerCase()));
@@ -4435,7 +4485,7 @@ function promoteWish(id){
   if(kitSyncResults.length) toastKitSyncedToTrips(kitSyncResults);
 }
 
-function openAddItemModal(){
+function openAddItemModal(prefillName){
   editItemId=null;
   window._pendingDupSubs=null;
   document.getElementById('imt').textContent='Add Item';
@@ -4443,8 +4493,48 @@ function openAddItemModal(){
   populateDynamicDropdowns(getCats()[0]?.id, getLocs()[0]?.id, '');
   populateParentDropdown(null);
   populatePersonButtons([]);
+  if(prefillName) document.getElementById('iName').value=String(prefillName).trim();
   openM('itemModal');
   setTimeout(()=>document.getElementById('iName').focus(),50);
+}
+
+/** Empty kit search — create line with current search text as name (APE-28). */
+function openAddItemFromSearch(){
+  const q=String(document.getElementById('srch')?.value||'').trim();
+  openAddItemModal(q||undefined);
+}
+
+function focusKitItemAfterSave(itemId, isNew){
+  if(!itemId) return;
+  const item=S.items.find(i=>i.id===itemId);
+  if(!item||item.type==='wishlist') return;
+  _focusInvItemId=itemId;
+  const topId=item.parentId||item.id;
+  const top=S.items.find(i=>i.id===topId);
+  if(top){
+    expandedInvGroups.add(topId);
+    if(top.category) collapsedCats.delete(top.category);
+    if(top.location) collapsedInvLocs.delete(top.location);
+  }
+  if(isNew){
+    const srchEl=document.getElementById('srch');
+    if(srchEl) srchEl.value='';
+    updateSwClear('srch');
+  }
+  const navBtn=document.getElementById('navKitBtn');
+  if(mainTab!=='inv') setTab('inv', navBtn);
+  else renderInv();
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      const row=document.getElementById('invrow-'+itemId)||(topId?document.getElementById('invrow-'+topId):null);
+      if(row){
+        row.scrollIntoView({behavior:'smooth', block:'center'});
+        row.classList.add('inv-row-focus');
+        setTimeout(()=>row.classList.remove('inv-row-focus'), 2500);
+      }
+      _focusInvItemId=null;
+    });
+  });
 }
 
 function openAddSubModal(parentId){
@@ -4852,11 +4942,16 @@ function updatePersonFilterSelect(){
   });
 }
 
-function saveItem(){
+function saveItem(skipDuplicateCheck){
   const name=document.getElementById('iName').value.trim();
   if(!name){ document.getElementById('iName').focus(); return; }
-  const similar=S.items.find(i=>i.id!==editItemId&&i.name.toLowerCase()===name.toLowerCase());
-  if(similar&&!confirm('You already have an item named "'+similar.name+'". Save anyway?')) return;
+  if(!skipDuplicateCheck&&isItemModalCreateMode()){
+    const similar=findDuplicateKitItemName(name);
+    if(similar){
+      showDuplicateNameDialog(name, similar, ()=>saveItem(true));
+      return;
+    }
+  }
   const parentId=document.getElementById('iParent').value||null;
   const data={
     name,
@@ -4895,11 +4990,16 @@ function saveItem(){
     }
     window._forgotResolve=null;
   }
+  const savedId=editItemId||newItemId;
+  const isNew=!editItemId;
   const kitSyncResults=data.type==='wishlist'?[]:syncKitChangesToActiveTripChecklists();
   save(); closeM('itemModal');
   if(kitSyncResults.length) toastKitSyncedToTrips(kitSyncResults);
-  if(activeTripId) renderTrips();
-  else renderAll();
+  if(data.type==='wishlist') renderAll();
+  else{
+    focusKitItemAfterSave(savedId, isNew);
+    if(activeTripId) renderTrips();
+  }
 }
 
 // ══════════════════════════════════════════════════
@@ -5210,7 +5310,7 @@ function graduateTripIdea(tripId){
 // MODAL HELPERS
 // ══════════════════════════════════════════════════
 function openM(id){ document.getElementById(id).classList.add('on'); }
-function closeM(id){ document.getElementById(id).classList.remove('on'); if(id==='itemModal'){ closeParentPickerList(); window._parentPickerLocked=false; window._forgotResolve=null; window._pendingDupSubs=null; } }
+function closeM(id){ document.getElementById(id).classList.remove('on'); if(id==='itemModal'){ editItemId=null; closeDuplicateNameDialog(); closeParentPickerList(); window._parentPickerLocked=false; window._forgotResolve=null; window._pendingDupSubs=null; } }
 function closeMOver(e,id){
   if(e.target!==document.getElementById(id)) return;
   if(id==='searchModal') closeSearchDrawer();
