@@ -61,6 +61,14 @@ Durables (`always` / `house` / `seasonal`) are excluded entirely from shortfall/
   a separate "to buy: N" line?
 - Where does the prep strip live exactly (planning vs start-of-packing) and is it dismissible?
 
+## Future companion — count-aware packing ([APE-56](https://linear.app/aperturegraph/issue/APE-56))
+
+Today a checklist line is a single status (unchecked → ready → packed); a `×N` line assumes the
+whole quantity packs on one tap. A companion enhancement adds **opt-in partial counts** on `×N`
+lines only: a small `8 / 12` with −/+ steppers (persist `ci.packedQty`), auto-flipping to
+`packed` at N so the one-tap path still means "all of them". Pairs with this batch's "what's
+left" framing. Default stays whole-line tap — counts are an addition, never required.
+
 ## Out of scope
 
 - Any stock tracking for non-consumables.

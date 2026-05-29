@@ -1087,7 +1087,9 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
     <div class="fg"><label class="fl">Location</label>
       <select class="fs" id="iLoc"></select>
     </div>
-    <div class="fg"><label class="fl">Quantity</label><input class="fi" id="iQty" type="number" min="0" value="1"></div>
+    <div class="fg"><label class="fl">Quantity</label><input class="fi" id="iQty" type="number" min="0" value="1">
+      <div class="qtyrule-hint" id="iQtyStockHint" style="display:none">Trip amount is calculated below. Quantity is your stock on hand.</div>
+    </div>
   </div>
   <div class="fg" id="iQtyRuleBlock">
     <label class="fl">Trip quantity</label>
@@ -5137,8 +5139,11 @@ function qtyRuleSummaryText(rule){
 }
 
 function updateQtyRuleSummary(){
+  const rule=currentQtyRuleFromForm();
   const el=document.getElementById('iQtyRuleSummaryText');
-  if(el) el.textContent=qtyRuleSummaryText(currentQtyRuleFromForm());
+  if(el) el.textContent=qtyRuleSummaryText(rule);
+  const hint=document.getElementById('iQtyStockHint');
+  if(hint) hint.style.display=rule?'block':'none';
 }
 
 function setQtyRuleForm(rule){
