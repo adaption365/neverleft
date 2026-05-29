@@ -653,6 +653,12 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 .pt-learn-row--resolved{opacity:.88}
 .camp-log-strip{display:flex;gap:8px;align-items:center;margin-bottom:12px;padding:10px 12px;background:rgba(212,144,42,.08);border:1px solid rgba(212,144,42,.25);border-radius:10px;flex-wrap:wrap}
 .camp-log-strip--slim{background:var(--canvas-3);border-color:var(--border)}
+/* ── Quantity rule editor ── */
+.qtyrule-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 11px;background:var(--canvas-3);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text-d)}
+.qtyrule-toggle{flex-shrink:0;background:transparent;border:none;color:var(--sage);font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:600;cursor:pointer;padding:0}
+.qtyrule-toggle:hover{text-decoration:underline}
+.qtyrule-editor{margin-top:8px;padding:11px 12px;background:var(--canvas-2);border:1px solid var(--border);border-radius:8px}
+.qtyrule-hint{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);line-height:1.4;margin-top:5px}
 /* ── Daily camp journal ── */
 .jrnl{margin-bottom:8px}
 .jrnl-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
@@ -1082,6 +1088,29 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
       <select class="fs" id="iLoc"></select>
     </div>
     <div class="fg"><label class="fl">Quantity</label><input class="fi" id="iQty" type="number" min="0" value="1"></div>
+  </div>
+  <div class="fg" id="iQtyRuleBlock">
+    <label class="fl">Trip quantity</label>
+    <div class="qtyrule-summary">
+      <span id="iQtyRuleSummaryText">Fixed — uses Quantity above</span>
+      <button type="button" class="qtyrule-toggle" id="iQtyRuleToggle" onclick="toggleQtyRuleEditor()">Scale for trip…</button>
+    </div>
+    <div class="qtyrule-editor" id="iQtyRuleEditor" style="display:none">
+      <select class="fs" id="iQtyKind" onchange="onQtyKindChange()">
+        <option value="fixed">Fixed — use Quantity</option>
+        <option value="perNight">Per night</option>
+        <option value="perPersonPerNight">Per person, per night</option>
+      </select>
+      <div class="fg" id="iQtyRateRow" style="display:none;margin-top:8px">
+        <label class="fl">Units per night</label>
+        <input class="fi" id="iQtyRate" type="number" min="0.1" step="0.1" value="1" oninput="updateQtyRuleSummary()">
+        <div class="qtyrule-hint">0.5 = one every two nights · 1 = one each night</div>
+      </div>
+      <div class="fg" style="display:flex;gap:14px;margin-top:6px">
+        <label class="ck"><input type="checkbox" id="iQtySpare" onchange="updateQtyRuleSummary()"> Add one spare</label>
+        <label class="ck"><input type="checkbox" id="iQtyRemote" onchange="updateQtyRuleSummary()"> One more if remote</label>
+      </div>
+    </div>
   </div>
   <div class="frow">
     <div class="fg"><label class="fl">Season</label>
@@ -1547,6 +1576,10 @@ function load(){
       save();
     }
     if(!S.items) S.items=[];
+    S.items.forEach(i=>{
+      if(i.qtyRule) i.qtyRule=normalizeQtyRule(i.qtyRule);
+      else if(i.type==='consumable'){ const lg=legacyQtyRuleForName(i.name); if(lg) i.qtyRule=lg; }
+    });
     if(!S.trips) S.trips=[];
     S.trips.forEach(t=>{
       if(!Array.isArray(t.manualIncludeIds)) t.manualIncludeIds=[];
@@ -1894,12 +1927,68 @@ function getHL(trip){
   return h;
 }
 
+// ── Quantity rules (APE-21) ──
+function normalizeQtyRule(r){
+  if(!r||typeof r!=='object') return null;
+  const kind=['fixed','perNight','perPersonPerNight'].includes(r.kind)?r.kind:'fixed';
+  if(kind==='fixed') return null;
+  let rate=Number(r.rate);
+  if(!isFinite(rate)||rate<=0) rate=1;
+  return { kind, rate, spare:!!r.spare, remoteBuffer:!!r.remoteBuffer };
+}
+
+/** Legacy name-based rules (toilet roll / gas / dog food), migrated to explicit qtyRule. */
+function legacyQtyRuleForName(name){
+  const n=String(name||'');
+  if(/toilet.?roll/i.test(n)) return {kind:'perNight',rate:0.5,spare:false,remoteBuffer:true};
+  if(/\bgas\b/i.test(n))      return {kind:'perNight',rate:1/3,spare:false,remoteBuffer:true};
+  if(/dog.?food/i.test(n))    return {kind:'perNight',rate:1,spare:true,remoteBuffer:false};
+  return null;
+}
+
+/** People count for a per-person rule: assigned attendees on this trip, else whole roster. */
+function tripPeopleCountForItem(item, trip){
+  const roster=effectiveTripAttendeeIds(trip);
+  const assigned=(item.personIds||[]).filter(id=>roster.has(id));
+  return Math.max(1, assigned.length?assigned.length:roster.size);
+}
+
+function computeTripQty(item, trip){
+  const r=normalizeQtyRule(item&&item.qtyRule);
+  if(!r) return item.qty;
+  const n=Math.max(1, Number(trip&&trip.nights)||1);
+  let base;
+  if(r.kind==='perNight') base=Math.ceil(n*r.rate - 1e-9);
+  else if(r.kind==='perPersonPerNight') base=Math.ceil(n*r.rate*tripPeopleCountForItem(item,trip) - 1e-9);
+  else base=item.qty;
+  const qty=base + (r.spare?1:0) + (r.remoteBuffer&&trip.distance==='remote'?1:0);
+  return Math.max(0, qty);
+}
+
+/** Plain-language explanation of a trip-scaled quantity, for tooltips. */
+function tripQtyExplain(item, trip){
+  const r=normalizeQtyRule(item&&item.qtyRule);
+  if(!r) return '';
+  const n=Math.max(1, Number(trip&&trip.nights)||1);
+  const bits=[];
+  if(r.kind==='perPersonPerNight'){
+    const ppl=tripPeopleCountForItem(item,trip);
+    bits.push(n+' night'+(n!==1?'s':'')+' × '+ppl+' '+(ppl!==1?'people':'person')+(r.rate!==1?' × '+r.rate:''));
+  } else {
+    bits.push(r.rate===1?n+' night'+(n!==1?'s':''):n+' nights × '+r.rate+'/night');
+  }
+  if(r.spare) bits.push('+1 spare');
+  if(r.remoteBuffer&&trip.distance==='remote') bits.push('+1 remote');
+  return bits.join(' · ');
+}
+
 function adjQty(item, trip){
-  if(item.type!=='consumable') return item.qty;
-  const n=trip.nights||3;
-  if(/toilet.roll/i.test(item.name)) return Math.ceil(n/2)+(trip.distance==='remote'?1:0);
-  if(/gas/i.test(item.name)) return Math.max(1,Math.ceil(n/3))+(trip.distance==='remote'?1:0);
-  if(/dog.food/i.test(item.name)) return n+1;
+  if(normalizeQtyRule(item&&item.qtyRule)) return computeTripQty(item,trip);
+  // Legacy fallback for un-migrated demo/user consumables
+  if(item.type==='consumable'){
+    const legacy=legacyQtyRuleForName(item.name);
+    if(legacy) return computeTripQty({...item,qtyRule:legacy},trip);
+  }
   return item.qty;
 }
 
@@ -3842,7 +3931,7 @@ function ciRow(ci,item,trip,hl){
         })()}</div>
         ${tapNudge}
         <div class="ci-meta">
-          ${qty>1?`<span class="ci-qty">×${qty}</span>`:''}
+          ${qty>1?`<span class="ci-qty"${tripQtyExplain(item,trip)?` title="${esc(tripQtyExplain(item,trip))}"`:''}>×${qty}</span>`:''}
           ${packsRoute}
           ${(S.people||[]).filter(p=>(item.personIds||[]).includes(p.id)).map(p=>`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55">${esc(p.name)}</span>`).join('')}
           ${isHL?`<span class="hl-tag">▲ ${(hl[item.id]||[]).map(x=>esc(x)).join(', ')}</span>`:''}
@@ -3877,7 +3966,7 @@ function ciRow(ci,item,trip,hl){
           ${tapNudge}
           ${collapsedHint}
           <div class="ci-meta">
-            ${qty>1?`<span class="ci-qty">×${qty}</span>`:''}
+            ${qty>1?`<span class="ci-qty"${tripQtyExplain(item,trip)?` title="${esc(tripQtyExplain(item,trip))}"`:''}>×${qty}</span>`:''}
             ${packsRoute}
             ${(S.people||[]).filter(p=>(item.personIds||[]).includes(p.id)).map(p=>`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55">${esc(p.name)}</span>`).join('')}
             ${isHL?`<span class="hl-tag">▲ ${(hl[item.id]||[]).map(x=>esc(x)).join(', ')}</span>`:''}
@@ -4847,6 +4936,7 @@ function fillItemFormForDuplicate(item){
   document.getElementById('iCat').value=item.category;
   document.getElementById('iLoc').value=item.location;
   document.getElementById('iQty').value=item.qty;
+  setQtyRuleForm(item.qtyRule);
   document.getElementById('iSeason').value=item.season||'all';
   document.getElementById('iRestock').checked=!!item.restock;
   document.getElementById('iContainer').checked=!!item.isContainer;
@@ -4979,6 +5069,7 @@ function openEditItemModal(id){
   document.getElementById('iCat').value=item.category;
   document.getElementById('iLoc').value=item.location;
   document.getElementById('iQty').value=item.qty;
+  setQtyRuleForm(item.qtyRule);
   document.getElementById('iSeason').value=item.season||'all';
   document.getElementById('iRestock').checked=!!item.restock;
   document.getElementById('iContainer').checked=!!item.isContainer;
@@ -5000,8 +5091,66 @@ function clearItemForm(){
   document.getElementById('iRestock').checked=false;
   document.getElementById('iContainer').checked=false;
   document.getElementById('iPacksInto').value='';
+  setQtyRuleForm(null);
   window._itemActions=[];
   renderItemActionsList();
+}
+
+// ── Quantity rule editor (APE-18) ──
+function toggleQtyRuleEditor(force){
+  const ed=document.getElementById('iQtyRuleEditor');
+  if(!ed) return;
+  const show=force!=null?force:ed.style.display==='none';
+  ed.style.display=show?'block':'none';
+  const tog=document.getElementById('iQtyRuleToggle');
+  if(tog) tog.textContent=show?'Hide':'Scale for trip…';
+}
+
+function onQtyKindChange(){
+  const kind=document.getElementById('iQtyKind').value;
+  const row=document.getElementById('iQtyRateRow');
+  if(row) row.style.display=(kind==='fixed')?'none':'block';
+  updateQtyRuleSummary();
+}
+
+function currentQtyRuleFromForm(){
+  const kind=document.getElementById('iQtyKind')?.value||'fixed';
+  if(kind==='fixed') return null;
+  return normalizeQtyRule({
+    kind,
+    rate:parseFloat(document.getElementById('iQtyRate')?.value)||1,
+    spare:!!document.getElementById('iQtySpare')?.checked,
+    remoteBuffer:!!document.getElementById('iQtyRemote')?.checked,
+  });
+}
+
+function qtyRuleSummaryText(rule){
+  const r=normalizeQtyRule(rule);
+  if(!r) return 'Fixed — uses Quantity above';
+  const per=r.kind==='perPersonPerNight'?'per person/night':'per night';
+  let s=(r.rate===1?'1':String(r.rate))+' '+per;
+  const ex=[];
+  if(r.spare) ex.push('+1 spare');
+  if(r.remoteBuffer) ex.push('+1 remote');
+  if(ex.length) s+=' · '+ex.join(' · ');
+  return s;
+}
+
+function updateQtyRuleSummary(){
+  const el=document.getElementById('iQtyRuleSummaryText');
+  if(el) el.textContent=qtyRuleSummaryText(currentQtyRuleFromForm());
+}
+
+function setQtyRuleForm(rule){
+  const r=normalizeQtyRule(rule);
+  const kindEl=document.getElementById('iQtyKind');
+  if(!kindEl) return;
+  kindEl.value=r?r.kind:'fixed';
+  document.getElementById('iQtyRate').value=r?r.rate:1;
+  document.getElementById('iQtySpare').checked=r?r.spare:false;
+  document.getElementById('iQtyRemote').checked=r?r.remoteBuffer:false;
+  onQtyKindChange();
+  toggleQtyRuleEditor(!!r);
 }
 
 function populateDynamicDropdowns(selectedCat, selectedLoc, selectedActivity){
@@ -5364,6 +5513,7 @@ function saveItem(skipDuplicateCheck){
     category:document.getElementById('iCat').value,
     location:document.getElementById('iLoc').value,
     qty:parseInt(document.getElementById('iQty').value)||1,
+    qtyRule:currentQtyRuleFromForm(),
     season:document.getElementById('iSeason').value,
     activity:document.getElementById('iActivity').value,
     restock:document.getElementById('iRestock').checked,
@@ -8558,6 +8708,7 @@ function importData(event){
         category:    i.category||'other',
         location:    i.location||'shed',
         qty:         (i.qty!=null)?Number(i.qty):1,
+        qtyRule:     normalizeQtyRule(i.qtyRule),
         season:      i.season||'all',
         activity:    i.activity||'',
         restock:     !!i.restock,
@@ -9258,7 +9409,7 @@ function demoData(){
     {id:kitchenId,parentId:null,name:'Kitchen Camping Kit',type:'always',category:'kitchen',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:true,packsInto:'car',personIds:[],notes:'',actions:[]},
     {id:u(),parentId:kitchenId,name:'Camping stove',type:'always',category:'kitchen',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'',
       actions:[{id:u(),label:'Clean burner heads',stage:'post-trip'}]},
-    {id:u(),parentId:kitchenId,name:'Gas canisters',type:'consumable',category:'kitchen',location:'duffle',qty:2,season:'all',activity:'',restock:true,notes:'Check level before trip',isContainer:false,packsInto:'car',personIds:[],
+    {id:u(),parentId:kitchenId,name:'Gas canisters',type:'consumable',category:'kitchen',location:'duffle',qty:2,qtyRule:{kind:'perNight',rate:1/3,spare:false,remoteBuffer:true},season:'all',activity:'',restock:true,notes:'Check level before trip',isContainer:false,packsInto:'car',personIds:[],
       actions:[{id:u(),label:'Check gas level — shake to test',stage:'pre-trip'}]},
     {id:u(),parentId:kitchenId,name:'Cooking pot & lid',type:'always',category:'kitchen',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'',actions:[]},
     {id:u(),parentId:kitchenId,name:'Plates, cups & cutlery',type:'always',category:'kitchen',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'',actions:[]},
@@ -9268,7 +9419,7 @@ function demoData(){
     // ── HYGIENE ──
     {id:u(),parentId:null,name:'Towels',type:'house',category:'hygiene',location:'house',qty:4,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dadId,mumId,kid1Id,kid2Id],notes:'One each',actions:[]},
     {id:u(),parentId:null,name:'Beach towels',type:'seasonal',category:'hygiene',location:'house',qty:4,season:'summer',activity:'beach',restock:false,isContainer:false,packsInto:'car',personIds:[dadId,mumId,kid1Id,kid2Id],notes:'',actions:[]},
-    {id:u(),parentId:null,name:'Toilet roll',type:'consumable',category:'hygiene',location:'duffle',qty:4,season:'all',activity:'',restock:true,notes:'',isContainer:false,packsInto:'car',personIds:[],actions:[]},
+    {id:u(),parentId:null,name:'Toilet roll',type:'consumable',category:'hygiene',location:'duffle',qty:4,qtyRule:{kind:'perNight',rate:0.5,spare:false,remoteBuffer:true},season:'all',activity:'',restock:true,notes:'',isContainer:false,packsInto:'car',personIds:[],actions:[]},
     {id:u(),parentId:null,name:'First aid kit',type:'always',category:'hygiene',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'Check contents before remote trips',
       actions:[{id:u(),label:'Check nothing expired',stage:'pre-trip'},{id:u(),label:'Restock any used items',stage:'post-trip'}]},
     {id:u(),parentId:null,name:'Sun cream',type:'consumable',category:'hygiene',location:'duffle',qty:1,season:'summer',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'Factor 50 for kids',actions:[]},
@@ -9277,7 +9428,7 @@ function demoData(){
     // ── DOG KIT ──
     {id:dogKitId,parentId:null,name:"Biscuit's Camping Kit",type:'always',category:'dog',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:true,packsInto:'car',personIds:[dogId],notes:'',actions:[]},
     {id:u(),parentId:dogKitId,name:'Dog lead & harness',type:'always',category:'dog',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dogId],notes:'',actions:[]},
-    {id:u(),parentId:dogKitId,name:'Dog food (4 days)',type:'consumable',category:'dog',location:'house',qty:4,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dogId],notes:'Pack from kitchen',actions:[]},
+    {id:u(),parentId:dogKitId,name:'Dog food (4 days)',type:'consumable',category:'dog',location:'house',qty:4,qtyRule:{kind:'perNight',rate:1,spare:true,remoteBuffer:false},season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dogId],notes:'Pack from kitchen',actions:[]},
     {id:u(),parentId:dogKitId,name:'Dog water bowl',type:'always',category:'dog',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dogId],notes:'',actions:[]},
     {id:u(),parentId:dogKitId,name:'Dog poo bags',type:'consumable',category:'dog',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dogId],notes:'',actions:[]},
     {id:u(),parentId:dogKitId,name:"Biscuit's bed",type:'always',category:'dog',location:'shed',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dogId],notes:'The grey fleece one',actions:[{id:u(),label:'Shake out and air',stage:'post-trip'}]},
@@ -9292,6 +9443,7 @@ function demoData(){
     {id:u(),parentId:null,name:'Hiking boots',type:'always',category:'clothing',location:'house',qty:1,season:'all',activity:'hiking',restock:false,isContainer:false,packsInto:'car',personIds:[dadId,mumId],notes:'',actions:[]},
     {id:u(),parentId:null,name:'Kids walking shoes',type:'always',category:'clothing',location:'house',qty:1,season:'all',activity:'hiking',restock:false,isContainer:false,packsInto:'car',personIds:[kid1Id,kid2Id],notes:'',actions:[]},
     {id:u(),parentId:null,name:'Waterproof jackets',type:'always',category:'clothing',location:'house',qty:4,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dadId,mumId,kid1Id,kid2Id],notes:'One each',actions:[]},
+    {id:u(),parentId:clothingId,name:'Socks',type:'house',category:'clothing',location:'house',qty:4,qtyRule:{kind:'perPersonPerNight',rate:1,spare:false,remoteBuffer:false},season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dadId,mumId,kid1Id,kid2Id],notes:'One pair each, per night',actions:[]},
 
     // ── OTHER ──
     {id:speakerId,parentId:null,name:'Portable speaker',type:'always',category:'other',location:'house',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'',

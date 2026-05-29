@@ -19,10 +19,10 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [APE-15](https://linear.app/aperturegraph/issue/APE-15) | forgotten_item… | `copy-ritual` |
 | [APE-16](https://linear.app/aperturegraph/issue/APE-16) | forgotten_item… | `data-model` |
 | [APE-17](https://linear.app/aperturegraph/issue/APE-17) | forgotten_item… | `camp-mode-ux` |
-| [APE-18](https://linear.app/aperturegraph/issue/APE-18) | forgotten_item… | `qty-rules-ux` |
+| [APE-18](https://linear.app/aperturegraph/issue/APE-18) | batch_f… / forgotten_item… | `qty-rules-ux` — Ready for testing (Batch F) |
 | [APE-19](https://linear.app/aperturegraph/issue/APE-19) | batch_e… / forgotten_item… | `close-loop-later` — full capstone (Batch E) |
 | [APE-20](https://linear.app/aperturegraph/issue/APE-20) | packable_parent… | `add-sub-prompt` |
-| [APE-21](https://linear.app/aperturegraph/issue/APE-21) | forgotten_item… | `qty-rules-model` |
+| [APE-21](https://linear.app/aperturegraph/issue/APE-21) | batch_f… / forgotten_item… | `qty-rules-model` — Ready for testing (Batch F) |
 | [APE-22](https://linear.app/aperturegraph/issue/APE-22) | packable_parent… | `kit-editor-copy` |
 | [APE-23](https://linear.app/aperturegraph/issue/APE-23) | forgotten_item… | `post-trip-ui` |
 | [APE-24](https://linear.app/aperturegraph/issue/APE-24) | kit_parent_picker… | `move-to-group-menu` |
@@ -30,6 +30,7 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [APE-26](https://linear.app/aperturegraph/issue/APE-26) | trip_experience_hub | Phase 2 — print cover (Done) |
 | [APE-27](https://linear.app/aperturegraph/issue/APE-27) | trip_experience_hub | Phase 2 — custom site rules settings (Done) |
 | [APE-52](https://linear.app/aperturegraph/issue/APE-52) | backlog_batches… | Trip workflow UX revisit (stepper, completion, undo) — discovery |
+| [APE-55](https://linear.app/aperturegraph/issue/APE-55) | consumable_stock_shortfall… | Consumable stock & shortfall → shopping (Batch K; depends on F) |
 
 **Build order** (Linear priority): demo graduation + backup (APE-12–14, APE-13) → trip experience polish (APE-11, APE-25–27, APE-26) → camp mode (APE-15–17, APE-23) → qty rules (APE-21, APE-18) → kit UX (APE-20, APE-22, APE-24).
 
@@ -41,6 +42,8 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 |------|--------|---------|
 | [backlog_batches_wave1_wave2.plan.md](backlog_batches_wave1_wave2.plan.md) | Living | Retrospective batch order (Wave 1–2 shipped + Wave 2 Batch C scope) |
 | [batch_e_camp_learnings.plan.md](batch_e_camp_learnings.plan.md) | Done | Batch E — camp daily journal (notes/meals/weather/prompts), no-guilt learnings, APE-19 (commit `dfa534b`) |
+| [batch_f_quantity_rules.plan.md](batch_f_quantity_rules.plan.md) | Ready for testing | Batch F — per-item `qtyRule` (perNight / perPersonPerNight), progressive-disclosure editor, checklist ×N tooltip (APE-21, APE-18) |
+| [consumable_stock_shortfall.plan.md](consumable_stock_shortfall.plan.md) | Queued | Batch K — consumable-only stock vs trip demand → shopping shortfall (APE-55; depends on F) |
 | [forgotten_item_feature_ux_d218206d.plan.md](forgotten_item_feature_ux_d218206d.plan.md) | Partial | Camp learnings largely in app; qty rules + camp reframe remain |
 | [packable_parent_vs_group_container.plan.md](packable_parent_vs_group_container.plan.md) | Partial | Kit grouping vs packable bag/box; editor copy + add-sub prompt; checklist dual-row UX done |
 | [kit_parent_picker_ux.plan.md](kit_parent_picker_ux.plan.md) | Partial | Searchable / A–Z group picker + locked “Add to group”; “Move to group” menu deferred |
