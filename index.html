@@ -626,6 +626,15 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 .pt-banner{background:var(--canvas-3);border:none;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.06);padding:16px;margin-bottom:16px}
 .pt-title{font-family:'Familjen Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.01em;text-transform:none;margin-bottom:4px;color:var(--amber)}
 .pt-sub{font-size:12px;color:var(--text-m);line-height:1.45}
+.pt-jrnl{margin-bottom:20px;padding:14px 16px;background:var(--canvas-2);border:1px solid var(--border);border-radius:12px}
+.pt-jrnl-hdr{font-family:'Newsreader',serif;font-size:18px;font-weight:600;color:var(--text);margin-bottom:3px}
+.pt-jrnl-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);line-height:1.45;margin-bottom:14px}
+.pt-jrnl-day{padding:10px 0;border-top:1px solid var(--border)}
+.pt-jrnl-day:first-of-type{border-top:none;padding-top:2px}
+.pt-jrnl-day-hd{font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sage);margin-bottom:7px}
+.pt-jrnl-note{font-size:13px;line-height:1.5;color:var(--text-d);white-space:pre-wrap;word-break:break-word;padding:4px 0}
+.pt-jrnl-meal{font-size:12px;line-height:1.45;color:var(--text-m);padding:3px 0}
+.pt-jrnl-meal-slot{font-family:'Familjen Grotesk',sans-serif;font-weight:700;color:var(--text-d)}
 .pt-learn{margin-bottom:18px;padding:12px 14px;background:var(--canvas-3);border-radius:10px;border:1px solid var(--border)}
 .pt-learn-hdr{font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
 .pt-learn-hdr--forgot{color:var(--rust)}
@@ -643,6 +652,50 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 .pt-learn-badge--dismissed{color:var(--text-m);background:var(--canvas-3);border:1px solid var(--border)}
 .pt-learn-row--resolved{opacity:.88}
 .camp-log-strip{display:flex;gap:8px;align-items:center;margin-bottom:12px;padding:10px 12px;background:rgba(212,144,42,.08);border:1px solid rgba(212,144,42,.25);border-radius:10px;flex-wrap:wrap}
+.camp-log-strip--slim{background:var(--canvas-3);border-color:var(--border)}
+/* ── Daily camp journal ── */
+.jrnl{margin-bottom:8px}
+.jrnl-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.jrnl-title{font-family:'Newsreader',serif;font-size:22px;font-weight:600;line-height:1.15;color:var(--text)}
+.jrnl-date{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:3px;letter-spacing:.04em}
+.jrnl-wx{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text-d);background:var(--canvas-3);border:1px solid var(--border);padding:5px 9px;border-radius:999px;white-space:nowrap;flex-shrink:0}
+.jrnl-wx-tag{font-size:8px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-m);opacity:.8}
+.jrnl-nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:16px;-webkit-overflow-scrolling:touch}
+.jrnl-day-chip{position:relative;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:54px;padding:7px 10px;border:1px solid var(--border);border-radius:10px;background:var(--canvas-2);cursor:pointer;transition:border-color .15s,background .15s}
+.jrnl-day-chip:hover{border-color:var(--sage)}
+.jrnl-day-chip.on{border-color:var(--sage);background:rgba(107,140,90,.12)}
+.jrnl-day-chip-d{font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:700;color:var(--text)}
+.jrnl-day-chip-w{font-family:'DM Mono',monospace;font-size:9px;color:var(--text-m);text-transform:uppercase;letter-spacing:.04em}
+.jrnl-day-chip-dot{position:absolute;top:5px;right:6px;width:5px;height:5px;border-radius:50%;background:var(--sage)}
+.jrnl-prompt{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding:13px 15px;border-left:3px solid var(--gold);background:rgba(200,168,74,.07);border-radius:0 10px 10px 0}
+.jrnl-prompt-q{flex:1;font-family:'Newsreader',serif;font-style:italic;font-size:15px;line-height:1.4;color:var(--text-d)}
+.jrnl-prompt-shuffle{flex-shrink:0;width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--canvas-2);color:var(--text-m);font-size:13px;cursor:pointer;transition:transform .25s,color .15s}
+.jrnl-prompt-shuffle:hover{color:var(--sage);transform:rotate(120deg)}
+.jrnl-sec{margin-bottom:18px}
+.jrnl-sec-hd{font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-m);margin-bottom:8px}
+.jrnl-sec-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);line-height:1.45;margin:0 0 10px}
+.jrnl-empty{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-m);padding:2px 0 8px;margin:0}
+.jrnl-note{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;background:var(--canvas-3);border:1px solid var(--border);border-radius:8px;margin-bottom:7px}
+.jrnl-note-txt{flex:1;font-size:13px;line-height:1.5;color:var(--text-d);white-space:pre-wrap;word-break:break-word}
+.jrnl-note-x{flex-shrink:0;color:var(--text-m);font-size:12px;padding:0 2px}
+.jrnl-note-add{display:flex;gap:8px;align-items:flex-end;margin-top:8px}
+.jrnl-note-input{flex:1;resize:vertical;min-height:42px;margin:0}
+.jrnl-meals{display:flex;flex-direction:column;gap:10px}
+.jrnl-meal{padding:11px 12px;background:var(--canvas-2);border:1px solid var(--border);border-radius:10px}
+.jrnl-meal-hd{font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--text-d);margin-bottom:7px}
+.jrnl-meal-tick{color:var(--sage);font-size:11px}
+.jrnl-meal-in{width:100%;margin:0 0 6px}
+.jrnl-meal-sub{display:flex;gap:6px;margin-bottom:7px}
+.jrnl-meal-sub .fi{flex:1;min-width:0;margin:0;font-size:12px}
+.jrnl-meal-save{width:100%}
+.jrnl-sec--learn{padding:13px 14px;background:var(--canvas-3);border:1px solid var(--border);border-radius:10px}
+.jrnl-learn-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.jrnl-learn-row:last-child{margin-bottom:0}
+.jrnl-learn-row .fi{flex:1;min-width:0;margin:0}
+.jrnl-extras{margin-top:22px;padding-top:18px;border-top:1px solid var(--border)}
+.jrnl-extra-sec{margin-bottom:14px}
+.jrnl-extra-hd{font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-m);margin-bottom:8px}
+@media(min-width:560px){.jrnl-meal-save{width:auto}}
 
 /* ── MODALS ── */
 .mover{display:none;position:fixed;inset:0;background:rgba(10,10,8,.7);z-index:1000;align-items:flex-end;justify-content:center;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
@@ -1507,6 +1560,7 @@ function load(){
         t.excludedItemIds=t.excludedItemIds.filter(id=>ok.has(id));
       }
       normalizeTripLearnings(t);
+      normalizeTripJournal(t);
       normalizeTripExperience(t);
       normalizeTripStages(t);
     });
@@ -4006,6 +4060,8 @@ function postTripBody(trip){
       <div class="pt-sub">Tidy up anything you logged on trip, then check consumables and Camping Kit condition. Take your time — this is for next time, not a scorecard.</div>
     </div>
 
+    ${postTripJournalRecapHtml(trip)}
+
     ${postTripLearningsHtml(trip,allItems)}
 
     ${cons.length?`
@@ -6043,6 +6099,7 @@ function normalizeForgotEntry(e){
     itemId: (e&&e.itemId)||null,
     resolution,
     resolvedItemId: (e&&e.resolvedItemId)||null,
+    day: (e&&e.day!=null&&e.day!=='')?Number(e.day):null,
     at: (e&&e.at)||new Date().toISOString(),
   };
 }
@@ -6053,12 +6110,11 @@ function isCampModeStatus(status){
 
 function atCampBody(trip){
   const todos=actionsBody(trip, ['during']);
-  const checklistLink=`<div style="margin-bottom:14px;padding:10px 12px;border-radius:10px;background:var(--canvas-2);border:1px solid var(--border)">
-    <div style="font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-m);margin-bottom:6px">While you&rsquo;re on site</div>
-    <p style="margin:0 0 8px;font-size:13px;line-height:1.45;color:var(--text-d)">Packing list is done — focus on <strong>while camping</strong> tasks and anything you need on the trip.</p>
+  const extras=`<div class="jrnl-extras">
+    ${todos?`<div class="jrnl-extra-sec"><div class="jrnl-extra-hd">While camping</div>${todos}</div>`:''}
     <button type="button" class="btn btn-o btn-sm" onclick="setTripTab('checklist')">View packing list</button>
   </div>`;
-  return checklistLink+campLogStrip(trip)+todos;
+  return journalBody(trip)+extras;
 }
 
 function forgotResolutionLabel(e){
@@ -6084,6 +6140,7 @@ function normalizeUnusedMark(m){
     id: (m&&m.id)||uid(),
     text: String((m&&m.text)||'').trim(),
     itemId: (m&&m.itemId)||null,
+    day: (m&&m.day!=null&&m.day!=='')?Number(m.day):null,
     at: (m&&m.at)||new Date().toISOString(),
   };
 }
@@ -6112,6 +6169,456 @@ function normalizeTripLearnings(trip){
 function ensureTripLearnings(trip){
   if(!trip) return;
   if(!Array.isArray(trip.forgotEntries)||!Array.isArray(trip.unusedMarks)) normalizeTripLearnings(trip);
+}
+
+// ══════════════════════════════════════════════════
+// DAILY CAMP JOURNAL (APE-15/16/17)
+// ══════════════════════════════════════════════════
+
+function normalizeJournalNote(n){
+  return {
+    id: (n&&n.id)||uid(),
+    day: (n&&n.day!=null&&n.day!=='')?Number(n.day):null,
+    text: String((n&&n.text)||'').trim(),
+    at: (n&&n.at)||new Date().toISOString(),
+  };
+}
+
+function normalizeJournalMeal(m){
+  const slot=['breakfast','lunch','dinner'].includes(m&&m.slot)?m.slot:'breakfast';
+  return {
+    id: (m&&m.id)||uid(),
+    day: (m&&m.day!=null&&m.day!=='')?Number(m.day):null,
+    slot,
+    planned: String((m&&m.planned)||'').trim(),
+    had: String((m&&m.had)||'').trim(),
+    worked: String((m&&m.worked)||'').trim(),
+    didnt: String((m&&m.didnt)||'').trim(),
+    at: (m&&m.at)||new Date().toISOString(),
+  };
+}
+
+function normalizeTripJournal(trip){
+  if(!trip) return;
+  if(!Array.isArray(trip.journalNotes)) trip.journalNotes=[];
+  else trip.journalNotes=trip.journalNotes.map(normalizeJournalNote).filter(n=>n.text);
+  if(!Array.isArray(trip.journalMeals)) trip.journalMeals=[];
+  else trip.journalMeals=trip.journalMeals.map(normalizeJournalMeal).filter(m=>m.had||m.worked||m.didnt||m.planned);
+  if(!trip.journalDayMeta||typeof trip.journalDayMeta!=='object'||Array.isArray(trip.journalDayMeta)) trip.journalDayMeta={};
+}
+
+function ensureTripJournal(trip){
+  if(!trip) return;
+  if(!Array.isArray(trip.journalNotes)||!Array.isArray(trip.journalMeals)||!trip.journalDayMeta||typeof trip.journalDayMeta!=='object') normalizeTripJournal(trip);
+}
+
+function isoLocalDate(d){
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
+/** Ordered day spine for a trip. Dated → one entry per night from trip.date; undated → single bucket. */
+function tripDays(trip){
+  const n=Math.max(1, Number(trip&&trip.nights)||1);
+  const start=tripDayStart(trip&&trip.date);
+  if(!start) return [{index:0, date:null, label:'At camp', weekday:''}];
+  const out=[];
+  for(let i=0;i<n;i++){
+    const d=new Date(start);
+    d.setDate(d.getDate()+i);
+    out.push({
+      index:i,
+      date:isoLocalDate(d),
+      label:'Day '+(i+1),
+      weekday:d.toLocaleDateString('en-GB',{weekday:'short'}),
+    });
+  }
+  return out;
+}
+
+/** Weather for a journal day: frozen memory first, else forecast snapshot matched by date. null if none. */
+function journalDayWeather(trip, dayInfo){
+  ensureTripJournal(trip);
+  const frozen=trip.journalDayMeta[dayInfo.index]&&trip.journalDayMeta[dayInfo.index].weather;
+  if(frozen) return {minC:frozen.minC,maxC:frozen.maxC,code:frozen.code,windKmh:frozen.windKmh,label:frozen.label||wmoWeatherLabel(frozen.code),frozen:true};
+  const w=trip.weather||{};
+  if(dayInfo.date&&Array.isArray(w.days)&&w.days.length){
+    const hit=w.days.find(d=>d.date===dayInfo.date);
+    if(hit&&(hit.minC!=null||hit.maxC!=null||hit.code!=null))
+      return {minC:hit.minC,maxC:hit.maxC,code:hit.code,windKmh:hit.windKmh,label:hit.label||wmoWeatherLabel(hit.code),frozen:false};
+  }
+  return null;
+}
+
+/** Once a day is today or past, snapshot its forecast weather into journalDayMeta so a later refresh can't rewrite the memory. Returns true if anything changed. */
+function freezePastDayWeather(trip){
+  ensureTripJournal(trip);
+  const w=trip.weather||{};
+  if(!Array.isArray(w.days)||!w.days.length) return false;
+  const today=todayDayStart();
+  let changed=false;
+  tripDays(trip).forEach(di=>{
+    if(!di.date) return;
+    if(trip.journalDayMeta[di.index]&&trip.journalDayMeta[di.index].weather) return;
+    const ds=tripDayStart(di.date);
+    if(!ds||ds>today) return;
+    const hit=w.days.find(d=>d.date===di.date);
+    if(hit&&(hit.minC!=null||hit.maxC!=null||hit.code!=null)){
+      trip.journalDayMeta[di.index]=Object.assign({},trip.journalDayMeta[di.index],{
+        weather:{minC:hit.minC,maxC:hit.maxC,code:hit.code,windKmh:hit.windKmh,label:hit.label||wmoWeatherLabel(hit.code),frozenAt:new Date().toISOString()},
+      });
+      changed=true;
+    }
+  });
+  return changed;
+}
+
+function journalWeatherIcon(code){
+  if(code==null) return '🌤️';
+  const c=Number(code);
+  if(c<=1) return '☀️';
+  if(c<=3) return '⛅';
+  if(c<=48) return '🌫️';
+  if(c<=57) return '🌦️';
+  if(c<=67) return '🌧️';
+  if(c<=77) return '❄️';
+  if(c<=82) return '🌦️';
+  return '⛈️';
+}
+
+function journalWeatherBand(code){
+  if(code==null) return null;
+  const c=Number(code);
+  if(c<=1) return 'clear';
+  if(c<=3) return 'cloud';
+  if(c<=48) return 'fog';
+  if(c<=67) return 'rain';
+  if(c<=77) return 'snow';
+  if(c<=82) return 'rain';
+  return 'storm';
+}
+
+// ── Dynamic prompts ──
+
+const JOURNAL_PROMPTS=[
+  {id:'g1', text:'What mattered today?'},
+  {id:'g2', text:'A small moment worth keeping?'},
+  {id:'g3', text:'What did today sound like?'},
+  {id:'g4', text:'Anything that made you smile today?'},
+  {id:'g5', text:'What are you grateful for at camp today?'},
+  {id:'g6', text:'How are you feeling tonight?'},
+  {id:'g7', text:'What surprised you today?'},
+  {id:'first1', text:'First day at {place} — how does it feel to arrive?', when:c=>c.isFirst, weight:4},
+  {id:'first2', text:'You made it to camp. What\u2019s the first thing you noticed?', when:c=>c.isFirst, weight:3},
+  {id:'last1', text:'Last day — one thing worth remembering?', when:c=>c.isLast&&!c.isFirst, weight:4},
+  {id:'last2', text:'Before you head home — what will you miss?', when:c=>c.isLast&&!c.isFirst, weight:3},
+  {id:'morn1', text:'How did you sleep?', when:c=>c.partOfDay==='morning', weight:3},
+  {id:'morn2', text:'How\u2019s the morning at camp?', when:c=>c.partOfDay==='morning', weight:2},
+  {id:'eve1', text:'Make the most of the campfire tonight.', when:c=>c.partOfDay==='evening'||c.partOfDay==='night', weight:3},
+  {id:'eve2', text:'How was the evening?', when:c=>c.partOfDay==='evening'||c.partOfDay==='night', weight:2},
+  {id:'rain1', text:'Rain at camp — how are spirits holding up?', when:c=>c.weather.wet, weight:3},
+  {id:'rain2', text:'Wet one today. Best rainy-day moment so far?', when:c=>c.weather.wet, weight:2},
+  {id:'cold1', text:'Cold night — how did everyone keep warm?', when:c=>c.weather.cold, weight:3},
+  {id:'frost1', text:'Frosty out there. How was the morning chill?', when:c=>c.weather.frost, weight:3},
+  {id:'hot1', text:'Warm one today — how did you make the most of the sun?', when:c=>c.weather.hot, weight:3},
+  {id:'clear1', text:'Clear skies — did you catch the stars last night?', when:c=>c.weather.band==='clear', weight:2},
+  {id:'wind1', text:'Breezy out — is everything still pegged down?', when:c=>c.weather.windy, weight:2},
+  {id:'snow1', text:'Snow at camp — magic or misery?', when:c=>c.weather.band==='snow', weight:3},
+  {id:'dog1', text:'How\u2019s {dog} settling into camp?', when:c=>c.people.hasDog&&c.people.dogName, weight:2},
+  {id:'dog2', text:'Did the dog enjoy today?', when:c=>c.people.hasDog&&!c.people.dogName, weight:2},
+  {id:'solo1', text:'A quiet one to yourself — what\u2019s on your mind?', when:c=>c.people.solo, weight:2},
+  {id:'group1', text:'Good crew around the fire — favourite moment together?', when:c=>c.people.group, weight:2},
+  {id:'place1', text:'What\u2019s the view like at {place} today?', when:c=>!!c.place, weight:2},
+  {id:'hike1', text:'Big walk planned — how are the legs?', when:c=>c.activities.some(a=>/hik|walk|trek|fell|munro/.test(a)), weight:2},
+  {id:'swim1', text:'Was the water worth it today?', when:c=>c.activities.some(a=>/swim|paddle|kayak|canoe|surf/.test(a)), weight:2},
+  {id:'cycle1', text:'How were the trails today?', when:c=>c.activities.some(a=>/cycl|bike|mtb|ride/.test(a)), weight:2},
+];
+
+function buildPromptCtx(trip, dayInfo){
+  const days=tripDays(trip);
+  const w=journalDayWeather(trip,dayInfo);
+  const band=w?journalWeatherBand(w.code):null;
+  const maxC=w?w.maxC:null, minC=w?w.minC:null, windKmh=w?w.windKmh:null;
+  const roster=tripRosterPeople(trip);
+  const dogPid=findLikelyDogPersonId();
+  const hasDog=!!trip.dog||(dogPid&&effectiveTripAttendeeIds(trip).has(dogPid));
+  const dogPerson=dogPid?roster.find(p=>p.id===dogPid):null;
+  const humans=roster.filter(p=>p.id!==dogPid);
+  let partOfDay=null;
+  if(dayInfo.date){
+    const ds=tripDayStart(dayInfo.date), td=todayDayStart();
+    if(ds&&ds.getTime()===td.getTime()){
+      const h=new Date().getHours();
+      partOfDay=h<11?'morning':h<17?'afternoon':h<21?'evening':'night';
+    }
+  }
+  return {
+    dayIndex:dayInfo.index,
+    dayCount:days.length,
+    isFirst:dayInfo.index===0,
+    isLast:dayInfo.index===days.length-1,
+    isMiddle:dayInfo.index>0&&dayInfo.index<days.length-1,
+    partOfDay,
+    season:trip.season||null,
+    weather:{
+      code:w?w.code:null, band,
+      maxC, minC,
+      hot:maxC!=null&&maxC>=24,
+      cold:minC!=null&&minC<=4,
+      frost:minC!=null&&minC<=0,
+      wet:band==='rain'||band==='storm',
+      windy:windKmh!=null&&windKmh>=35,
+    },
+    place:((trip.venue&&trip.venue.name)||'').trim()||null,
+    activities:(trip.activities||[]).map(a=>String(a).toLowerCase()),
+    people:{
+      count:humans.length,
+      firstName:humans[0]?humans[0].name:null,
+      solo:humans.length===1,
+      group:humans.length>=3,
+      hasDog,
+      dogName:dogPerson?dogPerson.name:null,
+    },
+  };
+}
+
+function journalSeededRand(seedStr){
+  let h=2166136261;
+  for(let i=0;i<seedStr.length;i++){ h^=seedStr.charCodeAt(i); h=Math.imul(h,16777619); }
+  return ((h>>>0)%100000)/100000;
+}
+
+function fillPromptTokens(text,ctx){
+  return text
+    .replace(/\{place\}/g, ctx.place||'camp')
+    .replace(/\{firstName\}/g, ctx.people.firstName||'you')
+    .replace(/\{dog\}/g, ctx.people.dogName||'the dog')
+    .replace(/\{dayNum\}/g, String(ctx.dayIndex+1));
+}
+
+function pickJournalPrompt(trip, dayInfo, bump){
+  const ctx=buildPromptCtx(trip,dayInfo);
+  const eligible=JOURNAL_PROMPTS.filter(p=>{
+    if(!p.when) return true;
+    try{ return !!p.when(ctx); }catch(e){ return false; }
+  });
+  const pool=[];
+  eligible.forEach(p=>{ const wt=p.weight||1; for(let i=0;i<wt;i++) pool.push(p); });
+  if(!pool.length) return '';
+  const seed=(trip.id||'')+':'+dayInfo.index+':'+(dayInfo.date||'')+':'+(bump||0);
+  const idx=Math.floor(journalSeededRand(seed)*pool.length)%pool.length;
+  return fillPromptTokens(pool[idx].text, ctx);
+}
+
+// ── Journal state + handlers ──
+
+function journalActiveDayIndex(trip){
+  const days=tripDays(trip);
+  const saved=window._journalDayByTrip&&window._journalDayByTrip[trip.id];
+  if(saved!=null&&saved>=0&&saved<days.length) return saved;
+  const today=todayDayStart();
+  let def=0;
+  days.forEach(d=>{ if(d.date){ const ds=tripDayStart(d.date); if(ds&&ds.getTime()===today.getTime()) def=d.index; } });
+  const lastDated=days[days.length-1];
+  if(lastDated&&lastDated.date){
+    const lastDs=tripDayStart(lastDated.date);
+    if(lastDs&&lastDs<today) def=days.length-1;
+  }
+  return def;
+}
+
+function setJournalDay(tripId, idx){
+  window._journalDayByTrip=window._journalDayByTrip||{};
+  window._journalDayByTrip[tripId]=Number(idx);
+  renderTrips();
+}
+
+function bumpJournalPrompt(tripId, idx){
+  window._journalPromptBump=window._journalPromptBump||{};
+  const k=tripId+':'+idx;
+  window._journalPromptBump[k]=(window._journalPromptBump[k]||0)+1;
+  renderTrips();
+}
+
+function addJournalNote(tripId, day){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  ensureTripJournal(trip);
+  const el=document.getElementById('jrnlNoteInput');
+  const text=(el&&el.value||'').trim();
+  if(!text) return;
+  trip.journalNotes.push(normalizeJournalNote({day,text}));
+  save(); renderTrips();
+}
+
+function removeJournalNote(tripId, noteId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip||!Array.isArray(trip.journalNotes)) return;
+  trip.journalNotes=trip.journalNotes.filter(n=>n.id!==noteId);
+  save(); renderTrips();
+}
+
+function saveJournalMeal(tripId, day, slot){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  ensureTripJournal(trip);
+  const get=k=>(document.getElementById('jm-'+k+'-'+day+'-'+slot)||{}).value||'';
+  const had=get('had').trim(), worked=get('worked').trim(), didnt=get('didnt').trim();
+  let m=trip.journalMeals.find(x=>x.day===day&&x.slot===slot);
+  if(!had&&!worked&&!didnt){
+    if(m){ trip.journalMeals=trip.journalMeals.filter(x=>x!==m); save(); renderTrips(); }
+    return;
+  }
+  if(!m){ m=normalizeJournalMeal({day,slot}); trip.journalMeals.push(m); }
+  m.had=had; m.worked=worked; m.didnt=didnt;
+  save(); renderTrips();
+  showToast('Saved to your journal');
+}
+
+function addJournalForgot(tripId, day){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  ensureTripLearnings(trip);
+  const text=((document.getElementById('jrnlForgotInput')||{}).value||'').trim();
+  if(!text) return;
+  const e=normalizeForgotEntry({text,resolution:'pending'});
+  e.day=day;
+  trip.forgotEntries.push(e);
+  save(); renderTrips();
+  showToast('Noted — no guilt, just a reminder for next time');
+}
+
+function addJournalUnused(tripId, day){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  ensureTripLearnings(trip);
+  const text=((document.getElementById('jrnlUnusedInput')||{}).value||'').trim();
+  if(!text) return;
+  const m=normalizeUnusedMark({text});
+  m.day=day;
+  trip.unusedMarks.push(m);
+  save(); renderTrips();
+  showToast('Noted — something to leave home next time');
+}
+
+function addJournalWishlist(tripId, day){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  const text=((document.getElementById('jrnlWishInput')||{}).value||'').trim();
+  if(!text) return;
+  const loc=getStorageLocs()[0]?.id||getLocs()[0]?.id||'shed';
+  S.items.push({
+    id:uid(), parentId:null, name:text, type:'wishlist',
+    category:'other', location:loc, qty:1, season:'all', activity:'',
+    restock:false, isContainer:false, packsInto:null,
+    notes:'Wished for on '+(trip.name||'trip'),
+    personIds:[], actions:[],
+  });
+  save(); renderTrips();
+  showToast('Added to your Want list');
+}
+
+// ── Journal UI ──
+
+function journalMealRow(trip, day, slot){
+  const m=(trip.journalMeals||[]).find(x=>x.day===day&&x.slot===slot);
+  const lbl={breakfast:'Breakfast',lunch:'Lunch',dinner:'Dinner'}[slot];
+  const ico={breakfast:'🍳',lunch:'🥪',dinner:'🍲'}[slot];
+  const val=k=>m&&m[k]?esc(m[k]):'';
+  const filled=m&&(m.had||m.worked||m.didnt);
+  return `<div class="jrnl-meal">
+    <div class="jrnl-meal-hd">${ico} ${lbl}${filled?' <span class="jrnl-meal-tick">✓</span>':''}</div>
+    <input class="fi jrnl-meal-in" id="jm-had-${day}-${slot}" placeholder="What did you have?" value="${val('had')}">
+    <div class="jrnl-meal-sub">
+      <input class="fi" id="jm-worked-${day}-${slot}" placeholder="Worked well…" value="${val('worked')}">
+      <input class="fi" id="jm-didnt-${day}-${slot}" placeholder="Next time…" value="${val('didnt')}">
+    </div>
+    <button type="button" class="btn btn-o btn-sm jrnl-meal-save" onclick="saveJournalMeal('${trip.id}',${day},'${slot}')">Save</button>
+  </div>`;
+}
+
+function journalBody(trip){
+  ensureTripJournal(trip);
+  ensureTripLearnings(trip);
+  if(freezePastDayWeather(trip)) save();
+
+  const days=tripDays(trip);
+  const active=journalActiveDayIndex(trip);
+  const di=days[active]||days[0];
+  const undated=!di.date;
+
+  const nav=days.length>1?`<div class="jrnl-nav">${days.map(d=>{
+    const on=d.index===active;
+    const has=(trip.journalNotes||[]).some(n=>n.day===d.index)||(trip.journalMeals||[]).some(m=>m.day===d.index);
+    return `<button type="button" class="jrnl-day-chip${on?' on':''}" onclick="setJournalDay('${trip.id}',${d.index})">
+      <span class="jrnl-day-chip-d">${esc(d.label)}</span>
+      ${d.weekday?`<span class="jrnl-day-chip-w">${esc(d.weekday)}</span>`:''}
+      ${has?'<span class="jrnl-day-chip-dot" aria-hidden="true"></span>':''}
+    </button>`;
+  }).join('')}</div>`:'';
+
+  const w=journalDayWeather(trip,di);
+  const wxHtml=w?`<span class="jrnl-wx">${journalWeatherIcon(w.code)} ${(w.minC!=null&&w.maxC!=null)?esc(w.minC+'–'+w.maxC+'°C'):esc(w.label||'')}${(w.minC!=null&&w.maxC!=null&&w.label)?' · '+esc(w.label):''}${w.frozen?'':' <span class="jrnl-wx-tag">forecast</span>'}</span>`:'';
+
+  const dateLabel=di.date?fmtDate(di.date):'';
+  const bump=(window._journalPromptBump||{})[trip.id+':'+active]||0;
+  const prompt=pickJournalPrompt(trip,di,bump);
+
+  const dayNotes=(trip.journalNotes||[]).filter(n=>n.day===di.index).sort((a,b)=>(a.at||'').localeCompare(b.at||''));
+  const notesHtml=dayNotes.length?dayNotes.map(n=>`
+    <div class="jrnl-note">
+      <div class="jrnl-note-txt">${esc(n.text).replace(/\n/g,'<br>')}</div>
+      <button type="button" class="btn-ic jrnl-note-x" onclick="removeJournalNote('${trip.id}','${n.id}')" aria-label="Delete note">✕</button>
+    </div>`).join(''):`<p class="jrnl-empty">No notes for this day yet — jot whatever you want to remember.</p>`;
+
+  const meals=['breakfast','lunch','dinner'].map(s=>journalMealRow(trip,di.index,s)).join('');
+
+  return `
+    <div class="jrnl">
+      <div class="jrnl-head">
+        <div>
+          <div class="jrnl-title">${undated?'At camp':esc(di.label)+' at camp'}</div>
+          ${dateLabel?`<div class="jrnl-date">${esc(dateLabel)}</div>`:''}
+        </div>
+        ${wxHtml}
+      </div>
+      ${nav}
+
+      ${prompt?`<div class="jrnl-prompt">
+        <span class="jrnl-prompt-q">${esc(prompt)}</span>
+        <button type="button" class="jrnl-prompt-shuffle" onclick="bumpJournalPrompt('${trip.id}',${active})" title="Another prompt" aria-label="Another prompt">↻</button>
+      </div>`:''}
+
+      <div class="jrnl-sec">
+        <div class="jrnl-sec-hd">Notes</div>
+        <div class="jrnl-notes">${notesHtml}</div>
+        <div class="jrnl-note-add">
+          <textarea class="fi jrnl-note-input" id="jrnlNoteInput" rows="2" placeholder="Jot a moment from today…"></textarea>
+          <button type="button" class="btn btn-p btn-sm" onclick="addJournalNote('${trip.id}',${di.index})">Add note</button>
+        </div>
+      </div>
+
+      <div class="jrnl-sec">
+        <div class="jrnl-sec-hd">Meals</div>
+        <div class="jrnl-meals">${meals}</div>
+      </div>
+
+      <div class="jrnl-sec jrnl-sec--learn">
+        <div class="jrnl-sec-hd">For next time</div>
+        <p class="jrnl-sec-sub">No guilt — just quick reminders while it's fresh. Sort it all out in Back home review.</p>
+        <div class="jrnl-learn-row">
+          <input class="fi" id="jrnlForgotInput" placeholder="Wished we'd brought…" onkeydown="if(event.key==='Enter')addJournalForgot('${trip.id}',${di.index})">
+          <button type="button" class="btn btn-o btn-sm" onclick="addJournalForgot('${trip.id}',${di.index})">Add</button>
+        </div>
+        <div class="jrnl-learn-row">
+          <input class="fi" id="jrnlUnusedInput" placeholder="Brought but didn't use…" onkeydown="if(event.key==='Enter')addJournalUnused('${trip.id}',${di.index})">
+          <button type="button" class="btn btn-o btn-sm" onclick="addJournalUnused('${trip.id}',${di.index})">Add</button>
+        </div>
+        <div class="jrnl-learn-row">
+          <input class="fi" id="jrnlWishInput" placeholder="Something to want for next time…" onkeydown="if(event.key==='Enter')addJournalWishlist('${trip.id}',${di.index})">
+          <button type="button" class="btn btn-o btn-sm" onclick="addJournalWishlist('${trip.id}',${di.index})">Add</button>
+        </div>
+      </div>
+    </div>`;
 }
 
 function normalizeTripExperience(trip){
@@ -6935,12 +7442,74 @@ function openAddItemFromForgot(tripId,entryId){
   setTimeout(()=>document.getElementById('iName').focus(),50);
 }
 
+// ── APE-19: close the loop — include a learned item on a future trip ──
+
+function forgotItemId(entry){
+  return (entry&&(entry.resolvedItemId||entry.itemId))||null;
+}
+
+function candidateNextTrips(excludeTripId){
+  return (S.trips||[]).filter(t=>{
+    if(t.id===excludeTripId) return false;
+    if(t.status==='complete') return false;
+    if(isTripLogbookEntry(t)) return false;
+    return true;
+  }).sort((a,b)=>{
+    const ad=a.date||'9999-99-99', bd=b.date||'9999-99-99';
+    return ad<bd?-1:ad>bd?1:0;
+  });
+}
+
+function includeForgotOnNextTrip(tripId, entryId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  const entry=trip&&(trip.forgotEntries||[]).find(e=>e.id===entryId);
+  if(!entry) return;
+  const itemId=forgotItemId(entry);
+  const item=itemId?S.items.find(i=>i.id===itemId):null;
+  if(!item||item.type==='wishlist'){ showToast('Add it to your Camping Kit first, then include it'); return; }
+  const cands=candidateNextTrips(tripId);
+  if(!cands.length){ showToast('No upcoming trips yet — create one and it\'ll be ready to add'); return; }
+  if(cands.length===1){ doIncludeOnTrip(cands[0].id, itemId); return; }
+  openIncludeNextTripChooser(itemId, cands);
+}
+
+function doIncludeOnTrip(targetTripId, itemId){
+  const t=S.trips.find(x=>x.id===targetTripId);
+  if(!t){ closeIncludeNextTripChooser(); return; }
+  if(!Array.isArray(t.manualIncludeIds)) t.manualIncludeIds=[];
+  if(!t.manualIncludeIds.includes(itemId)) t.manualIncludeIds.push(itemId);
+  closeIncludeNextTripChooser();
+  save(); renderTrips();
+  const it=S.items.find(i=>i.id===itemId);
+  showToast((it?it.name:'Item')+' added to '+(t.name||'your trip'));
+}
+
+function openIncludeNextTripChooser(itemId, cands){
+  closeIncludeNextTripChooser();
+  const rows=cands.map(t=>{
+    const meta=[t.date?fmtDate(t.date):'Undated',t.nights?t.nights+'n':''].filter(Boolean).join(' · ');
+    return `<button type="button" class="btn btn-o" style="width:100%;text-align:left;margin-bottom:8px" onclick="doIncludeOnTrip('${t.id}','${itemId}')">${esc(t.name||'Trip')}<span style="display:block;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:2px">${esc(meta)}</span></button>`;
+  }).join('');
+  document.body.insertAdjacentHTML('beforeend',`
+    <div id="inclTripOverlay" class="dialog-overlay" onclick="if(event.target===this)closeIncludeNextTripChooser()">
+      <div class="dialog-panel dialog-panel--400" onclick="event.stopPropagation()">
+        <div class="mtitle">Add to which trip?</div>
+        <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);line-height:1.45;margin:8px 0 14px">It&rsquo;ll be added as an extra on that trip&rsquo;s packing list.</p>
+        ${rows}
+        <button type="button" class="btn btn-o" style="width:100%;margin-top:6px" onclick="closeIncludeNextTripChooser()">Cancel</button>
+      </div>
+    </div>`);
+}
+
+function closeIncludeNextTripChooser(){
+  document.getElementById('inclTripOverlay')?.remove();
+}
+
 function campLogStrip(trip){
-  if(!isCampModeStatus(trip.status)) return '';
-  const pending=(trip.forgotEntries||[]).filter(e=>(e.resolution||'pending')==='pending').length;
-  return `<div class="camp-log-strip">
-    <span style="flex:1;min-width:120px;font-size:12px;line-height:1.4;color:var(--text-m)">On trip — jot what you needed. Sort it out properly when you\'re home.</span>
-    <button type="button" class="btn btn-p btn-sm" onclick="openCampLogSheet('${trip.id}')">Log need${pending?' ('+pending+')':''}</button>
+  if(trip.status!=='pack-up'&&trip.status!=='pack-away') return '';
+  return `<div class="camp-log-strip camp-log-strip--slim">
+    <span style="flex:1;min-width:120px;font-size:12px;line-height:1.4;color:var(--text-m)">Still a camp moment to capture? Add it to your journal.</span>
+    <button type="button" class="btn btn-o btn-sm" onclick="setTripTab('at-camp')">Open journal →</button>
   </div>`;
 }
 
@@ -7069,6 +7638,45 @@ function removeUnusedMark(tripId,markId){
   save(); renderTrips();
 }
 
+/** Read-first recap of the daily journal for the post-trip surface (APE-23). */
+function postTripJournalRecapHtml(trip){
+  ensureTripJournal(trip);
+  const notes=trip.journalNotes||[];
+  const meals=trip.journalMeals||[];
+  if(!notes.length&&!meals.length) return '';
+  const days=tripDays(trip);
+  const dayLabel=idx=>{ const d=days[idx]; return d?d.label:(idx==null?'Camp':'Day '+(idx+1)); };
+
+  const dayKeys=[...new Set([...notes.map(n=>n.day),...meals.map(m=>m.day)])]
+    .sort((a,b)=>(a==null?-1:a)-(b==null?-1:b));
+
+  const dayBlocks=dayKeys.map(dk=>{
+    const dn=notes.filter(n=>n.day===dk).sort((a,b)=>(a.at||'').localeCompare(b.at||''));
+    const dm=meals.filter(m=>m.day===dk);
+    const slotOrder={breakfast:0,lunch:1,dinner:2};
+    dm.sort((a,b)=>(slotOrder[a.slot]||0)-(slotOrder[b.slot]||0));
+    const noteHtml=dn.map(n=>`<div class="pt-jrnl-note">${esc(n.text).replace(/\n/g,'<br>')}</div>`).join('');
+    const mealHtml=dm.map(m=>{
+      const slot={breakfast:'Breakfast',lunch:'Lunch',dinner:'Dinner'}[m.slot]||m.slot;
+      const bits=[m.had,m.worked?'👍 '+m.worked:'',m.didnt?'↻ '+m.didnt:''].filter(Boolean).map(esc).join(' · ');
+      return bits?`<div class="pt-jrnl-meal"><span class="pt-jrnl-meal-slot">${slot}</span> ${bits}</div>`:'';
+    }).join('');
+    if(!noteHtml&&!mealHtml) return '';
+    return `<div class="pt-jrnl-day">
+      <div class="pt-jrnl-day-hd">${esc(dk==null?'At camp':dayLabel(dk))}</div>
+      ${noteHtml}
+      ${mealHtml}
+    </div>`;
+  }).filter(Boolean).join('');
+
+  if(!dayBlocks) return '';
+  return `<div class="pt-jrnl">
+    <div class="pt-jrnl-hdr">Your trip, looking back</div>
+    <div class="pt-jrnl-sub">What you captured on site — the days, the food, the moments.</div>
+    ${dayBlocks}
+  </div>`;
+}
+
 function postTripLearningsHtml(trip,allItems){
   ensureTripLearnings(trip);
   const forgot=trip.forgotEntries||[];
@@ -7092,6 +7700,7 @@ function postTripLearningsHtml(trip,allItems){
       </div>`:`
       <div class="pt-learn-actions">
         <button type="button" class="btn btn-o btn-sm" onclick="reopenForgotEntry('${trip.id}','${e.id}')">Undo</button>
+        ${res==='kit'&&e.resolvedItemId?`<button type="button" class="btn btn-p btn-sm" onclick="includeForgotOnNextTrip('${trip.id}','${e.id}')">Add to next trip</button>`:''}
         ${res==='kit'&&e.resolvedItemId?`<button type="button" class="btn btn-o btn-sm" onclick="openEditItemModal('${e.resolvedItemId}')">Edit item</button>`:''}
         ${res==='wishlist'&&e.resolvedItemId?`<button type="button" class="btn btn-o btn-sm" onclick="setTab('wishlist',document.getElementById('wishBtn'))">View want list</button>`:''}
       </div>`;
@@ -7113,7 +7722,10 @@ function postTripLearningsHtml(trip,allItems){
         <div style="font-size:13px;font-weight:500;line-height:1.35">${esc(label)}</div>
         ${m.text&&linked?`<div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:3px">${esc(m.text)}</div>`:''}
       </div>
-      <button type="button" class="btn btn-o btn-sm" style="color:var(--text-m)" onclick="removeUnusedMark('${trip.id}','${m.id}')" aria-label="Remove">✕</button>
+      <div class="pt-learn-actions">
+        ${linked?`<button type="button" class="btn btn-o btn-sm" onclick="openEditItemModal('${linked.id}')">Review in kit</button>`:''}
+        <button type="button" class="btn btn-o btn-sm" style="color:var(--text-m)" onclick="removeUnusedMark('${trip.id}','${m.id}')" aria-label="Remove">✕</button>
+      </div>
     </div>`;
   }).join(''):'<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--text-m);padding:4px 0">Nothing noted yet.</div>';
 
@@ -7981,6 +8593,9 @@ function importData(event){
         damaged:         t.damaged||{},
         forgotEntries:   Array.isArray(t.forgotEntries)?t.forgotEntries.map(normalizeForgotEntry):[],
         unusedMarks:     Array.isArray(t.unusedMarks)?t.unusedMarks.map(normalizeUnusedMark):[],
+        journalNotes:    Array.isArray(t.journalNotes)?t.journalNotes.map(normalizeJournalNote).filter(n=>n.text):[],
+        journalMeals:    Array.isArray(t.journalMeals)?t.journalMeals.map(normalizeJournalMeal).filter(m=>m.had||m.worked||m.didnt||m.planned):[],
+        journalDayMeta:  (t.journalDayMeta&&typeof t.journalDayMeta==='object'&&!Array.isArray(t.journalDayMeta))?t.journalDayMeta:{},
         attendeeIds:     Array.isArray(t.attendeeIds)?t.attendeeIds.filter(Boolean):[],
         manualIncludeIds:Array.isArray(t.manualIncludeIds)?t.manualIncludeIds.filter(Boolean):[],
         excludedItemIds:Array.isArray(t.excludedItemIds)?t.excludedItemIds.filter(Boolean):[],
