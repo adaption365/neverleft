@@ -20,7 +20,7 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [APE-16](https://linear.app/aperturegraph/issue/APE-16) | forgotten_item… | `data-model` |
 | [APE-17](https://linear.app/aperturegraph/issue/APE-17) | forgotten_item… | `camp-mode-ux` |
 | [APE-18](https://linear.app/aperturegraph/issue/APE-18) | forgotten_item… | `qty-rules-ux` |
-| [APE-19](https://linear.app/aperturegraph/issue/APE-19) | forgotten_item… | `close-loop-later` (optional) |
+| [APE-19](https://linear.app/aperturegraph/issue/APE-19) | batch_e… / forgotten_item… | `close-loop-later` — full capstone (Batch E) |
 | [APE-20](https://linear.app/aperturegraph/issue/APE-20) | packable_parent… | `add-sub-prompt` |
 | [APE-21](https://linear.app/aperturegraph/issue/APE-21) | forgotten_item… | `qty-rules-model` |
 | [APE-22](https://linear.app/aperturegraph/issue/APE-22) | packable_parent… | `kit-editor-copy` |
@@ -40,7 +40,8 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | File | Status | Summary |
 |------|--------|---------|
 | [backlog_batches_wave1_wave2.plan.md](backlog_batches_wave1_wave2.plan.md) | Living | Retrospective batch order (Wave 1–2 shipped + Wave 2 Batch C scope) |
-| [forgotten_item_feature_ux_d218206d.plan.md](forgotten_item_feature_ux_d218206d.plan.md) | Planned | Camp mode, trip learnings, qty rules, demo graduation, mandatory backup before wipe |
+| [batch_e_camp_learnings.plan.md](batch_e_camp_learnings.plan.md) | In design | Batch E — camp daily journal (notes/meals/weather/prompts), no-guilt learnings, APE-19 |
+| [forgotten_item_feature_ux_d218206d.plan.md](forgotten_item_feature_ux_d218206d.plan.md) | Partial | Camp learnings largely in app; qty rules + camp reframe remain |
 | [packable_parent_vs_group_container.plan.md](packable_parent_vs_group_container.plan.md) | Partial | Kit grouping vs packable bag/box; editor copy + add-sub prompt; checklist dual-row UX done |
 | [kit_parent_picker_ux.plan.md](kit_parent_picker_ux.plan.md) | Partial | Searchable / A–Z group picker + locked “Add to group”; “Move to group” menu deferred |
 | [trip_attendees_and_kit_40ad2a8d.plan.md](trip_attendees_and_kit_40ad2a8d.plan.md) | Done | Trip roster, checklist scoping, manual includes |

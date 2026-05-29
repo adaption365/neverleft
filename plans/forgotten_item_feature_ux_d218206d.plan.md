@@ -279,8 +279,10 @@ flowchart LR
 
 ## Open decisions (when implementing)
 
-- **In-trip window:** `pack-up` only vs `pack-up` + `pack-away`.
-- **Entry pattern:** FAB vs header chip vs both; sheet vs full tab labeled “On trip”.
+- **Camp mode definition (Batch E, May 2026):** Hyper-focused on **At camp** (`at-camp` status) — on-site witness for what worked, gaps, meals/activities as **tagged quick notes**, not logistics on pack-up/away. Detail: [batch_e_camp_learnings.plan.md](batch_e_camp_learnings.plan.md).
+- **In-trip window:** **Primary = `at-camp` only** for full camp sheet; pack-up/pack-away TBD (strip removal vs link-back).
+- **Camp sheet tiles:** Needed + didn’t use (confirmed) + worked well + quick note with optional tag.
+- **Entry pattern:** Header chip and/or at-camp tab hero → multi-tile bottom sheet.
 - **v1 cut:** Camp mode + minimal post-trip list **vs** post-trip-only first — recommendation: **define data model once**, ship **Camp mode quick capture + thin post-trip list** in the same slice so nothing is captured twice in different silos.
 - **Qty rules vs Camp mode:** can ship **independently**; qty rules reduce “forgot because we packed 3 socks for 7 nights” before you leave. Camp mode still catches what rules miss.
 - **In-trip window:** default **`pack-up` + `pack-away`** for Camp mode (capture while packing up camp and while unpacking at home).
