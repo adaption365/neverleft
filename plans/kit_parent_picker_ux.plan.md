@@ -16,7 +16,7 @@ todos:
     status: completed
   - id: move-to-group-menu
     content: "Optional v2: inventory ••• → 'Move to group…' using same searchable picker (covers re-parent without opening full editor)"
-    status: pending
+    status: completed
   - id: dnd-defer
     content: "Defer drag-and-drop between groups unless user research demands it; revisit after combobox ships"
     status: pending

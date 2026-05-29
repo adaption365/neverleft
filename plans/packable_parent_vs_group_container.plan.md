@@ -4,10 +4,10 @@ overview: Product model for inventory parents with sub-items — distinguish kit
 todos:
   - id: kit-editor-copy
     content: "Rename/clarify isContainer in item editor: e.g. 'Group only (not packed on trip)' with one-line help; avoid implying 'has children'"
-    status: pending
+    status: completed
   - id: add-sub-prompt
     content: "When user adds first sub-item (or sets parentId), prompt: 'Real bag/box you pack, or just a kit grouping?' → set isContainer vs packable parent accordingly"
-    status: pending
+    status: completed
   - id: checklist-ux-done
     content: "Packing list + pack-up/away — non-container parents with subs: checkbox packs parent, title/chevron/body expands; ci-group-block + 'Pack this · contents below' (index.html ciRow, packTripGroupRow)"
     status: completed

@@ -277,6 +277,7 @@ tr.irow.inv-row-focus{box-shadow:0 0 0 2px var(--sage),0 4px 14px rgba(107,140,9
 .ci-group-hdr-body{flex:1;min-width:0}
 .ci-group-hdr-title{font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text)}
 .ci-group-hdr-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);flex-shrink:0;align-self:center}
+.ci-group-hdr-tag{display:inline-block;font-family:'DM Mono',monospace;font-size:8px;font-weight:400;letter-spacing:.04em;text-transform:none;color:var(--text-m);background:rgba(107,140,90,0.1);border:1px solid rgba(107,140,90,0.2);border-radius:6px;padding:1px 5px;vertical-align:middle;margin-left:4px}
 .ci-has-group .ci-body{padding-left:0;flex:1;min-width:0;cursor:pointer}
 .ci-has-group .ci-state{cursor:pointer;flex-shrink:0}
 .ci-group-block > .ci{margin-bottom:0}
@@ -499,7 +500,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 .ci.packed{background:var(--canvas-3);box-shadow:none;pointer-events:auto}
 .ci.packed .ci-meta{opacity:.65}
 .ci.hl{box-shadow:0 0 0 2px var(--amber-d);background:rgba(212,144,42,.05)}
-.sub-ci{padding:10px 14px 10px 46px;border-radius:0 0 12px 12px;margin-top:-5px;border:none;box-shadow:none;margin-bottom:6px;background:rgba(0,0,0,0.025)}
+.sub-ci{padding:10px 14px 10px 46px;border-radius:0 0 12px 12px;margin-top:-5px;border:none;box-shadow:none;margin-bottom:6px;background:rgba(107,140,90,0.07)}
 
 /* State indicator — three visuals: empty ring → ready (amber ring + dot) → packed (sage + ✓) */
 .ci-state{position:relative;width:28px;height:28px;border-radius:8px;border:2px solid var(--border-l);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0;font-weight:800;transition:transform var(--dur-ui) var(--ease-out),opacity var(--dur-ui) var(--ease-out),background var(--dur-ui) var(--ease-out),border-color var(--dur-ui) var(--ease-out),box-shadow var(--dur-ui) var(--ease-out),color var(--dur-ui) var(--ease-out);background:var(--canvas);margin-top:1px}
@@ -1136,8 +1137,9 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
   </div>
   <div class="fg" style="display:flex;gap:14px">
     <label class="ck"><input type="checkbox" id="iRestock"> Flag as needs restocking</label>
-    <label class="ck"><input type="checkbox" id="iContainer"> Group — pack the items inside, not this</label>
+    <label class="ck"><input type="checkbox" id="iContainer"> Group only (not packed on trip)</label>
   </div>
+  <div class="qtyrule-hint" id="iContainerHelp" style="margin:-4px 0 2px">Use for kit labels like “Sleep kit” — only the items inside get packed. Uncheck if this is a real bag or box you pack and track contents inside.</div>
   <div class="fg" id="iPersonGroup" style="display:none">
     <label class="fl">Assign to person(s)</label>
     <div id="iPersonBtns" style="display:flex;gap:5px;flex-wrap:wrap;margin-top:3px"></div>
@@ -2745,6 +2747,9 @@ function _invMenu(btn, itemId, isRestock){
     if(item&&!item.parentId){
       actions.push({label:'Add item to group', fn:()=>openAddSubModal(itemId)});
     }
+    if(item&&!subItems(itemId).length){
+      actions.push({label:'Move to group…', fn:()=>openMoveToGroupChooser(itemId)});
+    }
     actions.push({label:isRestock?'Mark restocked':'Add to shopping list', color:'var(--amber-d)', fn:()=>toggleRestock(itemId)});
   }
   actions.push({label:'Delete', color:'var(--rust)', fn:()=>delItem(itemId)});
@@ -3887,7 +3892,7 @@ function ciRow(ci,item,trip,hl){
         <div class="ci-group-hdr" onclick="toggleChecklistGroup('${trip.id}','${item.id}',event)">
           <span class="igroup-toggle ${groupOpen?'open':'closed'}" aria-hidden="true">▼</span>
           <div class="ci-group-hdr-body">
-            <div class="ci-group-hdr-title">${esc(item.name)}${tripManualExtraBadge(trip,item.id)}</div>
+            <div class="ci-group-hdr-title">${esc(item.name)}${tripManualExtraBadge(trip,item.id)} <span class="ci-group-hdr-tag">group · pack items inside</span></div>
             ${collapsedHint}
           </div>
           <span class="ci-group-hdr-meta">${visibleSubs.length?subPacked+'/'+visibleSubs.length:allSubs.length+' item'+(allSubs.length!==1?'s':'')}</span>
@@ -5043,6 +5048,8 @@ function openAddSubModal(parentId){
   populateDynamicDropdowns(parentItem?.category||getCats()[0]?.id, parentItem?.location||getLocs()[0]?.id, '');
   populateParentDropdown(parentId, null, {lock:true});
   populatePersonButtons([]);
+  // APE-20: prompt for group type only when this is the parent's first child and it isn't already group-only
+  window._firstChildParentId=(parentItem&&!parentItem.isContainer&&subItems(parentId).length===0)?parentId:null;
   openM('itemModal');
   setTimeout(()=>document.getElementById('iName').focus(),50);
 }
@@ -5094,6 +5101,7 @@ function clearItemForm(){
   document.getElementById('iContainer').checked=false;
   document.getElementById('iPacksInto').value='';
   setQtyRuleForm(null);
+  window._firstChildParentId=null;
   window._itemActions=[];
   renderItemActionsList();
 }
@@ -5551,8 +5559,12 @@ function saveItem(skipDuplicateCheck){
   }
   const savedId=editItemId||newItemId;
   const isNew=!editItemId;
+  // APE-20: after adding the parent's first child, ask whether the parent is a packable bag or a group label
+  const groupTypePromptParentId=(newItemId&&data.parentId&&window._firstChildParentId===data.parentId)?data.parentId:null;
+  window._firstChildParentId=null;
   const kitSyncResults=data.type==='wishlist'?[]:syncKitChangesToActiveTripChecklists();
   save(); closeM('itemModal');
+  if(groupTypePromptParentId) showGroupTypePrompt(groupTypePromptParentId);
   if(kitSyncResults.length) toastKitSyncedToTrips(kitSyncResults);
   if(data.type==='wishlist') renderAll();
   else{
@@ -7658,6 +7670,79 @@ function openIncludeNextTripChooser(itemId, cands){
 
 function closeIncludeNextTripChooser(){
   document.getElementById('inclTripOverlay')?.remove();
+}
+
+// ── APE-20: group type prompt (bag you pack vs kit grouping) ──
+function showGroupTypePrompt(parentId){
+  closeGroupTypePrompt();
+  const parent=S.items.find(i=>i.id===parentId);
+  if(!parent) return;
+  document.body.insertAdjacentHTML('beforeend',`
+    <div id="groupTypeOverlay" class="dialog-overlay" style="z-index:1100" onclick="if(event.target===this)closeGroupTypePrompt()">
+      <div class="dialog-panel dialog-panel--440" onclick="event.stopPropagation()">
+        <div class="mtitle">How does “${esc(parent.name)}” pack?</div>
+        <p style="font-size:14px;line-height:1.5;color:var(--text-d);margin:0 0 16px">You just added an item inside it. Is it a real bag or box you pack — or just a way to group kit?</p>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button type="button" class="btn btn-p" style="text-align:left" onclick="setGroupType('${parentId}',true)">Just a kit grouping<span style="display:block;font-family:'DM Mono',monospace;font-size:10px;opacity:.85;margin-top:2px">A label like “Sleep kit” — only the items inside get packed</span></button>
+          <button type="button" class="btn btn-o" style="text-align:left" onclick="setGroupType('${parentId}',false)">A bag or box I pack<span style="display:block;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:2px">Pack the bag itself and track its contents too</span></button>
+        </div>
+      </div>
+    </div>`);
+}
+function closeGroupTypePrompt(){ document.getElementById('groupTypeOverlay')?.remove(); }
+function setGroupType(parentId, isContainer){
+  const parent=S.items.find(i=>i.id===parentId);
+  if(parent){ parent.isContainer=!!isContainer; save(); renderInv(); if(activeTripId) renderTrips(); }
+  closeGroupTypePrompt();
+  showToast(isContainer?'Set as a kit grouping':'Set as a bag you pack');
+}
+
+// ── APE-24: move an item into a group (re-parent) without the full editor ──
+function moveToGroupCandidates(itemId){
+  return S.items
+    .filter(i=>i.type!=='wishlist'&&!i.parentId&&i.id!==itemId)
+    .sort((a,b)=>a.name.localeCompare(b.name));
+}
+function openMoveToGroupChooser(itemId){
+  hideCtxMenu();
+  closeMoveToGroupChooser();
+  const item=S.items.find(i=>i.id===itemId);
+  if(!item) return;
+  const rows=moveToGroupCandidates(itemId).map(g=>{
+    const kids=subItems(g.id).length;
+    const meta=(g.isContainer?'Group':'Item')+(kids?' · '+kids+' inside':'');
+    return `<button type="button" class="btn btn-o mtg-row" data-name="${esc(g.name.toLowerCase())}" style="width:100%;text-align:left;margin-bottom:6px" onclick="doMoveToGroup('${itemId}','${g.id}')">${esc(g.name)}<span style="display:block;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:2px">${esc(meta)}</span></button>`;
+  }).join('');
+  const current=item.parentId?`<button type="button" class="btn btn-o" style="width:100%;text-align:left;margin-bottom:10px;color:var(--rust)" onclick="doMoveToGroup('${itemId}','')">Remove from group (make top-level)</button>`:'';
+  document.body.insertAdjacentHTML('beforeend',`
+    <div id="moveGroupOverlay" class="dialog-overlay" style="z-index:1100" onclick="if(event.target===this)closeMoveToGroupChooser()">
+      <div class="dialog-panel dialog-panel--440" onclick="event.stopPropagation()">
+        <div class="mtitle">Move “${esc(item.name)}” to group</div>
+        <input class="fi" id="moveGroupSearch" placeholder="Search groups…" style="width:100%;margin:8px 0 12px" oninput="filterMoveToGroup(this.value)">
+        ${current}
+        <div id="moveGroupList" style="max-height:320px;overflow:auto">${rows||'<div class="empty" style="margin:8px 0">No groups yet — add an item to another item to create one.</div>'}</div>
+        <button type="button" class="btn btn-o" style="width:100%;margin-top:8px" onclick="closeMoveToGroupChooser()">Cancel</button>
+      </div>
+    </div>`);
+  setTimeout(()=>document.getElementById('moveGroupSearch')?.focus(),50);
+}
+function filterMoveToGroup(q){
+  const term=(q||'').trim().toLowerCase();
+  document.querySelectorAll('#moveGroupList .mtg-row').forEach(el=>{
+    el.style.display=(!term||el.dataset.name.includes(term))?'':'none';
+  });
+}
+function closeMoveToGroupChooser(){ document.getElementById('moveGroupOverlay')?.remove(); }
+function doMoveToGroup(itemId, targetId){
+  const item=S.items.find(i=>i.id===itemId);
+  if(!item){ closeMoveToGroupChooser(); return; }
+  const target=targetId?S.items.find(i=>i.id===targetId):null;
+  const targetWasChildless=!!(target&&!target.isContainer&&subItems(target.id).length===0);
+  item.parentId=targetId||null;
+  if(targetId) expandedInvGroups.add(targetId);
+  save(); closeMoveToGroupChooser(); renderInv(); if(activeTripId) renderTrips();
+  showToast(target?('Moved to “'+target.name+'”'):'Removed from group');
+  if(target&&targetWasChildless) showGroupTypePrompt(target.id);
 }
 
 function campLogStrip(trip){

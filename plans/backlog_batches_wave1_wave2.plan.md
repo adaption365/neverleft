@@ -71,7 +71,7 @@ Living record of **batched delivery order** from the Neverleft Linear backlog (M
 | D | Trip hub Phase 3 — **Ready for testing** | [APE-25](https://linear.app/aperturegraph/issue/APE-25) — Official forecast, Plan route, Settings maps app, per-trip Leave from |
 | E | Camp **daily journal** + learnings — **Done** (commit `dfa534b`); per-day notes/meals/weather/prompts + no-guilt learnings + APE-19 | APE-15, 16, 17, 23, 19 |
 | F | Quantity rules — **Done** (commit `9487f67`); per-item `qtyRule` (perNight / perPersonPerNight), progressive-disclosure editor, checklist ×N tooltip, contextual stock hint | APE-21, 18 |
-| G | Kit grouping | APE-22, 20, 35, 24, 32 |
+| G | Kit grouping — **Ready for testing**; editor copy, group-only header (no pack box) + "group" tag, green sub-item tint, add-sub bag/grouping prompt, inventory "Move to group…" | APE-22, 20, 35, 24, 32 |
 | H | Packing list UX | APE-36, 37 |
 | I | Want list | APE-48, 49 |
 | J | Scroll / navigation | APE-31, 39 |
