@@ -32,6 +32,7 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [APE-52](https://linear.app/aperturegraph/issue/APE-52) | backlog_batches… | Trip workflow UX revisit (stepper, completion, undo) — discovery |
 | [APE-55](https://linear.app/aperturegraph/issue/APE-55) | consumable_stock_shortfall… | Consumable stock & shortfall → shopping (Batch K; depends on F) |
 | [APE-56](https://linear.app/aperturegraph/issue/APE-56) | consumable_stock_shortfall… | Count-aware / partial packing for ×N lines (Batch L; companion to K) |
+| [APE-57](https://linear.app/aperturegraph/issue/APE-57) | quick_create_group… | Quick-create a group + child default inheritance (Batch M; follows G) — Ready for testing |
 
 **Build order** (Linear priority): demo graduation + backup (APE-12–14, APE-13) → trip experience polish (APE-11, APE-25–27, APE-26) → camp mode (APE-15–17, APE-23) → qty rules (APE-21, APE-18) → kit UX (APE-20, APE-22, APE-24).
 

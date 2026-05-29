@@ -948,6 +948,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
           <label class="umenu-item" for="fileImport" style="cursor:pointer;margin:0" onclick="closeBackupMenu()">Restore backup</label>
         </div>
       </div>
+      <button type="button" class="hdr-btn" id="addGroupBtn" onclick="openNewGroupModal()" style="flex-shrink:0">+ New group</button>
       <button type="button" class="hdr-btn hdr-primary" id="addItemBtn" onclick="openAddItemModal()" style="background:var(--text);color:var(--canvas);border:none;font-weight:500;flex-shrink:0">+ Add item</button>
     </div>
     <div class="hdr-mobile-cluster" id="hdrMobileCluster" style="position:relative">
@@ -964,6 +965,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
         <label class="umenu-item" for="fileImport" style="cursor:pointer;margin:0" onclick="closeUtilMenu()">Restore backup</label>
         <div class="hdr-menu-sep" role="presentation"></div>
         <button type="button" class="umenu-item" onclick="closeUtilMenu();openAddItemModal()" style="font-weight:600">+ Add item</button>
+        <button type="button" class="umenu-item" onclick="closeUtilMenu();openNewGroupModal()" style="font-weight:600">+ New group</button>
       </div>
     </div>
     <input type="file" id="fileImport" accept=".json" style="position:absolute;width:1px;height:1px;opacity:0.01;top:0;left:0">
@@ -1088,7 +1090,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
     <div class="fg"><label class="fl">Location</label>
       <select class="fs" id="iLoc"></select>
     </div>
-    <div class="fg"><label class="fl">Quantity</label><input class="fi" id="iQty" type="number" min="0" value="1">
+    <div class="fg" id="iQtyField"><label class="fl">Quantity</label><input class="fi" id="iQty" type="number" min="0" value="1">
       <div class="qtyrule-hint" id="iQtyStockHint" style="display:none">Trip amount is calculated below. Quantity is your stock on hand.</div>
     </div>
   </div>
@@ -1136,8 +1138,8 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
     <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:3px">Where this item ends up when packed for a trip (e.g. Shed → Duffle Bag)</div>
   </div>
   <div class="fg" style="display:flex;gap:14px">
-    <label class="ck"><input type="checkbox" id="iRestock"> Flag as needs restocking</label>
-    <label class="ck"><input type="checkbox" id="iContainer"> Group only (not packed on trip)</label>
+    <label class="ck" id="iRestockField"><input type="checkbox" id="iRestock"> Flag as needs restocking</label>
+    <label class="ck"><input type="checkbox" id="iContainer" onchange="applyItemModalGroupMode(this.checked)"> Group only (not packed on trip)</label>
   </div>
   <div class="qtyrule-hint" id="iContainerHelp" style="margin:-4px 0 2px">Use for kit labels like “Sleep kit” — only the items inside get packed. Uncheck if this is a real bag or box you pack and track contents inside.</div>
   <div class="fg" id="iPersonGroup" style="display:none">
@@ -4947,6 +4949,7 @@ function fillItemFormForDuplicate(item){
   document.getElementById('iSeason').value=item.season||'all';
   document.getElementById('iRestock').checked=!!item.restock;
   document.getElementById('iContainer').checked=!!item.isContainer;
+  applyItemModalGroupMode(!!item.isContainer);
   document.getElementById('iNotes').value=item.notes||'';
   populateDynamicDropdowns(item.category, item.location, item.activity||'');
   if(item.packsInto) document.getElementById('iPacksInto').value=item.packsInto;
@@ -4999,6 +5002,27 @@ function openAddItemModal(prefillName){
   setTimeout(()=>document.getElementById('iName').focus(),50);
 }
 
+/** Group mode (APE-57): hide item-only fields (quantity, trip rule, restock) when the item is a group. */
+function applyItemModalGroupMode(isGroup){
+  const ids=['iQtyField','iQtyRuleBlock','iRestockField'];
+  ids.forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display=isGroup?'none':''; });
+}
+
+/** APE-57: create a group from scratch — slim form, no item-only fields. */
+function openNewGroupModal(){
+  editItemId=null;
+  window._pendingDupSubs=null;
+  document.getElementById('imt').textContent='New group';
+  clearItemForm();
+  populateDynamicDropdowns(getCats()[0]?.id, getLocs()[0]?.id, '');
+  populateParentDropdown(null);
+  populatePersonButtons([]);
+  document.getElementById('iContainer').checked=true;
+  applyItemModalGroupMode(true);
+  openM('itemModal');
+  setTimeout(()=>document.getElementById('iName').focus(),50);
+}
+
 /** Empty kit search — create line with current search text as name (APE-28). */
 function openAddItemFromSearch(){
   const q=String(document.getElementById('srch')?.value||'').trim();
@@ -5046,6 +5070,8 @@ function openAddSubModal(parentId){
   clearItemForm();
   const parentItem=S.items.find(i=>i.id===parentId);
   populateDynamicDropdowns(parentItem?.category||getCats()[0]?.id, parentItem?.location||getLocs()[0]?.id, '');
+  // APE-57: children adopt the group's storage defaults (category + location already set above; copy packs-into too)
+  if(parentItem&&parentItem.packsInto) document.getElementById('iPacksInto').value=parentItem.packsInto;
   populateParentDropdown(parentId, null, {lock:true});
   populatePersonButtons([]);
   // APE-20: prompt for group type only when this is the parent's first child and it isn't already group-only
@@ -5082,6 +5108,7 @@ function openEditItemModal(id){
   document.getElementById('iSeason').value=item.season||'all';
   document.getElementById('iRestock').checked=!!item.restock;
   document.getElementById('iContainer').checked=!!item.isContainer;
+  applyItemModalGroupMode(!!item.isContainer);
   document.getElementById('iNotes').value=item.notes||'';
   populateDynamicDropdowns(item.category, item.location, item.activity||'');
   if(item.packsInto) document.getElementById('iPacksInto').value=item.packsInto;
@@ -5099,6 +5126,7 @@ function clearItemForm(){
   document.getElementById('iSeason').value='all';
   document.getElementById('iRestock').checked=false;
   document.getElementById('iContainer').checked=false;
+  applyItemModalGroupMode(false);
   document.getElementById('iPacksInto').value='';
   setQtyRuleForm(null);
   window._firstChildParentId=null;

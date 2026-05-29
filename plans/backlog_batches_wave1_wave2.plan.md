@@ -77,6 +77,7 @@ Living record of **batched delivery order** from the Neverleft Linear backlog (M
 | J | Scroll / navigation | APE-31, 39 |
 | K | **Consumable stock & shortfall → shopping** (consumable-only; depends on F) | [APE-55](https://linear.app/aperturegraph/issue/APE-55) |
 | L | Count-aware / partial packing for ×N checklist lines (companion to K) | [APE-56](https://linear.app/aperturegraph/issue/APE-56) |
+| M | **Quick-create a group** + child default inheritance (follows G) — **Ready for testing** | [APE-57](https://linear.app/aperturegraph/issue/APE-57) |
 
 ## Plan file links
 
@@ -85,5 +86,6 @@ Living record of **batched delivery order** from the Neverleft Linear backlog (M
 | Camp mode / learnings | [forgotten_item_feature_ux_d218206d.plan.md](forgotten_item_feature_ux_d218206d.plan.md), [batch_e_camp_learnings.plan.md](batch_e_camp_learnings.plan.md) |
 | Quantity rules | [forgotten_item_feature_ux_d218206d.plan.md](forgotten_item_feature_ux_d218206d.plan.md) (§ Duration-aware quantities), [batch_f_quantity_rules.plan.md](batch_f_quantity_rules.plan.md) |
 | Consumable stock & shortfall | [consumable_stock_shortfall.plan.md](consumable_stock_shortfall.plan.md) |
+| Quick-create a group | [quick_create_group.plan.md](quick_create_group.plan.md) |
 | Trip hub | [trip_experience_hub.plan.md](trip_experience_hub.plan.md) |
 | Kit grouping | [packable_parent_vs_group_container.plan.md](packable_parent_vs_group_container.plan.md) |
