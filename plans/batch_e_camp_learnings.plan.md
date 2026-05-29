@@ -1,7 +1,7 @@
 ---
 name: Batch E — Camp mode + daily journal + learnings
 overview: Redefine **Camp mode** as a **per-day camp journal** (memory + practical), keep no-guilt learnings capture (needed / didn’t use / wishlist), add per-day notes + meals + weather + gentle prompts, finish copy, and ship full APE-19 close-the-loop. Photos deferred.
-status: in_design
+status: shipped
 linear: APE-15, APE-16, APE-17, APE-23, APE-19
 parent: forgotten_item_feature_ux_d218206d.plan.md
 ---

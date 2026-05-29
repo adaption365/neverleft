@@ -69,7 +69,7 @@ Living record of **batched delivery order** from the Neverleft Linear backlog (M
 | Batch | Focus | Linear (representative) |
 |-------|--------|-------------------------|
 | D | Trip hub Phase 3 — **Ready for testing** | [APE-25](https://linear.app/aperturegraph/issue/APE-25) — Official forecast, Plan route, Settings maps app, per-trip Leave from |
-| E | Camp **daily journal** + learnings — **in design** ([batch_e_camp_learnings.plan.md](batch_e_camp_learnings.plan.md)); per-day notes/meals/weather/prompts + no-guilt learnings + APE-19 | APE-15, 16, 17, 23, 19 |
+| E | Camp **daily journal** + learnings — **Done** (commit `dfa534b`); per-day notes/meals/weather/prompts + no-guilt learnings + APE-19 | APE-15, 16, 17, 23, 19 |
 | F | Quantity rules | APE-21, 18 |
 | G | Kit grouping | APE-22, 20, 35, 24, 32 |
 | H | Packing list UX | APE-36, 37 |
