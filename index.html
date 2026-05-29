@@ -1072,7 +1072,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
       <div id="iParentList" class="i-parent-list" role="listbox" hidden></div>
     </div>
   </div>
-  <div class="frow">
+  <div class="frow" id="iTypeRow">
     <div class="fg"><label class="fl">Type *</label>
       <select class="fs" id="iType">
         <option value="always">Always packed</option>
@@ -1082,12 +1082,12 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
         <option value="wishlist">Want list</option>
       </select>
     </div>
-    <div class="fg"><label class="fl">Category</label>
+    <div class="fg" id="iCatField"><label class="fl">Category</label>
       <select class="fs" id="iCat"></select>
     </div>
   </div>
-  <div class="frow">
-    <div class="fg"><label class="fl">Location</label>
+  <div class="frow" id="iLocRow">
+    <div class="fg" id="iLocField"><label class="fl">Location</label>
       <select class="fs" id="iLoc"></select>
     </div>
     <div class="fg" id="iQtyField"><label class="fl">Quantity</label><input class="fi" id="iQty" type="number" min="0" value="1">
@@ -1117,7 +1117,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
       </div>
     </div>
   </div>
-  <div class="frow">
+  <div class="frow" id="iSeasonRow">
     <div class="fg"><label class="fl">Season</label>
       <select class="fs" id="iSeason">
         <option value="all">All seasons</option>
@@ -1137,17 +1137,15 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
     </select>
     <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:3px">Where this item ends up when packed for a trip (e.g. Shed → Duffle Bag)</div>
   </div>
-  <div class="fg" style="display:flex;gap:14px">
+  <div class="fg" style="display:flex;gap:14px" id="iRestockContainerRow">
     <label class="ck" id="iRestockField"><input type="checkbox" id="iRestock"> Flag as needs restocking</label>
-    <label class="ck"><input type="checkbox" id="iContainer" onchange="applyItemModalGroupMode(this.checked)"> Group only (not packed on trip)</label>
   </div>
-  <div class="qtyrule-hint" id="iContainerHelp" style="margin:-4px 0 2px">Use for kit labels like “Sleep kit” — only the items inside get packed. Uncheck if this is a real bag or box you pack and track contents inside.</div>
   <div class="fg" id="iPersonGroup" style="display:none">
     <label class="fl">Assign to person(s)</label>
     <div id="iPersonBtns" style="display:flex;gap:5px;flex-wrap:wrap;margin-top:3px"></div>
   </div>
   <div class="fg"><label class="fl">Notes</label><textarea class="fta" id="iNotes" placeholder="e.g. Check gas level, stored in blue bin…"></textarea></div>
-  <div class="fg">
+  <div class="fg" id="iActionsGroup">
     <label class="fl">Actions <span style="font-weight:400;color:var(--text-m);text-transform:none;letter-spacing:0">— tasks to do at each stage</span></label>
     <div id="iActionsList" style="margin-bottom:6px"></div>
     <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
@@ -1164,6 +1162,28 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
   <div class="factions">
     <button class="btn btn-o" onclick="closeM('itemModal')">Cancel</button>
     <button class="btn btn-p" onclick="saveItem()">Save Item</button>
+  </div>
+ </div>
+</div>
+
+<!-- ═══ GROUP MODAL — a bundle, not an item ═══ -->
+<div class="mover" id="groupModal" onclick="closeMOver(event,'groupModal')">
+ <div class="modal">
+  <div class="mtitle" id="gmt">New group</div>
+  <div class="fg"><label class="fl">Name *</label><input class="fi" id="gName" placeholder="e.g. Sleep kit, Biscuit's bag, Kitchen box"></div>
+  <div class="qtyrule-hint" style="margin:-2px 0 12px">A group is just a bundle of things you pack together — name it, then add what goes inside.</div>
+  <div class="frow">
+    <div class="fg"><label class="fl">Category</label><select class="fs" id="gCat"></select></div>
+    <div class="fg"><label class="fl">Where it lives (optional)</label><select class="fs" id="gLoc"></select></div>
+  </div>
+  <div class="fg" id="gPersonGroup" style="display:none">
+    <label class="fl">Assign to person(s)</label>
+    <div id="gPersonBtns" style="display:flex;gap:5px;flex-wrap:wrap;margin-top:3px"></div>
+  </div>
+  <div class="fg"><label class="fl">Notes</label><textarea class="fta" id="gNotes" placeholder="e.g. Lives in the loft · one bag per person…"></textarea></div>
+  <div class="factions">
+    <button class="btn btn-o" onclick="closeM('groupModal')">Cancel</button>
+    <button class="btn btn-p" onclick="saveGroup()">Save group</button>
   </div>
  </div>
 </div>
@@ -2601,14 +2621,14 @@ function itemRow(item, isSub, srch){
   // When filtering by person, only show sub-items that match
   const allSubs=subItems(item.id);
   const subs=allSubs.filter(s=>subVisibleInInvFilters(s));
-  const hasGroup=!isSub&&allSubs.length>0;
+  const hasGroup=!isSub&&(allSubs.length>0||!!item.isContainer);
   const forceOpen=hasGroup&&invGroupForceOpen(item, srch);
   const groupOpen=hasGroup&&isInvGroupOpen(item.id, forceOpen);
   const restock=item.restock||item.qty===0;
   const isWish=item.type==='wishlist';
   const assignedPeople=(S.people||[]).filter(p=>(item.personIds||[]).includes(p.id));
   const personBadges=assignedPeople.map(p=>`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55;margin-left:4px">${esc(p.name)}</span>`).join('');
-  const collapsedHint=hasGroup&&!groupOpen?`<div class="igroup-collapsed-hint">${subs.length?subs.length+' of '+allSubs.length:allSubs.length} item${allSubs.length!==1?'s':''} inside — tap to expand</div>`:'';
+  const collapsedHint=hasGroup&&!groupOpen?`<div class="igroup-collapsed-hint">${allSubs.length?`${subs.length?subs.length+' of '+allSubs.length:allSubs.length} item${allSubs.length!==1?'s':''} inside — tap to expand`:'Empty group — tap to add the first thing'}</div>`:'';
   const metaTags=groupOpen||!hasGroup?`
         ${item.activity?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--teal);text-transform:uppercase;letter-spacing:.06em">${esc(item.activity)}</span>`:''}
         ${item.isContainer?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--amber-d);text-transform:uppercase;letter-spacing:.06em">⊞ group</span>`:''}
@@ -2628,7 +2648,7 @@ function itemRow(item, isSub, srch){
         </div>
       </td>
       <td><span class="tpill tp-${item.type}">${TLAB[item.type]}</span></td>
-      <td><span class="lbadge lb-${item.location}">${esc(labMap(getLocs())[item.location]||item.location)}</span></td>
+      <td>${item.location?`<span class="lbadge lb-${item.location}">${esc(labMap(getLocs())[item.location]||item.location)}</span>`:`<span style="font-family:'DM Mono',monospace;color:var(--text-m);font-size:11px">—</span>`}</td>
       <td>${item.type==='consumable'?`
         <div class="qc" onclick="event.stopPropagation()">
           <button class="qbtn" onclick="qAdj('${item.id}',-1)">−</button>
@@ -2643,7 +2663,7 @@ function itemRow(item, isSub, srch){
     </tr>
     
     ${groupOpen?subs.map(s=>itemRow(s,true,srch)).join(''):''}
-    ${!isSub&&groupOpen?`<tr class="irow add-sub-row"><td colspan="5"><button class="add-sub-btn" onclick="event.stopPropagation();openAddSubModal('${item.id}')">+ Add item to group</button></td></tr>`:''}
+    ${!isSub&&groupOpen?`<tr class="irow add-sub-row"><td colspan="5"><button class="add-sub-btn" onclick="event.stopPropagation();openAddSubModal('${item.id}')">${allSubs.length?'+ Add item to group':'+ Add the first thing'}</button></td></tr>`:''}
   `;
 }
 
@@ -2748,6 +2768,12 @@ function _invMenu(btn, itemId, isRestock){
   } else {
     if(item&&!item.parentId){
       actions.push({label:'Add item to group', fn:()=>openAddSubModal(itemId)});
+    }
+    if(item&&!item.isContainer){
+      actions.push({label:'Turn into group', fn:()=>convertToGroup(itemId)});
+    }
+    if(item&&item.isContainer){
+      actions.push({label:'Ungroup', fn:()=>ungroupItem(itemId)});
     }
     if(item&&!subItems(itemId).length){
       actions.push({label:'Move to group…', fn:()=>openMoveToGroupChooser(itemId)});
@@ -4948,8 +4974,7 @@ function fillItemFormForDuplicate(item){
   setQtyRuleForm(item.qtyRule);
   document.getElementById('iSeason').value=item.season||'all';
   document.getElementById('iRestock').checked=!!item.restock;
-  document.getElementById('iContainer').checked=!!item.isContainer;
-  applyItemModalGroupMode(!!item.isContainer);
+  window._formIsContainer=!!item.isContainer;
   document.getElementById('iNotes').value=item.notes||'';
   populateDynamicDropdowns(item.category, item.location, item.activity||'');
   if(item.packsInto) document.getElementById('iPacksInto').value=item.packsInto;
@@ -5002,25 +5027,83 @@ function openAddItemModal(prefillName){
   setTimeout(()=>document.getElementById('iName').focus(),50);
 }
 
-/** Group mode (APE-57): hide item-only fields (quantity, trip rule, restock) when the item is a group. */
-function applyItemModalGroupMode(isGroup){
-  const ids=['iQtyField','iQtyRuleBlock','iRestockField'];
-  ids.forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display=isGroup?'none':''; });
+// ── Group sheet (APE-57): a bundle has its own calm form, never the item modal ──
+let editGroupId=null;
+
+function populateGroupDropdowns(selectedCat, selectedLoc){
+  const catSel=document.getElementById('gCat');
+  if(catSel) catSel.innerHTML=getCats().map(c=>`<option value="${esc(c.id)}"${c.id===selectedCat?' selected':''}>${c.emoji||''} ${esc(c.label)}</option>`).join('');
+  const locSel=document.getElementById('gLoc');
+  if(locSel) locSel.innerHTML=`<option value=""${selectedLoc?'':' selected'}>— No fixed place —</option>`+getStorageLocs().map(l=>`<option value="${esc(l.id)}"${l.id===selectedLoc?' selected':''}>${esc(l.label)}</option>`).join('');
 }
 
-/** APE-57: create a group from scratch — slim form, no item-only fields. */
+function populateGroupPersonButtons(selectedIds){
+  const grp=document.getElementById('gPersonGroup');
+  const btns=document.getElementById('gPersonBtns');
+  if(!S.people||!S.people.length){ grp.style.display='none'; return; }
+  grp.style.display='block';
+  btns.innerHTML=S.people.map(p=>{
+    const sel=(selectedIds||[]).includes(p.id);
+    return `<button type="button" data-pid="${p.id}" class="fb${sel?' on':''}"
+      style="border-radius:10px;${sel?`background:${p.color}33;color:${p.color};border-color:${p.color}66`:''}"
+      onclick="togglePersonBtn(this,'${p.color}')">${p.emoji||'👤'} ${esc(p.name)}</button>`;
+  }).join('');
+}
+
+/** Create a group from scratch — name it, that's the whole commitment. */
 function openNewGroupModal(){
-  editItemId=null;
-  window._pendingDupSubs=null;
-  document.getElementById('imt').textContent='New group';
-  clearItemForm();
-  populateDynamicDropdowns(getCats()[0]?.id, getLocs()[0]?.id, '');
-  populateParentDropdown(null);
-  populatePersonButtons([]);
-  document.getElementById('iContainer').checked=true;
-  applyItemModalGroupMode(true);
-  openM('itemModal');
-  setTimeout(()=>document.getElementById('iName').focus(),50);
+  editGroupId=null;
+  document.getElementById('gmt').textContent='New group';
+  document.getElementById('gName').value='';
+  document.getElementById('gNotes').value='';
+  populateGroupDropdowns(getCats()[0]?.id, '');
+  populateGroupPersonButtons([]);
+  openM('groupModal');
+  setTimeout(()=>document.getElementById('gName').focus(),50);
+}
+
+function openEditGroupModal(id){
+  const g=S.items.find(i=>i.id===id);
+  if(!g) return;
+  editGroupId=id;
+  document.getElementById('gmt').textContent='Edit group';
+  document.getElementById('gName').value=g.name||'';
+  document.getElementById('gNotes').value=g.notes||'';
+  populateGroupDropdowns(g.category, g.location);
+  populateGroupPersonButtons(g.personIds||[]);
+  openM('groupModal');
+  setTimeout(()=>document.getElementById('gName').focus(),50);
+}
+
+function saveGroup(){
+  const name=document.getElementById('gName').value.trim();
+  if(!name){ document.getElementById('gName').focus(); return; }
+  const personIds=[...document.querySelectorAll('#gPersonBtns button.on')].map(b=>b.dataset.pid);
+  const data={
+    name,
+    category:document.getElementById('gCat').value,
+    location:document.getElementById('gLoc').value,
+    personIds,
+    notes:document.getElementById('gNotes').value.trim(),
+    isContainer:true,
+    type:'always'
+  };
+  let savedId=editGroupId;
+  const isNew=!editGroupId;
+  if(editGroupId){
+    const idx=S.items.findIndex(i=>i.id===editGroupId);
+    if(idx>=0) S.items[idx]={...S.items[idx],...data};
+  } else {
+    savedId=uid();
+    S.items.push({id:savedId, parentId:null, qty:1, qtyRule:null, season:'all', activity:'', restock:false, packsInto:null, actions:[], ...data});
+  }
+  editGroupId=null;
+  const kitSyncResults=syncKitChangesToActiveTripChecklists();
+  save(); closeM('groupModal');
+  if(kitSyncResults.length) toastKitSyncedToTrips(kitSyncResults);
+  if(isNew){ expandedInvGroups.add(savedId); showToast('Group created — add what goes inside'); }
+  focusKitItemAfterSave(savedId, isNew);
+  if(activeTripId) renderTrips();
 }
 
 /** Empty kit search — create line with current search text as name (APE-28). */
@@ -5069,9 +5152,8 @@ function openAddSubModal(parentId){
   document.getElementById('imt').textContent='Add to group';
   clearItemForm();
   const parentItem=S.items.find(i=>i.id===parentId);
+  // APE-57: children adopt the group's category + location as editable defaults
   populateDynamicDropdowns(parentItem?.category||getCats()[0]?.id, parentItem?.location||getLocs()[0]?.id, '');
-  // APE-57: children adopt the group's storage defaults (category + location already set above; copy packs-into too)
-  if(parentItem&&parentItem.packsInto) document.getElementById('iPacksInto').value=parentItem.packsInto;
   populateParentDropdown(parentId, null, {lock:true});
   populatePersonButtons([]);
   // APE-20: prompt for group type only when this is the parent's first child and it isn't already group-only
@@ -5096,6 +5178,8 @@ function openAddWishModal(){
 function openEditItemModal(id){
   const item=S.items.find(i=>i.id===id);
   if(!item) return;
+  // Groups have their own sheet — never the item form
+  if(item.isContainer){ openEditGroupModal(id); return; }
   editItemId=id;
   window._pendingDupSubs=null;
   document.getElementById('imt').textContent='Edit Item';
@@ -5107,8 +5191,7 @@ function openEditItemModal(id){
   setQtyRuleForm(item.qtyRule);
   document.getElementById('iSeason').value=item.season||'all';
   document.getElementById('iRestock').checked=!!item.restock;
-  document.getElementById('iContainer').checked=!!item.isContainer;
-  applyItemModalGroupMode(!!item.isContainer);
+  window._formIsContainer=!!item.isContainer;
   document.getElementById('iNotes').value=item.notes||'';
   populateDynamicDropdowns(item.category, item.location, item.activity||'');
   if(item.packsInto) document.getElementById('iPacksInto').value=item.packsInto;
@@ -5125,8 +5208,7 @@ function clearItemForm(){
   document.getElementById('iQty').value='1';
   document.getElementById('iSeason').value='all';
   document.getElementById('iRestock').checked=false;
-  document.getElementById('iContainer').checked=false;
-  applyItemModalGroupMode(false);
+  window._formIsContainer=false;
   document.getElementById('iPacksInto').value='';
   setQtyRuleForm(null);
   window._firstChildParentId=null;
@@ -5558,7 +5640,7 @@ function saveItem(skipDuplicateCheck){
     season:document.getElementById('iSeason').value,
     activity:document.getElementById('iActivity').value,
     restock:document.getElementById('iRestock').checked,
-    isContainer:document.getElementById('iContainer').checked,
+    isContainer:!!window._formIsContainer,
     packsInto:document.getElementById('iPacksInto').value||null,
     notes:document.getElementById('iNotes').value.trim(),
     personIds:[...document.querySelectorAll('#iPersonBtns button.on')].map(b=>b.dataset.pid),
@@ -7718,6 +7800,33 @@ function showGroupTypePrompt(parentId){
     </div>`);
 }
 function closeGroupTypePrompt(){ document.getElementById('groupTypeOverlay')?.remove(); }
+/** Convert a plain item into a group, then open the group sheet to confirm its details. */
+function convertToGroup(itemId){
+  hideCtxMenu();
+  const item=S.items.find(i=>i.id===itemId);
+  if(!item||item.isContainer) return;
+  item.isContainer=true;
+  item.type='always';
+  save();
+  openEditGroupModal(itemId);
+}
+
+/** Dissolve a group: its items move out to top-level and stay in the kit; the group label is removed. */
+function ungroupItem(itemId){
+  const item=S.items.find(i=>i.id===itemId);
+  if(!item) return;
+  const kids=subItems(itemId);
+  const msg=kids.length
+    ? 'Ungroup "'+item.name+'"?\n\nIts '+kids.length+' item'+(kids.length===1?'':'s')+' will move out and stay in your kit. The group label is removed.'
+    : 'Remove the empty group "'+item.name+'"?';
+  if(!confirm(msg)) return;
+  hideCtxMenu();
+  kids.forEach(k=>{ k.parentId=null; });
+  S.items=S.items.filter(i=>i.id!==itemId);
+  expandedInvGroups.delete(itemId);
+  save(); renderAll();
+  showToast(kids.length?'Ungrouped — items kept in your kit':'Group removed');
+}
 function setGroupType(parentId, isContainer){
   const parent=S.items.find(i=>i.id===parentId);
   if(parent){ parent.isContainer=!!isContainer; save(); renderInv(); if(activeTripId) renderTrips(); }
