@@ -33,6 +33,7 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [APE-55](https://linear.app/aperturegraph/issue/APE-55) | consumable_stock_shortfall… | Consumable stock & shortfall → shopping (Batch K; depends on F) |
 | [APE-56](https://linear.app/aperturegraph/issue/APE-56) | consumable_stock_shortfall… | Count-aware / partial packing for ×N lines (Batch L; companion to K) |
 | [APE-57](https://linear.app/aperturegraph/issue/APE-57) | quick_create_group… | Quick-create a group + child default inheritance (Batch M; follows G) — Ready for testing |
+| [APE-58](https://linear.app/aperturegraph/issue/APE-58) | mobile_kit_wishlist_rows… | Mobile-first Kit & Want list rows (stack title/tags/⋯ on ≤640px) — Done |
 
 **Build order** (Linear priority): demo graduation + backup (APE-12–14, APE-13) → trip experience polish (APE-11, APE-25–27, APE-26) → camp mode (APE-15–17, APE-23) → qty rules (APE-21, APE-18) → kit UX (APE-20, APE-22, APE-24).
 
@@ -47,6 +48,7 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [batch_f_quantity_rules.plan.md](batch_f_quantity_rules.plan.md) | Done | Batch F — per-item `qtyRule` (perNight / perPersonPerNight), progressive-disclosure editor, checklist ×N tooltip, contextual stock hint (APE-21, APE-18; commit `9487f67`) |
 | [consumable_stock_shortfall.plan.md](consumable_stock_shortfall.plan.md) | Queued | Batch K — consumable-only stock vs trip demand → shopping shortfall (APE-55; depends on F) |
 | [quick_create_group.plan.md](quick_create_group.plan.md) | Ready for testing | Batch M — groups get a dedicated sheet (not the item form), invisible category+location inheritance, "Turn into group" / "Ungroup" menu actions, optional location (APE-57) |
+| [mobile_kit_wishlist_rows.plan.md](mobile_kit_wishlist_rows.plan.md) | Done | Mobile-first Kit & Want list rows — stack title / tags / ⋯ menu on phones (≤640px) so cells stop overlapping; show location on phones (APE-58) |
 | [forgotten_item_feature_ux_d218206d.plan.md](forgotten_item_feature_ux_d218206d.plan.md) | Partial | Camp learnings largely in app; qty rules + camp reframe remain |
 | [packable_parent_vs_group_container.plan.md](packable_parent_vs_group_container.plan.md) | Partial | Kit grouping vs packable bag/box; editor copy + add-sub prompt; checklist dual-row UX done |
 | [kit_parent_picker_ux.plan.md](kit_parent_picker_ux.plan.md) | Partial | Searchable / A–Z group picker + locked “Add to group”; “Move to group” menu deferred |

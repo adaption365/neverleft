@@ -876,7 +876,22 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
   .ttitle{font-size:19px}
   .ttab{padding:7px 9px;font-size:11px}
   .cfg-grid{grid-template-columns:1fr}
-  .itbl th:nth-child(3),.itbl td:nth-child(3){display:none}
+  /* ── Mobile-first item cards: title (wraps) on its own row, tags/controls below, ⋯ pinned top-right ── */
+  .irow{flex-wrap:wrap;align-items:center;column-gap:8px;row-gap:9px;padding-right:46px}
+  .irow.sub-row{padding-right:46px;padding-left:22px}
+  .irow.add-sub-row{padding-left:28px!important}
+  .sub-ci{padding-left:24px}
+  .irow>td:nth-child(1){flex:0 0 100%;min-width:0}
+  .iname{white-space:normal;overflow-wrap:anywhere}
+  .irow:not(.wishlist-item)>td:nth-child(2),
+  .irow:not(.wishlist-item)>td:nth-child(3),
+  .irow:not(.wishlist-item)>td:nth-child(4){flex:0 0 auto}
+  .irow:not(.wishlist-item)>td:nth-child(5){position:absolute;top:10px;right:12px;margin:0}
+  /* Want list rows: title (wraps) / location / ⋯ (notes + 'Add to Inventory' live in the ⋯ menu on phones) */
+  .irow.wishlist-item>td:nth-child(2){flex:0 0 auto}
+  .irow.wishlist-item>td:nth-child(3){display:none}
+  .irow.wishlist-item .btn-g{display:none}
+  .irow.wishlist-item>td:nth-child(4){position:absolute;top:10px;right:12px;margin:0}
   .logo sup{display:none}
   .mtab{padding:9px 10px;font-size:11px}
   .qbtn{min-width:40px;min-height:40px;font-size:16px;line-height:1}
@@ -2656,7 +2671,7 @@ function itemRow(item, isSub, srch){
           <button class="qbtn" onclick="qAdj('${item.id}',+1)">+</button>
         </div>`:`<span style="font-family:'DM Mono',monospace;color:var(--text-m)">${item.qty}</span>`}
       </td>
-      <td style="position:relative">
+      <td>
         <button class="btn-ic" style="font-size:14px;padding:2px 8px;opacity:.55"
           onclick="event.stopPropagation();_invMenu(this,'${item.id}',${item.restock?1:0})">•••</button>
       </td>
