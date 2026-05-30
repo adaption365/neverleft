@@ -941,9 +941,17 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 @media(max-width:360px){
   .hnav{padding:6px 7px;font-size:11px}
 }
+/* APE-39: floating back-to-top button (appears once you scroll down) */
+.scroll-top-btn{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:120;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--canvas-2);color:var(--text);box-shadow:0 6px 18px rgba(0,0,0,.18);cursor:pointer;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(10px) scale(.9);pointer-events:none;transition:opacity .2s ease,transform .2s ease,border-color .18s,color .18s}
+.scroll-top-btn.on{opacity:.96;transform:none;pointer-events:auto}
+.scroll-top-btn:hover{border-color:var(--amber);color:var(--amber-d)}
+.scroll-top-btn:active{transform:scale(.94)}
+@media print{.scroll-top-btn{display:none!important}}
 </style>
 </head>
 <body>
+
+<button id="scrollTopBtn" class="scroll-top-btn" type="button" aria-label="Back to top" title="Back to top" onclick="scrollToTop()">↑</button>
 
 <header class="hdr">
   <div class="hdr-inner">
@@ -1247,8 +1255,8 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
     <div class="fg"><label class="ck"><input type="checkbox" id="tDog" checked> Dog coming along</label></div>
     <div class="tw-actions">
       <button type="button" class="btn btn-o btn-back" onclick="tripWizardBack()">Back</button>
-      <button type="button" class="btn btn-o" onclick="saveTripWizard('more')">Add more trip details</button>
-      <button type="button" class="btn btn-p" onclick="saveTripWizard('start')">Start planning</button>
+      <button type="button" class="btn btn-o" onclick="saveTripWizard('start')">Save &amp; close</button>
+      <button type="button" class="btn btn-p" onclick="saveTripWizard('more')">Next: What you&rsquo;ll need →</button>
     </div>
   </div>
 
@@ -1271,8 +1279,8 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
     </div>
     <div class="tw-actions">
       <button type="button" class="btn btn-o btn-back" onclick="tripWizardBack()">Back</button>
-      <button type="button" class="btn btn-o" onclick="saveTripWizard('start')">Start planning now</button>
-      <button type="button" class="btn btn-p" onclick="saveTripWizard('continue')">Continue</button>
+      <button type="button" class="btn btn-o" onclick="saveTripWizard('start')">Save &amp; close</button>
+      <button type="button" class="btn btn-p" onclick="saveTripWizard('continue')">Next: The site →</button>
     </div>
   </div>
 
@@ -1307,8 +1315,8 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
     </details>
     <div class="tw-actions">
       <button type="button" class="btn btn-o btn-back" onclick="tripWizardBack()">Back</button>
-      <button type="button" class="btn btn-o" onclick="saveTripWizard('start')">Start planning now</button>
-      <button type="button" class="btn btn-p" onclick="saveTripWizard('continue')">Continue</button>
+      <button type="button" class="btn btn-o" onclick="saveTripWizard('start')">Save &amp; close</button>
+      <button type="button" class="btn btn-p" onclick="saveTripWizard('continue')">Next: Before you go →</button>
     </div>
   </div>
 
@@ -1338,8 +1346,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
     </div>
     <div class="tw-actions">
       <button type="button" class="btn btn-o btn-back" onclick="tripWizardBack()">Back</button>
-      <button type="button" class="btn btn-o" onclick="saveTripWizard('start')">Start planning now</button>
-      <button type="button" class="btn btn-p" onclick="saveTripWizard('finish')">Finish trip setup</button>
+      <button type="button" class="btn btn-p" onclick="saveTripWizard('finish')">Save &amp; close</button>
     </div>
   </div>
 
@@ -6009,7 +6016,7 @@ function graduateTripIdea(tripId){
 // ══════════════════════════════════════════════════
 // MODAL HELPERS
 // ══════════════════════════════════════════════════
-function openM(id){ document.getElementById(id).classList.add('on'); }
+function openM(id){ const m=document.getElementById(id); m.classList.add('on'); const sc=m.querySelector('.modal,.gsearch-panel,.sheet'); if(sc) sc.scrollTop=0; m.scrollTop=0; }
 function closeM(id){ document.getElementById(id).classList.remove('on'); if(id==='itemModal'){ editItemId=null; closeDuplicateNameDialog(); closeParentPickerList(); window._parentPickerLocked=false; window._forgotResolve=null; window._pendingDupSubs=null; } }
 function closeMOver(e,id){
   if(e.target!==document.getElementById(id)) return;
@@ -6245,6 +6252,8 @@ function setTab(tab,btn){
       el.style.display='none';
     }
   });
+  window.scrollTo({top:0}); // APE-31: land at the top when switching screens
+  if(typeof updateScrollTopBtn==='function') updateScrollTopBtn();
   if(tab==='trips') renderTrips();
   if(tab==='inv') renderInv();
   if(tab==='wishlist') renderWishlist();
@@ -9548,6 +9557,12 @@ function printChecklist(tripId, mode){
 
   openHtmlPrintPreview(html);
 }
+
+// APE-39: floating back-to-top control
+function scrollToTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
+function _scrollOffset(){ return window.scrollY||document.documentElement.scrollTop||document.body.scrollTop||0; }
+function updateScrollTopBtn(){ const b=document.getElementById('scrollTopBtn'); if(b) b.classList.toggle('on', _scrollOffset()>320); }
+window.addEventListener('scroll',updateScrollTopBtn,{passive:true});
 
 function renderAll(){
   refreshNavBadges();
