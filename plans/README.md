@@ -39,6 +39,8 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 
 **Batched delivery (retrospective):** [backlog_batches_wave1_wave2.plan.md](backlog_batches_wave1_wave2.plan.md) — Wave 1 Done; Wave 2 Batch C Done (APE-43, 45, 46) criteria-gated stepper + `at-camp`.
 
+**Quick fixes (no plan file, commit `9687d67`)** — Ready for testing: APE-54 (consistent trip wizard buttons: named `Next: …` primary + `Save & close` secondary), APE-31 (scroll to top on screen/modal change), APE-39 (floating back-to-top button), APE-48 (want list re-renders on add — already wired via `renderAll`).
+
 ## NeverLeft (this app)
 
 | File | Status | Summary |
