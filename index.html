@@ -361,9 +361,9 @@ body.light .tcard--idea{background:rgba(106,74,152,.09);box-shadow:0 2px 8px rgb
 .trip-exp-tab:hover{color:var(--text);border-color:var(--border-l)}
 .trip-exp-tab.on{background:var(--canvas-2);color:var(--text);border-color:var(--sage);box-shadow:0 0 0 1px rgba(107,140,90,.25)}
 body.light .trip-exp-tab.on{box-shadow:0 1px 6px rgba(74,107,58,.12)}
-.trip-exp-tab-caret{display:inline-block;margin-left:4px;font-size:9px;opacity:.75;vertical-align:1px}
-.trip-exp-hide{flex-shrink:0;font-family:'DM Mono',monospace;font-size:10px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text-m);cursor:pointer;white-space:nowrap;transition:color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out)}
-.trip-exp-hide:hover{color:var(--text);border-color:var(--border-l)}
+.trip-exp-tab-inner{display:inline-flex;align-items:center;justify-content:center;gap:5px;width:100%}
+.trip-exp-tab-ic{font-size:9px;line-height:1;opacity:.55;flex-shrink:0;transition:transform var(--dur-fast) var(--ease-out),opacity var(--dur-fast) var(--ease-out)}
+.trip-exp-tab.on .trip-exp-tab-ic{opacity:.9}
 .trip-exp-panel{border:1px solid var(--border);border-radius:12px;background:var(--canvas-2);padding:14px 16px;margin-top:10px;font-size:12px;line-height:1.5;color:var(--text);box-shadow:0 1px 5px rgba(0,0,0,.06)}
 .trip-exp-tabs--connected .trip-exp-tab.on{border-bottom-color:var(--canvas-2);border-radius:10px 10px 0 0;margin-bottom:-1px;padding-bottom:11px;z-index:1;position:relative}
 .trip-exp-tabs--connected+.trip-exp-panel{margin-top:0;border-top:none;border-top-left-radius:0;border-top-right-radius:0}
@@ -1407,7 +1407,7 @@ let tf = 'all', mainTab = 'trips';
 let activeTripId = null, activeTripTab = 'checklist';
 let activeExperienceTab = null;
 let activeExperienceForTripId = null;
-let experiencePanelCollapsed = false;
+let experiencePanelDismissed = false;
 let tripWizardStep = 'fork';
 let tripWizardPath = null;
 let tripsTypeFilter = 'all';
@@ -4600,19 +4600,17 @@ function openTrip(id){
   activeTripTab=trip?tripStageDefaultTab(trip.status):'checklist';
   renderTrips();
 }
-function closeTrip(){ activeTripId=null; checklistSearch=''; expandedPackedChecklistGroups.clear(); expandedChecklistGroups.clear(); experiencePanelCollapsed=false; renderTrips(); }
+function closeTrip(){ activeTripId=null; checklistSearch=''; expandedPackedChecklistGroups.clear(); expandedChecklistGroups.clear(); experiencePanelDismissed=false; renderTrips(); }
 function setTripTab(tab){ activeTripTab=tab; renderTrips(); }
 
 function setExperienceTab(tab){
-  experiencePanelCollapsed=false;
-  activeExperienceTab=activeExperienceTab===tab?null:tab;
-  if(!activeExperienceTab) experiencePanelCollapsed=true;
-  renderTrips();
-}
-
-function collapseExperiencePanel(){
-  activeExperienceTab=null;
-  experiencePanelCollapsed=true;
+  if(activeExperienceTab===tab){
+    activeExperienceTab=null;
+    experiencePanelDismissed=true;
+  }else{
+    activeExperienceTab=tab;
+    experiencePanelDismissed=false;
+  }
   renderTrips();
 }
 
@@ -4640,11 +4638,11 @@ function resolveExperienceTab(tripId,tabIds){
   if(activeExperienceForTripId!==tripId){
     activeExperienceForTripId=tripId;
     activeExperienceTab=null;
-    experiencePanelCollapsed=false;
+    experiencePanelDismissed=false;
   }else if(activeExperienceTab&&!tabIds.includes(activeExperienceTab)){
     activeExperienceTab=null;
   }
-  if(experiencePanelCollapsed) return null;
+  if(experiencePanelDismissed) return null;
   if(activeExperienceTab) return activeExperienceTab;
   const trip=S.trips.find(t=>t.id===tripId);
   return defaultExperienceTab(trip,tabIds);
@@ -7680,12 +7678,12 @@ function renderTripExperiencePanel(trip){
       <div class="trip-exp-tabs${tabsConnected?' trip-exp-tabs--connected':''}" role="tablist" aria-label="Trip details">
         ${expTabs.map(t=>{
           const on=active===t.id;
-          return `<button type="button" class="trip-exp-tab${on?' on':''}" role="tab" aria-expanded="${on?'true':'false'}" onclick="setExperienceTab('${t.id}')">${esc(t.label)}${on?'<span class="trip-exp-tab-caret" aria-hidden="true">▴</span>':''}</button>`;
+          const ic=on?'▴':'▾';
+          return `<button type="button" class="trip-exp-tab${on?' on':''}" role="tab" aria-expanded="${on?'true':'false'}" aria-label="${esc(t.label)}${on?', expanded':', collapsed'}" onclick="setExperienceTab('${t.id}')"><span class="trip-exp-tab-inner"><span>${esc(t.label)}</span><span class="trip-exp-tab-ic" aria-hidden="true">${ic}</span></span></button>`;
         }).join('')}
       </div>
-      ${active?`<button type="button" class="trip-exp-hide" onclick="collapseExperiencePanel()" aria-label="Hide trip details panel">Hide</button>`:''}
     </div>
-    ${!active?`<p class="trip-experience-muted" style="margin:6px 0 0;font-size:10px">Tap Site, Booking, Weather, or Travel to see details and links · Hide collapses the panel</p>`:''}
+    ${!active?`<p class="trip-experience-muted" style="margin:6px 0 0;font-size:10px">Tap a section to expand — tap again to collapse</p>`:''}
     ${panelHtml?`<div class="trip-exp-panel" role="tabpanel">${panelHtml}</div>`:''}
   </div>`;
 }

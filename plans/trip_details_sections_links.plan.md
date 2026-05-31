@@ -42,7 +42,7 @@ The trip experience panel duplicated information and felt busy:
   `remember` step (twBooked4). The old bottom edit-links row is removed (the
   toolbar Edit button still opens the full wizard).
 - Rename **Save forecast → Load forecast** (+ Reload when a snapshot exists); related copy / hints / toast updated.
-- **All four tabs always visible**; on first open of a trip, the first section that still needs data opens (else Site). **Hide** collapses until you tap a tab again.
+- **All four tabs always visible**; on first open of a trip, the first section that still needs data opens (else Site). Each tab shows **▾ collapsed / ▴ expanded**; tap the active tab again to collapse (no separate Hide control).
 
 ## Implementation (index.html)
 

@@ -57,7 +57,7 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [kit_parent_picker_ux.plan.md](kit_parent_picker_ux.plan.md) | Partial | Searchable / A–Z group picker + locked “Add to group”; “Move to group” menu deferred |
 | [trip_attendees_and_kit_40ad2a8d.plan.md](trip_attendees_and_kit_40ad2a8d.plan.md) | Done | Trip roster, checklist scoping, manual includes |
 | [trip_experience_hub.plan.md](trip_experience_hub.plan.md) | Partial | Site/booking/travel/weather on trip; progressive disclosure on trip detail |
-| [trip_details_sections_links.plan.md](trip_details_sections_links.plan.md) | Ready for testing | Trip details declutter — section-scoped links (no busy header row), always-show Site/Booking/Weather/Travel tabs with per-section edit jumps, manual drive-time field, Save→Get forecast (APE-59) |
+| [trip_details_sections_links.plan.md](trip_details_sections_links.plan.md) | Ready for testing | Trip details declutter — links in Site/Booking/Weather/Travel tabs; weather summary in header; Load forecast; miles + drive time; per-tab Edit jumps (APE-59) |
 | [trip_setup_journey.plan.md](trip_setup_journey.plan.md) | Done | Emotional 4-step trip setup wizard (booked + idea paths) |
 
 **Suggested build order** (from feature plan): demo graduation + backup gate → trip experience polish → Camp mode → qty rules.
