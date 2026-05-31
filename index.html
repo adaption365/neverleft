@@ -555,6 +555,17 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 .pbar-ready{background:var(--amber);transition:width var(--dur-panel) var(--ease-out)}
 .cprog-hint{font-family:'DM Mono',monospace;font-size:9px;color:var(--text-m);margin-top:7px}
 .cprog-complete{text-align:center;padding:8px 0 2px;font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:700;letter-spacing:.08em;color:var(--sage);animation:pageEnter .35s var(--ease-out) both}
+.consumable-prep{margin-bottom:16px;padding:14px 16px;border-radius:12px;background:rgba(90,154,138,.08);border:1px solid rgba(90,154,138,.22)}
+.consumable-prep-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px}
+.consumable-prep-title{font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
+.consumable-prep-dismiss{font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border:none;background:transparent;color:var(--text-m);cursor:pointer}
+.consumable-prep-dismiss:hover{color:var(--text)}
+.consumable-prep-lead{margin:0 0 12px;font-size:12px;line-height:1.5;color:var(--text-m)}
+.consumable-prep-rows{display:flex;flex-direction:column;gap:10px}
+.consumable-prep-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:10px 12px;border-radius:10px;background:var(--canvas-2);box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.consumable-prep-name{flex:1;min-width:120px;font-size:13px;font-weight:700;color:var(--text)}
+.consumable-prep-stats{display:flex;flex-wrap:wrap;gap:6px;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)}
+.consumable-prep-gap{color:var(--amber-d);font-weight:700}
 
 /* ── TRIP CARDS ── */
 .tlist{display:flex;flex-direction:column;gap:10px}
@@ -905,6 +916,8 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
   .mtab{padding:9px 10px;font-size:11px}
   .qbtn{min-width:40px;min-height:40px;font-size:16px;line-height:1}
   .btn-ic{min-width:40px;min-height:40px;padding:8px 10px!important;font-size:16px!important}
+  /* Keep back-to-top off the packing-list ⋯ controls (top-right of each row) */
+  .scroll-top-btn{left:max(16px,env(safe-area-inset-left,0px));right:auto}
 }
 @media(max-width:767px){
   #navSettingsBtn{display:none!important}
@@ -949,6 +962,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 /* APE-39: floating back-to-top button (appears once you scroll down) */
 .scroll-top-btn{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:120;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--canvas-2);color:var(--text);box-shadow:0 6px 18px rgba(0,0,0,.18);cursor:pointer;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(10px) scale(.9);pointer-events:none;transition:opacity .2s ease,transform .2s ease,border-color .18s,color .18s}
 .scroll-top-btn.on{opacity:.96;transform:none;pointer-events:auto}
+.ci-menu-btn{position:relative;z-index:2;flex-shrink:0}
 .scroll-top-btn:hover{border-color:var(--amber);color:var(--amber-d)}
 .scroll-top-btn:active{transform:scale(.94)}
 @media print{.scroll-top-btn{display:none!important}}
@@ -1106,7 +1120,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
   </div>
   <div class="frow" id="iTypeRow">
     <div class="fg"><label class="fl">Type *</label>
-      <select class="fs" id="iType">
+      <select class="fs" id="iType" onchange="updateItemQtyLabel();updateQtyRuleSummary()">
         <option value="always">Always packed</option>
         <option value="house">From House</option>
         <option value="consumable">Consumable</option>
@@ -1122,8 +1136,8 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
     <div class="fg" id="iLocField"><label class="fl">Location</label>
       <select class="fs" id="iLoc"></select>
     </div>
-    <div class="fg" id="iQtyField"><label class="fl">Quantity</label><input class="fi" id="iQty" type="number" min="0" value="1">
-      <div class="qtyrule-hint" id="iQtyStockHint" style="display:none">Trip amount is calculated below. Quantity is your stock on hand.</div>
+    <div class="fg" id="iQtyField"><label class="fl" id="iQtyLabel">Quantity</label><input class="fi" id="iQty" type="number" min="0" value="1">
+      <div class="qtyrule-hint" id="iQtyStockHint" style="display:none">Trip need is calculated below. This field is stock on hand at home.</div>
     </div>
   </div>
   <div class="fg" id="iQtyRuleBlock">
@@ -1772,7 +1786,25 @@ function fmtDate(d){ if(!d)return''; try{return new Date(d+'T12:00:00').toLocale
 // ══════════════════════════════════════════════════
 function topItems(){ return S.items.filter(i=>!i.parentId && i.type!=='wishlist'); }
 /** All Camping Kit lines (non–wish list) flagged for shopping / low stock — same set as shopping list & Restock tab. */
-function itemsNeedingRestock(){ return S.items.filter(i=>i.type!=='wishlist'&&(i.restock||Number(i.qty)===0)); }
+function itemsNeedingRestock(){
+  return S.items.filter(i=>i.type!=='wishlist'&&(i.restock||Number(i.qty)===0||Number(i.qtyToBuy)>0));
+}
+
+/** Units to buy on the shopping list (not stock on hand). */
+function shoppingQtyToBuy(item){
+  const q=Number(item&&item.qtyToBuy);
+  if(q>0) return Math.max(1, Math.round(q));
+  if(item.restock||Number(item.qty)===0) return 1;
+  return 0;
+}
+
+function applyShoppingRestockReceived(item){
+  const bought=shoppingQtyToBuy(item);
+  item.restock=false;
+  item.qtyToBuy=0;
+  if(bought>0) item.qty=Math.max(0,(Number(item.qty)||0)+bought);
+  else if(Number(item.qty)===0) item.qty=1;
+}
 /** Every non–wish list line in the kit (parents + sub-items). */
 function kitItems(){ return S.items.filter(i=>i.type!=='wishlist'); }
 function subItems(parentId){ return S.items.filter(i=>i.parentId===parentId); }
@@ -2074,6 +2106,87 @@ function adjQty(item, trip){
     if(legacy) return computeTripQty({...item,qtyRule:legacy},trip);
   }
   return item.qty;
+}
+
+// ── Consumable stock & shortfall (APE-55) ──
+function consumableStockOnHand(item){ return Math.max(0, Number(item&&item.qty)||0); }
+
+function consumableTripDemand(item, trip){
+  if(!item||item.type!=='consumable') return 0;
+  return Math.max(0, adjQty(item, trip));
+}
+
+function consumableShortfall(item, trip){
+  if(!item||item.type!=='consumable') return 0;
+  return Math.max(0, consumableTripDemand(item, trip)-consumableStockOnHand(item));
+}
+
+function tripConsumableShortfallIds(trip){
+  if(trip.checklist&&trip.checklist.length)
+    return [...new Set(trip.checklist.map(c=>c.itemId))];
+  return itemIdsForTripChecklist(trip);
+}
+
+function tripConsumableShortfalls(trip){
+  const out=[];
+  tripConsumableShortfallIds(trip).forEach(id=>{
+    const item=S.items.find(i=>i.id===id);
+    if(!item||item.type!=='consumable') return;
+    const demand=consumableTripDemand(item, trip);
+    if(demand<=0) return;
+    const stock=consumableStockOnHand(item);
+    const shortfall=Math.max(0, demand-stock);
+    if(shortfall<=0) return;
+    if(item.restock&&(Number(item.qtyToBuy)||0)>=shortfall) return;
+    out.push({item, demand, stock, shortfall});
+  });
+  return out.sort((a,b)=>a.item.name.localeCompare(b.item.name));
+}
+
+function addShortfallToShoppingList(itemId, tripId, qty){
+  const item=S.items.find(i=>i.id===itemId);
+  if(!item) return;
+  const n=Math.max(1, Math.round(Number(qty)||0));
+  item.restock=true;
+  item.qtyToBuy=Math.max(Number(item.qtyToBuy)||0, n);
+  save(); refreshNavBadges(); renderTrips();
+  showToast('Added '+n+' to shopping list — '+item.name);
+}
+
+function dismissConsumablePrepStrip(tripId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  trip.consumablePrepDismissed=true;
+  save(); renderTrips();
+}
+
+function renderConsumablePrepStrip(trip){
+  if(trip.consumablePrepDismissed) return '';
+  if(trip.status==='complete'||trip.status==='post-trip') return '';
+  const rows=tripConsumableShortfalls(trip);
+  if(!rows.length) return '';
+  const anyListed=rows.some(r=>r.item.restock);
+  return `<div class="consumable-prep" id="consumablePrep-${trip.id}">
+    <div class="consumable-prep-hd">
+      <span class="consumable-prep-title">Suggested amounts for this trip</span>
+      <button type="button" class="consumable-prep-dismiss" onclick="dismissConsumablePrepStrip('${trip.id}')">Dismiss</button>
+    </div>
+    <p class="consumable-prep-lead">Consumables you may want to buy — based on this trip&rsquo;s packing list and what you have in stock.</p>
+    <div class="consumable-prep-rows">
+      ${rows.map(({item,demand,stock,shortfall})=>{
+        const listed=item.restock&&(Number(item.qtyToBuy)||0)>=shortfall;
+        const btn=listed
+          ?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--sage)">On shopping list</span>`
+          :`<button type="button" class="btn btn-o btn-sm" onclick="event.stopPropagation();addShortfallToShoppingList('${item.id}','${trip.id}',${shortfall})">Add ${shortfall} to shopping list</button>`;
+        return `<div class="consumable-prep-row">
+          <div class="consumable-prep-name">${esc(item.name)}</div>
+          <div class="consumable-prep-stats"><span>Need ~${demand}</span><span>·</span><span>In stock ${stock}</span><span>·</span><span class="consumable-prep-gap">Short ${shortfall}</span></div>
+          ${btn}
+        </div>`;
+      }).join('')}
+    </div>
+    ${anyListed?`<button type="button" class="btn btn-o btn-sm" style="margin-top:10px" onclick="openShoppingList()">Open shopping list</button>`:''}
+  </div>`;
 }
 
 // ══════════════════════════════════════════════════
@@ -2727,6 +2840,7 @@ function itemRow(item, isSub, srch){
 
 // ── FLOATING CONTEXT MENU ──
 const _ctxRegistry={};
+let _ctxSuppressDocCloseUntil=0;
 
 function registerCtxMenu(id, actions){
   _ctxRegistry[id]=actions;
@@ -2734,7 +2848,7 @@ function registerCtxMenu(id, actions){
 
 function openCtxMenu(id, btnEl){
   const actions=_ctxRegistry[id];
-  if(!actions) return;
+  if(!actions||!btnEl) return;
   let menu=document.getElementById('_ctxMenu');
   if(!menu){
     menu=document.createElement('div');
@@ -2744,34 +2858,39 @@ function openCtxMenu(id, btnEl){
   }
   // Toggle
   if(menu.dataset.openId===id && menu.style.display==='block'){
-    menu.style.display='none';
-    menu.dataset.openId='';
+    hideCtxMenu();
     return;
   }
   menu.style.background='var(--canvas-2)';
   menu.style.boxShadow='0 8px 32px rgba(0,0,0,.18)';
   menu.style.minWidth='180px';
   menu.innerHTML=actions.map((a,i)=>
-    '<button data-idx="'+i+'" style="display:block;width:100%;padding:11px 16px;background:transparent;'+
+    '<button type="button" data-idx="'+i+'" style="display:block;width:100%;padding:11px 16px;background:transparent;'+
     'border:none;font-family:Familjen Grotesk,sans-serif;font-size:14px;color:'+(a.color||'var(--text-d)')+
     ';text-align:left;cursor:pointer">'+esc(a.label)+'</button>'
   ).join('');
   menu.querySelectorAll('button').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const idx=parseInt(btn.dataset.idx);
+    btn.addEventListener('click',ev=>{
+      ev.stopPropagation();
+      const idx=parseInt(btn.dataset.idx,10);
       try{ actions[idx].fn(); }catch(e){ console.error(e); }
-      menu.style.display='none';
+      hideCtxMenu();
     });
     btn.addEventListener('mouseover',()=>btn.style.background='var(--canvas-3)');
     btn.addEventListener('mouseout',()=>btn.style.background='transparent');
   });
   const rect=btnEl.getBoundingClientRect();
   const menuWidth=180;
+  const rowH=44;
+  const estH=actions.length*rowH+8;
+  let top=rect.bottom+6;
+  if(top+estH>window.innerHeight-8) top=Math.max(8, rect.top-estH-6);
   const left=Math.min(rect.right-menuWidth, window.innerWidth-menuWidth-8);
-  menu.style.top=(rect.bottom+6)+'px';
+  menu.style.top=top+'px';
   menu.style.left=Math.max(8,left)+'px';
   menu.style.display='block';
   menu.dataset.openId=id;
+  _ctxSuppressDocCloseUntil=Date.now()+400;
 }
 
 function hideCtxMenu(){
@@ -2779,12 +2898,19 @@ function hideCtxMenu(){
   if(menu){ menu.style.display='none'; menu.dataset.openId=''; }
 }
 
-// Close when clicking outside
+function onCtxTriggerClick(e, openFn){
+  e.preventDefault();
+  e.stopPropagation();
+  openFn(e.currentTarget);
+}
+
+// Close when clicking outside (ignore the same tap that opened the menu)
 document.addEventListener('click',e=>{
+  if(Date.now()<_ctxSuppressDocCloseUntil) return;
+  if(e.target.closest('[data-ctx-trigger]')) return;
   const menu=document.getElementById('_ctxMenu');
   if(menu&&menu.style.display==='block'&&!menu.contains(e.target)){
-    menu.style.display='none';
-    menu.dataset.openId='';
+    hideCtxMenu();
   }
 });
 
@@ -2792,6 +2918,15 @@ document.addEventListener('click',e=>{
 function closeAllMenus(){ hideCtxMenu(); }
 function closeCIMenu(){ hideCtxMenu(); }
 function toggleCIMenu(){ hideCtxMenu(); }
+
+function onCiMenuClick(e, tripId, itemId){
+  onCtxTriggerClick(e, btn=>{
+    registerCtxMenu('ci-'+itemId,[
+      {label:'Remove from trip', color:'var(--rust)', fn:()=>removeFromChecklist(tripId, itemId)}
+    ]);
+    openCtxMenu('ci-'+itemId, btn);
+  });
+}
 
 // Helper: checklist item menu
 function _ciMenu(btn, tripId, itemId){
@@ -3918,6 +4053,7 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
       </div>`:'';
 
   return `${filterPanel}
+    ${renderConsumablePrepStrip(trip)}
     ${packingGate}
     <div class="cprog">
       <div class="cprog-top">
@@ -3977,13 +4113,19 @@ function ciRow(ci,item,trip,hl){
     const collapsedHint=checklistGroupCollapsedHint(visibleSubs.length,allSubs.length,groupOpen);
     return `
       <div class="ci-group-block${groupOpen?'':' ci-group-block--collapsed'}" id="clitem-${trip.id}-${item.id}">
-        <div class="ci-group-hdr" onclick="toggleChecklistGroup('${trip.id}','${item.id}',event)">
-          <span class="igroup-toggle ${groupOpen?'open':'closed'}" aria-hidden="true">▼</span>
-          <div class="ci-group-hdr-body">
-            <div class="ci-group-hdr-title">${esc(item.name)}${tripManualExtraBadge(trip,item.id)} <span class="ci-group-hdr-tag">group · pack items inside</span></div>
-            ${collapsedHint}
+        <div class="ci-group-hdr">
+          <div class="ci-group-hdr-body" style="display:flex;align-items:flex-start;gap:8px;flex:1;min-width:0;cursor:pointer" onclick="toggleChecklistGroup('${trip.id}','${item.id}',event)">
+            <span class="igroup-toggle ${groupOpen?'open':'closed'}" aria-hidden="true">▼</span>
+            <div style="flex:1;min-width:0">
+              <div class="ci-group-hdr-title">${esc(item.name)}${tripManualExtraBadge(trip,item.id)} <span class="ci-group-hdr-tag">group · pack items inside</span></div>
+              ${collapsedHint}
+            </div>
+            <span class="ci-group-hdr-meta">${visibleSubs.length?subPacked+'/'+visibleSubs.length:allSubs.length+' item'+(allSubs.length!==1?'s':'')}</span>
           </div>
-          <span class="ci-group-hdr-meta">${visibleSubs.length?subPacked+'/'+visibleSubs.length:allSubs.length+' item'+(allSubs.length!==1?'s':'')}</span>
+          <div class="ci-menu-btn" onclick="event.stopPropagation()">
+            <button type="button" class="btn-ic" style="padding:2px 6px;font-size:13px;opacity:.5" data-ctx-trigger
+              onclick="onCiMenuClick(event,'${trip.id}','${item.id}')" aria-label="Item options">•••</button>
+          </div>
         </div>
         ${groupOpen?visibleSubs.map(sub=>{
           let sci=cl.find(c=>c.itemId===sub.id);
@@ -4033,9 +4175,9 @@ function ciRow(ci,item,trip,hl){
           ${item.notes?`<span class="ci-note">${esc(item.notes)}</span>`:''}
         </div>
       </div>
-      <div style="flex-shrink:0">
-        <button class="btn-ic" style="padding:2px 6px;font-size:13px;opacity:.5"
-          onclick="event.stopPropagation();_ciMenu(this,'${trip.id}','${ci.itemId}')">•••</button>
+      <div class="ci-menu-btn" onclick="event.stopPropagation()">
+        <button type="button" class="btn-ic" style="padding:2px 6px;font-size:13px;opacity:.5" data-ctx-trigger
+          onclick="onCiMenuClick(event,'${trip.id}','${ci.itemId}')" aria-label="Item options">•••</button>
       </div>
     </div>`;
   }
@@ -4067,9 +4209,9 @@ function ciRow(ci,item,trip,hl){
             ${item.notes?`<span class="ci-note">${esc(item.notes)}</span>`:''}
           </div>
         </div>
-        <div style="flex-shrink:0">
-          <button class="btn-ic" style="padding:2px 6px;font-size:13px;opacity:.5"
-            onclick="event.stopPropagation();_ciMenu(this,'${trip.id}','${ci.itemId}')">•••</button>
+        <div class="ci-menu-btn" onclick="event.stopPropagation()">
+          <button type="button" class="btn-ic" style="padding:2px 6px;font-size:13px;opacity:.5" data-ctx-trigger
+            onclick="onCiMenuClick(event,'${trip.id}','${ci.itemId}')" aria-label="Item options">•••</button>
         </div>
       </div>
       ${groupOpen&&visibleSubs.length?`<div style="padding:3px 0 0 46px;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-m);letter-spacing:.08em;text-transform:uppercase">includes:</div>`:''}
@@ -4101,9 +4243,9 @@ function ciSubRow(sci,sub,trip,hl,locMap){
         ${sub.notes?`<span class="ci-note">${esc(sub.notes)}</span>`:''}
       </div>
     </div>
-    <div style="flex-shrink:0">
-      <button class="btn-ic" style="padding:2px 6px;font-size:13px;opacity:.5"
-        onclick="event.stopPropagation();_ciMenu(this,'${trip.id}','${sci.itemId}')">•••</button>
+    <div class="ci-menu-btn" onclick="event.stopPropagation()">
+      <button type="button" class="btn-ic" style="padding:2px 6px;font-size:13px;opacity:.5" data-ctx-trigger
+        onclick="onCiMenuClick(event,'${trip.id}','${sci.itemId}')" aria-label="Item options">•••</button>
     </div>
   </div>`;
 }
@@ -4298,7 +4440,7 @@ function postTripBody(trip){
 
 function planningBody(trip){
   const hasCL=!!(trip.checklist&&trip.checklist.length);
-  return `
+  return `${renderConsumablePrepStrip(trip)}
     <p style="margin:0 0 14px;font-size:13px;line-height:1.55;color:var(--text-m)">Trip details are above. Add <strong>to-dos</strong> and <strong>notes</strong> at the bottom of this page — scroll down or use the links under the journey steps.</p>
     ${hasCL
       ?`<p style="font-size:12px;color:var(--text-m);margin:0 0 10px">${trip.checklist.length} line${trip.checklist.length!==1?'s':''} on your packing list.</p>
@@ -4366,7 +4508,7 @@ function renderRestock(){
   const byLoc={};
   ri.forEach(i=>{ if(!byLoc[i.location]) byLoc[i.location]=[]; byLoc[i.location].push(i); });
   el.innerHTML=`
-    <div style="margin-bottom:12px"><span style="font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--rust)">${ri.length} item${ri.length!==1?'s':''} to restock</span></div>
+    <div style="margin-bottom:12px"><span style="font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--rust)">${ri.length} item${ri.length!==1?'s':''} to buy</span></div>
     ${getStorageLocs().filter(l=>byLoc[l.id]).map(loc=>`
       <div class="cg">
         <div class="cg-hdr" style="cursor:default">
@@ -4374,11 +4516,12 @@ function renderRestock(){
           <span class="cg-count">${byLoc[loc.id].length}</span>
         </div>
         <table class="itbl">
-          <thead><tr><th>Item</th><th>Qty</th><th>Notes</th><th></th></tr></thead>
+          <thead><tr><th>Item</th><th>Buy</th><th>In stock</th><th>Notes</th><th></th></tr></thead>
           <tbody>${byLoc[loc.id].map(item=>`
             <tr class="irow">
               <td><div class="iname">${esc(item.name)}</div></td>
-              <td><span style="font-family:'DM Mono',monospace;color:var(--rust)">${item.qty}</span></td>
+              <td><span style="font-family:'DM Mono',monospace;color:var(--rust);font-weight:700">${shoppingQtyToBuy(item)}</span></td>
+              <td><span style="font-family:'DM Mono',monospace;color:var(--text-m)">${item.type==='consumable'?consumableStockOnHand(item):item.qty}</span></td>
               <td><span class="inotes">${esc(item.notes||'—')}</span></td>
               <td><button class="btn btn-g btn-sm" onclick="clearRestock('${item.id}')">✓ Restocked</button></td>
             </tr>`).join('')}
@@ -4626,7 +4769,11 @@ function saveTripNotes(tripId,val){
 
 function setRestock(itemId,val){
   const item=S.items.find(i=>i.id===itemId);
-  if(item){ item.restock=val; save(); refreshNavBadges(); }
+  if(!item) return;
+  item.restock=val;
+  if(!val) item.qtyToBuy=0;
+  else if(!Number(item.qtyToBuy)) item.qtyToBuy=1;
+  save(); refreshNavBadges();
 }
 
 function ptAdj(id,delta){
@@ -4962,6 +5109,8 @@ function toggleRestock(id){
   const item=S.items.find(i=>i.id===id);
   if(!item) return;
   item.restock=!item.restock;
+  if(!item.restock) item.qtyToBuy=0;
+  else if(!Number(item.qtyToBuy)) item.qtyToBuy=1;
   save(); renderInv(); refreshNavBadges();
   showToast(item.restock?'Added to shopping list 🛒':'Removed from shopping list');
 }
@@ -4977,7 +5126,7 @@ function qAdj(id,delta){
 function clearRestock(id){
   const item=S.items.find(i=>i.id===id);
   if(!item) return;
-  item.restock=false; item.qty=Math.max(item.qty,1);
+  applyShoppingRestockReceived(item);
   save(); renderAll();
 }
 
@@ -5134,6 +5283,8 @@ function openAddItemModal(prefillName){
   populateParentDropdown(null);
   populatePersonButtons([]);
   if(prefillName) document.getElementById('iName').value=String(prefillName).trim();
+  updateItemQtyLabel();
+  updateQtyRuleSummary();
   openM('itemModal');
   setTimeout(()=>document.getElementById('iName').focus(),50);
 }
@@ -5310,6 +5461,8 @@ function openEditItemModal(id){
   populatePersonButtons(item.personIds||[]);
   window._itemActions=(item.actions||[]).map(a=>({...a}));
   renderItemActionsList();
+  updateItemQtyLabel();
+  updateQtyRuleSummary();
   openM('itemModal');
 }
 
@@ -5325,6 +5478,8 @@ function clearItemForm(){
   window._firstChildParentId=null;
   window._itemActions=[];
   renderItemActionsList();
+  updateItemQtyLabel();
+  updateQtyRuleSummary();
 }
 
 // ── Quantity rule editor (APE-18) ──
@@ -5367,12 +5522,24 @@ function qtyRuleSummaryText(rule){
   return s;
 }
 
+function updateItemQtyLabel(){
+  const type=document.getElementById('iType')?.value;
+  const label=document.getElementById('iQtyLabel');
+  if(!label) return;
+  const rule=currentQtyRuleFromForm();
+  if(type==='consumable') label.textContent='In stock';
+  else if(rule) label.textContent='Default pack qty';
+  else label.textContent='Quantity';
+}
+
 function updateQtyRuleSummary(){
   const rule=currentQtyRuleFromForm();
   const el=document.getElementById('iQtyRuleSummaryText');
   if(el) el.textContent=qtyRuleSummaryText(rule);
   const hint=document.getElementById('iQtyStockHint');
-  if(hint) hint.style.display=rule?'block':'none';
+  const type=document.getElementById('iType')?.value;
+  if(hint) hint.style.display=(type==='consumable'||rule)?'block':'none';
+  updateItemQtyLabel();
 }
 
 function setQtyRuleForm(rule){
@@ -8324,7 +8491,8 @@ function openShoppingList(){
           </div>
           <div style="display:flex;align-items:center;gap:6px">
             <button onclick="slAdj('${item.id}',-1)" style="width:28px;height:28px;border-radius:8px;border:none;background:var(--canvas-3);color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700">−</button>
-            <span id="slqty-${item.id}" style="font-family:'DM Mono',monospace;font-size:14px;font-weight:700;min-width:24px;text-align:center">${item.qty}</span>
+            <span id="slqty-${item.id}" style="font-family:'DM Mono',monospace;font-size:14px;font-weight:700;min-width:24px;text-align:center">${shoppingQtyToBuy(item)}</span>
+            ${item.type==='consumable'?`<span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--text-m)">in stock ${consumableStockOnHand(item)}</span>`:''}
             <button onclick="slAdj('${item.id}',1)" style="width:28px;height:28px;border-radius:8px;border:none;background:var(--canvas-3);color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700">+</button>
           </div>
           <button onclick="markRestocked('${item.id}')" style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;border-radius:8px;border:none;background:rgba(107,140,90,.12);color:var(--sage);cursor:pointer;white-space:nowrap">✓ Got it</button>
@@ -8359,17 +8527,17 @@ function closeShoppingList(){
 function slAdj(itemId, delta){
   const item=S.items.find(i=>i.id===itemId);
   if(!item) return;
-  item.qty=Math.max(0, (item.qty||0)+delta);
+  item.restock=true;
+  item.qtyToBuy=Math.max(1, shoppingQtyToBuy(item)+delta);
   const el=document.getElementById('slqty-'+itemId);
-  if(el) el.textContent=item.qty;
+  if(el) el.textContent=shoppingQtyToBuy(item);
   save();
 }
 
 function markRestocked(itemId){
   const item=S.items.find(i=>i.id===itemId);
   if(!item) return;
-  item.restock=false;
-  if(Number(item.qty)===0) item.qty=Math.max(1,Number(item.qty)||0);
+  applyShoppingRestockReceived(item);
   save();
   const row=document.getElementById('slrow-'+itemId);
   if(row){ row.classList.add('sl-row-exit'); setTimeout(()=>{ row.remove(); refreshNavBadges(); },280); }
@@ -8377,11 +8545,8 @@ function markRestocked(itemId){
 }
 
 function markAllRestocked(){
-  if(!confirm('Mark everything as restocked?')) return;
-  itemsNeedingRestock().forEach(i=>{
-    i.restock=false;
-    if(Number(i.qty)===0) i.qty=Math.max(1,Number(i.qty)||0);
-  });
+  if(!confirm('Mark everything as restocked? Purchased amounts will be added to in-stock counts.')) return;
+  itemsNeedingRestock().forEach(i=>applyShoppingRestockReceived(i));
   save();
   closeShoppingList();
   refreshNavBadges();
@@ -8391,7 +8556,10 @@ function markAllRestocked(){
 async function shareShoppingList(){
   const items=itemsNeedingRestock().sort((a,b)=>a.name.localeCompare(b.name));
   if(!items.length){ showToast('Nothing to share'); return; }
-  const text='NeverLeft — Shopping List\n\n'+items.map(i=>('• '+i.name+(i.qty>1?' ×'+i.qty:''))).join('\n');
+  const text='NeverLeft — Shopping List\n\n'+items.map(i=>{
+    const n=shoppingQtyToBuy(i);
+    return '• '+i.name+(n>1?' ×'+n:'');
+  }).join('\n');
   if(navigator.share){
     try{ await navigator.share({title:'NeverLeft Shopping List', text}); return; }
     catch(e){ if(e.name==='AbortError') return; }
@@ -8821,8 +8989,13 @@ function requestDestructiveDataAction(cfg){
   renderDestructiveBackupModal(cfg);
 }
 
+function removeDestructiveBackupOverlay(){
+  const ov=document.getElementById('destructiveBackupOverlay');
+  if(ov) ov.remove();
+}
+
 function renderDestructiveBackupModal(cfg){
-  closeDestructiveBackupModal();
+  removeDestructiveBackupOverlay();
   const last=localStorage.getItem('basecamp_last_export');
   const lastStr=last?new Date(last).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):'Never backed up';
   const unlocked=isDestructiveGateUnlocked();
@@ -8872,8 +9045,7 @@ function refreshDestructiveBackupModal(){
 }
 
 function closeDestructiveBackupModal(){
-  const ov=document.getElementById('destructiveBackupOverlay');
-  if(ov) ov.remove();
+  removeDestructiveBackupOverlay();
   clearDestructiveGateSession();
 }
 
@@ -9785,7 +9957,7 @@ function demoData(){
     // ── HYGIENE ──
     {id:u(),parentId:null,name:'Towels',type:'house',category:'hygiene',location:'house',qty:4,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[dadId,mumId,kid1Id,kid2Id],notes:'One each',actions:[]},
     {id:u(),parentId:null,name:'Beach towels',type:'seasonal',category:'hygiene',location:'house',qty:4,season:'summer',activity:'beach',restock:false,isContainer:false,packsInto:'car',personIds:[dadId,mumId,kid1Id,kid2Id],notes:'',actions:[]},
-    {id:u(),parentId:null,name:'Toilet roll',type:'consumable',category:'hygiene',location:'duffle',qty:4,qtyRule:{kind:'perNight',rate:0.5,spare:false,remoteBuffer:true},season:'all',activity:'',restock:true,notes:'',isContainer:false,packsInto:'car',personIds:[],actions:[]},
+    {id:u(),parentId:null,name:'Toilet roll',type:'consumable',category:'hygiene',location:'duffle',qty:1,qtyRule:{kind:'perNight',rate:0.5,spare:false,remoteBuffer:true},season:'all',activity:'',restock:false,notes:'',isContainer:false,packsInto:'car',personIds:[],actions:[]},
     {id:u(),parentId:null,name:'First aid kit',type:'always',category:'hygiene',location:'duffle',qty:1,season:'all',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'Check contents before remote trips',
       actions:[{id:u(),label:'Check nothing expired',stage:'pre-trip'},{id:u(),label:'Restock any used items',stage:'post-trip'}]},
     {id:u(),parentId:null,name:'Sun cream',type:'consumable',category:'hygiene',location:'duffle',qty:1,season:'summer',activity:'',restock:false,isContainer:false,packsInto:'car',personIds:[],notes:'Factor 50 for kids',actions:[]},

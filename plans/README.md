@@ -46,6 +46,8 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 
 **Trip to-dos at bottom (APE-60, APE-61)** — Done (commit `c915979`): trip-only tasks (`customActions`); kit actions + notes at bottom of each stage; To-do / Notes scroll links.
 
+**Consumable shortfall (APE-55)** — Ready for testing: consumable-only stock vs trip demand; prep strip on Plan/Packing; `qtyToBuy` on shopping list; item editor “In stock” label.
+
 **Kit / groups batch** — Done: APE-20, APE-22, APE-24, APE-32, APE-35 (with APE-57 group sheet).
 
 ## NeverLeft (this app)
@@ -55,7 +57,7 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [backlog_batches_wave1_wave2.plan.md](backlog_batches_wave1_wave2.plan.md) | Living | Retrospective batch order (Wave 1–2 shipped + Wave 2 Batch C scope) |
 | [batch_e_camp_learnings.plan.md](batch_e_camp_learnings.plan.md) | Done | Batch E — camp daily journal (notes/meals/weather/prompts), no-guilt learnings, APE-19 (commit `dfa534b`) |
 | [batch_f_quantity_rules.plan.md](batch_f_quantity_rules.plan.md) | Done | Batch F — per-item `qtyRule` (perNight / perPersonPerNight), progressive-disclosure editor, checklist ×N tooltip, contextual stock hint (APE-21, APE-18; commit `9487f67`) |
-| [consumable_stock_shortfall.plan.md](consumable_stock_shortfall.plan.md) | Queued | Batch K — consumable-only stock vs trip demand → shopping shortfall (APE-55; depends on F) |
+| [consumable_stock_shortfall.plan.md](consumable_stock_shortfall.plan.md) | Ready for testing | Batch K — consumable stock vs trip demand → shopping shortfall (APE-55) |
 | [quick_create_group.plan.md](quick_create_group.plan.md) | Done | Batch M — groups get a dedicated sheet (not the item form), invisible category+location inheritance, "Turn into group" / "Ungroup" menu actions, optional location (APE-57) |
 | [mobile_kit_wishlist_rows.plan.md](mobile_kit_wishlist_rows.plan.md) | Done | Mobile-first Kit & Want list rows — stack title / tags / ⋯ menu on phones (≤640px) so cells stop overlapping; show location on phones (APE-58) |
 | [forgotten_item_feature_ux_d218206d.plan.md](forgotten_item_feature_ux_d218206d.plan.md) | Partial | Camp learnings largely in app; qty rules + camp reframe remain |

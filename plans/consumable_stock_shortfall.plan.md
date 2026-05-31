@@ -1,6 +1,6 @@
 # Consumable stock & shortfall → shopping list
 
-**Status:** Queued (not started). Sketch only — refine before build.
+**Status:** Ready for testing (APE-55). Shipped in `index.html`.
 **Depends on:** Batch F quantity rules ([batch_f_quantity_rules.plan.md](batch_f_quantity_rules.plan.md)).
 **Linear:** see Neverleft project (created with this plan).
 
