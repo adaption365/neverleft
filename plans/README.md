@@ -42,6 +42,8 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 
 **Quick fixes (no plan file, commit `9687d67`)** — Ready for testing: APE-54 (consistent trip wizard buttons: named `Next: …` primary + `Save & close` secondary), APE-31 (scroll to top on screen/modal change), APE-39 (floating back-to-top button), APE-48 (want list re-renders on add — already wired via `renderAll`).
 
+**Dog roster (APE-53)** — Done: dog is a normal crew member; kit lines use `personIds` + trip roster only (removed `trip.dog` checkbox and category-based dog gate).
+
 ## NeverLeft (this app)
 
 | File | Status | Summary |

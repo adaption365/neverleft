@@ -1252,7 +1252,6 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
       <div class="tw-hint" style="margin-top:0;margin-bottom:6px">Leave everyone ticked if the whole crew is going — or pick just who&rsquo;s on this trip.</div>
       <div class="agrid" id="tAttendeeGrid"></div>
     </div>
-    <div class="fg"><label class="ck"><input type="checkbox" id="tDog" checked> Dog coming along</label></div>
     <div class="tw-actions">
       <button type="button" class="btn btn-o btn-back" onclick="tripWizardBack()">Back</button>
       <button type="button" class="btn btn-o" onclick="saveTripWizard('start')">Save &amp; close</button>
@@ -1635,6 +1634,7 @@ function load(){
       else if(i.type==='consumable'){ const lg=legacyQtyRuleForName(i.name); if(lg) i.qtyRule=lg; }
     });
     if(!S.trips) S.trips=[];
+    let migratedDogFlag=false;
     S.trips.forEach(t=>{
       if(!Array.isArray(t.manualIncludeIds)) t.manualIncludeIds=[];
       else{
@@ -1650,7 +1650,9 @@ function load(){
       normalizeTripJournal(t);
       normalizeTripExperience(t);
       normalizeTripStages(t);
+      if(t.dog!=null){ normalizeTripDogFlag(t); migratedDogFlag=true; }
     });
+    if(migratedDogFlag) save();
     if(!S.people) S.people=[];
     if(S.featuredTripId&&!S.trips.some(t=>t.id===S.featuredTripId)) S.featuredTripId=null;
     if(!S.settings) S.settings=defaultSettings();
@@ -1782,7 +1784,6 @@ function isTripItemRemoved(itemId, trip){
 
 function isExcluded(item, trip){
   if(item.type==='wishlist') return true;
-  if(item.category==='dog' && !trip.dog) return true;
   if(item.season && item.season!=='all'){
     if(item.season==='summer' && trip.season!=='summer') return true;
     if(item.season==='winter' && trip.season!=='winter') return true;
@@ -1803,6 +1804,29 @@ function effectiveTripAttendeeIds(trip){
 function tripRosterPeople(trip){
   const ids=effectiveTripAttendeeIds(trip);
   return(S.people||[]).filter(p=>ids.has(p.id));
+}
+
+function findLikelyDogPersonId(){
+  const people=S.people||[];
+  const hit=people.find(p=>['🐕','🐶','🐩'].includes(p.emoji));
+  return hit?hit.id:null;
+}
+
+/** Dog kit is included when the dog person (🐕 crew member) is on the trip roster — same as other people via personIds. */
+function tripHasDogAttendee(trip){
+  const dogPid=findLikelyDogPersonId();
+  return !!(dogPid&&effectiveTripAttendeeIds(trip).has(dogPid));
+}
+
+/** One-time: legacy trips used trip.dog + checkbox — fold into attendeeIds, then drop the flag. */
+function normalizeTripDogFlag(trip){
+  if(trip.dog==null) return;
+  const dogPid=findLikelyDogPersonId();
+  if(dogPid&&trip.dog){
+    const raw=(trip.attendeeIds||[]).filter(Boolean);
+    if(raw.length&&!raw.includes(dogPid)) trip.attendeeIds=[...raw,dogPid];
+  }
+  delete trip.dog;
 }
 
 function ensureChecklistPersonFilterValidForTrip(trip){
@@ -2175,7 +2199,7 @@ function renderTripListCard(t, variant){
   if(t.date) metaParts.push(fmtDate(t.date));
   if(t.nights) metaParts.push(t.nights+'n');
   if(t.season&&SELAB[t.season]) metaParts.push(SELAB[t.season]);
-  if(t.dog) metaParts.push('🐕');
+  if(tripHasDogAttendee(t)) metaParts.push('🐕');
   return `
       <div class="tcard${logbook?' tcard--logbook':''}${idea?' tcard--idea':''}" onclick="openTrip('${t.id}')">
         <div style="display:flex;align-items:flex-start;gap:8px;min-width:0">
@@ -2942,14 +2966,6 @@ function tripHeroMetaLine(trip){
   if(trip.nights) parts.push(trip.nights+' night'+(trip.nights!==1?'s':''));
   const days=tripLeaveDaysAhead(trip);
   if(v.checkIn&&days!==null&&days>=0&&days<=7) parts.push('Check-in from '+formatTripTime(v.checkIn));
-  const pid=findLikelyDogPersonId();
-  const ids=effectiveTripAttendeeIds(trip);
-  if(trip.dog){
-    if(pid&&ids.has(pid)){
-      const p=(S.people||[]).find(x=>x.id===pid);
-      if(p) parts.push(esc(p.name)+' coming');
-    } else parts.push('Dog Camping Kit');
-  }
   const rules=tripHeroHeadlineRuleLabels(trip,2);
   if(rules.length) parts.push(rules.map(r=>esc(r)).join(' · '));
   return parts.join(' · ');
@@ -3011,13 +3027,9 @@ function tripHeroTagsHtml(trip){
 
 function tripHeroRosterHtml(trip){
   const roster=tripRosterPeople(trip);
-  const dogPid=findLikelyDogPersonId();
-  const rosterHasDog=dogPid&&effectiveTripAttendeeIds(trip).has(dogPid);
-  const showDogIcon=trip.dog&&!rosterHasDog;
-  if(!roster.length&&!showDogIcon&&!tripHeroTagsHtml(trip)) return '';
-  const av=roster.length||showDogIcon?`<div class="trip-hero-avatars">
+  if(!roster.length&&!tripHeroTagsHtml(trip)) return '';
+  const av=roster.length?`<div class="trip-hero-avatars">
       ${roster.map(p=>`<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:${p.color}33;border:1.5px solid ${p.color};font-size:14px" title="${esc(p.name)}">${p.emoji||'👤'}</span>`).join('')}
-      ${showDogIcon?`<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#c8a84a33;border:1.5px solid #c8a84a;font-size:14px" title="Dog Camping Kit">🐕</span>`:''}
     </div>`:'';
   return `<div class="trip-hero-roster">${av}${tripHeroTagsHtml(trip)}</div>`;
 }
@@ -3117,13 +3129,9 @@ function renderTrips(){
 
   function peopleAvatars(trip){
     const roster=tripRosterPeople(trip);
-    if(!roster.length&&!trip.dog) return '';
-    const dogPid=findLikelyDogPersonId();
-    const rosterHasDog=dogPid&&effectiveTripAttendeeIds(trip).has(dogPid);
-    const showDogIcon=trip.dog&&!rosterHasDog;
+    if(!roster.length) return '';
     return `<div class="trip-hero-avatars" style="display:flex;gap:3px;flex-wrap:wrap">
       ${roster.map(p=>`<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:${p.color}33;border:1.5px solid ${p.color};font-size:13px" title="${esc(p.name)}">${p.emoji||'👤'}</span>`).join('')}
-      ${showDogIcon?`<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#c8a84a33;border:1.5px solid #c8a84a;font-size:13px" title="Dog Camping Kit">🐕</span>`:''}
     </div>`;
   }
 
@@ -3478,12 +3486,7 @@ function tripDetail(trip){
   // ── Human subtitle (trip roster, not whole app crew) ──
   const roster=tripRosterPeople(trip);
   const names=roster.map(p=>esc(p.name));
-  let crewStr=names.length===0?'':names.length<=2?names.join(' & '):names.slice(0,-1).join(', ')+' & '+names[names.length-1];
-  if(trip.dog){
-    const dp=findLikelyDogPersonId();
-    const dogInRoster=dp&&roster.some(p=>p.id===dp);
-    if(!dogInRoster) crewStr=crewStr?crewStr+' · Dog Camping Kit':'Dog Camping Kit';
-  }
+  const crewStr=names.length===0?'':names.length<=2?names.join(' & '):names.slice(0,-1).join(', ')+' & '+names[names.length-1];
   const subtitle=isIdea
     ?['Idea',SELAB[trip.season]||'',crewStr].filter(Boolean).join(' · ')
     :[
@@ -5738,22 +5741,6 @@ function saveItem(skipDuplicateCheck){
 // ══════════════════════════════════════════════════
 // TRIP MODAL — attendees
 // ══════════════════════════════════════════════════
-function findLikelyDogPersonId(){
-  const people=S.people||[];
-  const hit=people.find(p=>['🐕','🐶','🐩'].includes(p.emoji));
-  return hit?hit.id:null;
-}
-
-/** When at least one attendee is selected, keep dog person row in sync with “Dog Camping Kit” checkbox. Whole crew (no boxes) leaves array empty. */
-function applyDogPersonToAttendeeIds(attendeeIds, dogChecked){
-  const dogPid=findLikelyDogPersonId();
-  if(!dogPid||!attendeeIds.length) return attendeeIds.slice();
-  const next=new Set(attendeeIds);
-  if(dogChecked) next.add(dogPid);
-  else next.delete(dogPid);
-  return [...next];
-}
-
 function readTripAttendeeIdsFromForm(gridId){
   const wrap=document.getElementById(gridId||(tripWizardPath==='idea'?'tIdeaAttendeeGrid':'tAttendeeGrid'));
   if(!wrap) return [];
@@ -5827,8 +5814,6 @@ function resetTripWizardForm(){
   set('tExtra','0');
   set('tDist','regional');
   set('tNotes','');
-  const dog=document.getElementById('tDog');
-  if(dog) dog.checked=true;
   populateTripActGrid([]);
   populateTripAttendeeGrid(null,'tAttendeeGrid');
   populateTripAttendeeGrid(null,'tIdeaAttendeeGrid');
@@ -5894,9 +5879,7 @@ function collectTripDataFromWizard(){
   const isIdea=tripWizardPath==='idea';
   const name=isIdea?(document.getElementById('tIdeaName')?.value||'').trim():(document.getElementById('tName')?.value||'').trim();
   const activities=[...document.querySelectorAll('#tActGrid input[type=checkbox]:checked')].map(cb=>cb.value);
-  let attendeeIds=readTripAttendeeIdsFromForm(isIdea?'tIdeaAttendeeGrid':'tAttendeeGrid');
-  const dogOn=isIdea?false:!!document.getElementById('tDog')?.checked;
-  if(attendeeIds.length) attendeeIds=applyDogPersonToAttendeeIds(attendeeIds,dogOn);
+  const attendeeIds=readTripAttendeeIdsFromForm(isIdea?'tIdeaAttendeeGrid':'tAttendeeGrid');
   const exp=readTripExperienceFromForm(editTripId?S.trips.find(t=>t.id===editTripId):null);
   return {
     name,
@@ -5906,7 +5889,6 @@ function collectTripDataFromWizard(){
     site:isIdea?(document.getElementById('tIdeaSite')?.value||'basic'):(document.getElementById('tSite')?.value||'basic'),
     extraPeople:parseInt(document.getElementById('tExtra')?.value,10)||0,
     distance:document.getElementById('tDist')?.value||'regional',
-    dog:dogOn,
     activities,
     attendeeIds,
     notes:document.getElementById('tNotes')?.value.trim(),
@@ -5924,6 +5906,7 @@ function persistTripWizardDraft(){
     const prev=S.trips[idx];
     const status=prev.status==='idea'&&tripWizardPath==='booked'?'planning':prev.status;
     S.trips[idx]={...prev,...data,status,route:{...(prev.route||{}),...data.route}};
+    delete S.trips[idx].dog;
     normalizeTripExperience(S.trips[idx]);
   }else{
     const t={id:uid(),status:newStatus,manualIncludeIds:[],excludedItemIds:[],completedStages:[],...data};
@@ -5998,7 +5981,6 @@ function loadTripIntoWizardForm(trip){
   document.getElementById('tIdeaSite').value=trip.site||'basic';
   document.getElementById('tExtra').value=trip.extraPeople||0;
   document.getElementById('tDist').value=trip.distance||'regional';
-  document.getElementById('tDog').checked=!!trip.dog;
   document.getElementById('tNotes').value=trip.notes||'';
   fillTripExperienceForm(trip);
   populateTripActGrid(trip.activities||[]);
@@ -6670,8 +6652,8 @@ function buildPromptCtx(trip, dayInfo){
   const band=w?journalWeatherBand(w.code):null;
   const maxC=w?w.maxC:null, minC=w?w.minC:null, windKmh=w?w.windKmh:null;
   const roster=tripRosterPeople(trip);
+  const hasDog=tripHasDogAttendee(trip);
   const dogPid=findLikelyDogPersonId();
-  const hasDog=!!trip.dog||(dogPid&&effectiveTripAttendeeIds(trip).has(dogPid));
   const dogPerson=dogPid?roster.find(p=>p.id===dogPid):null;
   const humans=roster.filter(p=>p.id!==dogPid);
   let partOfDay=null;
@@ -8430,7 +8412,7 @@ function openInventoryToTripModal(tripId){
     <div id="invTripModalOverlay" class="dialog-overlay" onclick="if(event.target===this)closeInvTripModal()">
       <div class="dialog-panel dialog-panel--440" onclick="event.stopPropagation()">
         <div class="mtitle">Add from inventory</div>
-        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);line-height:1.45;margin:6px 0 10px 0">Lines you add here are forced onto this trip even when season, activity, Dog Camping Kit, or person rules would normally leave them off. Wishlist lines are not listed.</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);line-height:1.45;margin:6px 0 10px 0">Lines you add here are forced onto this trip even when season, activity, or person rules would normally leave them off. Wishlist lines are not listed.</div>
         <div class="sw" style="margin-bottom:10px"><span class="sw-ic">⌕</span><input type="text" id="invTripSearch" placeholder="Filter…" oninput="invTripFilterRows()"><button type="button" class="sw-clear" id="invTripSearchClear" onclick="clearSwSearch('invTripSearch','invTrip')" aria-label="Clear search" hidden>×</button></div>
         <div id="invTripList" style="overflow:auto;flex:1;min-height:120px;max-height:50vh;border:1px solid var(--border);border-radius:3px;margin-bottom:14px;background:var(--canvas-3)">${rowHtml}</div>
         <div style="display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--border);padding-top:14px">
@@ -9010,7 +8992,7 @@ function importData(event){
         site:        t.site||'basic',
         extraPeople: t.extraPeople||0,
         distance:    t.distance||'regional',
-        dog:         t.dog!=null?t.dog:true,
+        ...(t.dog!=null?{dog:!!t.dog}:{}),
         activities:  t.activities||[],
         notes:       t.notes||'',
         checklist:   (t.checklist||[]).map(c=>({
@@ -9058,7 +9040,7 @@ function importData(event){
       };
 
       S={ items, trips, people, settings };
-      S.trips.forEach(normalizeTripStages);
+      S.trips.forEach(t=>{ normalizeTripStages(t); normalizeTripDogFlag(t); });
       if(data.meta&&typeof data.meta==='object'&&!Array.isArray(data.meta)) S.meta=data.meta;
       else S.meta={ dataSource:'user', importedAt:new Date().toISOString() };
       if(S.meta.dataSource==='demo') localStorage.setItem('basecamp_demo','1');
@@ -9350,7 +9332,7 @@ function printChecklist(tripId, mode){
     ({summer:'Summer',shoulder:'Spring / Autumn',winter:'Winter'}[trip.season]||''),
     ({hookup:'Full hookup',basic:'Basic',wild:'Wild camping'}[trip.site]||''),
     ({local:'Local',regional:'Regional',remote:'Remote'}[trip.distance]||''),
-    trip.dog?'\uD83D\uDC15 Dog':'',
+    tripHasDogAttendee(trip)?'\uD83D\uDC15 Dog':'',
     trip.extraPeople>0?'+'+trip.extraPeople+' people':'',
     ...(trip.activities||[])
   ].filter(Boolean);
@@ -9770,7 +9752,6 @@ function demoData(){
     site:'basic',
     extraPeople:0,
     distance:'regional',
-    dog:true,
     activities:['hiking'],
     notes:'Campsite: Fieldhead Campsite, Edale. Booking ref: FC-2847. Near Kinder Scout — great walking. Dogs welcome.',
     status:'packing',
