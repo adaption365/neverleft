@@ -1327,8 +1327,9 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
       <div class="fg" style="margin-top:0"><label class="fl" style="font-size:10px;color:var(--text-m)">Leave from (optional)</label><input class="fi" id="tLeaveFrom" placeholder="Home postcode or address" oninput="refreshTripTravelLinkPreview()"></div>
       <div class="frow" style="margin-top:8px">
         <div class="fg"><label class="fl" style="font-size:10px;color:var(--text-m)">Miles (optional)</label><input class="fi" id="tRouteMiles" type="number" min="0" step="1" placeholder="e.g. 95"></div>
-        <div class="fg" style="display:flex;align-items:flex-end;padding-bottom:2px"><label class="ck"><input type="checkbox" id="tAvoidMotorways" onchange="refreshTripTravelLinkPreview()"> Prefer to avoid motorways</label></div>
+        <div class="fg"><label class="fl" style="font-size:10px;color:var(--text-m)">Drive time (optional)</label><input class="fi" id="tRouteDuration" type="text" maxlength="20" placeholder="e.g. 2h 30m"></div>
       </div>
+      <div class="fg" style="margin-top:8px"><label class="ck"><input type="checkbox" id="tAvoidMotorways" onchange="refreshTripTravelLinkPreview()"> Prefer to avoid motorways</label></div>
       <div class="fg" style="margin-top:8px"><label class="fl" style="font-size:10px;color:var(--text-m)">Saved directions link (optional)</label><input class="fi" id="tDirectionsUrl" type="url" placeholder="Paste a link you saved in Maps" oninput="refreshTripTravelLinkPreview()"></div>
       <p class="tw-hint">On the trip page: <strong>Plan route</strong> uses your preferred maps app from Settings; <strong>Directions</strong> opens your saved link.</p>
       <div id="tTravelLinkPreview" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center"></div>
@@ -1336,7 +1337,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
     <div class="fg">
       <label class="fl">Site conditions</label>
       <input class="fi" id="tWeatherPlanning" placeholder="Exposed pitch, valley fog, windy ridge…">
-      <p class="tw-hint">Day-by-day forecast: use <em>Save forecast</em> on your trip page when you&rsquo;re online.</p>
+      <p class="tw-hint">Day-by-day forecast: use <em>Load forecast</em> on your trip page when you&rsquo;re online.</p>
       <div id="tWeatherSnapshotNote" class="trip-experience-muted" style="display:none;margin-top:8px;padding:8px 10px;background:var(--canvas-3);border-radius:8px"></div>
       <label class="ck" id="tWeatherClearSnapshotWrap" style="display:none;margin-top:8px"><input type="checkbox" id="tWeatherClearSnapshot"> Remove saved day-by-day forecast from this trip</label>
     </div>
@@ -1406,6 +1407,7 @@ let tf = 'all', mainTab = 'trips';
 let activeTripId = null, activeTripTab = 'checklist';
 let activeExperienceTab = null;
 let activeExperienceForTripId = null;
+let experiencePanelCollapsed = false;
 let tripWizardStep = 'fork';
 let tripWizardPath = null;
 let tripsTypeFilter = 'all';
@@ -4598,17 +4600,39 @@ function openTrip(id){
   activeTripTab=trip?tripStageDefaultTab(trip.status):'checklist';
   renderTrips();
 }
-function closeTrip(){ activeTripId=null; checklistSearch=''; expandedPackedChecklistGroups.clear(); expandedChecklistGroups.clear(); renderTrips(); }
+function closeTrip(){ activeTripId=null; checklistSearch=''; expandedPackedChecklistGroups.clear(); expandedChecklistGroups.clear(); experiencePanelCollapsed=false; renderTrips(); }
 function setTripTab(tab){ activeTripTab=tab; renderTrips(); }
 
 function setExperienceTab(tab){
+  experiencePanelCollapsed=false;
   activeExperienceTab=activeExperienceTab===tab?null:tab;
+  if(!activeExperienceTab) experiencePanelCollapsed=true;
   renderTrips();
 }
 
 function collapseExperiencePanel(){
   activeExperienceTab=null;
+  experiencePanelCollapsed=true;
   renderTrips();
+}
+
+function experienceSectionNeedsAttention(trip,sectionId){
+  if(!trip) return false;
+  normalizeTripExperience(trip);
+  const v=trip.venue||{}, r=trip.route||{}, w=trip.weather||{};
+  if(sectionId==='site') return !((v.address||'').trim()||(v.siteNotes||'').trim());
+  if(sectionId==='booking') return !(v.bookingRef||v.email||v.website||v.checkIn||v.checkOut);
+  if(sectionId==='weather') return !(w.mode==='snapshot'&&w.days?.length)&&!(w.summary||'').trim()&&!(w.planningNote||'').trim();
+  if(sectionId==='travel') return !(r.miles||r.duration||r.leaveFrom||r.directionsUrl);
+  return false;
+}
+
+function defaultExperienceTab(trip,tabIds){
+  const order=['site','booking','weather','travel'];
+  for(const id of order){
+    if(tabIds.includes(id)&&experienceSectionNeedsAttention(trip,id)) return id;
+  }
+  return tabIds[0]||'site';
 }
 
 function resolveExperienceTab(tripId,tabIds){
@@ -4616,10 +4640,14 @@ function resolveExperienceTab(tripId,tabIds){
   if(activeExperienceForTripId!==tripId){
     activeExperienceForTripId=tripId;
     activeExperienceTab=null;
+    experiencePanelCollapsed=false;
   }else if(activeExperienceTab&&!tabIds.includes(activeExperienceTab)){
     activeExperienceTab=null;
   }
-  return activeExperienceTab;
+  if(experiencePanelCollapsed) return null;
+  if(activeExperienceTab) return activeExperienceTab;
+  const trip=S.trips.find(t=>t.id===tripId);
+  return defaultExperienceTab(trip,tabIds);
 }
 
 function delTrip(id){
@@ -6943,6 +6971,8 @@ function normalizeTripExperience(trip){
   if(r.miles===undefined||r.miles===null||r.miles==='') r.miles=null;
   else r.miles=Number(r.miles)||null;
   if(r.driveNotes===undefined) r.driveNotes='';
+  if(r.duration===undefined||r.duration===null) r.duration='';
+  else r.duration=String(r.duration).trim();
   if(r.directionsUrl===undefined) r.directionsUrl='';
   if(r.leaveFrom===undefined||r.leaveFrom===null) r.leaveFrom='';
   if(v.lat===undefined||v.lat===null) v.lat=null;
@@ -7133,10 +7163,8 @@ function refreshTripTravelLinkPreview(){
   const bits=[];
   const plan=tripPlanRouteUrl(stub);
   const saved=tripDirectionsSavedUrl(stub);
-  const forecast=tripOfficialForecastUrl(stub);
   if(plan) bits.push(tripOnlineLinkBtn('Plan route', plan, 'Plan route when online'));
   if(saved) bits.push(tripOnlineLinkBtn('Directions', saved, 'Saved directions when online'));
-  if(forecast) bits.push(tripOnlineLinkBtn('Official forecast', forecast, 'Forecast when online'));
   el.innerHTML=bits.length?bits.join('')
     :'<span class="trip-experience-muted" style="font-size:11px">Add a site name or postcode to preview links.</span>';
 }
@@ -7184,15 +7212,15 @@ function renderTripWeatherBlock(trip){
     body+=`<p class="trip-experience-muted" style="margin-top:8px">Your note — season estimate hidden while this is set.</p>`;
   }else{
     body+=`<p style="margin:0;font-size:13px;line-height:1.45">${esc(seasonWeatherHint(trip))}</p>`;
-    body+=`<p class="trip-experience-muted" style="margin-top:8px">Based on trip season. Save a forecast when online for day-by-day detail.</p>`;
+    body+=`<p class="trip-experience-muted" style="margin-top:8px">Based on trip season. Load a forecast when online for day-by-day detail.</p>`;
   }
   if((w.planningNote||'').trim())
     body+=`<div class="trip-experience-row" style="margin-top:10px"><span class="fl">Site conditions</span><div>${esc(w.planningNote)}</div></div>`;
   const actions=[];
   if(officialForecastUrl) actions.push(tripOnlineLinkBtn('Official forecast', officialForecastUrl, 'Official forecast when online'));
-  actions.push(`<button type="button" class="btn btn-o btn-sm" onclick="refreshTripWeatherSnapshot('${trip.id}')" title="${canFetch?'Needs internet':'Add postcode or site name in trip details'}">${w.mode==='snapshot'?'Refresh forecast':'Save forecast'}</button>`);
+  actions.push(`<button type="button" class="btn btn-o btn-sm" onclick="refreshTripWeatherSnapshot('${trip.id}')" title="${canFetch?'Needs internet':'Add postcode or site name in trip details'}">${w.mode==='snapshot'?'Reload forecast':'Load forecast'}</button>`);
   body+=`<div class="trip-weather-actions">${actions.join('')}</div>`;
-  if(!canFetch) body+=`<p class="trip-experience-muted">Add a postcode or site name in trip details to save a forecast here.</p>`;
+  if(!canFetch) body+=`<p class="trip-experience-muted">Add a postcode or site name in trip details to get a forecast here.</p>`;
   return body;
 }
 
@@ -7315,7 +7343,7 @@ async function refreshTripWeatherSnapshot(tripId){
       days,
     };
     save();
-    showToast('Forecast saved — works offline until you refresh');
+    showToast('Forecast loaded — works offline until you refresh');
     renderTrips();
   }catch(e){
     showToast('Could not fetch forecast — try again on Wi‑Fi');
@@ -7480,6 +7508,7 @@ function readTripExperienceFromForm(existingTrip){
     },
     route:{
       miles:milesRaw?parseInt(milesRaw,10)||null:null,
+      duration:(document.getElementById('tRouteDuration')?.value||'').trim(),
       leaveFrom:(document.getElementById('tLeaveFrom')?.value||'').trim(),
       avoidMotorways:!!document.getElementById('tAvoidMotorways')?.checked,
       directionsUrl:(document.getElementById('tDirectionsUrl')?.value||'').trim(),
@@ -7504,6 +7533,7 @@ function fillTripExperienceForm(trip){
   set('tLeaveFrom',r.leaveFrom);
   set('tSiteNotes',v.siteNotes);
   set('tRouteMiles',r.miles!=null?r.miles:'');
+  set('tRouteDuration',r.duration);
   const modeEl=document.getElementById('tWeatherMode');
   if(modeEl){
     modeEl.querySelector('option[value="snapshot"]')?.remove();
@@ -7536,7 +7566,7 @@ function fillTripExperienceForm(trip){
 }
 
 function clearTripExperienceForm(){
-  ['tVenueName','tVenueAddress','tVenueWeb','tVenueEmail','tBookingRef','tCheckIn','tCheckOut','tDirectionsUrl','tLeaveFrom','tSiteNotes','tRouteMiles','tWeatherPlanning','tWeatherSummary'].forEach(id=>{
+  ['tVenueName','tVenueAddress','tVenueWeb','tVenueEmail','tBookingRef','tCheckIn','tCheckOut','tDirectionsUrl','tLeaveFrom','tSiteNotes','tRouteMiles','tRouteDuration','tWeatherPlanning','tWeatherSummary'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value='';
   });
   const wm=document.getElementById('tWeatherMode');
@@ -7564,16 +7594,17 @@ function renderTripExperiencePanel(trip){
   const savedDirUrl=tripDirectionsSavedUrl(trip);
   const planRouteUrl=tripPlanRouteUrl(trip);
   const weatherLine=tripWeatherGlanceLine(trip);
-  const officialForecastUrl=tripOfficialForecastUrl(trip);
+  const duration=(r.duration||'').trim();
   const checkParts=[];
   if(v.checkIn) checkParts.push('From '+formatTripTime(v.checkIn));
   if(v.checkOut) checkParts.push('Out by '+formatTripTime(v.checkOut));
+  const journeyGlance=[r.miles?r.miles+' miles':'',duration?duration:''].filter(Boolean).join(' · ');
   const glanceLines=[
     trip.date?fmtDate(trip.date)+' · '+trip.nights+' night'+(trip.nights!==1?'s':''):trip.nights+' night'+(trip.nights!==1?'s':''),
     checkParts.join(' · '),
+    journeyGlance||'',
     weatherLine,
   ].filter(Boolean);
-  const weatherBlock=`<div class="trip-experience-row">${renderTripWeatherBlock(trip)}</div>`;
   const siteChips=[];
   (v.rules||[]).forEach(id=>{
     const c=SITE_RULE_CHIPS.find(x=>x.id===id);
@@ -7584,53 +7615,58 @@ function renderTripExperiencePanel(trip){
   if(r.avoidMotorways) chips.push({label:'Avoid motorways',custom:false});
   if(r.miles) chips.push({label:r.miles+' mi from home',custom:false});
   else if(trip.distance) chips.push({label:(DISTLAB[trip.distance]||trip.distance)+' drive',custom:false});
-  const hasGlance=tripHasExperienceData(trip)||siteName;
-  const actions=[];
-  if(mapsUrl) actions.push(tripOnlineLinkBtn('Open in Maps', mapsUrl, 'Maps when online'));
-  if(planRouteUrl) actions.push(tripOnlineLinkBtn('Plan route', planRouteUrl, 'Plan route when online'));
-  if(savedDirUrl) actions.push(tripOnlineLinkBtn('Directions', savedDirUrl, 'Saved directions when online'));
-  if(v.website) actions.push(tripOnlineLinkBtn('Campsite website', v.website.startsWith('http')?v.website:'https://'+v.website, 'Website when online'));
-  if(v.email) actions.push(`<a class="btn btn-o btn-sm" href="mailto:${esc(v.email)}">Email site</a>`);
-  if(officialForecastUrl) actions.push(tripOnlineLinkBtn('Official forecast', officialForecastUrl, 'Official forecast when online'));
+  if(duration) chips.push({label:duration+' drive',custom:false});
 
-  const bookingBlock=(v.bookingRef||v.email||v.website||v.checkIn||v.checkOut)?`
-    <div class="trip-experience-row">${v.bookingRef?`<div><span class="fl">Booking ref</span><div>${esc(v.bookingRef)}</div></div>`:''}
-      ${v.checkIn||v.checkOut?`<div style="margin-top:8px"><span class="fl">Times</span><div>${esc(checkParts.join(' · ')||'—')}</div></div>`:''}
-      ${v.email?`<div style="margin-top:8px"><span class="fl">Email</span><div>${esc(v.email)}</div></div>`:''}
-    </div>`:'';
+  // Per-section edit jump (Site/Booking live in the wizard's site step; Weather/Travel in the remember step)
+  const editBtn=(stage,label)=>`<button type="button" class="btn btn-o btn-sm" onclick="openEditTripModal('${trip.id}','${stage}')">${label}</button>`;
 
-  const siteBlock=(addr||v.siteNotes)?`
-    <div class="trip-experience-row">
+  const siteHasData=!!(addr||v.siteNotes);
+  const sitePanel=`<div class="trip-experience-row">
       ${addr?`<div><span class="fl">Address</span><div>${esc(addr)}</div></div>`:''}
       ${v.siteNotes?`<div style="${addr?'margin-top:8px':''}"><span class="fl">On site</span><div style="white-space:pre-wrap">${esc(v.siteNotes)}</div></div>`:''}
-    </div>`:'';
-
-  const travelBlock=(r.miles||r.leaveFrom||r.avoidMotorways||savedDirUrl||planRouteUrl)?`
-    <div class="trip-experience-row">
-      ${(r.leaveFrom||'').trim()?`<div><span class="fl">Leave from</span><div>${esc(r.leaveFrom)}</div></div>`:''}
-      ${r.miles?`<div style="margin-top:8px">${esc(String(r.miles))} miles from home</div>`:''}
-      ${r.avoidMotorways?`<div class="trip-experience-muted">Prefer routes without motorways</div>`:''}
-      ${savedDirUrl?`<div class="trip-experience-muted" style="margin-top:6px">Saved directions link on file</div>`:''}
-      ${!savedDirUrl&&planRouteUrl?`<div class="trip-experience-muted" style="margin-top:6px">Use Plan route above (${MAPS_APP_OPTIONS.find(a=>a.id===getPreferredMapsApp())?.label||'Maps'})</div>`:''}
-    </div>`:'';
-
-  if(!hasGlance&&!actions.length){
-    return `<div class="trip-experience">
-      <div class="trip-experience-glance">
-        <p class="trip-experience-sub" style="margin:0">Add site, booking, and travel details when you edit the trip — they stay on your device and help on the road (maps links work when you’re online).</p>
-        <button type="button" class="btn btn-o btn-sm" style="margin-top:10px" onclick="openEditTripModal('${trip.id}')">Add trip details</button>
-      </div>
+      ${!siteHasData?`<p class="trip-experience-muted" style="margin:0">No site address or notes yet.</p>`:''}
+    </div>
+    <div class="trip-weather-actions">
+      ${mapsUrl?tripOnlineLinkBtn('Open in Maps', mapsUrl, 'Maps when online'):''}
+      ${editBtn('site', siteHasData?'Edit site':'Add site details')}
     </div>`;
-  }
 
-  const expTabs=[];
-  if(siteBlock) expTabs.push({id:'site',label:'Site'});
-  if(bookingBlock) expTabs.push({id:'booking',label:'Booking'});
-  expTabs.push({id:'weather',label:'Weather'});
-  if(travelBlock) expTabs.push({id:'travel',label:'Travel'});
+  const bookingHasData=!!(v.bookingRef||v.email||v.website||v.checkIn||v.checkOut);
+  const bookingPanel=`<div class="trip-experience-row">
+      ${v.bookingRef?`<div><span class="fl">Booking ref</span><div>${esc(v.bookingRef)}</div></div>`:''}
+      ${checkParts.length?`<div style="${v.bookingRef?'margin-top:8px':''}"><span class="fl">Times</span><div>${esc(checkParts.join(' · '))}</div></div>`:''}
+      ${v.email?`<div style="margin-top:8px"><span class="fl">Email</span><div>${esc(v.email)}</div></div>`:''}
+      ${!bookingHasData?`<p class="trip-experience-muted" style="margin:0">No booking reference or check-in times yet.</p>`:''}
+    </div>
+    <div class="trip-weather-actions">
+      ${v.website?tripOnlineLinkBtn('Campsite website', v.website.startsWith('http')?v.website:'https://'+v.website, 'Website when online'):''}
+      ${v.email?`<a class="btn btn-o btn-sm" href="mailto:${esc(v.email)}">Email site</a>`:''}
+      ${editBtn('site', bookingHasData?'Edit booking':'Add booking details')}
+    </div>`;
+
+  const weatherPanel=`<div class="trip-experience-row">${renderTripWeatherBlock(trip)}</div>
+    <div class="trip-weather-actions">${editBtn('remember','Edit weather note')}</div>`;
+
+  const travelHasData=!!(r.miles||duration||r.leaveFrom||r.avoidMotorways||savedDirUrl);
+  const journeyBits=[r.miles?esc(String(r.miles))+' miles':'',duration?esc(duration):''].filter(Boolean).join(' · ');
+  const travelPanel=`<div class="trip-experience-row">
+      ${(r.leaveFrom||'').trim()?`<div><span class="fl">Leave from</span><div>${esc(r.leaveFrom)}</div></div>`:''}
+      ${journeyBits?`<div style="${(r.leaveFrom||'').trim()?'margin-top:8px':''}"><span class="fl">Journey</span><div>${journeyBits}</div></div>`:''}
+      ${r.avoidMotorways?`<div class="trip-experience-muted" style="margin-top:6px">Prefer routes without motorways</div>`:''}
+      ${!savedDirUrl&&planRouteUrl?`<div class="trip-experience-muted" style="margin-top:6px">Plan route uses ${esc(MAPS_APP_OPTIONS.find(a=>a.id===getPreferredMapsApp())?.label||'Maps')} from Settings</div>`:''}
+      ${!travelHasData&&!planRouteUrl?`<p class="trip-experience-muted" style="margin:0">No travel details yet.</p>`:''}
+    </div>
+    <div class="trip-weather-actions">
+      ${planRouteUrl?tripOnlineLinkBtn('Plan route', planRouteUrl, 'Plan route when online'):''}
+      ${savedDirUrl?tripOnlineLinkBtn('Directions', savedDirUrl, 'Saved directions when online'):''}
+      ${editBtn('remember', travelHasData?'Edit travel':'Add travel details')}
+    </div>`;
+
+  // Always show all four sections so it's clear where each detail lives
+  const expTabs=[{id:'site',label:'Site'},{id:'booking',label:'Booking'},{id:'weather',label:'Weather'},{id:'travel',label:'Travel'}];
   const tabIds=expTabs.map(t=>t.id);
   const active=resolveExperienceTab(trip.id,tabIds);
-  const panels={site:siteBlock,booking:bookingBlock,weather:weatherBlock,travel:travelBlock};
+  const panels={site:sitePanel,booking:bookingPanel,weather:weatherPanel,travel:travelPanel};
   const panelHtml=active?panels[active]:'';
   const tabsConnected=!!active;
 
@@ -7639,7 +7675,6 @@ function renderTripExperiencePanel(trip){
       ${siteName?`<h3 class="trip-experience-site">${esc(siteName)}</h3>`:''}
       ${glanceLines.map(l=>`<p class="trip-experience-sub">${esc(l)}</p>`).join('')}
       ${chips.length?`<div class="trip-experience-chips">${chips.map(c=>`<span class="trip-experience-chip${c.custom?' trip-experience-chip--custom':''}">${esc(c.label)}</span>`).join('')}</div>`:''}
-      ${actions.length?`<div class="trip-experience-actions">${actions.join('')}</div>`:''}
     </div>
     <div class="trip-exp-bar">
       <div class="trip-exp-tabs${tabsConnected?' trip-exp-tabs--connected':''}" role="tablist" aria-label="Trip details">
@@ -7650,16 +7685,8 @@ function renderTripExperiencePanel(trip){
       </div>
       ${active?`<button type="button" class="trip-exp-hide" onclick="collapseExperiencePanel()" aria-label="Hide trip details panel">Hide</button>`:''}
     </div>
-    ${!active?`<p class="trip-experience-muted" style="margin:6px 0 0;font-size:10px">Tap a section to expand · tap again or Hide to collapse</p>`:''}
+    ${!active?`<p class="trip-experience-muted" style="margin:6px 0 0;font-size:10px">Tap Site, Booking, Weather, or Travel to see details and links · Hide collapses the panel</p>`:''}
     ${panelHtml?`<div class="trip-exp-panel" role="tabpanel">${panelHtml}</div>`:''}
-    <p class="trip-experience-muted" style="margin-top:10px;line-height:1.8">
-      <button type="button" class="btn btn-o btn-sm" onclick="openEditTripModal('${trip.id}')">Edit trip setup</button>${trip.status!=='idea'?`<span class="trip-wizard-edit-links">
-        <button type="button" onclick="openEditTripModal('${trip.id}','essentials')">Essentials</button>
-        <button type="button" onclick="openEditTripModal('${trip.id}','kit')">Camping Kit</button>
-        <button type="button" onclick="openEditTripModal('${trip.id}','site')">Site</button>
-        <button type="button" onclick="openEditTripModal('${trip.id}','remember')">Remember</button>
-      </span>`:''}
-    </p>
   </div>`;
 }
 

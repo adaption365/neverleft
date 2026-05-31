@@ -34,6 +34,7 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [APE-56](https://linear.app/aperturegraph/issue/APE-56) | consumable_stock_shortfall… | Count-aware / partial packing for ×N lines (Batch L; companion to K) |
 | [APE-57](https://linear.app/aperturegraph/issue/APE-57) | quick_create_group… | Quick-create a group + child default inheritance (Batch M; follows G) — Ready for testing |
 | [APE-58](https://linear.app/aperturegraph/issue/APE-58) | mobile_kit_wishlist_rows… | Mobile-first Kit & Want list rows (stack title/tags/⋯ on ≤640px) — Done |
+| [APE-59](https://linear.app/aperturegraph/issue/APE-59) | trip_details_sections_links… | Trip details: section-scoped links, always-on tabs (pre-open first gap), Load forecast, miles + drive time in glance — Ready for testing |
 
 **Build order** (Linear priority): demo graduation + backup (APE-12–14, APE-13) → trip experience polish (APE-11, APE-25–27, APE-26) → camp mode (APE-15–17, APE-23) → qty rules (APE-21, APE-18) → kit UX (APE-20, APE-22, APE-24).
 
@@ -56,6 +57,7 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [kit_parent_picker_ux.plan.md](kit_parent_picker_ux.plan.md) | Partial | Searchable / A–Z group picker + locked “Add to group”; “Move to group” menu deferred |
 | [trip_attendees_and_kit_40ad2a8d.plan.md](trip_attendees_and_kit_40ad2a8d.plan.md) | Done | Trip roster, checklist scoping, manual includes |
 | [trip_experience_hub.plan.md](trip_experience_hub.plan.md) | Partial | Site/booking/travel/weather on trip; progressive disclosure on trip detail |
+| [trip_details_sections_links.plan.md](trip_details_sections_links.plan.md) | Ready for testing | Trip details declutter — section-scoped links (no busy header row), always-show Site/Booking/Weather/Travel tabs with per-section edit jumps, manual drive-time field, Save→Get forecast (APE-59) |
 | [trip_setup_journey.plan.md](trip_setup_journey.plan.md) | Done | Emotional 4-step trip setup wizard (booked + idea paths) |
 
 **Suggested build order** (from feature plan): demo graduation + backup gate → trip experience polish → Camp mode → qty rules.
