@@ -1972,6 +1972,19 @@ function checklistSubsForTrip(item,trip){
   return subItems(item.id).filter(s=>!isExcluded(s,trip)&&!isTripItemRemoved(s.id,trip)&&isItemIncludedAutomaticForTrip(s,trip));
 }
 
+/** Checklist lines + nested subs that are not already their own checklist row (prevents duplicate to-dos). */
+function eachTripChecklistItemForActions(trip, fn){
+  const onChecklist=new Set((trip.checklist||[]).map(c=>c.itemId));
+  (trip.checklist||[]).forEach(ci=>{
+    const item=S.items.find(i=>i.id===ci.itemId);
+    if(!item) return;
+    fn(item);
+    checklistSubsForTrip(item,trip).forEach(sub=>{
+      if(!onChecklist.has(sub.id)) fn(sub);
+    });
+  });
+}
+
 /** Inventory line included by trip rules (exclusions + roster). Does not apply trip.manualIncludeIds — see itemIdsForTripChecklist. */
 function isItemIncludedAutomaticForTrip(item, trip){
   if(!item||item.type==='wishlist') return false;
@@ -4049,7 +4062,7 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
 
   const packingGate=!tripPackingStageCriteriaMet(trip)&&trip.status!=='idea'&&trip.status!=='planning'
     ?`<div style="margin-bottom:12px;padding:10px 12px;border-radius:10px;background:rgba(184,92,58,.08);border:1px solid rgba(184,92,58,.25);font-family:'Familjen Grotesk',sans-serif;font-size:12px;line-height:1.45;color:var(--rust)">
-        <strong>Packing step not finished.</strong> ${esc(tripStageCriteriaHint(trip,'packing')||'Pack every line and finish pre-trip to-dos below, then use Packing done on the step above.')}
+        <strong>Packing step not finished.</strong> ${esc(tripStageCriteriaHint(trip,'packing')||'Pack every line and finish each item\u2019s to-dos, then use Packing done on the step above.')}
       </div>`:'';
 
   return `${filterPanel}
@@ -4067,17 +4080,22 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
         <div class="pbar-packed" style="width:${pbarPackedW}%"></div>
         <div class="pbar-ready" style="width:${pbarReadyW}%"></div>
       </div>
-      <div class="cprog-hint">Finish pre-trip to-dos in the section below, then: tap = ready · tap again = packed · tap again = reset</div>
+      <div class="cprog-hint">Tick each item&rsquo;s to-dos on its row, then: tap = ready · tap again = packed · tap again = reset</div>
       ${pctP===100?`<div class="cprog-complete">🎉 Everything packed — you're good to go!</div>`:''}
       ${hlCount?`<div style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--amber);letter-spacing:.05em;margin-top:4px">▲ ${hlCount} items highlighted for this trip</div>`:''}
     </div>
-    ${listEmptyHtml}
-    <div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap">
+    ${checklistToolbarHtml(trip)}
+    ${listEmptyHtml}`;
+}
+
+function checklistToolbarHtml(trip){
+  return `<div class="checklist-toolbar" style="display:flex;gap:7px;margin:12px 0;flex-wrap:wrap">
       <button class="btn btn-o btn-sm" onclick="regenChecklist('${trip.id}')">↺ Rebuild list</button>
       <button class="btn btn-o btn-sm" onclick="uncheckAll('${trip.id}')" title="Clears every checklist row and all action reminder ticks for items on this list">Uncheck all</button>
       <button class="btn btn-p btn-sm" onclick="openQuickAddModal('${trip.id}')">+ Quick add item</button>
       <button class="btn btn-o btn-sm" onclick="openInventoryToTripModal('${trip.id}')">+ From inventory</button>
-      <button class="btn btn-o btn-sm" onclick="printChecklist('${trip.id}','packing')">🖨 Print</button>
+      <button class="btn btn-o btn-sm" onclick="printChecklist('${trip.id}','packing')">🖨 Print list</button>
+      <button class="btn btn-o btn-sm" onclick="printTripTodos('${trip.id}')">Print to-dos</button>
     </div>`;
 }
 
@@ -4161,7 +4179,7 @@ function ciRow(ci,item,trip,hl){
           const tripActions=(trip.actionStates||{});
           const incomplete=prePending.filter(a=>!tripActions[item.id+'::'+a.id]);
           return (ci.state==='packed'||ci.state==='ready')&&incomplete.length
-            ? ` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--rust)">⚡ ${incomplete.length} pre-trip to-do${incomplete.length!==1?'s':''} below</span>`
+            ? ` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--rust)">⚡ ${incomplete.length} to-do${incomplete.length!==1?'s':''} on this row</span>`
             : incomplete.length
               ? ` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--teal)">⚡ ${incomplete.length} to do</span>`
               : '';
@@ -4174,6 +4192,7 @@ function ciRow(ci,item,trip,hl){
           ${isHL?`<span class="hl-tag">▲ ${(hl[item.id]||[]).map(x=>esc(x)).join(', ')}</span>`:''}
           ${item.notes?`<span class="ci-note">${esc(item.notes)}</span>`:''}
         </div>
+        ${inlineActions(item,trip,checklistInlineActionStages())}
       </div>
       <div class="ci-menu-btn" onclick="event.stopPropagation()">
         <button type="button" class="btn-ic" style="padding:2px 6px;font-size:13px;opacity:.5" data-ctx-trigger
@@ -4194,7 +4213,7 @@ function ciRow(ci,item,trip,hl){
           const tripActions=(trip.actionStates||{});
           const incomplete=prePending.filter(a=>!tripActions[item.id+'::'+a.id]);
           return (ci.state==='packed'||ci.state==='ready')&&incomplete.length
-            ? ` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--rust)">⚡ ${incomplete.length} pre-trip to-do${incomplete.length!==1?'s':''} below</span>`
+            ? ` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--rust)">⚡ ${incomplete.length} to-do${incomplete.length!==1?'s':''} on this row</span>`
             : incomplete.length
               ? ` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--teal)">⚡ ${incomplete.length} to do</span>`
               : '';
@@ -4208,6 +4227,7 @@ function ciRow(ci,item,trip,hl){
             ${isHL?`<span class="hl-tag">▲ ${(hl[item.id]||[]).map(x=>esc(x)).join(', ')}</span>`:''}
             ${item.notes?`<span class="ci-note">${esc(item.notes)}</span>`:''}
           </div>
+          ${groupOpen?inlineActions(item,trip,checklistInlineActionStages()):''}
         </div>
         <div class="ci-menu-btn" onclick="event.stopPropagation()">
           <button type="button" class="btn-ic" style="padding:2px 6px;font-size:13px;opacity:.5" data-ctx-trigger
@@ -4242,6 +4262,7 @@ function ciSubRow(sci,sub,trip,hl,locMap){
         ${isSubHL?`<span class="hl-tag">▲ ${(hl[sub.id]||[]).map(x=>esc(x)).join(', ')}</span>`:''}
         ${sub.notes?`<span class="ci-note">${esc(sub.notes)}</span>`:''}
       </div>
+      ${inlineActions(sub,trip,checklistInlineActionStages())}
     </div>
     <div class="ci-menu-btn" onclick="event.stopPropagation()">
       <button type="button" class="btn-ic" style="padding:2px 6px;font-size:13px;opacity:.5" data-ctx-trigger
@@ -4328,7 +4349,8 @@ function packAwayBody(trip){
     <div style="display:flex;gap:7px;margin-top:14px;flex-wrap:wrap">
       <button class="btn btn-g" onclick="packAwayAll('${trip.id}')">✓ Store Everything</button>
       <button class="btn btn-o btn-sm" onclick="unpackAwayAll('${trip.id}')">Reset all</button>
-      <button class="btn btn-o btn-sm" onclick="printChecklist('${trip.id}','packaway')">🖨 Print</button>
+      <button class="btn btn-o btn-sm" onclick="printChecklist('${trip.id}','packaway')">🖨 Print list</button>
+      <button class="btn btn-o btn-sm" onclick="printTripTodos('${trip.id}')">Print to-dos</button>
     </div>`;
 }
 
@@ -4466,6 +4488,27 @@ function tripStageNotesSection(trip){
   </div>`;
 }
 
+function checklistInlineActionStages(){
+  return ['pre-trip'];
+}
+
+function inlineActions(item, trip, stages){
+  const tripActions=trip.actionStates||{};
+  const actions=(item.actions||[]).filter(a=>stages.includes(a.stage));
+  if(!actions.length) return '';
+  return `<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,.06)">
+    ${actions.map(a=>{
+      const key=item.id+'::'+a.id;
+      const done=!!tripActions[key];
+      return `<div class="trip-action-row${done?' done':''}"
+          onclick="event.stopPropagation();toggleTripAction('${trip.id}','${item.id}','${a.id}')">
+        <div class="trip-action-check${done?' done':''}">${done?'✓':''}</div>
+        <span style="font-size:12px;font-weight:500;color:var(--text-m);${done?'text-decoration:line-through':''};flex:1">${esc(a.label)}</span>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
 function tripStageFooterHtml(trip, stagesFilter){
   const stages=stagesFilter||actionStagesForTripStatus(trip.status);
   const actionsLabel={
@@ -4476,14 +4519,22 @@ function tripStageFooterHtml(trip, stagesFilter){
     'pack-away':'When you\'re home',
     'post-trip':'When you\'re home',
   }[trip.status]||'To-do';
-  return tripStageActionsSection(trip, stages, actionsLabel)+tripStageNotesSection(trip);
+  const onChecklist=tripMainTab(trip)==='checklist';
+  return tripStageActionsSection(trip, stages, actionsLabel, onChecklist)+tripStageNotesSection(trip);
 }
 
-function tripStageActionsSection(trip, stagesFilter, heading){
-  const body=actionsBody(trip, stagesFilter);
+function tripStageActionsSection(trip, stagesFilter, heading, showChecklistSummaryHint){
   const addRow=tripCustomActionsAddRow(trip, stagesFilter);
+  const hint=showChecklistSummaryHint
+    ?`<p style="margin:0 0 12px;font-size:12px;line-height:1.5;color:var(--text-m)">Tick to-dos here or on each packing line above — same tasks, one list.</p>`
+    :'';
+  const body=actionsBody(trip, stagesFilter);
   return `<div id="trip-sec-actions" class="trip-stage-sec">
-    <div class="trip-stage-sec-hd">${esc(heading||'To-do')}</div>
+    <div class="trip-stage-sec-hd" style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+      <span>${esc(heading||'To-do')}</span>
+      <button type="button" class="btn btn-o btn-sm" onclick="printTripTodos('${trip.id}')">Print to-dos</button>
+    </div>
+    ${hint}
     ${body}
     ${addRow}
   </div>`;
@@ -4668,7 +4719,7 @@ function cycleState(tripId, itemId){
       const tripActions=trip.actionStates||{};
       const incomplete=prePending.filter(a=>!tripActions[item.id+'::'+a.id]);
       if(incomplete.length){
-        showToast('⚡ Finish pre-trip to-dos below first: '+incomplete.map(a=>a.label).join(', '));
+        showToast('⚡ Finish to-dos on this row first: '+incomplete.map(a=>a.label).join(', '));
         return;
       }
     }
@@ -4987,7 +5038,8 @@ function packUpBody(trip){
     <div style="display:flex;gap:7px;margin-top:14px;flex-wrap:wrap">
       <button class="btn btn-g" onclick="packUpAll('${trip.id}')">✓ Pack up everything</button>
       <button class="btn btn-o btn-sm" onclick="unpackAll('${trip.id}')">Unpack all</button>
-      <button class="btn btn-o btn-sm" onclick="printChecklist('${trip.id}','packup')">🖨 Print</button>
+      <button class="btn btn-o btn-sm" onclick="printChecklist('${trip.id}','packup')">🖨 Print list</button>
+      <button class="btn btn-o btn-sm" onclick="printTripTodos('${trip.id}')">Print to-dos</button>
     </div>`;
 }
 
@@ -6518,12 +6570,7 @@ function actionsBody(trip, stagesFilter){
       if(byStage[a.stage]) byStage[a.stage].push({custom:false,item:it,action:a});
     });
   };
-  (trip.checklist||[]).forEach(ci=>{
-    const item=S.items.find(i=>i.id===ci.itemId);
-    if(!item) return;
-    pushItemActions(item);
-    checklistSubsForTrip(item,trip).forEach(pushItemActions);
-  });
+  eachTripChecklistItemForActions(trip, pushItemActions);
   (trip.customActions||[]).forEach(ca=>{
     if(byStage[ca.stage]) byStage[ca.stage].push({custom:true,action:ca});
   });
@@ -6531,7 +6578,7 @@ function actionsBody(trip, stagesFilter){
   const stageOrder=stagesFilter||['pre-trip','during','before-pack-away','post-trip'];
   const tripActions=trip.actionStates||{};
   const hasKit=stageOrder.some(s=>byStage[s]&&byStage[s].some(r=>!r.custom));
-  const hasCustom=!!(trip.customActions&&trip.customActions.length);
+  const hasCustom=stageOrder.some(s=>byStage[s]&&byStage[s].some(r=>r.custom));
   const hasAny=stageOrder.some(s=>byStage[s]&&byStage[s].length>0);
 
   if(!hasAny) return `
@@ -9554,6 +9601,128 @@ function openHtmlPrintPreview(html){
   frame.srcdoc=html;
   showToast('Print preview opened here — use Print this page, or allow pop-ups for a new tab.');
   return true;
+}
+
+/** Rows for trip to-do print: [{custom, item?, action, done}], grouped by stage. */
+function collectTripTodoSections(trip, stagesFilter, opts){
+  const onlyOpen=!(opts&&opts.includeDone);
+  const tripActions=trip.actionStates||{};
+  const byStage={ 'pre-trip':[], 'during':[], 'before-pack-away':[], 'post-trip':[] };
+  const pushItemActions=(it)=>{
+    (it.actions||[]).forEach(a=>{
+      if(!byStage[a.stage]) return;
+      const key=it.id+'::'+a.id;
+      const done=!!tripActions[key];
+      if(onlyOpen&&done) return;
+      byStage[a.stage].push({custom:false,item:it,action:a,done});
+    });
+  };
+  eachTripChecklistItemForActions(trip, pushItemActions);
+  (trip.customActions||[]).forEach(ca=>{
+    if(!byStage[ca.stage]) return;
+    const key=tripCustomActionKey(ca.id);
+    const done=!!tripActions[key];
+    if(onlyOpen&&done) return;
+    byStage[ca.stage].push({custom:true,action:ca,done});
+  });
+  const stageOrder=stagesFilter||['pre-trip','during','before-pack-away','post-trip'];
+  const sortRows=(rows)=>rows.sort((a,b)=>{
+    if(a.custom!==b.custom) return a.custom?1:-1;
+    const an=a.custom?'':a.item.name;
+    const bn=b.custom?'':b.item.name;
+    if(an!==bn) return an.localeCompare(bn);
+    return a.action.label.localeCompare(b.action.label);
+  });
+  return stageOrder.filter(s=>byStage[s].length).map(stage=>({stage,rows:sortRows(byStage[stage])}));
+}
+
+function printTripTodos(tripId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  const stages=actionStagesForTripStatus(trip.status);
+  if(!stages||!stages.length){ showToast('No to-dos for this step'); return; }
+  let sections=collectTripTodoSections(trip,stages,{includeDone:false});
+  let listNote='Outstanding tasks';
+  if(!sections.length){
+    sections=collectTripTodoSections(trip,stages,{includeDone:true});
+    if(!sections.length){ showToast('No to-dos for this step'); return; }
+    listNote='All tasks complete';
+  }
+  const rowCount=sections.reduce((n,s)=>n+s.rows.length,0);
+  const doneCount=sections.reduce((n,s)=>n+s.rows.filter(r=>r.done).length,0);
+  const stepTitles={
+    planning:'Plan your trip',
+    packing:'Packing',
+    'at-camp':'At camp',
+    'pack-up':'Pack up',
+    'pack-away':'Pack away',
+    'post-trip':'After the trip',
+  };
+  const stepTitle=stepTitles[trip.status]||'Trip';
+  const today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  const sectionHtml=sections.map(({stage,rows})=>{
+    const sl=STAGE_LABELS[stage]||{label:stage,icon:''};
+    const rowsHtml=rows.map(row=>{
+      const meta=row.custom?'This trip only':esc(row.item.name);
+      const doneCls=row.done?' todo-done':'';
+      return `<div class="todo-row${doneCls}">
+          <span class="todo-box">${row.done?'<span class="todo-tick">&#x2713;</span>':''}</span>
+          <div class="todo-body">
+            <div class="todo-label">${esc(row.action.label)}</div>
+            <div class="todo-meta">${meta}</div>
+          </div>
+        </div>`;
+    }).join('');
+    return `<div class="todo-section">
+        <div class="todo-sec-hd"><span class="todo-sec-icon">${sl.icon||''}</span> ${esc(sl.label||stage)}</div>
+        ${rowsHtml}
+      </div>`;
+  }).join('');
+  const html=`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>To-do list \u2014 ${esc(trip.name)}</title>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Familjen Grotesk',sans-serif;background:#f7f4ec;color:#1a1a12;font-size:10pt;line-height:1.35}
+  .cover{background:#1a1a12;color:#f7f4ec;padding:6mm 14mm 5mm}
+  .cover-label{font-size:6.5pt;letter-spacing:.25em;text-transform:uppercase;color:#d8d3c0;margin-bottom:2pt}
+  .cover-title{font-size:15pt;font-weight:800;letter-spacing:.06em;text-transform:uppercase;line-height:1.1}
+  .cover-trip{font-family:'DM Mono',monospace;font-size:8.5pt;font-weight:700;margin-top:3pt}
+  .cover-note{font-family:'DM Mono',monospace;font-size:7.5pt;color:#9a7040;margin-top:2pt}
+  .cover-date{font-family:'DM Mono',monospace;font-size:7pt;color:#d8d3c0;margin-top:3pt}
+  .stats{background:#ede8d8;border-bottom:1pt solid #d8d3c0;padding:3pt 14mm;font-family:'DM Mono',monospace;font-size:7.5pt;color:#4a4a38}
+  .content{padding:4mm 14mm 16mm;max-width:180mm}
+  .todo-section{margin-bottom:5mm;break-inside:avoid;page-break-inside:avoid}
+  .todo-sec-hd{font-size:10pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6b4c1e;border-bottom:1.5pt solid #1a1a12;padding-bottom:2pt;margin-bottom:3pt}
+  .todo-sec-icon{font-size:9pt}
+  .todo-row{display:flex;align-items:flex-start;gap:6pt;padding:3pt 0;border-bottom:.5pt solid #d8d3c0;break-inside:avoid}
+  .todo-done .todo-label{text-decoration:line-through;opacity:.55}
+  .todo-box{flex-shrink:0;width:11pt;height:11pt;border:1pt solid #1a1a12;border-radius:1pt;margin-top:1pt;display:flex;align-items:center;justify-content:center}
+  .todo-tick{font-size:8pt;color:#4a6b3a;line-height:1}
+  .todo-label{font-size:10pt;font-weight:600}
+  .todo-meta{font-family:'DM Mono',monospace;font-size:7pt;color:#8a8a74;text-transform:uppercase;letter-spacing:.05em;margin-top:1pt}
+  .footer{position:fixed;bottom:6mm;left:14mm;right:14mm;display:flex;justify-content:space-between;border-top:.5pt solid #d8d3c0;padding-top:3pt;font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:#8a8a74}
+  .print-btn{display:block;margin:8mm auto 0;padding:8pt 20pt;background:#1a1a12;color:#f7f4ec;font-family:'Familjen Grotesk',sans-serif;font-size:11pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;border-radius:3pt;cursor:pointer}
+  @media print{ .print-btn{display:none!important} body{background:#fff} @page{margin:12mm;size:A4} .cover{-webkit-print-color-adjust:exact;print-color-adjust:exact} }
+</style>
+</head>
+<body>
+<div class="cover">
+  <div class="cover-label">NeverLeft Field Notes</div>
+  <div class="cover-title">To-do list</div>
+  <div class="cover-trip">${esc(trip.name)} \u00B7 ${esc(stepTitle)}</div>
+  <div class="cover-note">${esc(listNote)}</div>
+  <div class="cover-date">${trip.date?fmtDate(trip.date)+' \u00B7 ':''}${trip.nights} night${trip.nights!==1?'s':''} \u00B7 Printed ${today}</div>
+</div>
+<div class="stats">${rowCount} task${rowCount!==1?'s':''}${listNote==='All tasks complete'?' \u00B7 '+doneCount+' done':''}</div>
+<div class="content">${sectionHtml}</div>
+<div class="footer"><span>NeverLeft</span><span>${esc(trip.name)}</span></div>
+<button class="print-btn" onclick="window.print()">Print this page</button>
+</body></html>`;
+  openHtmlPrintPreview(html);
 }
 
 function printChecklist(tripId, mode){

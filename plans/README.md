@@ -35,6 +35,12 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [APE-57](https://linear.app/aperturegraph/issue/APE-57) | quick_create_group… | Quick-create a group + child default inheritance (Batch M) — Done |
 | [APE-58](https://linear.app/aperturegraph/issue/APE-58) | mobile_kit_wishlist_rows… | Mobile-first Kit & Want list rows (stack title/tags/⋯ on ≤640px) — Done |
 | [APE-59](https://linear.app/aperturegraph/issue/APE-59) | trip_details_sections_links… | Trip details: section-scoped links, tabs, Load forecast, miles + drive time — Done |
+| [APE-62](https://linear.app/aperturegraph/issue/APE-62) | trip_todo_print… | Restore inline to-dos on packing rows (APE-61 regression) — Ready for testing |
+| [APE-64](https://linear.app/aperturegraph/issue/APE-64) | trip_todo_print… | Print to-do list for current trip step — Ready for testing |
+| [APE-63](https://linear.app/aperturegraph/issue/APE-63) | trip_todo_print… | Print to-dos: respect packing filters — Backlog |
+| [APE-65](https://linear.app/aperturegraph/issue/APE-65) | trip_todo_print… | Align packing print action stages with on-screen — Backlog |
+| [APE-66](https://linear.app/aperturegraph/issue/APE-66) | trip_todo_print… | Print to-dos: open vs all toggle — Backlog |
+| [APE-67](https://linear.app/aperturegraph/issue/APE-67) | trip_todo_print… | Sticky contextual toolbar on long trip lists — Backlog |
 
 **Build order** (Linear priority): demo graduation + backup (APE-12–14, APE-13) → trip experience polish (APE-11, APE-25–27, APE-26) → camp mode (APE-15–17, APE-23) → qty rules (APE-21, APE-18) → kit UX (APE-20, APE-22, APE-24).
 
@@ -67,6 +73,7 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [trip_experience_hub.plan.md](trip_experience_hub.plan.md) | Partial | Site/booking/travel/weather on trip; progressive disclosure on trip detail |
 | [trip_details_sections_links.plan.md](trip_details_sections_links.plan.md) | Done | Trip details declutter — links in Site/Booking/Weather/Travel tabs; weather summary in header; Load forecast; miles + drive time; per-tab Edit jumps (APE-59) |
 | [trip_setup_journey.plan.md](trip_setup_journey.plan.md) | Done | Emotional 4-step trip setup wizard (booked + idea paths) |
+| [trip_todo_print.plan.md](trip_todo_print.plan.md) | Ready for testing | Print to-dos per step (APE-64); inline packing to-dos restore (APE-62); future APE-63/65/66 |
 
 **Suggested build order** (from feature plan): demo graduation + backup gate → trip experience polish → Camp mode → qty rules.
 
