@@ -1,6 +1,7 @@
 # Trip to-do print
 
 **Status:** Ready for testing  
+**Shipped:** `24bea2e` on `main`  
 **Linear:** [APE-64](https://linear.app/aperturegraph/issue/APE-64) (print to-do list), [APE-62](https://linear.app/aperturegraph/issue/APE-62) (inline packing to-dos — APE-61 regression)
 
 ## Problem
