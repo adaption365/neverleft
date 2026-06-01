@@ -46,6 +46,49 @@ Embody NeverLeft’s core promise: **reassuring ritual, not inventory panic.** P
 
 See discovery doc — summary: **one loud layer**, **momentum over debt**, **Pack vs Full list**, **instruction budget**, **same data calmer UI**.
 
+## Pack vs Full: what changes (critical)
+
+The toggle is **not** a different trip page. It only changes the **packing checklist region** — how you scan, filter, and act on lines.
+
+### Always visible (both Pack and Full list)
+
+Everything on the trip screen **above and around** the list stays — no feature loss when switching modes:
+
+| Area | Examples (today in `tripDetail`) |
+|------|----------------------------------|
+| Trip chrome | Back, Edit, title, subtitle, featured |
+| **Trip experience hub** | `renderTripExperiencePanel` — site, booking, weather summary, tabs (Site / Booking / Weather / Travel), links, Load forecast |
+| Journey | Stepper, stage status button, “Mark all packed”, scroll links (Before you go ↓, Notes ↓) |
+| Trip prep | **Consumable / shopping prep strip** (`renderConsumablePrepStrip`) — suggested amounts, shortfall |
+| Footer sections | **Before you go** to-dos (`tripStageFooterHtml`), **Notes** |
+
+Pack mode may **simplify checklist progress + rows + toolbar**; it does **not** hide trip details, weather, or the shopping prep strip.
+
+### Pack mode only (calmer checklist slice)
+
+- Single progress line (`packed · to go`)
+- Segmented Pack \| Full list under progress
+- Slim toolbar (+ Add, ⋯)
+- Compact rows, one open location group, hide packed (always)
+- To-do chips on rows → footer master list (no inline to-dos on rows)
+
+### Full list only (parity with today’s checklist body)
+
+**Full list must retain 100% of current checklist capabilities** — nothing removed, only reorganized if needed:
+
+| Capability | Keep in Full list |
+|------------|-------------------|
+| Search | ✓ |
+| Filter panel (person, location, sort, hide packed) | ✓ |
+| Sort & filter controls (`clControls` / `clFilters` — consolidate UI, not drop features) | ✓ |
+| Dual ready / packed progress + hint | ✓ |
+| Full toolbar (rebuild, uncheck, quick add, inventory, both prints) | ✓ |
+| Row density (meta, badges, inline to-dos, menus, groups/subs) | ✓ |
+| Highlighted items, qty, packable parents | ✓ |
+| Packing gate hint | Only on failed “Packing done” (per resolved decision) — applies to both modes when triggered |
+
+**Acceptance (APE-70):** Switching to Full list on a demo trip exposes the same actions and data as today’s packing tab; trip hub + consumable strip unchanged from Pack view.
+
 ## Resolved decisions (May 2026)
 
 Ready for Pack-mode mock in `NeverLeftClaudeDesign.html` and APE-70 implementation.

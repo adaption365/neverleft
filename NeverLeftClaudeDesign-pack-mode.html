@@ -457,8 +457,8 @@ body[data-view="full"] .view-full { display: block; }
 
 <div class="mock-banner">
   <div>
-    <strong>Design mock</strong> — Packing · Pack mode (APE-73 / APE-70)<br>
-    <span class="mock-link">plans/packing_calm_ux.plan.md · Not wired to app</span>
+    <strong>Design mock</strong> — Packing · Pack vs Full (APE-73)<br>
+    <span class="mock-link">Trip hub + shopping strip stay in both modes · Toggle only changes the list below</span>
   </div>
   <button type="button" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.35)" onclick="document.documentElement.requestFullscreen?.()">Fullscreen</button>
 </div>
@@ -491,6 +491,21 @@ body[data-view="full"] .view-full { display: block; }
     <div class="step"><div class="step-dot">4</div><div class="step-label">Pack up</div></div>
     <div class="step-line"></div>
     <div class="step"><div class="step-dot">5</div><div class="step-label">Home</div></div>
+  </div>
+
+  <!-- Shared trip context — same in Pack and Full (not part of toggle) -->
+  <div class="trip-hub-mock" style="margin-bottom:20px;padding:14px 16px;background:var(--canvas-2);border-radius:12px;box-shadow:0 2px 8px rgba(26,31,26,.06);border:1px solid var(--border)">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:8px">Always visible · Pack &amp; Full list</div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px">Borrowdale Valley Campsite</div>
+    <p style="font-size:12px;color:var(--text-m);margin:0 0 10px">4 Apr check-in · Mild, showers Sat · 42 mi · 1h 10m drive</p>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+      <span style="font-size:10px;padding:4px 9px;border-radius:999px;border:1px solid var(--border);color:var(--text-m)">Site</span>
+      <span style="font-size:10px;padding:4px 9px;border-radius:999px;border:1px solid var(--border);color:var(--text-m)">Weather</span>
+      <span style="font-size:10px;padding:4px 9px;border-radius:999px;border:1px solid var(--border);color:var(--text-m)">Travel</span>
+    </div>
+    <div style="padding:10px 12px;border-radius:10px;background:rgba(58,122,106,.08);border:1px solid rgba(58,122,106,.2);font-size:12px;line-height:1.45;color:var(--text-d)">
+      <strong style="color:var(--teal)">Suggested for this trip</strong> — Coffee ×12, Marshmallows ×2 bag shortfall → shopping list
+    </div>
   </div>
 
   <!-- PACK VIEW -->

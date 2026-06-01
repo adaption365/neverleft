@@ -146,6 +146,8 @@ Mode switch: **segmented control directly under the progress bar**, above toolba
 
 **Persistence:** `localStorage.nlPackingViewMode` = `pack` | `full`; default **`pack`** for new users.
 
+**Important:** Pack and Full list share the **same trip page**. Trip details, weather, consumable/shopping prep strip, stepper, stage buttons, footer to-dos, and notes are **always shown**. Only the checklist list chrome (progress style, filters, toolbar, row layout) changes.
+
 ---
 
 ## To-dos: one default surface
