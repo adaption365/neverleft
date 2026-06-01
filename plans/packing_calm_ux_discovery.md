@@ -142,9 +142,9 @@ flowchart TB
 | **Toolbar** | + Add primary; rest in ⋯ | Full toolbar |
 | **Filters** | Hidden | Search + sort + filter panel |
 
-Mode switch: segment control or subtle toggle under progress — **not** a new top-level app area.
+Mode switch: **segmented control directly under the progress bar**, above toolbar and list — **not** in the journey stepper or trip sub-nav.
 
-**Persistence:** Remember last mode per device; default new users to Pack.
+**Persistence:** `localStorage.nlPackingViewMode` = `pack` | `full`; default **`pack`** for new users.
 
 ---
 
@@ -158,7 +158,7 @@ Users asked for both **inline** (context while packing) and **bottom list** (see
 | **B — Inline master** | Inline only; “See all to-dos” jumps to footer | Same |
 | **C — User preference** | Setting: “To-dos on rows / in list below / both” | Unrestricted |
 
-**Recommendation for discovery:** **A** in Pack mode (bottom list = tick everything; rows stay visually quiet). Validate in testing.
+**Resolved (May 2026):** **Option A** in Pack mode. Option C (user preference) deferred post-v1. Full list keeps inline + bottom.
 
 ---
 
@@ -208,17 +208,20 @@ Users asked for both **inline** (context while packing) and **bottom list** (see
 
 - [x] Problem framing + north star + disclosure model (this doc)
 - [x] Phased implementation plan + Linear breakdown ([packing_calm_ux.plan.md](packing_calm_ux.plan.md))
-- [ ] Paper sketch or HTML mock: Pack mode default screen (optional: `NeverLeftClaudeDesign.html` branch)
+- [x] Open questions resolved — see plan **Resolved decisions** table
+- [ ] Pack-mode mock screen (`NeverLeftClaudeDesign.html` or sibling mock file)
 - [ ] 15-minute walkthrough with Sunday-night packer script — note friction points
-- [ ] Sign-off on default to-do surface (A vs B vs C) before Phase 2 code
 
 ---
 
-## Open questions
+## Resolved decisions
 
-1. Pack / Full list toggle placement: under progress vs in trip sub-nav?
-2. Should **hide packed** be always on in Pack mode (non-toggle)?
-3. Auto-advance “next open location” when a group completes?
-4. Apply Pack mode to pack-up / pack-away or packing-only first?
+See [packing_calm_ux.plan.md](packing_calm_ux.plan.md) **Resolved decisions** for the full table. Summary:
 
-Record decisions in the plan frontmatter when resolved.
+1. **Toggle** — under progress, segmented Pack | Full list.
+2. **Hide packed** — always on in Pack mode (not togglable there).
+3. **Auto-advance** — yes: next incomplete location opens when current group completes.
+4. **v1 scope** — packing checklist only; pack-up / pack-away later.
+5. **To-dos** — Pack: bottom master + row chip; Full list: inline + bottom.
+6. **Gate banner** — only on failed “Packing done”, not mid-scroll.
+7. **Progress** — one packed-first line in Pack mode.

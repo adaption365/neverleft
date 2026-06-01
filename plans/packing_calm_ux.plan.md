@@ -17,11 +17,17 @@ phases:
   - id: visual-calm-pass
     linear: APE-71
     status: backlog
-open_questions:
-  - Pack/Full toggle placement
-  - hide-packed always on in Pack mode?
-  - Pack mode scope: packing only vs all checklist stages
-  - Default to-do surface A vs B vs C
+resolved_decisions:
+  toggle_placement: below progress bar, above list (segmented Pack | Full list)
+  hide_packed_pack_mode: always on, not exposed as toggle in Pack mode
+  auto_advance_location: yes when a location group completes in Pack mode
+  v1_scope: packing checklist only; pack-up/pack-away later
+  todo_surface_pack: A (bottom master list; row chip scrolls to footer)
+  todo_surface_full: inline + bottom as today
+  user_preference_todos: deferred post-v1 (was option C)
+  criteria_gate_banner: only when user taps Packing done and criteria fail
+  progress_pack_mode: single line packed-first e.g. 24 packed · 6 to go
+  persist_key: nlPackingViewMode pack|full default pack
 ---
 
 # Packing calm UX (heart of the app)
@@ -40,6 +46,38 @@ Embody NeverLeft’s core promise: **reassuring ritual, not inventory panic.** P
 
 See discovery doc — summary: **one loud layer**, **momentum over debt**, **Pack vs Full list**, **instruction budget**, **same data calmer UI**.
 
+## Resolved decisions (May 2026)
+
+Ready for Pack-mode mock in `NeverLeftClaudeDesign.html` and APE-70 implementation.
+
+| Question | Decision | Rationale |
+|----------|----------|-----------|
+| Pack / Full toggle placement | **Below progress bar**, above toolbar + list — segmented control **Pack \| Full list** | Mode is about *how* you work the list, not which journey step you’re on. Stepper stays for trip stage only. |
+| Hide packed in Pack mode | **Always on** — no toggle in Pack mode | Pack = “what’s left”; showing packed items adds scroll and anxiety. Full list restores today’s hide/show control. |
+| Auto-advance location group | **Yes** in Pack mode when a group is fully packed/ready | Gentle momentum: completed garage collapses, next incomplete location opens. User can still expand others manually. |
+| v1 scope | **Packing checklist only** (`packing` + checklist tab) | Validate calm UX on the busiest screen first. Pack-up / pack-away inherit later (APE-72+ or follow-up issue). |
+| To-do surface (Pack) | **A — bottom master list**; rows show **“N to-dos”** chip → scroll/focus footer | User wanted full tickable list below + calm rows; avoids duplicate inline checkboxes in Pack mode. |
+| To-do surface (Full list) | **Inline + bottom** as shipped (APE-62) | Curators and power users keep both surfaces. |
+| User preference (option C) | **Deferred** post-v1 | Ship one calm default; add Settings later if testing asks for it. |
+| Criteria gate banner | **On “Packing done” attempt only** — not persistent mid-list | Instruction budget: no ambient rust guilt while packing. |
+| Progress (Pack mode) | **One line**, packed-first: e.g. `24 packed · 6 to go` | Momentum over debt; hide ready % / packed % split until Full list. |
+| Persistence | `localStorage` key `nlPackingViewMode`: `pack` \| `full`, default **`pack`** | Per device; new users land calm. |
+
+## Pack-mode mock brief (next: design file)
+
+Static mock should show **one screen** — demo trip, Packing step, **Pack** selected:
+
+1. Trip header + stepper (unchanged)
+2. Single progress: `18 packed · 9 to go` + thin bar
+3. Segmented toggle: **[ Pack ]** Full list — helper line under toggle
+4. Primary **+ Add** + **⋯** only (no six-button row)
+5. One open group: **Garage** (3/8 mini progress) — compact rows: checkbox, name, optional `2 to-dos` chip
+6. Collapsed groups: **Kitchen ✓ All packed**, **Loft** (muted)
+7. Footer **Before you go**: 4–5 tickable lines (no duplicate inline boxes on rows in mock)
+8. No filter panel, no rust gate banner, no dual ready/packed %
+
+`NeverLeftClaudeDesign.html` is a bundled artifact — prefer a **standalone** `NeverLeftClaudeDesign-pack-mode.html` (or new canvas) unless we patch the bundle source separately.
+
 ## Phased delivery
 
 Implement in order; each phase shippable behind Pack mode or feature flag if needed.
@@ -48,10 +86,10 @@ Implement in order; each phase shippable behind Pack mode or feature flag if nee
 
 **Goal:** Cognitive split without losing today’s screen.
 
-- Toggle: **Pack** (default) | **Full list**
-- Pack: simplified progress line, hide secondary filter panel, defer duplicate `clFilters` / `clControls` to Full list only
-- Persist mode in `localStorage`
-- Copy: mode labels explain job (“Pack” / “Manage full list”)
+- Toggle: segmented **Pack** (default) \| **Full list** — placed **under** `cprog`, above toolbar
+- Pack: single progress line (`packed · remaining`); no filter panel; `nlPackingViewMode=pack`
+- Full list: today’s progress + filters; `nlPackingViewMode=full`
+- Copy: subtitle under toggle — Pack: “Focus on what’s left” · Full list: “Search, sort, and manage everything”
 
 **Acceptance:** Sunday-night packer can complete a demo trip in Pack mode without opening filters; curator can switch to Full list and use today’s controls.
 
@@ -60,7 +98,7 @@ Implement in order; each phase shippable behind Pack mode or feature flag if nee
 **Goal:** Less on screen at once in Pack mode.
 
 - Compact row template (name + state; meta behind expand or tap)
-- Pack mode: **hide packed** default on; one incomplete location group open (optional: auto-open next on group complete)
+- Pack mode: **hide packed** always on; one incomplete location group open; **auto-open next** incomplete group when current completes
 - Completed groups stay collapsed (extend existing behavior)
 - Consolidate duplicate filter UIs in Full list (single filter surface)
 
