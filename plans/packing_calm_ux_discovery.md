@@ -209,7 +209,7 @@ Users asked for both **inline** (context while packing) and **bottom list** (see
 - [x] Problem framing + north star + disclosure model (this doc)
 - [x] Phased implementation plan + Linear breakdown ([packing_calm_ux.plan.md](packing_calm_ux.plan.md))
 - [x] Open questions resolved — see plan **Resolved decisions** table
-- [ ] Pack-mode mock screen (`NeverLeftClaudeDesign.html` or sibling mock file)
+- [x] Pack-mode mock — [`NeverLeftClaudeDesign-pack-mode.html`](../NeverLeftClaudeDesign-pack-mode.html) (interactive Pack / Full list)
 - [ ] 15-minute walkthrough with Sunday-night packer script — note friction points
 
 ---

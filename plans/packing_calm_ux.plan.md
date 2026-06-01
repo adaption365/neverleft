@@ -76,7 +76,7 @@ Static mock should show **one screen** — demo trip, Packing step, **Pack** sel
 7. Footer **Before you go**: 4–5 tickable lines (no duplicate inline boxes on rows in mock)
 8. No filter panel, no rust gate banner, no dual ready/packed %
 
-`NeverLeftClaudeDesign.html` is a bundled artifact — prefer a **standalone** `NeverLeftClaudeDesign-pack-mode.html` (or new canvas) unless we patch the bundle source separately.
+**Mock (shipped):** [`NeverLeftClaudeDesign-pack-mode.html`](../NeverLeftClaudeDesign-pack-mode.html) — interactive Pack | Full list toggle, light theme, compact rows + footer to-dos. Open in browser (not the bundled `NeverLeftClaudeDesign.html`).
 
 ## Phased delivery
 

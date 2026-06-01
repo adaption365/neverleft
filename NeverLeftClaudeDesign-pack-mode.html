@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>NeverLeft · Pack mode mock (APE-73)</title>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700&family=Newsreader:ital,wght@0,400;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --page-max: min(1024px, 94vw);
+  --canvas: #eff4ea;
+  --canvas-2: #ffffff;
+  --canvas-3: #e4ebe0;
+  --border: #c5d4bc;
+  --border-l: #b0c4a6;
+  --amber: #9a5f10;
+  --amber-l: #b87020;
+  --amber-d: #7a4808;
+  --sage: #4a6b3a;
+  --sage-l: #5a8048;
+  --rust: #9a3c1e;
+  --blue: #3a5a98;
+  --teal: #3a7a6a;
+  --text: #1a1f1a;
+  --text-d: #3d463d;
+  --text-m: #4f5c4f;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --dur-ui: 200ms;
+  --dur-panel: 280ms;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Familjen Grotesk', sans-serif;
+  background: var(--canvas);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Mock chrome */
+.mock-banner {
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  background: linear-gradient(90deg, #3a5a98 0%, #4a6b3a 100%);
+  color: #fff;
+  padding: 10px clamp(16px, 3vw, 36px);
+  font-size: 12px;
+  line-height: 1.45;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.12);
+}
+.mock-banner strong { font-weight: 700; }
+.mock-banner a { color: #fff; opacity: .9; }
+.mock-link { font-family: 'DM Mono', monospace; font-size: 10px; opacity: .85; }
+
+.hdr {
+  background: var(--canvas-2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: center;
+  min-height: 56px;
+}
+.hdr-inner {
+  width: 100%;
+  max-width: var(--page-max);
+  padding: 0 clamp(16px, 3vw, 36px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+}
+.logo {
+  font-weight: 600;
+  font-size: 17px;
+  color: var(--text);
+}
+.logo em { font-family: 'Newsreader', serif; font-style: italic; color: var(--sage); }
+
+.page {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 20px clamp(16px, 3vw, 36px) 80px;
+}
+
+.trip-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+.tback { font-size: 13px; color: var(--text-m); background: none; border: none; cursor: pointer; }
+.tback:hover { color: var(--amber); }
+.btn {
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+  padding: 7px 14px;
+  border-radius: 8px;
+  transition: transform 140ms var(--ease-out);
+}
+.btn:active { transform: scale(0.97); }
+.btn-o { background: transparent; color: var(--text-d); border: 1.5px solid var(--border); }
+.btn-p { background: var(--amber-l); color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.1); }
+.btn-sm { padding: 5px 10px; font-size: 11px; }
+
+.ttitle { font-size: clamp(22px, 5vw, 26px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 4px; }
+.tsubtitle { font-size: 14px; color: var(--text-m); margin-bottom: 16px; }
+
+.stepper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 4px 0;
+}
+.stepper::-webkit-scrollbar { display: none; }
+.step { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; min-width: 52px; }
+.step-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  border: 2px solid var(--border);
+  background: var(--canvas-2);
+  color: var(--text-m);
+}
+.step.done .step-dot { background: var(--sage); border-color: var(--sage); color: #fff; }
+.step.current .step-dot { background: var(--amber-l); border-color: var(--amber-l); color: #fff; box-shadow: 0 2px 8px rgba(154,95,16,.3); }
+.step-label { font-size: 10px; color: var(--text-m); text-align: center; max-width: 56px; line-height: 1.2; }
+.step.current .step-label { color: var(--amber-d); font-weight: 700; }
+.step.done .step-label { color: var(--sage); }
+.step-line { flex: 1; min-width: 8px; height: 2px; background: var(--border); align-self: center; margin-bottom: 18px; }
+.step-line.done { background: var(--sage); }
+
+/* Pack progress — calm single line */
+.cprog {
+  background: var(--canvas-2);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(26,31,26,.06);
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+.cprog-pack .cprog-main {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.cprog-pack .cprog-main span { color: var(--sage); }
+.cprog-pack .pbar-wrap {
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.cprog-pack .pbar-fill {
+  height: 100%;
+  background: var(--sage);
+  border-radius: 4px;
+  transition: width var(--dur-panel) var(--ease-out);
+}
+
+/* Mode switch */
+.pack-mode-bar { margin-bottom: 16px; }
+.pack-seg {
+  display: flex;
+  background: var(--canvas-3);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+  max-width: 280px;
+}
+.pack-seg button {
+  flex: 1;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-m);
+  cursor: pointer;
+  transition: background var(--dur-ui), color var(--dur-ui), box-shadow var(--dur-ui);
+}
+.pack-seg button.on {
+  background: var(--canvas-2);
+  color: var(--amber-d);
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+}
+.pack-mode-hint {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-m);
+  line-height: 1.45;
+}
+
+.pack-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.pack-toolbar .spacer { flex: 1; }
+.btn-overflow {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+/* Location groups */
+.cloc-group { margin-bottom: 14px; }
+.cloc-hdr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 4px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  margin-bottom: 6px;
+}
+.cloc-hdr:hover { opacity: 0.75; }
+.cg-toggle { font-size: 9px; color: var(--text-m); width: 12px; }
+.cloc-title { font-size: 15px; font-weight: 700; flex: 1; color: var(--text); }
+.cloc-hdr--done .cloc-title { color: var(--text-m); }
+.cloc-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--sage);
+  letter-spacing: 0.04em;
+}
+.cloc-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text-m);
+}
+.cloc-progress {
+  height: 3px;
+  width: 48px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.cloc-progress-fill { height: 100%; background: var(--sage); }
+
+/* Compact rows — Pack mode */
+.ci-compact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  background: var(--canvas-2);
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(26,31,26,.06);
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: box-shadow var(--dur-ui), transform 140ms var(--ease-out);
+}
+.ci-compact:hover { box-shadow: 0 3px 10px rgba(26,31,26,.08); }
+.ci-compact:active { transform: scale(0.99); }
+.ci-compact.ready { background: rgba(184,112,32,.06); }
+.ci-state {
+  width: 26px; height: 26px; border-radius: 7px;
+  border: 2px solid var(--border-l);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800;
+  background: var(--canvas);
+}
+.ci-state.ready {
+  border-color: var(--amber-l);
+  background: rgba(184,112,32,.1);
+}
+.ci-state.ready::after {
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--amber-l);
+}
+.ci-state.packed {
+  border-color: var(--sage);
+  background: var(--sage);
+  color: #fff;
+}
+.ci-state.packed::after { display: none; }
+.ci-compact-name { font-size: 14px; font-weight: 600; flex: 1; min-width: 0; }
+.todo-chip {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--teal);
+  background: rgba(58,122,106,.1);
+  border: 1px solid rgba(58,122,106,.22);
+  padding: 3px 8px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.todo-chip:hover { background: rgba(58,122,106,.16); }
+
+.cloc-collapsed { display: none; }
+.cloc-group.is-open .cloc-collapsed { display: block; }
+.cloc-group:not(.is-open) .cloc-hdr .cg-toggle { transform: rotate(-90deg); }
+
+/* Footer to-dos */
+.trip-stage-sec {
+  margin-top: 32px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+.trip-stage-sec-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-m);
+  margin-bottom: 10px;
+}
+.todo-hint {
+  font-size: 12px;
+  color: var(--text-m);
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+.todo-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 6px;
+  border-bottom: 1px solid rgba(197,212,188,.6);
+  cursor: pointer;
+}
+.todo-row:last-child { border-bottom: none; }
+.todo-check {
+  width: 20px; height: 20px;
+  border-radius: 4px;
+  border: 1.5px solid var(--border-l);
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: var(--sage);
+}
+.todo-check.done { background: rgba(74,107,58,.15); border-color: var(--sage); }
+.todo-label { font-size: 13px; font-weight: 500; }
+.todo-label.done { text-decoration: line-through; opacity: 0.5; }
+.todo-meta {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--text-m);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+/* Full list view (contrast) */
+.view-full { display: none; }
+body[data-view="full"] .view-pack { display: none; }
+body[data-view="full"] .view-full { display: block; }
+
+.cprog-full .cprog-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.cprog-full .cprog-label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-d); }
+.cprog-full .cprog-pcts { display: flex; gap: 10px; font-size: 12px; font-weight: 700; }
+.pct-ready { color: var(--amber-d); }
+.pct-packed { color: var(--sage); }
+.cprog-full .pbar-wrap { height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; display: flex; }
+.pbar-ready { background: var(--amber-l); height: 100%; }
+.pbar-packed { background: var(--sage); height: 100%; }
+.cprog-hint { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text-m); margin-top: 8px; }
+
+.filter-row {
+  display: flex;
+  gap: 7px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.sw { flex: 1; min-width: 140px; position: relative; }
+.sw input {
+  width: 100%;
+  padding: 8px 12px 8px 32px;
+  border: none;
+  border-radius: 8px;
+  background: var(--canvas-2);
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+}
+.sw-ic { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-m); font-size: 12px; }
+
+.toolbar-busy {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.ci-full {
+  display: flex;
+  gap: 13px;
+  padding: 14px;
+  background: var(--canvas-2);
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  margin-bottom: 8px;
+}
+.ci-full .ci-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; font-size: 10px; color: var(--text-m); }
+.inline-todo {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0,0,0,.06);
+  font-size: 12px;
+  color: var(--text-m);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mini-check {
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--border-l);
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.compare-note {
+  margin-top: 24px;
+  padding: 14px 16px;
+  background: rgba(58,90,152,.08);
+  border: 1px solid rgba(58,90,152,.2);
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-d);
+}
+</style>
+</head>
+<body class="light" data-view="pack">
+
+<div class="mock-banner">
+  <div>
+    <strong>Design mock</strong> — Packing · Pack mode (APE-73 / APE-70)<br>
+    <span class="mock-link">plans/packing_calm_ux.plan.md · Not wired to app</span>
+  </div>
+  <button type="button" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.35)" onclick="document.documentElement.requestFullscreen?.()">Fullscreen</button>
+</div>
+
+<header class="hdr">
+  <div class="hdr-inner">
+    <div class="logo">never<em>Left</em></div>
+    <span style="font-size:12px;color:var(--text-m)">My Trips</span>
+  </div>
+</header>
+
+<main class="page">
+  <div class="trip-toolbar">
+    <button type="button" class="tback">← My Trips</button>
+    <div style="display:flex;gap:6px">
+      <button type="button" class="btn btn-o btn-sm">Edit</button>
+    </div>
+  </div>
+
+  <h1 class="ttitle">Lake District · Easter</h1>
+  <p class="tsubtitle">3 nights · 4 Apr · Alex &amp; Sam</p>
+
+  <div class="stepper" aria-label="Trip journey">
+    <div class="step done"><div class="step-dot">✓</div><div class="step-label">Plan</div></div>
+    <div class="step-line done"></div>
+    <div class="step current"><div class="step-dot">2</div><div class="step-label">Packing</div></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-dot">3</div><div class="step-label">Camp</div></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-dot">4</div><div class="step-label">Pack up</div></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-dot">5</div><div class="step-label">Home</div></div>
+  </div>
+
+  <!-- PACK VIEW -->
+  <div class="view-pack">
+    <div class="cprog cprog-pack">
+      <div class="cprog-main"><span>18 packed</span> · 9 to go</div>
+      <div class="pbar-wrap"><div class="pbar-fill" style="width:67%"></div></div>
+    </div>
+
+    <div class="pack-mode-bar">
+      <div class="pack-seg" role="tablist">
+        <button type="button" role="tab" class="on" data-set-view="pack" aria-selected="true">Pack</button>
+        <button type="button" role="tab" data-set-view="full" aria-selected="false">Full list</button>
+      </div>
+      <p class="pack-mode-hint">Focus on what&rsquo;s left — details and filters live in Full list.</p>
+    </div>
+
+    <div class="pack-toolbar">
+      <button type="button" class="btn btn-p btn-sm">+ Add item</button>
+      <span class="spacer"></span>
+      <button type="button" class="btn btn-o btn-sm btn-overflow" title="More actions">⋯</button>
+    </div>
+
+    <!-- Kitchen — done, collapsed -->
+    <div class="cloc-group">
+      <button type="button" class="cloc-hdr cloc-hdr--done" aria-expanded="false">
+        <span class="cg-toggle">▼</span>
+        <span style="font-size:14px;color:var(--sage)" aria-hidden="true">✓</span>
+        <span class="cloc-title">Kitchen</span>
+        <span class="cloc-badge">All packed</span>
+      </button>
+    </div>
+
+    <!-- Garage — open -->
+    <div class="cloc-group is-open">
+      <button type="button" class="cloc-hdr" aria-expanded="true">
+        <span class="cg-toggle">▼</span>
+        <span class="cloc-title">Garage</span>
+        <div class="cloc-progress"><div class="cloc-progress-fill" style="width:38%"></div></div>
+        <span class="cloc-count">3/8</span>
+      </button>
+      <div class="cloc-collapsed">
+        <div class="ci-compact">
+          <div class="ci-state"></div>
+          <span class="ci-compact-name">Tent · 4-person</span>
+          <button type="button" class="todo-chip" onclick="document.getElementById('trip-sec-actions').scrollIntoView({behavior:'smooth'})">2 to-dos</button>
+        </div>
+        <div class="ci-compact ready">
+          <div class="ci-state ready"></div>
+          <span class="ci-compact-name">Sleeping bags (×2)</span>
+          <button type="button" class="todo-chip">1 to-do</button>
+        </div>
+        <div class="ci-compact">
+          <div class="ci-state"></div>
+          <span class="ci-compact-name">Camping chairs</span>
+        </div>
+        <div class="ci-compact ready">
+          <div class="ci-state ready"></div>
+          <span class="ci-compact-name">Cool box</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loft — collapsed teaser -->
+    <div class="cloc-group">
+      <button type="button" class="cloc-hdr" aria-expanded="false">
+        <span class="cg-toggle">▼</span>
+        <span class="cloc-title">Loft</span>
+        <div class="cloc-progress"><div class="cloc-progress-fill" style="width:0%"></div></div>
+        <span class="cloc-count">0/4</span>
+      </button>
+    </div>
+
+    <section id="trip-sec-actions" class="trip-stage-sec">
+      <div class="trip-stage-sec-hd">
+        <span>Before you go</span>
+        <button type="button" class="btn btn-o btn-sm">Print to-dos</button>
+      </div>
+      <p class="todo-hint">Tick to-dos here or tap a row&rsquo;s chip — same tasks, one list.</p>
+      <div class="todo-row">
+        <div class="todo-check"></div>
+        <div>
+          <div class="todo-label">Check tent poles</div>
+          <div class="todo-meta">Tent · 4-person</div>
+        </div>
+      </div>
+      <div class="todo-row">
+        <div class="todo-check"></div>
+        <div>
+          <div class="todo-label">Air mattresses inflated?</div>
+          <div class="todo-meta">Sleeping bags (×2)</div>
+        </div>
+      </div>
+      <div class="todo-row">
+        <div class="todo-check done">✓</div>
+        <div>
+          <div class="todo-label done">Pack first-aid refills</div>
+          <div class="todo-meta">First aid kit</div>
+        </div>
+      </div>
+      <div class="todo-row">
+        <div class="todo-check"></div>
+        <div>
+          <div class="todo-label">Charge power bank</div>
+          <div class="todo-meta">This trip only</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- FULL LIST (contrast) -->
+  <div class="view-full">
+    <div class="cprog cprog-full">
+      <div class="cprog-top">
+        <span class="cprog-label">6 ready · 18 packed · 9 remaining</span>
+        <div class="cprog-pcts">
+          <span class="pct-ready">58% ready</span>
+          <span class="pct-packed">67% packed</span>
+        </div>
+      </div>
+      <div class="pbar-wrap">
+        <div class="pbar-ready" style="width:24%"></div>
+        <div class="pbar-packed" style="width:43%"></div>
+      </div>
+      <p class="cprog-hint">Tick each item&rsquo;s to-dos on its row, then: tap = ready · tap again = packed</p>
+    </div>
+
+    <div class="pack-mode-bar">
+      <div class="pack-seg" role="tablist">
+        <button type="button" role="tab" data-set-view="pack">Pack</button>
+        <button type="button" role="tab" class="on" data-set-view="full" aria-selected="true">Full list</button>
+      </div>
+      <p class="pack-mode-hint">Search, sort, and manage everything — busier on purpose.</p>
+    </div>
+
+    <div class="filter-row">
+      <div class="sw"><span class="sw-ic">⌕</span><input type="search" placeholder="Search packing list…" readonly></div>
+      <button type="button" class="btn btn-o btn-sm">⚙ Sort &amp; filter</button>
+    </div>
+
+    <div class="toolbar-busy">
+      <button type="button" class="btn btn-o btn-sm">↺ Rebuild</button>
+      <button type="button" class="btn btn-o btn-sm">Uncheck all</button>
+      <button type="button" class="btn btn-p btn-sm">+ Quick add</button>
+      <button type="button" class="btn btn-o btn-sm">+ From inventory</button>
+      <button type="button" class="btn btn-o btn-sm">Print list</button>
+      <button type="button" class="btn btn-o btn-sm">Print to-dos</button>
+    </div>
+
+    <div class="ci-full">
+      <div class="ci-state"></div>
+      <div style="flex:1">
+        <div style="font-weight:700">Tent · 4-person</div>
+        <div class="ci-meta"><span>Garage</span><span>×1</span></div>
+        <div class="inline-todo"><span class="mini-check"></span> Check tent poles</div>
+        <div class="inline-todo"><span class="mini-check"></span> Pegs in bag</div>
+      </div>
+    </div>
+
+    <p class="compare-note">
+      <strong>Full list</strong> keeps today&rsquo;s density for curators. <strong>Pack</strong> is the default for most trips — compare with the Pack tab.
+    </p>
+  </div>
+</main>
+
+<script>
+document.querySelectorAll('[data-set-view]').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var v = btn.getAttribute('data-set-view');
+    document.body.setAttribute('data-view', v);
+    document.querySelectorAll('[data-set-view]').forEach(function(b){
+      var on = b.getAttribute('data-set-view') === v;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+  });
+});
+document.querySelectorAll('.cloc-group.is-open .cloc-hdr, .cloc-group:not(.is-open) .cloc-hdr').forEach(function(hdr){
+  hdr.addEventListener('click', function(){
+    var g = hdr.closest('.cloc-group');
+    if(!g) return;
+    g.classList.toggle('is-open');
+    hdr.setAttribute('aria-expanded', g.classList.contains('is-open'));
+  });
+});
+</script>
+</body>
+</html>
