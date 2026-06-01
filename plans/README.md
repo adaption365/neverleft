@@ -40,7 +40,15 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [APE-63](https://linear.app/aperturegraph/issue/APE-63) | trip_todo_print… | Print to-dos: respect packing filters — Backlog |
 | [APE-65](https://linear.app/aperturegraph/issue/APE-65) | trip_todo_print… | Align packing print action stages with on-screen — Backlog |
 | [APE-66](https://linear.app/aperturegraph/issue/APE-66) | trip_todo_print… | Print to-dos: open vs all toggle — Backlog |
-| [APE-67](https://linear.app/aperturegraph/issue/APE-67) | trip_todo_print… | Sticky contextual toolbar on long trip lists — Backlog |
+| [APE-67](https://linear.app/aperturegraph/issue/APE-67) | trip_todo_print… / packing_calm_ux… | Sticky contextual toolbar — Backlog (after APE-69) |
+| [APE-73](https://linear.app/aperturegraph/issue/APE-73) | packing_calm_ux… | **Epic** — Packing calm UX discovery & philosophy (heart of app) — In Progress |
+| [APE-70](https://linear.app/aperturegraph/issue/APE-70) | packing_calm_ux… | Phase 1 — Pack vs Full list mode — Backlog |
+| [APE-72](https://linear.app/aperturegraph/issue/APE-72) | packing_calm_ux… | Phase 2 — Progressive disclosure defaults — Backlog |
+| [APE-74](https://linear.app/aperturegraph/issue/APE-74) | packing_calm_ux… | Phase 3 — Calm to-do presentation — Backlog |
+| [APE-69](https://linear.app/aperturegraph/issue/APE-69) | packing_calm_ux… | Phase 4 — Toolbar primary + overflow — Backlog |
+| [APE-71](https://linear.app/aperturegraph/issue/APE-71) | packing_calm_ux… | Phase 5 — Visual calm pass — Backlog |
+
+**Active discovery:** [packing_calm_ux](packing_calm_ux.plan.md) — calm packing as core product philosophy ([APE-73](https://linear.app/aperturegraph/issue/APE-73)); implement APE-70 → 72 → 74 → 69 → 71 after APE-62/64 sign-off.
 
 **Build order** (Linear priority): demo graduation + backup (APE-12–14, APE-13) → trip experience polish (APE-11, APE-25–27, APE-26) → camp mode (APE-15–17, APE-23) → qty rules (APE-21, APE-18) → kit UX (APE-20, APE-22, APE-24).
 
@@ -74,6 +82,8 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [trip_details_sections_links.plan.md](trip_details_sections_links.plan.md) | Done | Trip details declutter — links in Site/Booking/Weather/Travel tabs; weather summary in header; Load forecast; miles + drive time; per-tab Edit jumps (APE-59) |
 | [trip_setup_journey.plan.md](trip_setup_journey.plan.md) | Done | Emotional 4-step trip setup wizard (booked + idea paths) |
 | [trip_todo_print.plan.md](trip_todo_print.plan.md) | Ready for testing | Print to-dos per step (APE-64); inline packing to-dos restore (APE-62); future APE-63/65/66 |
+| [packing_calm_ux_discovery.md](packing_calm_ux_discovery.md) | Discovery | Why packing feels busy; north star; personas; disclosure model |
+| [packing_calm_ux.plan.md](packing_calm_ux.plan.md) | Discovery | Phased UX rewrite — Pack vs Full list (APE-73 epic, APE-70–74/69/71) |
 
 **Suggested build order** (from feature plan): demo graduation + backup gate → trip experience polish → Camp mode → qty rules.
 

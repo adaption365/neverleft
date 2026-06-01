@@ -28,7 +28,7 @@
 | [APE-63](https://linear.app/aperturegraph/issue/APE-63) | Print to-dos respects active packing filters (person / location / hide packed) |
 | [APE-65](https://linear.app/aperturegraph/issue/APE-65) | Align `printChecklist('packing')` action stages with on-screen (`pre-trip` only, not `during`) |
 | [APE-66](https://linear.app/aperturegraph/issue/APE-66) | In-app toggle: print open vs all to-dos (not only fallback when all done) |
-| [APE-67](https://linear.app/aperturegraph/issue/APE-67) | Sticky contextual toolbar on long trip stage lists (packing actions while scrolling) |
+| [APE-67](https://linear.app/aperturegraph/issue/APE-67) | Sticky toolbar — moved under [packing_calm_ux.plan.md](packing_calm_ux.plan.md) (after APE-69) |
 
 ## Test plan (APE-64)
 

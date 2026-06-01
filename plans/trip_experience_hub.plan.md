@@ -3,6 +3,8 @@
 **Status:** Partial — Phase 1 in `index.html` (schema + trip detail panel + edit modal sections).  
 **Goal:** Trip detail feels like a **camping experience hub**, not an inventory dashboard. Kit/packing stays one tap away; site, travel, and booking context uses **progressive disclosure**.
 
+**Packing (heart of app):** Same philosophy is being applied to the packing checklist in [packing_calm_ux.plan.md](packing_calm_ux.plan.md) / [packing_calm_ux_discovery.md](packing_calm_ux_discovery.md) ([APE-73](https://linear.app/aperturegraph/issue/APE-73)).
+
 ## Principles
 
 1. **Default path unchanged** — Create trip: name + dates (+ existing season/site/dog). Packing checklist remains the main action once started.
