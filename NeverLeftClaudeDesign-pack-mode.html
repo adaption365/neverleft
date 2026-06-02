@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>NeverLeft · Pack mode mock (APE-73)</title>
+<title>NeverLeft · Pack mode + journey bar mock (APE-73 / APE-52)</title>
 <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700&family=Newsreader:ital,wght@0,400;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -109,31 +109,223 @@ body {
 .ttitle { font-size: clamp(22px, 5vw, 26px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 4px; }
 .tsubtitle { font-size: 14px; color: var(--text-m); margin-bottom: 16px; }
 
-.stepper {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
+/* Journey bar — matches NeverLeftClaudeDesign.html vibe (APE-52) */
+.journey-scroll {
+  margin-bottom: 12px;
   overflow-x: auto;
+  overflow-y: visible;
   scrollbar-width: none;
-  padding: 4px 0;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
 }
-.stepper::-webkit-scrollbar { display: none; }
-.step { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; min-width: 52px; }
-.step-dot {
-  width: 28px; height: 28px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700;
-  border: 2px solid var(--border);
+.journey-scroll::-webkit-scrollbar { display: none; }
+
+.journey-bar {
+  display: flex;
+  min-width: min(100%, 34rem);
   background: var(--canvas-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: visible;
+  position: relative;
+}
+
+.journey-cell {
+  flex: 1 1 0;
+  min-width: 4.25rem;
+  position: relative;
+  border-right: 1px solid var(--border);
+  overflow: visible;
+}
+.journey-cell:first-child { border-radius: 9px 0 0 9px; }
+.journey-cell:last-child { border-right: none; border-radius: 0 9px 9px 0; }
+
+.journey-cell--active {
+  background: rgba(90, 154, 138, 0.14);
+  z-index: 2;
+}
+.journey-cell--menu-open { z-index: 50; }
+
+.journey-seg {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 6px 14px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: center;
+  transition: background var(--dur-ui);
+}
+.journey-cell:not(.journey-cell--active) .journey-seg:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+.journey-seg:focus-visible {
+  outline: 2px solid var(--sage-l);
+  outline-offset: -2px;
+}
+
+.journey-kicker {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-m);
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+.journey-cell--active .journey-kicker { color: var(--sage); }
+.journey-cell--done .journey-kicker { color: var(--text-m); }
+
+.journey-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: none;
+  margin: 0 0 10px;
+  flex-shrink: 0;
+  display: block;
+  padding: 0;
+}
+.journey-cell--done .journey-dot { background: var(--sage); }
+
+@keyframes journey-dot-pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(90, 154, 138, 0.16); }
+  50% { box-shadow: 0 0 0 9px rgba(90, 154, 138, 0.3); }
+}
+.journey-cell--active .journey-dot {
+  background: var(--sage);
+  animation: journey-dot-pulse 2.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey-cell--active .journey-dot {
+    animation: none;
+    box-shadow: 0 0 0 5px rgba(90, 154, 138, 0.24);
+  }
+}
+
+.journey-cell--todo .journey-dot {
+  background: transparent;
+  border: 2.5px dashed var(--amber-l);
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+}
+
+.journey-label {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
   color: var(--text-m);
 }
-.step.done .step-dot { background: var(--sage); border-color: var(--sage); color: #fff; }
-.step.current .step-dot { background: var(--amber-l); border-color: var(--amber-l); color: #fff; box-shadow: 0 2px 8px rgba(154,95,16,.3); }
-.step-label { font-size: 10px; color: var(--text-m); text-align: center; max-width: 56px; line-height: 1.2; }
-.step.current .step-label { color: var(--amber-d); font-weight: 700; }
-.step.done .step-label { color: var(--sage); }
-.step-line { flex: 1; min-width: 8px; height: 2px; background: var(--border); align-self: center; margin-bottom: 18px; }
-.step-line.done { background: var(--sage); }
+.journey-cell--done .journey-label { color: var(--sage); font-style: normal; }
+.journey-cell--active .journey-label {
+  color: var(--sage);
+  font-style: italic;
+  font-weight: 700;
+}
+.journey-label em { font-style: italic; }
+
+/* ⋯ on in-progress step only — quiet until hover */
+.journey-more {
+  position: absolute;
+  top: 8px;
+  right: 6px;
+  z-index: 4;
+}
+.journey-more-btn {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--sage);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  font-family: inherit;
+  opacity: 0.35;
+  transition: opacity var(--dur-ui), background var(--dur-ui), border-color var(--dur-ui);
+}
+.journey-cell--active:hover .journey-more-btn,
+.journey-more-btn[aria-expanded="true"] {
+  opacity: 1;
+  border-color: var(--border);
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.journey-popover {
+  display: none;
+  min-width: 12.5rem;
+  max-width: 14rem;
+  padding: 6px;
+  background: var(--canvas-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 10px 28px rgba(26,31,26,.14);
+  z-index: 600;
+}
+.journey-popover.is-open { display: block; }
+.journey-popover.is-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: auto;
+}
+.journey-popover button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 9px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+.journey-popover button:hover:not(:disabled) { background: var(--canvas-3); }
+.journey-popover button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  font-weight: 500;
+}
+.journey-popover .menu-hint {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--rust);
+  padding: 4px 10px 6px;
+  line-height: 1.4;
+}
+.journey-popover button.menu-danger { color: var(--rust); }
+
+.journey-legend {
+  font-size: 11px;
+  color: var(--text-m);
+  line-height: 1.45;
+  margin: -8px 0 16px;
+}
+.journey-legend strong { color: var(--text-d); font-weight: 600; }
+
+.mock-journey-ctrl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  align-items: center;
+  margin-top: 6px;
+}
+.mock-journey-ctrl label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  cursor: pointer;
+}
 
 /* Pack progress — calm single line */
 .cprog {
@@ -457,8 +649,12 @@ body[data-view="full"] .view-full { display: block; }
 
 <div class="mock-banner">
   <div>
-    <strong>Design mock</strong> — Packing · Pack vs Full (APE-73)<br>
-    <span class="mock-link">Trip hub + shopping strip stay in both modes · Toggle only changes the list below</span>
+    <strong>Design mock</strong> — Journey bar (APE-52) + Pack vs Full (APE-73)<br>
+    <span class="mock-link">Journey bar = Claude design rail · ⋯ on “· now” stage · list progress separate</span>
+    <div class="mock-journey-ctrl">
+      <label><input type="checkbox" id="mockPackingReady"> Packing criteria met (enable “Mark complete”)</label>
+      <label><input type="checkbox" id="mockShowReopen"> Show “Reopen step” on done segments</label>
+    </div>
   </div>
   <button type="button" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.35)" onclick="document.documentElement.requestFullscreen?.()">Fullscreen</button>
 </div>
@@ -481,21 +677,17 @@ body[data-view="full"] .view-full { display: block; }
   <h1 class="ttitle">Lake District · Easter</h1>
   <p class="tsubtitle">3 nights · 4 Apr · Alex &amp; Sam</p>
 
-  <div class="stepper" aria-label="Trip journey">
-    <div class="step done"><div class="step-dot">✓</div><div class="step-label">Plan</div></div>
-    <div class="step-line done"></div>
-    <div class="step current"><div class="step-dot">2</div><div class="step-label">Packing</div></div>
-    <div class="step-line"></div>
-    <div class="step"><div class="step-dot">3</div><div class="step-label">Camp</div></div>
-    <div class="step-line"></div>
-    <div class="step"><div class="step-dot">4</div><div class="step-label">Pack up</div></div>
-    <div class="step-line"></div>
-    <div class="step"><div class="step-dot">5</div><div class="step-label">Home</div></div>
+  <div class="journey-scroll">
+    <nav class="journey-bar" id="journeyBar" aria-label="Trip journey"></nav>
   </div>
+  <p class="journey-legend" id="journeyLegend"><strong>Tap</strong> a stage to open it. <strong>⋯</strong> on the mint <strong>· now</strong> stage marks complete (packing progress stays in the list below).</p>
+  <p class="compare-note" style="margin-top:0;margin-bottom:20px">
+    <strong>Aligned with</strong> <code>NeverLeftClaudeDesign.html</code> journey bar — one rail, vertical dividers, Stage&nbsp;NN kickers, sage dot + glow, no floating cards or orange chips.
+    Banner toggles still demo the complete menu.
+  </p>
 
   <!-- Shared trip context — same in Pack and Full (not part of toggle) -->
   <div class="trip-hub-mock" style="margin-bottom:20px;padding:14px 16px;background:var(--canvas-2);border-radius:12px;box-shadow:0 2px 8px rgba(26,31,26,.06);border:1px solid var(--border)">
-    <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:8px">Always visible · Pack &amp; Full list</div>
     <div style="font-size:16px;font-weight:700;margin-bottom:4px">Borrowdale Valley Campsite</div>
     <p style="font-size:12px;color:var(--text-m);margin:0 0 10px">4 Apr check-in · Mild, showers Sat · 42 mi · 1h 10m drive</p>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
@@ -672,6 +864,208 @@ body[data-view="full"] .view-full { display: block; }
 </main>
 
 <script>
+(function(){
+  var STAGES = [
+    { id: 'plan',    label: 'Plan' },
+    { id: 'packing', label: 'Pack', labelNav: 'Packing' },
+    { id: 'camp',    label: 'At Camp' },
+    { id: 'packup',  label: 'Pack up' },
+    { id: 'home',    label: 'Back home' }
+  ];
+  var state = { plan: 'done', packing: 'active', camp: 'todo', packup: 'todo', home: 'todo' };
+  var viewing = 'packing';
+  var packingReady = false;
+  var showReopen = false;
+  var openPopoverId = null;
+
+  function cellClass(id){
+    var s = state[id];
+    if (s === 'done') return 'journey-cell--done';
+    if (s === 'active') return 'journey-cell--active';
+    return 'journey-cell--todo';
+  }
+  function kickerText(i, id){
+    var n = String(i + 1).padStart(2, '0');
+    if (state[id] === 'active') return 'Stage ' + n + ' · now';
+    return 'Stage ' + n;
+  }
+  function labelHtml(st){
+    var name = st.label;
+    if (state[st.id] === 'active') return '<em>' + name + '</em>';
+    return name;
+  }
+  function displayName(st){
+    return st.labelNav || st.label;
+  }
+  function nextStageId(id){
+    var i = STAGES.findIndex(function(s){ return s.id === id; });
+    return i >= 0 && i < STAGES.length - 1 ? STAGES[i + 1].id : null;
+  }
+  function hasMenu(st){
+    if (state[st.id] === 'active') return true;
+    return state[st.id] === 'done' && showReopen;
+  }
+  function popoverBody(st){
+    if (state[st.id] === 'done') {
+      return '<button type="button" class="menu-danger" data-action="reopen" data-stage="' + st.id + '">Reopen step</button>';
+    }
+    var next = nextStageId(st.id);
+    var nextLabel = next ? STAGES.find(function(s){ return s.id === next; }).label : '';
+    var canComplete = st.id !== 'packing' || packingReady;
+    var completeLabel = next ? 'Mark complete → ' + nextLabel : 'Mark complete';
+    var hint = (!canComplete && st.id === 'packing')
+      ? '<div class="menu-hint">18 packed · 9 to go · 2 to-dos</div>' : '';
+    return hint + '<button type="button" data-action="complete" data-stage="' + st.id + '"' +
+      (canComplete ? '' : ' disabled') + '>' + completeLabel + '</button>';
+  }
+  function resetPopoverEl(pop){
+    if (!pop) return;
+    pop.classList.remove('is-open', 'is-fixed');
+    pop.style.display = '';
+    pop.style.top = '';
+    pop.style.left = '';
+    pop.style.right = '';
+  }
+  function positionJourneyPopover(btn, pop){
+    pop.classList.add('is-open', 'is-fixed');
+    var r = btn.getBoundingClientRect();
+    pop.style.visibility = 'hidden';
+    pop.style.display = 'block';
+    var pw = pop.offsetWidth;
+    var ph = pop.offsetHeight;
+    pop.style.visibility = '';
+    var left = r.left;
+    if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+    if (left < 8) left = 8;
+    var top = r.bottom + 6;
+    if (top + ph > window.innerHeight - 8) top = Math.max(8, r.top - ph - 6);
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+  }
+  function isJourneyMenuTarget(el){
+    return !!(el && el.closest && (el.closest('.journey-more') || el.closest('.journey-popover')));
+  }
+  function closePopovers(){
+    openPopoverId = null;
+    document.querySelectorAll('.journey-cell--menu-open').forEach(function(c){ c.classList.remove('journey-cell--menu-open'); });
+    document.querySelectorAll('.journey-popover').forEach(resetPopoverEl);
+    document.querySelectorAll('.journey-more-btn[aria-expanded="true"]').forEach(function(b){ b.setAttribute('aria-expanded', 'false'); });
+  }
+  function openPopoverFor(btn, id){
+    var pop = document.getElementById('popover-' + id);
+    var cell = btn.closest('.journey-cell');
+    if (!pop) return;
+    openPopoverId = id;
+    btn.setAttribute('aria-expanded', 'true');
+    if (cell) cell.classList.add('journey-cell--menu-open');
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){ positionJourneyPopover(btn, pop); });
+    });
+  }
+
+  function renderJourney(){
+    var bar = document.getElementById('journeyBar');
+    if (!bar) return;
+    bar.innerHTML = STAGES.map(function(st, i){
+      var cellCls = 'journey-cell ' + cellClass(st.id);
+      var viewingAttr = viewing === st.id ? ' aria-current="step"' : '';
+      var menu = hasMenu(st)
+        ? '<div class="journey-more">' +
+          '<button type="button" class="journey-more-btn" data-menu-for="' + st.id + '" aria-label="' + displayName(st) + ' options" aria-expanded="false" aria-haspopup="true">⋯</button>' +
+          '<div class="journey-popover' + (openPopoverId === st.id ? ' is-open' : '') + '" id="popover-' + st.id + '" role="menu">' +
+          popoverBody(st) + '</div></div>'
+        : '';
+      return '<div class="' + cellCls + '" data-stage="' + st.id + '">' +
+        '<button type="button" class="journey-seg" data-nav="' + st.id + '"' + viewingAttr + '>' +
+        '<span class="journey-kicker">' + kickerText(i, st.id) + '</span>' +
+        '<span class="journey-dot" aria-hidden="true"></span>' +
+        '<span class="journey-label">' + labelHtml(st) + '</span></button>' + menu + '</div>';
+    }).join('');
+    bindJourney();
+    if (openPopoverId) {
+      var reopenBtn = document.querySelector('.journey-more-btn[data-menu-for="' + openPopoverId + '"]');
+      if (reopenBtn) openPopoverFor(reopenBtn, openPopoverId);
+    }
+  }
+
+  function bindJourney(){
+    document.querySelectorAll('.journey-seg[data-nav]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        if (isJourneyMenuTarget(e.target)) return;
+        viewing = btn.getAttribute('data-nav');
+        closePopovers();
+        renderJourney();
+        var st = STAGES.find(function(s){ return s.id === viewing; });
+        var name = st ? displayName(st) : viewing;
+        var leg = document.getElementById('journeyLegend');
+        if (leg) leg.innerHTML = 'Viewing <strong>' + name + '</strong> — packing detail is in the list below; use ⋯ on <strong>Stage · now</strong> to finish a step.';
+      });
+    });
+    document.querySelectorAll('.journey-more-btn').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        var id = btn.getAttribute('data-menu-for');
+        if (openPopoverId === id) {
+          closePopovers();
+          return;
+        }
+        closePopovers();
+        openPopoverFor(btn, id);
+      });
+    });
+    window.addEventListener('resize', function(){ if (openPopoverId) renderJourney(); });
+    var journeyScroll = document.querySelector('.journey-scroll');
+    if (journeyScroll) journeyScroll.addEventListener('scroll', function(){
+      if (openPopoverId) {
+        var btn = document.querySelector('.journey-more-btn[data-menu-for="' + openPopoverId + '"]');
+        var pop = document.getElementById('popover-' + openPopoverId);
+        if (btn && pop && pop.classList.contains('is-open')) positionJourneyPopover(btn, pop);
+      }
+    }, { passive: true });
+    document.querySelectorAll('[data-action="complete"]').forEach(function(b){
+      b.addEventListener('click', function(e){
+        e.stopPropagation();
+        var id = b.getAttribute('data-stage');
+        var next = nextStageId(id);
+        state[id] = 'done';
+        if (next) { state[next] = 'active'; viewing = next; }
+        closePopovers();
+        renderJourney();
+      });
+    });
+    document.querySelectorAll('.journey-popover').forEach(function(pop){
+      pop.addEventListener('click', function(e){ e.stopPropagation(); });
+    });
+    document.querySelectorAll('[data-action="reopen"]').forEach(function(b){
+      b.addEventListener('click', function(e){
+        e.stopPropagation();
+        var id = b.getAttribute('data-stage');
+        var idx = STAGES.findIndex(function(s){ return s.id === id; });
+        STAGES.forEach(function(s, i){
+          if (i >= idx) state[s.id] = i === idx ? 'active' : 'todo';
+        });
+        viewing = id;
+        closePopovers();
+        renderJourney();
+      });
+    });
+  }
+
+  document.addEventListener('click', function(e){
+    if (!openPopoverId) return;
+    if (isJourneyMenuTarget(e.target)) return;
+    closePopovers();
+  });
+
+  var readyCb = document.getElementById('mockPackingReady');
+  var reopenCb = document.getElementById('mockShowReopen');
+  if (readyCb) readyCb.addEventListener('change', function(){ packingReady = readyCb.checked; renderJourney(); });
+  if (reopenCb) reopenCb.addEventListener('change', function(){ showReopen = reopenCb.checked; renderJourney(); });
+
+  renderJourney();
+})();
+
 document.querySelectorAll('[data-set-view]').forEach(function(btn){
   btn.addEventListener('click', function(){
     var v = btn.getAttribute('data-set-view');

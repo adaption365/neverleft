@@ -1,10 +1,10 @@
 ---
-status: discovery
+status: in_progress
 linear_epic: APE-73
 phases:
   - id: pack-full-list-mode
     linear: APE-70
-    status: backlog
+    status: ready_for_testing
   - id: disclosure-defaults
     linear: APE-72
     status: backlog
@@ -32,7 +32,7 @@ resolved_decisions:
 
 # Packing calm UX (heart of the app)
 
-**Status:** Discovery  
+**Status:** In progress — Phase 1 ([APE-70](https://linear.app/aperturegraph/issue/APE-70)) ready for testing in `index.html`  
 **Discovery doc:** [packing_calm_ux_discovery.md](packing_calm_ux_discovery.md)  
 **Linear epic:** [APE-73](https://linear.app/aperturegraph/issue/APE-73) (In Progress)
 
@@ -62,7 +62,7 @@ Everything on the trip screen **above and around** the list stays — no feature
 | Trip prep | **Consumable / shopping prep strip** (`renderConsumablePrepStrip`) — suggested amounts, shortfall |
 | Footer sections | **Before you go** to-dos (`tripStageFooterHtml`), **Notes** |
 
-Pack mode may **simplify checklist progress + rows + toolbar**; it does **not** hide trip details, weather, or the shopping prep strip.
+Pack mode may **simplify checklist progress + rows + toolbar** and the **trip hub chrome** (stepper under title; compact site card with one glance line + small section pills instead of large Site/Booking/Weather/Travel tabs; details expand on tap). It does **not** hide trip details, weather, or the shopping prep strip.
 
 ### Pack mode only (calmer checklist slice)
 
@@ -119,7 +119,7 @@ Static mock should show **one screen** — demo trip, Packing step, **Pack** sel
 7. Footer **Before you go**: 4–5 tickable lines (no duplicate inline boxes on rows in mock)
 8. No filter panel, no rust gate banner, no dual ready/packed %
 
-**Mock (shipped):** [`NeverLeftClaudeDesign-pack-mode.html`](../NeverLeftClaudeDesign-pack-mode.html) — interactive Pack | Full list toggle, light theme, compact rows + footer to-dos. Open in browser (not the bundled `NeverLeftClaudeDesign.html`).
+**Mock (shipped):** [`NeverLeftClaudeDesign-pack-mode.html`](../NeverLeftClaudeDesign-pack-mode.html) — Pack | Full list toggle, compact trip hub, footer to-dos, **segmented journey bar** (APE-52): three states, glow on in-progress, ⋯ → mark complete. Open in browser (not the bundled `NeverLeftClaudeDesign.html`).
 
 ## Phased delivery
 
@@ -135,6 +135,8 @@ Implement in order; each phase shippable behind Pack mode or feature flag if nee
 - Copy: subtitle under toggle — Pack: “Focus on what’s left” · Full list: “Search, sort, and manage everything”
 
 **Acceptance:** Sunday-night packer can complete a demo trip in Pack mode without opening filters; curator can switch to Full list and use today’s controls.
+
+**Shipped (May 2026, `index.html`):** `nlPackingViewMode` (`pack` default); segmented toggle under progress; Pack progress line; hide packed via `checklistHidePackedForTrip`; filter/sort chrome hidden in Pack; slim toolbar + overflow; to-do chips → `scrollTripSection('actions')` (no inline to-dos in Pack). **Pack trip header:** stepper directly under title/subtitle; compact trip hub (site name + one-line glance + pill tabs, panel on tap); no top “Before you go ↓” row; stage buttons without journey hint line. Full list restores full hub tabs + scroll links. Consumable strip, footer to-dos unchanged. **Deferred to later phases:** compact rows + one open location + auto-advance (APE-72); visual calm / gate timing polish (APE-71); partial overlap with APE-69/74 already in Phase 1 build.
 
 ### Phase 2 — Disclosure defaults ([APE-72](https://linear.app/aperturegraph/issue/APE-72))
 
@@ -179,7 +181,7 @@ Implement in order; each phase shippable behind Pack mode or feature flag if nee
 
 | Topic | Where |
 |-------|--------|
-| Journey stepper / completion anxiety | [APE-52](https://linear.app/aperturegraph/issue/APE-52) — link epic; don’t duplicate |
+| Journey stepper / completion anxiety | [APE-52](https://linear.app/aperturegraph/issue/APE-52) — **shipped in `index.html`** (segmented bar, ⋯ menu, no status button row) |
 | Trip detail hub tone | [trip_experience_hub.plan.md](trip_experience_hub.plan.md) |
 | Print | [trip_todo_print.plan.md](trip_todo_print.plan.md) — power layer |
 

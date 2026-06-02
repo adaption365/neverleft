@@ -386,6 +386,16 @@ body.light .trip-exp-tab.on{box-shadow:0 1px 6px rgba(74,107,58,.12)}
 .site-rule-add-row .fi{flex:1;min-width:0}
 .site-rule-save-preset{margin-top:8px}
 .trip-experience-chip--custom{background:rgba(212,144,42,.1);border-color:rgba(212,144,42,.35);color:var(--amber-d)}
+.trip-experience--pack{margin-bottom:16px}
+.trip-experience-glance--pack{margin-bottom:0;border:1px solid var(--border);box-shadow:0 2px 8px rgba(26,31,26,.06)}
+.trip-experience-glance-line{font-size:12px;color:var(--text-m);line-height:1.45;margin:0 0 10px}
+.trip-exp-pills{display:flex;flex-wrap:wrap;gap:6px}
+.trip-exp-pill{font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:600;padding:4px 9px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--text-m);cursor:pointer;transition:background var(--dur-ui),color var(--dur-ui),border-color var(--dur-ui)}
+.trip-exp-pill:hover{color:var(--text);border-color:var(--border-l)}
+.trip-exp-pill.on{background:rgba(107,140,90,.12);border-color:rgba(107,140,90,.4);color:var(--sage)}
+body.light .trip-exp-pill.on{background:rgba(74,107,58,.1);color:var(--sage)}
+.trip-exp-panel--pack{margin-top:12px;border-radius:10px}
+.trip-stage-actions--pack{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
 .trip-weather-days{display:flex;flex-direction:column;gap:6px;margin-top:10px}
 .trip-weather-day{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 11px;background:rgba(0,0,0,.03);border-radius:8px;font-size:12px}
 .trip-weather-day-date{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);min-width:4.5em}
@@ -555,6 +565,30 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 .pbar-ready{background:var(--amber);transition:width var(--dur-panel) var(--ease-out)}
 .cprog-hint{font-family:'DM Mono',monospace;font-size:9px;color:var(--text-m);margin-top:7px}
 .cprog-complete{text-align:center;padding:8px 0 2px;font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:700;letter-spacing:.08em;color:var(--sage);animation:pageEnter .35s var(--ease-out) both}
+.cprog-pack .cprog-pack-main{font-size:17px;font-weight:700;letter-spacing:-.02em;line-height:1.25;margin-bottom:10px;color:var(--text)}
+.cprog-pack .cprog-pack-n{color:var(--sage)}
+.cprog-pack .cprog-pack-ready{color:var(--amber-d)}
+.pbar-wrap--pack{display:flex;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.pbar-wrap--pack .pbar-packed,.pbar-wrap--pack .pbar-ready{height:100%}
+.pack-mode-bar{margin-bottom:16px}
+.pack-seg{display:flex;max-width:280px;background:var(--canvas-3);border-radius:10px;padding:3px;gap:2px}
+.pack-seg-btn{flex:1;font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:600;padding:8px 12px;border:none;border-radius:8px;background:transparent;color:var(--text-m);cursor:pointer;transition:background var(--dur-ui),color var(--dur-ui),box-shadow var(--dur-ui)}
+.pack-seg-btn.on{background:var(--canvas-2);color:var(--amber-d);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.pack-mode-hint{margin-top:8px;font-size:12px;color:var(--text-m);line-height:1.45}
+.pack-toolbar{display:flex;align-items:center;gap:8px;margin:12px 0;flex-wrap:wrap}
+.pack-toolbar-spacer{flex:1;min-width:8px}
+.pack-overflow{position:relative}
+.pack-overflow>summary{list-style:none;cursor:pointer}
+.pack-overflow>summary::-webkit-details-marker{display:none}
+.pack-overflow-menu{position:absolute;right:0;top:calc(100% + 6px);min-width:200px;background:var(--canvas-2);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:6px;z-index:50}
+.pack-overflow-menu button{display:block;width:100%;text-align:left;padding:9px 12px;border:none;background:transparent;font-family:'Familjen Grotesk',sans-serif;font-size:13px;color:var(--text-d);border-radius:7px;cursor:pointer}
+.pack-overflow-menu button:hover{background:var(--canvas-3);color:var(--text)}
+.todo-chip{font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:600;color:var(--teal);background:rgba(90,154,138,.1);border:1px solid rgba(90,154,138,.25);padding:3px 9px;border-radius:20px;flex-shrink:0;cursor:pointer}
+.todo-chip:hover{background:rgba(90,154,138,.16)}
+.ci .todo-chip{margin-top:4px}
+.todo-focus-banner{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:10px 12px;border-radius:10px;background:rgba(90,154,138,.1);border:1px solid rgba(90,154,138,.28)}
+.todo-focus-banner span{font-size:13px;line-height:1.4;color:var(--text-d)}
+.trip-action-row--focus{background:rgba(90,154,138,.12)!important;box-shadow:inset 3px 0 0 var(--sage)}
 .consumable-prep{margin-bottom:16px;padding:14px 16px;border-radius:12px;background:rgba(90,154,138,.08);border:1px solid rgba(90,154,138,.22)}
 .consumable-prep-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px}
 .consumable-prep-title{font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
@@ -612,21 +646,44 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 .trip-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
 .trip-toolbar .tback{margin-bottom:0}
 
-/* ── STAGE STEPPER ── */
-.stepper{display:flex;align-items:center;margin-bottom:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:4px 0 6px;width:100%;max-width:100%;min-width:0;box-sizing:border-box;touch-action:pan-x}
-.stepper::-webkit-scrollbar{display:none}
-.step{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;cursor:pointer;transition:opacity .15s;min-width:54px}
-.step:hover{opacity:.75}
-.step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;transition:background .22s ease,border-color .22s ease,color .22s ease,box-shadow .22s ease;border:2px solid var(--border);background:var(--canvas);color:var(--text-m)}
-.step.done .step-dot{background:var(--sage);border-color:var(--sage);color:#fff}
-.step.current .step-dot{background:var(--amber);border-color:var(--amber);color:#fff;box-shadow:0 2px 8px rgba(212,144,42,.35)}
-.step-label{font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:500;color:var(--text-m);text-align:center;line-height:1.25;max-width:54px}
-.step.current .step-label{color:var(--amber);font-weight:700}
-.step.done .step-label{color:var(--sage)}
-.step-line{flex:1 1 0;min-width:6px;height:2px;background:var(--border);align-self:center}
-.step-line.done{background:var(--sage)}
-.step.step-locked .step-dot{border-style:dashed;opacity:.65}
-.step.step-locked .step-label{opacity:.7}
+/* ── JOURNEY BAR (APE-52) ── */
+.journey-scroll{margin-bottom:12px;overflow-x:auto;overflow-y:visible;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.journey-scroll::-webkit-scrollbar{display:none}
+.journey-bar{display:flex;min-width:min(100%,34rem);background:var(--canvas-2);border:1px solid var(--border);border-radius:10px;overflow:visible;position:relative}
+.journey-cell{flex:1 1 0;min-width:4.25rem;position:relative;border-right:1px solid var(--border);overflow:visible}
+.journey-cell:first-child{border-radius:9px 0 0 9px}
+.journey-cell:last-child{border-right:none;border-radius:0 9px 9px 0}
+.journey-cell--viewing{background:rgba(90,154,138,.14);z-index:2}
+.journey-cell--active{z-index:1}
+.journey-cell--menu-open{z-index:50}
+.journey-seg{width:100%;display:flex;flex-direction:column;align-items:center;padding:12px 6px 14px;border:none;background:transparent;cursor:pointer;font-family:inherit;text-align:center;transition:background var(--dur-ui)}
+.journey-cell:not(.journey-cell--viewing) .journey-seg:hover{background:rgba(0,0,0,.03)}
+.journey-seg:focus-visible{outline:2px solid var(--sage-l);outline-offset:-2px}
+.journey-kicker{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-m);line-height:1.2;margin-bottom:10px}
+.journey-cell--viewing .journey-kicker{color:var(--sage)}
+.journey-cell--active .journey-kicker{color:var(--sage)}
+.journey-dot{width:13px;height:13px;border-radius:50%;border:none;margin:0 0 10px;flex-shrink:0;display:block}
+.journey-cell--done .journey-dot{background:var(--sage)}
+@keyframes journey-dot-pulse{0%,100%{box-shadow:0 0 0 4px rgba(90,154,138,.16)}50%{box-shadow:0 0 0 9px rgba(90,154,138,.3)}}
+.journey-cell--active .journey-dot{background:var(--sage);animation:journey-dot-pulse 2.6s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.journey-cell--active .journey-dot{animation:none;box-shadow:0 0 0 5px rgba(90,154,138,.24)}}
+.journey-cell--todo .journey-dot{background:transparent;border:2.5px dashed var(--amber-l);box-sizing:border-box;width:14px;height:14px}
+.journey-label{font-size:13px;font-weight:700;line-height:1.2;color:var(--text-m)}
+.journey-cell--done .journey-label{color:var(--sage);font-style:normal}
+.journey-cell--viewing .journey-label{color:var(--sage);font-weight:700}
+.journey-cell--active .journey-label{font-style:italic}
+.journey-cell--viewing.journey-cell--active .journey-label{font-style:italic;font-weight:700}
+.journey-label em{font-style:italic}
+.journey-more{position:absolute;top:8px;right:6px;z-index:4}
+.journey-more-btn{width:22px;height:22px;padding:0;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--sage);font-size:14px;line-height:1;cursor:pointer;font-family:inherit;opacity:.35;transition:opacity var(--dur-ui),background var(--dur-ui),border-color var(--dur-ui)}
+.journey-cell--active:hover .journey-more-btn,.journey-cell--viewing:hover .journey-more-btn,.journey-more-btn[aria-expanded="true"]{opacity:1;border-color:var(--border);background:rgba(255,255,255,.65)}
+.journey-popover{display:none;min-width:12.5rem;max-width:14rem;padding:6px;background:var(--canvas-2);border:1px solid var(--border);border-radius:10px;box-shadow:0 10px 28px rgba(26,31,26,.14);z-index:600}
+.journey-popover.is-open{display:block}
+.journey-popover.is-fixed{position:fixed;top:0;left:0;right:auto}
+.journey-popover button{display:block;width:100%;text-align:left;font-family:inherit;font-size:12px;font-weight:600;padding:9px 10px;border:none;border-radius:8px;background:transparent;color:var(--text);cursor:pointer}
+.journey-popover button:hover:not(:disabled){background:var(--canvas-3)}
+.journey-popover button:disabled{opacity:.5;cursor:not-allowed;font-weight:500}
+.journey-popover .menu-hint{font-family:'DM Mono',monospace;font-size:9px;color:var(--rust);padding:4px 10px 6px;line-height:1.4}
 
 .ttabs{display:flex;gap:0;background:var(--canvas-3);border:none;border-radius:10px;padding:3px;margin-bottom:16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .ttabs::-webkit-scrollbar{display:none}
@@ -885,10 +942,10 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
   .stats{grid-template-columns:repeat(2,1fr);gap:7px}
   .stat{padding:10px 12px}
   .stat-v{font-size:22px}
-  .stepper{padding:6px 0 8px;margin-bottom:16px}
-  .step{min-width:44px}
-  .step-dot{width:26px;height:26px;font-size:11px}
-  .step-label{font-size:9px;max-width:58px;line-height:1.2}
+  .journey-scroll{margin-bottom:10px}
+  .journey-cell{min-width:3.75rem}
+  .journey-kicker{font-size:8px;margin-bottom:8px}
+  .journey-label{font-size:12px}
   .ttitle{font-size:19px}
   .ttab{padding:7px 9px;font-size:11px}
   .cfg-grid{grid-template-columns:1fr}
@@ -1445,6 +1502,25 @@ let checklistSort = 'location';    // checklist sort order
 let checklistHidePacked = false;   // hide packed items
 let checklistFiltersOpen = false;  // filter panel open state
 let checklistSearch = '';          // packing list text filter (same rules as kit #srch)
+
+const PACKING_VIEW_STORAGE_KEY='nlPackingViewMode';
+function getPackingViewMode(){
+  try{ return localStorage.getItem(PACKING_VIEW_STORAGE_KEY)==='full'?'full':'pack'; }catch(e){ return 'pack'; }
+}
+function setPackingViewMode(mode){
+  try{ localStorage.setItem(PACKING_VIEW_STORAGE_KEY, mode==='full'?'full':'pack'); }catch(e){}
+  renderTrips();
+}
+function packingCalmViewActive(trip){
+  return !!(trip&&trip.status==='packing'&&getPackingViewMode()==='pack');
+}
+function packingViewToggleActive(trip){
+  return !!(trip&&trip.status==='packing');
+}
+function checklistHidePackedForTrip(trip){
+  return checklistHidePacked;
+}
+let tripTodoFocusItemId = null;    // pack mode: item whose footer to-dos were opened from row chip
 let _invTripPickTripId = null;     // active trip for “Add from inventory” modal
 
 const CATS    = ['shelter','sleep','kitchen','clothing','hygiene','dog','other'];
@@ -1459,7 +1535,7 @@ const STLAB   = { idea:'Idea', planning:'Plan', packing:'Packing', 'at-camp':'At
 const TRIP_JOURNEY_STAGES=[
   {id:'planning',  label:'Plan',       tab:'notes'},
   {id:'packing',   label:'Packing',    tab:'checklist'},
-  {id:'at-camp',   label:'At camp',    tab:'at-camp'},
+  {id:'at-camp',   label:'At Camp',    tab:'at-camp'},
   {id:'pack-up',   label:'Packing up', tab:'pack-up'},
   {id:'pack-away', label:'Back home',  tab:'pack-away'},
 ];
@@ -2022,20 +2098,50 @@ function itemIdsForTripChecklist(trip){
   return out;
 }
 
-/** Packing % matches on-screen rows (parent + nested subs, not duplicate checklist child rows). */
+/** Progress counts for bar + criteria — all checklist lines, not hide-packed display filter. */
+function packingProgressContributionTotals(trip, ci, item, mode){
+  mode=mode||'packing';
+  let subs=checklistSubsForTrip(item,trip);
+  if(checklistPersonFilter!=='all'){
+    subs=subs.filter(s=>{
+      const ownIds=s.personIds&&s.personIds.length?s.personIds:null;
+      return ownIds?ownIds.includes(checklistPersonFilter):(item.personIds||[]).includes(checklistPersonFilter);
+    });
+  }
+  if(item.isContainer){
+    let packed=0, ready=0;
+    subs.forEach(sub=>{
+      const st=checklistRowState(trip,sub.id,mode);
+      if(st==='packed') packed++;
+      else if(st==='ready') ready++;
+    });
+    return{packed,ready,total:subs.length};
+  }
+  const parentSt=checklistRowState(trip,item.id,mode);
+  let packed=parentSt==='packed'?1:0;
+  let ready=parentSt==='ready'?1:0;
+  let total=1;
+  subs.forEach(sub=>{
+    const st=checklistRowState(trip,sub.id,mode);
+    total++;
+    if(st==='packed') packed++;
+    else if(st==='ready') ready++;
+  });
+  return{packed,ready,total};
+}
 function checklistProgressTotals(trip){
-  const hp=checklistHidePacked, pf=checklistPersonFilter, lf=checklistLocFilter;
-  checklistHidePacked=false;
+  const pf=checklistPersonFilter, lf=checklistLocFilter;
   checklistPersonFilter='all';
   checklistLocFilter='all';
   let packed=0, ready=0, total=0;
-  sortFilteredChecklistParents(collectFilteredChecklistParents(trip,'packing'),'packing').forEach(({ci,item})=>{
-    const st=packingProgressContribution(trip,ci,item,'packing');
+  (trip.checklist||[]).forEach(ci=>{
+    const item=S.items.find(i=>i.id===ci.itemId);
+    if(!item||item.parentId||item.type==='wishlist') return;
+    const st=packingProgressContributionTotals(trip,ci,item,'packing');
     packed+=st.packed;
     ready+=st.ready;
     total+=st.total;
   });
-  checklistHidePacked=hp;
   checklistPersonFilter=pf;
   checklistLocFilter=lf;
   return{packed, ready, total};
@@ -2921,6 +3027,10 @@ function onCtxTriggerClick(e, openFn){
 document.addEventListener('click',e=>{
   if(Date.now()<_ctxSuppressDocCloseUntil) return;
   if(e.target.closest('[data-ctx-trigger]')) return;
+  if(!isJourneyMenuClickTarget(e.target)&&openJourneyMenuTripId){
+    closeJourneyStageMenu();
+    renderTrips();
+  }
   const menu=document.getElementById('_ctxMenu');
   if(menu&&menu.style.display==='block'&&!menu.contains(e.target)){
     hideCtxMenu();
@@ -3250,7 +3360,7 @@ function renderTrips(){
   const el=document.getElementById('tripsContent');
   if(activeTripId){
     const trip=S.trips.find(t=>t.id===activeTripId);
-    if(trip){ el.innerHTML=tripDetail(trip); return; }
+    if(trip){ el.innerHTML=tripDetail(trip); scheduleJourneyMenuPosition(); return; }
     activeTripId=null;
   }
 
@@ -3546,11 +3656,12 @@ function goToTripStage(tripId, status, tab){
   save(); renderTrips();
 }
 
-/** Mark the current journey step complete (criteria required) and advance to the next step. */
-function completeTripStage(tripId){
+/** Mark a journey step complete (criteria required) and advance. Optional stageId = in-progress step from journey bar. */
+function completeTripStage(tripId, stageId){
+  closeJourneyStageMenu();
   const trip=S.trips.find(t=>t.id===tripId);
   if(!trip||trip.status==='idea'||trip.status==='complete') return;
-  const cur=trip.status;
+  const cur=(stageId&&TRIP_STAGE_IDS.includes(stageId))?stageId:trip.status;
   if(!TRIP_STAGE_IDS.includes(cur)){
     syncTripStageCompletion(trip);
     if(cur==='post-trip'){ markTripJourneyDone(tripId); return; }
@@ -3609,6 +3720,182 @@ function markAllChecklistPacked(tripId){
   save(); renderTrips();
 }
 
+let openJourneyMenuTripId=null;
+let openJourneyMenuStageId=null;
+
+function tripJourneyInProgressStageId(trip){
+  if(!trip||trip.status==='idea'||trip.status==='complete') return null;
+  return TRIP_STAGE_IDS.find(s=>!isTripStageComplete(trip,s))||null;
+}
+function tripJourneyCellUiState(trip, stageId){
+  if(isTripStageComplete(trip, stageId)) return 'done';
+  if(tripJourneyInProgressStageId(trip)===stageId) return 'active';
+  return 'todo';
+}
+function tripJourneyCellClassList(trip, stageId){
+  const ui=tripJourneyCellUiState(trip, stageId);
+  let cls='journey-cell journey-cell--'+ui;
+  if(trip.status===stageId) cls+=' journey-cell--viewing';
+  return cls;
+}
+function journeyStageKicker(i, trip, stageId){
+  const n=String(i+1).padStart(2,'0');
+  if(tripJourneyInProgressStageId(trip)===stageId) return 'Stage '+n+' · now';
+  return 'Stage '+n;
+}
+function journeyStageLabelHtml(trip, stage){
+  const name=stage.label;
+  if(tripJourneyInProgressStageId(trip)===stage.id) return '<em>'+esc(name)+'</em>';
+  return esc(name);
+}
+function closeJourneyStageMenu(){
+  openJourneyMenuTripId=null;
+  openJourneyMenuStageId=null;
+}
+function resetJourneyPopoverEl(pop){
+  if(!pop) return;
+  pop.classList.remove('is-open','is-fixed');
+  pop.style.display='';
+  pop.style.top='';
+  pop.style.left='';
+}
+function positionJourneyStageMenu(btn, pop){
+  pop.classList.add('is-open','is-fixed');
+  pop.style.visibility='hidden';
+  pop.style.display='block';
+  const pw=pop.offsetWidth, ph=pop.offsetHeight;
+  pop.style.visibility='';
+  const r=btn.getBoundingClientRect();
+  let left=r.left;
+  if(left+pw>window.innerWidth-8) left=window.innerWidth-pw-8;
+  if(left<8) left=8;
+  let top=r.bottom+6;
+  if(top+ph>window.innerHeight-8) top=Math.max(8,r.top-ph-6);
+  pop.style.left=left+'px';
+  pop.style.top=top+'px';
+}
+function scheduleJourneyMenuPosition(){
+  if(!openJourneyMenuTripId||!openJourneyMenuStageId) return;
+  requestAnimationFrame(()=>{
+    const pop=document.getElementById('journey-pop-'+openJourneyMenuTripId+'-'+openJourneyMenuStageId);
+    const btn=document.querySelector('.journey-more-btn[aria-expanded="true"]');
+    if(btn&&pop) positionJourneyStageMenu(btn, pop);
+  });
+}
+function isJourneyMenuClickTarget(el){
+  return !!(el&&el.closest&& (el.closest('.journey-more')||el.closest('.journey-popover')));
+}
+function toggleJourneyStageMenu(tripId, stageId, ev){
+  ev.preventDefault();
+  ev.stopPropagation();
+  if(openJourneyMenuTripId===tripId&&openJourneyMenuStageId===stageId){
+    closeJourneyStageMenu();
+    renderTrips();
+    return;
+  }
+  closeJourneyStageMenu();
+  openJourneyMenuTripId=tripId;
+  openJourneyMenuStageId=stageId;
+  renderTrips();
+  requestAnimationFrame(()=>{
+    const pop=document.getElementById('journey-pop-'+tripId+'-'+stageId);
+    const btn=ev.currentTarget;
+    if(btn&&pop) positionJourneyStageMenu(btn, pop);
+  });
+}
+function onTripJourneyNav(tripId, status, tab){
+  closeJourneyStageMenu();
+  goToTripStage(tripId, status, tab);
+}
+function onTripJourneyDoneClick(tripId){
+  closeJourneyStageMenu();
+  const trip=S.trips.find(t=>t.id===tripId);
+  if(!trip) return;
+  if(allTripJourneyStagesComplete(trip)) markTripJourneyDone(tripId);
+  else showToast('Finish all journey steps first');
+}
+function journeyStageMenuHtml(trip, stageId){
+  const id=trip.id;
+  const idx=TRIP_STAGE_IDS.indexOf(stageId);
+  const nextStage=idx>=0&&idx<TRIP_STAGE_IDS.length-1?TRIP_JOURNEY_STAGES[idx+1]:null;
+  const nextLabel=nextStage?nextStage.label:'';
+  if(stageId==='__done__'){
+    const ok=allTripJourneyStagesComplete(trip);
+    return `<button type="button" onclick="event.stopPropagation();closeJourneyStageMenu();markTripJourneyDone('${id}')" ${ok?'':'disabled'}>Mark trip complete</button>`;
+  }
+  if(stageId==='planning'){
+    return `<button type="button" onclick="event.stopPropagation();completeTripStage('${id}','planning')">Mark plan complete</button>
+      <button type="button" onclick="event.stopPropagation();closeJourneyStageMenu();startPacking('${id}')">Open packing list</button>`;
+  }
+  if(stageId==='packing'){
+    const met=tripPackingStageCriteriaMet(trip);
+    const hint=tripStageCriteriaHint(trip,'packing');
+    const label=nextStage?'Mark complete → '+esc(nextLabel):'Mark complete';
+    return `${!met&&hint?`<div class="menu-hint">${esc(hint)}</div>`:''}
+      <button type="button" onclick="event.stopPropagation();completeTripStage('${id}','packing')" ${met?'':'disabled'}>${label}</button>
+      <button type="button" onclick="event.stopPropagation();closeJourneyStageMenu();markAllChecklistPacked('${id}')">Mark all packed</button>`;
+  }
+  const met=tripStageCriteriaMet(trip, stageId);
+  const hint=tripStageCriteriaHint(trip, stageId);
+  const label=nextStage?'Mark complete → '+esc(nextLabel):'Mark complete';
+  return `${!met&&hint?`<div class="menu-hint">${esc(hint)}</div>`:''}
+    <button type="button" onclick="event.stopPropagation();completeTripStage('${id}','${stageId}')" ${met?'':'disabled'}>${label}</button>`;
+}
+function renderTripJourneyBar(trip){
+  if(trip.status==='idea') return '';
+  const journeyDone=allTripJourneyStagesComplete(trip);
+  const stages=TRIP_JOURNEY_STAGES;
+  const cells=stages.map((s,i)=>{
+    const ui=tripJourneyCellUiState(trip,s.id);
+    let cellCls=tripJourneyCellClassList(trip,s.id);
+    if(openJourneyMenuTripId===trip.id&&openJourneyMenuStageId===s.id) cellCls+=' journey-cell--menu-open';
+    const current=trip.status===s.id?' aria-current="step"':'';
+    const menuOpen=openJourneyMenuTripId===trip.id&&openJourneyMenuStageId===s.id;
+    const inProgress=ui==='active';
+    const menu=inProgress?`<div class="journey-more">
+        <button type="button" class="journey-more-btn" aria-label="${esc(s.label)} options" aria-expanded="${menuOpen?'true':'false'}" aria-haspopup="true"
+          onclick="toggleJourneyStageMenu('${trip.id}','${s.id}',event)">⋯</button>
+        <div class="journey-popover${menuOpen?' is-open is-fixed':''}" id="journey-pop-${trip.id}-${s.id}" role="menu" onclick="event.stopPropagation()">${journeyStageMenuHtml(trip,s.id)}</div>
+      </div>`:'';
+    return `<div class="${cellCls}">
+      <button type="button" class="journey-seg" data-nav="${s.id}"${current}
+        onclick="onTripJourneyNav('${trip.id}','${s.id}','${s.tab}')">
+        <span class="journey-kicker">${journeyStageKicker(i,trip,s.id)}</span>
+        <span class="journey-dot" aria-hidden="true"></span>
+        <span class="journey-label">${journeyStageLabelHtml(trip,s)}</span>
+      </button>${menu}</div>`;
+  }).join('');
+  let doneCell='';
+  if(trip.status!=='complete'){
+    const doneUi=journeyDone?'active':'todo';
+    let doneCls='journey-cell journey-cell--'+doneUi;
+    if(trip.status==='post-trip') doneCls+=' journey-cell--viewing';
+    if(openJourneyMenuTripId===trip.id&&openJourneyMenuStageId==='__done__') doneCls+=' journey-cell--menu-open';
+    const menuOpen=openJourneyMenuTripId===trip.id&&openJourneyMenuStageId==='__done__';
+    const doneMenu=journeyDone?`<div class="journey-more">
+        <button type="button" class="journey-more-btn" aria-label="Trip complete" aria-expanded="${menuOpen?'true':'false'}" aria-haspopup="true"
+          onclick="toggleJourneyStageMenu('${trip.id}','__done__',event)">⋯</button>
+        <div class="journey-popover${menuOpen?' is-open is-fixed':''}" id="journey-pop-${trip.id}-__done__" role="menu" onclick="event.stopPropagation()">${journeyStageMenuHtml(trip,'__done__')}</div>
+      </div>`:'';
+    const kicker=journeyDone?'Done · now':'Done';
+    const label=journeyDone?'<em>Complete</em>':'Complete';
+    doneCell=`<div class="${doneCls}">
+      <button type="button" class="journey-seg" onclick="onTripJourneyDoneClick('${trip.id}')">
+        <span class="journey-kicker">${kicker}</span>
+        <span class="journey-dot" aria-hidden="true"></span>
+        <span class="journey-label">${label}</span>
+      </button>${doneMenu}</div>`;
+  }else{
+    doneCell=`<div class="journey-cell journey-cell--done">
+      <button type="button" class="journey-seg" disabled style="cursor:default;opacity:1">
+        <span class="journey-kicker">Done</span>
+        <span class="journey-dot" aria-hidden="true"></span>
+        <span class="journey-label">${esc('Complete')}</span>
+      </button></div>`;
+  }
+  return `<div class="journey-scroll"><nav class="journey-bar" aria-label="Trip journey">${cells}${doneCell}</nav></div>`;
+}
+
 function tripDetail(trip){
   syncTripStageCompletion(trip);
   const hl=getHL(trip);
@@ -3631,31 +3918,13 @@ function tripDetail(trip){
   else body+=tripStageNotesSection(trip);
 
   const isIdea=trip.status==='idea';
+  const packCalm=packingCalmViewActive(trip);
   const ideaBanner=isIdea?`<div class="trip-idea-banner" style="margin-bottom:16px;padding:14px 16px;border-radius:12px;background:rgba(138,106,184,.1);border:1px solid rgba(138,106,184,.25)">
     <p style="margin:0 0 10px;font-family:'Newsreader',serif;font-style:italic;font-size:14px;line-height:1.5;color:var(--text-d)">Still an idea — no rush. When you&rsquo;ve booked, we&rsquo;ll help with dates and packing.</p>
     <button type="button" class="btn btn-p btn-sm" onclick="graduateTripIdea('${trip.id}')">We&rsquo;ve booked it →</button>
   </div>`:'';
 
-  const stages=TRIP_JOURNEY_STAGES;
-  const journeyDone=allTripJourneyStagesComplete(trip);
-  const stepperHtml=isIdea?'':`<div class="stepper">
-    ${stages.map((s,i)=>{
-      const isDone=isTripStageComplete(trip,s.id);
-      const isCurrent=trip.status===s.id&&trip.status!=='complete';
-      const cls=isDone?'done':isCurrent?'current':'';
-      const lineDone=i>0&&isTripStageComplete(trip,stages[i-1].id);
-      return `${i>0?`<div class="step-line ${lineDone?'done':''}"></div>`:''}
-        <div class="step ${cls}" onclick="goToTripStage('${trip.id}','${s.id}','${s.tab}')" title="Jump to this step">
-          <div class="step-dot">${isDone?'✓':i+1}</div>
-          <div class="step-label">${s.label}</div>
-        </div>`;
-    }).join('')}
-    ${trip.status!=='complete'?`<div class="step-line ${isTripStageComplete(trip,'pack-away')?'done':''}"></div>
-      <div class="step${journeyDone?'':' step-locked'}" onclick="markTripJourneyDone('${trip.id}')" title="${journeyDone?'Mark trip complete':'Finish all journey steps first'}">
-        <div class="step-dot">${journeyDone?'✓':'○'}</div>
-        <div class="step-label">Done</div>
-      </div>`:`<div class="step-line done"></div><div class="step done"><div class="step-dot">✓</div><div class="step-label">Done</div></div>`}
-  </div>`;
+  const journeyBarHtml=renderTripJourneyBar(trip);
 
   // ── Human subtitle (trip roster, not whole app crew) ──
   const roster=tripRosterPeople(trip);
@@ -3681,10 +3950,8 @@ function tripDetail(trip){
     <div class="ttitle">${esc(trip.name)}</div>
     <div class="tsubtitle">${subtitle}</div>
     ${ideaBanner}
-    ${renderTripExperiencePanel(trip)}
-    ${stepperHtml}
-    ${!isIdea?`<div style="margin-bottom:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">${statusBtn(trip)}<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">Tap a step number to jump · use the button when this step is really finished</span></div>`:''}
-    ${(()=>{
+    ${journeyBarHtml}${renderTripExperiencePanel(trip)}
+    ${packCalm?'':(()=>{
       const links={
         idea:[      {anchor:'notes',label:'Notes'}],
         planning:[  {anchor:'actions',label:'To-do'},{anchor:'notes',label:'Notes'}],
@@ -3726,6 +3993,7 @@ function pressureCountdown(dateStr, nights){
 
 function statusBtn(trip){
   const id=trip.id;
+  const packCalm=packingCalmViewActive(trip);
   if(trip.status==='planning'){
     return `<button class="btn btn-o btn-sm" onclick="completeTripStage('${id}')">Mark plan complete →</button>
       <button class="btn btn-p btn-sm" onclick="startPacking('${id}')">Open packing list →</button>`;
@@ -3736,7 +4004,7 @@ function statusBtn(trip){
     const label=isTripStageComplete(trip,'packing')?'Continue to at camp →':'Packing done — at camp →';
     return `<button class="btn btn-p btn-sm" onclick="completeTripStage('${id}')" ${met?'':'disabled'} title="${esc(hint)}">${label}</button>
       <button class="btn btn-o btn-sm" onclick="markAllChecklistPacked('${id}')">Mark all packed</button>
-      ${!met&&hint?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--rust)">${esc(hint)}</span>`:''}`;
+      ${!packCalm&&!met&&hint?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--rust)">${esc(hint)}</span>`:''}`;
   }
   if(trip.status==='at-camp'){
     const met=tripStageCriteriaMet(trip,'at-camp');
@@ -3791,7 +4059,7 @@ function checklistLocationKey(item,mode){
 
 /** Hide-packed: omit parent only when parent and all visible subs are packed (packable groups stay if any sub unpacked). */
 function checklistParentHiddenByHidePacked(trip,item,mode){
-  if(!checklistHidePacked) return false;
+  if(!checklistHidePackedForTrip(trip)) return false;
   mode=mode||'packing';
   const subs=checklistSubsForTrip(item,trip);
   if(item.isContainer) return !checklistVisibleSubsForRow(trip,item,mode).length;
@@ -3813,7 +4081,7 @@ function checklistVisibleSubsForRow(trip,item,mode){
       return ownIds?ownIds.includes(checklistPersonFilter):(item.personIds||[]).includes(checklistPersonFilter);
     });
   }
-  if(checklistHidePacked) subs=subs.filter(s=>!checklistRowIsPacked(trip,s.id,mode));
+  if(checklistHidePackedForTrip(trip)) subs=subs.filter(s=>!checklistRowIsPacked(trip,s.id,mode));
   return subs;
 }
 
@@ -3911,6 +4179,83 @@ function packingProgressContribution(trip, ci, item, mode){
   return{packed, ready, total};
 }
 
+function checklistIncompletePreTripCount(item, trip){
+  const stages=checklistInlineActionStages();
+  const tripActions=trip.actionStates||{};
+  return (item.actions||[]).filter(a=>stages.includes(a.stage)&&!tripActions[item.id+'::'+a.id]).length;
+}
+function checklistTodoChipHtml(item, trip){
+  const n=checklistIncompletePreTripCount(item, trip);
+  if(!n) return '';
+  return `<button type="button" class="todo-chip" onclick="event.stopPropagation();scrollTripTodosForItem('${trip.id}','${item.id}')" aria-label="Show ${n} to-do${n!==1?'s':''} for ${esc(item.name)}">${n} to-do${n!==1?'s':''}</button>`;
+}
+function scrollTripTodosForItem(tripId, itemId){
+  tripTodoFocusItemId=itemId;
+  renderTrips();
+  requestAnimationFrame(()=>{
+    const row=document.querySelector(`[data-todo-item="${itemId}"]`);
+    const sec=document.getElementById('trip-sec-actions');
+    if(row) row.scrollIntoView({behavior:'smooth',block:'center'});
+    else if(sec) sec.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+}
+function scrollBackToChecklistItem(tripId, itemId){
+  tripTodoFocusItemId=null;
+  renderTrips();
+  requestAnimationFrame(()=>{
+    const el=document.getElementById('clitem-'+tripId+'-'+itemId);
+    if(el) el.scrollIntoView({behavior:'smooth',block:'center'});
+  });
+}
+function clearTripTodoFocus(){
+  tripTodoFocusItemId=null;
+}
+function packingViewModeBarHtml(trip){
+  const mode=getPackingViewMode();
+  const hint=mode==='pack'
+    ?'Focus on what&rsquo;s left — filters and full list tools in Full list.'
+    :'Search, sort, and manage everything.';
+  return `<div class="pack-mode-bar">
+    <div class="pack-seg" role="tablist" aria-label="Packing list view">
+      <button type="button" role="tab" class="pack-seg-btn ${mode==='pack'?'on':''}" onclick="setPackingViewMode('pack')" aria-selected="${mode==='pack'?'true':'false'}">Pack</button>
+      <button type="button" role="tab" class="pack-seg-btn ${mode==='full'?'on':''}" onclick="setPackingViewMode('full')" aria-selected="${mode==='full'?'true':'false'}">Full list</button>
+    </div>
+    <p class="pack-mode-hint">${hint}</p>
+  </div>`;
+}
+function checklistProgressHtml(trip, ready, packed, total, pctR, pctP, hlCount){
+  const pbarReadyW=pctR-pctP;
+  const pbarPackedW=pctP;
+  const remaining=Math.max(0, total-(ready+packed));
+  const hlLine=hlCount?`<div style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--amber);letter-spacing:.05em;margin-top:4px">▲ ${hlCount} items highlighted for this trip</div>`:'';
+  if(packingCalmViewActive(trip)){
+    const pctPacked=total?Math.round((packed/total)*100):0;
+    const pctReadyOnly=total?Math.round((ready/total)*100):0;
+    return `<div class="cprog cprog-pack">
+      <div class="cprog-pack-main"><span class="cprog-pack-n">${packed} packed</span> · <span class="cprog-pack-ready">${ready} ready</span> · ${remaining} to go</div>
+      <div class="pbar-wrap pbar-wrap--pack"><div class="pbar-packed" style="width:${pctPacked}%"></div><div class="pbar-ready" style="width:${pctReadyOnly}%"></div></div>
+      ${pctPacked===100?`<div class="cprog-complete">🎉 Everything packed — you&rsquo;re good to go!</div>`:''}
+      ${hlLine}
+    </div>`;
+  }
+  return `<div class="cprog">
+      <div class="cprog-top">
+        <div class="cprog-label">${ready} ready · ${packed} packed · ${remaining} remaining</div>
+        <div class="cprog-pcts">
+          <span class="cprog-pct pct-ready">${pctR}% ready</span>
+          <span class="cprog-pct pct-packed">${pctP}% packed</span>
+        </div>
+      </div>
+      <div class="pbar-wrap">
+        <div class="pbar-packed" style="width:${pbarPackedW}%"></div>
+        <div class="pbar-ready" style="width:${pbarReadyW}%"></div>
+      </div>
+      <div class="cprog-hint">Tick each item&rsquo;s to-dos on its row, then: tap = ready · tap again = packed · tap again = reset</div>
+      ${pctP===100?`<div class="cprog-complete">🎉 Everything packed — you're good to go!</div>`:''}
+      ${hlLine}
+    </div>`;
+}
+
 function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
   const cl=trip.checklist||[];
   if(!cl.length) return `
@@ -3981,8 +4326,8 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
   }
 
   const hlCount=Object.keys(hl).length;
-  const pbarReadyW=pctR-pctP;
-  const pbarPackedW=pctP;
+  const packCalm=packingCalmViewActive(trip);
+  const showFullListChrome=!packCalm;
 
   const hasActiveSort=checklistSort!=='location'||checklistHidePacked||checklistPersonFilter!=='all'||checklistLocFilter!=='all';
   const sortBar=`
@@ -4019,7 +4364,7 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
         const groupId='clgrp-'+checklistSort+'-'+k;
         let packedCount=0, readyCount=0, totalCount=0;
         groups[k].forEach(x=>{
-          const st=packingProgressContribution(trip,x.ci,x.item);
+          const st=packCalm?packingProgressContributionTotals(trip,x.ci,x.item,'packing'):packingProgressContribution(trip,x.ci,x.item);
           packedCount+=st.packed;
           readyCount+=st.ready;
           totalCount+=st.total;
@@ -4060,35 +4405,34 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
     ?`<div class="empty" style="margin:12px 0">No items match — try a different search or clear filters.</div>`
     :itemsHtml;
 
-  const packingGate=!tripPackingStageCriteriaMet(trip)&&trip.status!=='idea'&&trip.status!=='planning'
-    ?`<div style="margin-bottom:12px;padding:10px 12px;border-radius:10px;background:rgba(184,92,58,.08);border:1px solid rgba(184,92,58,.25);font-family:'Familjen Grotesk',sans-serif;font-size:12px;line-height:1.45;color:var(--rust)">
-        <strong>Packing step not finished.</strong> ${esc(tripStageCriteriaHint(trip,'packing')||'Pack every line and finish each item\u2019s to-dos, then use Packing done on the step above.')}
-      </div>`:'';
+  const modeBar=packingViewToggleActive(trip)?packingViewModeBarHtml(trip):'';
 
-  return `${filterPanel}
+  return `${showFullListChrome?filterPanel:''}
     ${renderConsumablePrepStrip(trip)}
-    ${packingGate}
-    <div class="cprog">
-      <div class="cprog-top">
-        <div class="cprog-label">${ready} ready · ${packed} packed · ${total-(ready+packed)} remaining</div>
-        <div class="cprog-pcts">
-          <span class="cprog-pct pct-ready">${pctR}% ready</span>
-          <span class="cprog-pct pct-packed">${pctP}% packed</span>
-        </div>
-      </div>
-      <div class="pbar-wrap">
-        <div class="pbar-packed" style="width:${pbarPackedW}%"></div>
-        <div class="pbar-ready" style="width:${pbarReadyW}%"></div>
-      </div>
-      <div class="cprog-hint">Tick each item&rsquo;s to-dos on its row, then: tap = ready · tap again = packed · tap again = reset</div>
-      ${pctP===100?`<div class="cprog-complete">🎉 Everything packed — you're good to go!</div>`:''}
-      ${hlCount?`<div style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--amber);letter-spacing:.05em;margin-top:4px">▲ ${hlCount} items highlighted for this trip</div>`:''}
-    </div>
+    ${checklistProgressHtml(trip, ready, packed, total, pctR, pctP, hlCount)}
+    ${modeBar}
     ${checklistToolbarHtml(trip)}
+    ${showFullListChrome?sortBar:''}
     ${listEmptyHtml}`;
 }
 
 function checklistToolbarHtml(trip){
+  if(packingCalmViewActive(trip)){
+    return `<div class="pack-toolbar">
+      <button type="button" class="btn btn-p btn-sm" onclick="openQuickAddModal('${trip.id}')">+ Add item</button>
+      <span class="pack-toolbar-spacer"></span>
+      <details class="pack-overflow">
+        <summary class="btn btn-o btn-sm" aria-label="More list actions">⋯</summary>
+        <div class="pack-overflow-menu">
+          <button type="button" onclick="regenChecklist('${trip.id}')">↺ Rebuild list</button>
+          <button type="button" onclick="uncheckAll('${trip.id}')">Uncheck all</button>
+          <button type="button" onclick="openInventoryToTripModal('${trip.id}')">+ From inventory</button>
+          <button type="button" onclick="printChecklist('${trip.id}','packing')">🖨 Print list</button>
+          <button type="button" onclick="printTripTodos('${trip.id}')">Print to-dos</button>
+        </div>
+      </details>
+    </div>`;
+  }
   return `<div class="checklist-toolbar" style="display:flex;gap:7px;margin:12px 0;flex-wrap:wrap">
       <button class="btn btn-o btn-sm" onclick="regenChecklist('${trip.id}')">↺ Rebuild list</button>
       <button class="btn btn-o btn-sm" onclick="uncheckAll('${trip.id}')" title="Clears every checklist row and all action reminder ticks for items on this list">Uncheck all</button>
@@ -4117,13 +4461,14 @@ function ciRow(ci,item,trip,hl){
   const qty=adjQty(item,trip);
   const locMap=labMap(getLocs());
   const cl=trip.checklist||[];
+  const packCalm=packingCalmViewActive(trip);
 
   // Container items: group header — progress from children (collapsible)
   if(item.isContainer){
     const allSubs=checklistSubsForTrip(item,trip);
     const visibleSubs=checklistVisibleSubsForRow(trip,item,'packing');
     if(!allSubs.length) return '';
-    if(!visibleSubs.length&&checklistHidePacked) return '';
+    if(!visibleSubs.length&&checklistHidePackedForTrip(trip)) return '';
     const forceOpen=checklistGroupForceOpen(item,trip);
     const groupOpen=isChecklistGroupOpen(trip,item,forceOpen);
     const subCIs=visibleSubs.map(s=>cl.find(c=>c.itemId===s.id)).filter(Boolean);
@@ -4192,7 +4537,8 @@ function ciRow(ci,item,trip,hl){
           ${isHL?`<span class="hl-tag">▲ ${(hl[item.id]||[]).map(x=>esc(x)).join(', ')}</span>`:''}
           ${item.notes?`<span class="ci-note">${esc(item.notes)}</span>`:''}
         </div>
-        ${inlineActions(item,trip,checklistInlineActionStages())}
+        ${packCalm?'':inlineActions(item,trip,checklistInlineActionStages())}
+        ${packCalm?checklistTodoChipHtml(item,trip):''}
       </div>
       <div class="ci-menu-btn" onclick="event.stopPropagation()">
         <button type="button" class="btn-ic" style="padding:2px 6px;font-size:13px;opacity:.5" data-ctx-trigger
@@ -4227,7 +4573,8 @@ function ciRow(ci,item,trip,hl){
             ${isHL?`<span class="hl-tag">▲ ${(hl[item.id]||[]).map(x=>esc(x)).join(', ')}</span>`:''}
             ${item.notes?`<span class="ci-note">${esc(item.notes)}</span>`:''}
           </div>
-          ${groupOpen?inlineActions(item,trip,checklistInlineActionStages()):''}
+          ${groupOpen&&!packCalm?inlineActions(item,trip,checklistInlineActionStages()):''}
+          ${groupOpen&&packCalm?checklistTodoChipHtml(item,trip):''}
         </div>
         <div class="ci-menu-btn" onclick="event.stopPropagation()">
           <button type="button" class="btn-ic" style="padding:2px 6px;font-size:13px;opacity:.5" data-ctx-trigger
@@ -4244,6 +4591,7 @@ function ciRow(ci,item,trip,hl){
 }
 
 function ciSubRow(sci,sub,trip,hl,locMap){
+  const packCalm=packingCalmViewActive(trip);
   const isSubHL=!!hl[sub.id];
   const needsRestock=sub.restock||sub.qty===0;
   const packsRoute=sub.packsInto&&sub.packsInto!==sub.location
@@ -4262,7 +4610,8 @@ function ciSubRow(sci,sub,trip,hl,locMap){
         ${isSubHL?`<span class="hl-tag">▲ ${(hl[sub.id]||[]).map(x=>esc(x)).join(', ')}</span>`:''}
         ${sub.notes?`<span class="ci-note">${esc(sub.notes)}</span>`:''}
       </div>
-      ${inlineActions(sub,trip,checklistInlineActionStages())}
+      ${packCalm?'':inlineActions(sub,trip,checklistInlineActionStages())}
+      ${packCalm?checklistTodoChipHtml(sub,trip):''}
     </div>
     <div class="ci-menu-btn" onclick="event.stopPropagation()">
       <button type="button" class="btn-ic" style="padding:2px 6px;font-size:13px;opacity:.5" data-ctx-trigger
@@ -4525,8 +4874,16 @@ function tripStageFooterHtml(trip, stagesFilter){
 
 function tripStageActionsSection(trip, stagesFilter, heading, showChecklistSummaryHint){
   const addRow=tripCustomActionsAddRow(trip, stagesFilter);
-  const hint=showChecklistSummaryHint
-    ?`<p style="margin:0 0 12px;font-size:12px;line-height:1.5;color:var(--text-m)">Tick to-dos here or on each packing line above — same tasks, one list.</p>`
+  const packCalm=packingCalmViewActive(trip);
+  const focusItem=tripTodoFocusItemId?S.items.find(i=>i.id===tripTodoFocusItemId):null;
+  const focusBanner=packCalm&&focusItem?`<div class="todo-focus-banner">
+      <span>To-dos for <strong>${esc(focusItem.name)}</strong></span>
+      <button type="button" class="btn btn-o btn-sm" onclick="scrollBackToChecklistItem('${trip.id}','${focusItem.id}')">↑ Back to item</button>
+    </div>`:'';
+  const hint=showChecklistSummaryHint&&!focusBanner
+    ?`<p style="margin:0 0 12px;font-size:12px;line-height:1.5;color:var(--text-m)">${packCalm
+      ?'Tap a <strong>to-do</strong> chip on a packing line to jump to that item&rsquo;s tasks here.'
+      :'Tick to-dos here or on each packing line above — same tasks, one list.'}</p>`
     :'';
   const body=actionsBody(trip, stagesFilter);
   return `<div id="trip-sec-actions" class="trip-stage-sec">
@@ -4534,6 +4891,7 @@ function tripStageActionsSection(trip, stagesFilter, heading, showChecklistSumma
       <span>${esc(heading||'To-do')}</span>
       <button type="button" class="btn btn-o btn-sm" onclick="printTripTodos('${trip.id}')">Print to-dos</button>
     </div>
+    ${focusBanner}
     ${hint}
     ${body}
     ${addRow}
@@ -4719,7 +5077,8 @@ function cycleState(tripId, itemId){
       const tripActions=trip.actionStates||{};
       const incomplete=prePending.filter(a=>!tripActions[item.id+'::'+a.id]);
       if(incomplete.length){
-        showToast('⚡ Finish to-dos on this row first: '+incomplete.map(a=>a.label).join(', '));
+        showToast('Finish these to-dos first — '+incomplete.map(a=>a.label).join(', '));
+        if(packingCalmViewActive(trip)) scrollTripTodosForItem(tripId, itemId);
         return;
       }
     }
@@ -4840,6 +5199,7 @@ function ptAdj(id,delta){
 
 function openTrip(id){
   activeTripId=id;
+  clearTripTodoFocus();
   expandedPackedChecklistGroups.clear();
   checklistLocFilter='all'; checklistPersonFilter='all';
   checklistSort='location'; checklistHidePacked=false; checklistFiltersOpen=false;
@@ -4848,7 +5208,7 @@ function openTrip(id){
   activeTripTab=trip?tripStageDefaultTab(trip.status):'checklist';
   renderTrips();
 }
-function closeTrip(){ activeTripId=null; checklistSearch=''; expandedPackedChecklistGroups.clear(); expandedChecklistGroups.clear(); experiencePanelDismissed=false; renderTrips(); }
+function closeTrip(){ activeTripId=null; clearTripTodoFocus(); checklistSearch=''; expandedPackedChecklistGroups.clear(); expandedChecklistGroups.clear(); experiencePanelDismissed=false; renderTrips(); }
 function tripMainTab(trip){
   if(activeTripTab==='actions'||activeTripTab==='notes') return tripStageDefaultTab(trip.status);
   return activeTripTab;
@@ -4903,6 +5263,7 @@ function resolveExperienceTab(tripId,tabIds){
   if(experiencePanelDismissed) return null;
   if(activeExperienceTab) return activeExperienceTab;
   const trip=S.trips.find(t=>t.id===tripId);
+  if(trip&&packingCalmViewActive(trip)) return null;
   return defaultExperienceTab(trip,tabIds);
 }
 
@@ -6617,7 +6978,8 @@ function actionsBody(trip, stagesFilter){
           const {item,action}=row;
           const key=item.id+'::'+action.id;
           const done=!!tripActions[key];
-          return `<div style="display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid rgba(58,58,46,.4);cursor:pointer;${done?'opacity:.45':''}" onclick="toggleTripAction('${trip.id}','${item.id}','${action.id}')">
+          const focused=tripTodoFocusItemId===item.id;
+          return `<div class="trip-action-row${focused?' trip-action-row--focus':''}" data-todo-item="${item.id}" style="display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid rgba(58,58,46,.4);cursor:pointer;${done?'opacity:.45':''}" onclick="toggleTripAction('${trip.id}','${item.id}','${action.id}')">
             <div style="width:20px;height:20px;border-radius:3px;border:1px solid ${done?'var(--sage)':'var(--border)'};background:${done?'rgba(107,140,90,.25)':'var(--canvas-3)'};display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--sage);flex-shrink:0">${done?'✓':''}</div>
             <div style="flex:1">
               <div style="font-size:13px;font-weight:500;${done?'text-decoration:line-through':''}">${esc(action.label)}</div>
@@ -7922,8 +8284,25 @@ function renderTripExperiencePanel(trip){
   const active=resolveExperienceTab(trip.id,tabIds);
   const panels={site:sitePanel,booking:bookingPanel,weather:weatherPanel,travel:travelPanel};
   const panelHtml=active?panels[active]:'';
-  const tabsConnected=!!active;
 
+  if(packingCalmViewActive(trip)){
+    const checkInLine=checkParts.length?checkParts.join(' · '):'';
+    const packGlance=[checkInLine,weatherLine,journeyGlance].filter(Boolean).join(' · ');
+    const pillHtml=expTabs.map(t=>{
+      const on=active===t.id;
+      return `<button type="button" class="trip-exp-pill${on?' on':''}" role="tab" aria-expanded="${on?'true':'false'}" onclick="setExperienceTab('${t.id}')">${esc(t.label)}</button>`;
+    }).join('');
+    return `<div class="trip-experience trip-experience--pack">
+      <div class="trip-experience-glance trip-experience-glance--pack">
+        ${siteName?`<h3 class="trip-experience-site">${esc(siteName)}</h3>`:''}
+        ${packGlance?`<p class="trip-experience-glance-line">${esc(packGlance)}</p>`:(glanceLines.length?`<p class="trip-experience-glance-line">${esc(glanceLines[0])}</p>`:'')}
+        <div class="trip-exp-pills" role="tablist" aria-label="Trip details">${pillHtml}</div>
+      </div>
+      ${panelHtml?`<div class="trip-exp-panel trip-exp-panel--pack" role="tabpanel">${panelHtml}</div>`:''}
+    </div>`;
+  }
+
+  const tabsConnected=!!active;
   return `<div class="trip-experience">
     <div class="trip-experience-glance">
       ${siteName?`<h3 class="trip-experience-site">${esc(siteName)}</h3>`:''}
@@ -8445,7 +8824,13 @@ function toggleTripAction(tripId, itemId, actionId){
   const key=itemId+'::'+actionId;
   trip.actionStates[key]=!trip.actionStates[key];
   tripProgressChanged(tripId);
+  const returnToItem=tripTodoFocusItemId===itemId;
   save(); renderTrips();
+  if(returnToItem&&packingCalmViewActive(trip)){
+    const item=S.items.find(i=>i.id===itemId);
+    if(item&&!checklistIncompletePreTripCount(item,trip))
+      requestAnimationFrame(()=>scrollBackToChecklistItem(tripId, itemId));
+  }
 }
 
 function toggleTripCustomAction(tripId, actionId){
