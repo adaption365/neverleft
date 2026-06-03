@@ -1,11 +1,12 @@
 /* NeverLeft service worker — bump SHELL_CACHE after deploy when shell assets change */
-const SHELL_CACHE = 'neverleft-shell-v2';
+const SHELL_CACHE = 'neverleft-shell-v3';
 const FONT_CACHE = 'neverleft-fonts-v1';
 
 const PRECACHE_URLS = [
   '/index.html',
   '/css/fonts.css',
   '/css/styles.css',
+  '/js/tour.js',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',

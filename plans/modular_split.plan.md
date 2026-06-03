@@ -7,7 +7,7 @@ todos:
     status: completed
   - id: phase-2-tour
     content: Extract intro + spotlight tour scripts to tour.js
-    status: pending
+    status: completed
   - id: phase-3-state
     content: Extract state.js, storage.js, backup.js
     status: pending
@@ -19,6 +19,23 @@ todos:
 # Modular split plan
 
 **Goal:** Reduce fragility of the ~11k-line `index.html` without breaking offline PWA behaviour.
+
+## Phase 2 — tour.js (done)
+
+| Asset | Role |
+|-------|------|
+| [`js/tour.js`](../js/tour.js) | `nlEnterApp`, `nlFinishOrient`, `replayOnboarding`, spotlight tour (`nlTourLaunch`, kit/trip tours) |
+| [`index.html`](../index.html) | Intro/orient markup only; `<script src="/js/tour.js">` after overlays |
+| [`sw.js`](../sw.js) | `neverleft-shell-v3` precaches `/js/tour.js` |
+
+**Scripts:** `scripts/extract-tour-phase2.ps1`, `scripts/apply-tour-phase2.ps1`
+
+### Phase 2 test plan
+
+1. Clear site data or use private window; first visit shows intro → orient → optional trip tour.
+2. **More → Replay intro** clears keys and reloads.
+3. **More → Show me around** on Trips (trip tour) and Kit tab (kit tour, 3 steps).
+4. Offline reload after visit: `tour.js` served from cache; tours still launch.
 
 ## Phase 1 — CSS (done)
 

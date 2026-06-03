@@ -103,7 +103,7 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [index_claude_merge.plan.md](index_claude_merge.plan.md) | Done | Phased merge (APE-75); Steps 1–5 + APE-81 copy pass shipped in `index.html` |
 | [index_claude_v2_merge.plan.md](index_claude_v2_merge.plan.md) | Ready for testing | Onboarding v2 — APE-82 epic; steps APE-83–87 shipped in `index.html` |
 | [mobile_shell_field_nav.plan.md](mobile_shell_field_nav.plan.md) | Ready for testing | Field shell — APE-88 epic; dock + sheets in `index.html` |
-| [modular_split.plan.md](modular_split.plan.md) | In Progress | Phase 1 done — `css/fonts.css`, `css/styles.css`, SW `neverleft-shell-v2` |
+| [modular_split.plan.md](modular_split.plan.md) | In Progress | Phase 1–2 done — CSS + `js/tour.js`, SW `neverleft-shell-v3` |
 
 **Suggested build order** (from feature plan): demo graduation + backup gate → trip experience polish → Camp mode → qty rules.
 
