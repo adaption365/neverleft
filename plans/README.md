@@ -61,6 +61,7 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [APE-85](https://linear.app/aperturegraph/issue/APE-85) | index_claude_v2_merge… | Step 4 — Starting kit demo copy — Ready for testing |
 | [APE-86](https://linear.app/aperturegraph/issue/APE-86) | index_claude_v2_merge… | Step 5 — Polish (scroll, labels) — Ready for testing |
 | [APE-87](https://linear.app/aperturegraph/issue/APE-87) | index_claude_v2_merge… | Step 3 — Replay intro & tour entry points — Ready for testing |
+| [APE-88](https://linear.app/aperturegraph/issue/APE-88) | mobile_shell_field_nav… | **Epic** — Field mobile shell (dock + sheets) — Ready for testing |
 
 **Active epic:** [packing_calm_ux](packing_calm_ux.plan.md) — calm packing as core product philosophy ([APE-73](https://linear.app/aperturegraph/issue/APE-73)); **APE-52**, **APE-70**, **APE-74** ready for testing (commit `5bb3c40`); next **APE-72 → 69 → 71** after sign-off.
 
@@ -100,6 +101,7 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [packing_calm_ux.plan.md](packing_calm_ux.plan.md) | Ready for testing | Pack/Full (APE-70), journey bar (APE-52), to-do focus flow (APE-74); `5bb3c40`; phases 72/69/71 backlog |
 | [index_claude_merge.plan.md](index_claude_merge.plan.md) | Done | Phased merge (APE-75); Steps 1–5 + APE-81 copy pass shipped in `index.html` |
 | [index_claude_v2_merge.plan.md](index_claude_v2_merge.plan.md) | Ready for testing | Onboarding v2 — APE-82 epic; steps APE-83–87 shipped in `index.html` |
+| [mobile_shell_field_nav.plan.md](mobile_shell_field_nav.plan.md) | Ready for testing | Field shell — APE-88 epic; dock + sheets in `index.html` |
 
 **Suggested build order** (from feature plan): demo graduation + backup gate → trip experience polish → Camp mode → qty rules.
 

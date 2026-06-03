@@ -132,6 +132,97 @@ body{font-family:'Familjen Grotesk',sans-serif;background:var(--canvas);color:va
 .umenu-ic{display:inline-flex;align-items:center;justify-content:center;width:22px;flex-shrink:0;color:var(--text-m)}
 .umenu-ic svg{width:18px;height:18px;display:block}
 
+/* ── App shell (Field dock + top bar) ── */
+.hdr{display:none!important}
+.nl-mtopbar{
+  position:sticky;top:0;z-index:40;width:100%;
+  background:var(--canvas-2);border-bottom:1px solid var(--border);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.nl-mtopbar-inner{
+  max-width:var(--page-max);margin:0 auto;
+  padding:12px clamp(16px,3vw,36px);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;
+}
+.nl-mtopbar-brand{display:flex;align-items:center;gap:10px;min-width:0}
+.nl-mtopbar-brand .logo-mark{width:26px;height:26px;border-radius:7px;font-size:15px}
+.nl-mtopbar-brand .logo-text{display:inline;font-size:17px}
+.nl-mtopbar-back{
+  appearance:none;border:none;background:transparent;cursor:pointer;
+  font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:500;color:var(--text-m);
+  padding:6px 4px;display:none;
+}
+.nl-mtopbar-back:hover{color:var(--amber-d)}
+.nl-mtopbar-actions{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.nl-mnav{
+  display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;
+  background:color-mix(in srgb,var(--canvas-2) 92%,transparent);
+  border-top:1px solid var(--border);
+  padding:8px 6px calc(8px + env(safe-area-inset-bottom,0px));gap:4px;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  box-shadow:0 -2px 24px rgba(18,28,22,.06);
+}
+.nl-mnav .dock-tab{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  min-height:48px;padding:6px 4px;border-radius:10px;position:relative;
+  font-family:'Familjen Grotesk',sans-serif;font-size:10.5px;font-weight:500;color:var(--text-m);
+  background:transparent;border:none;cursor:pointer;
+}
+.nl-mnav .dock-tab .dock-ic{font-size:17px;line-height:1}
+.nl-mnav .dock-tab.on{color:var(--sage);font-weight:600}
+.nl-mnav .dock-tab.on .dock-ic{font-weight:700}
+.nl-mnav .dock-tab .dock-badge{
+  position:absolute;top:2px;right:14%;min-width:16px;height:16px;padding:0 4px;
+  background:var(--rust);color:#fff;font-size:9px;font-weight:700;border-radius:8px;
+  font-family:'DM Mono',monospace;line-height:16px;text-align:center;
+}
+.nl-mnav .dock-fab-wrap{flex:0 0 58px;display:flex;align-items:center;justify-content:center;margin-top:-20px}
+.nl-mnav .dock-fab{
+  width:52px;height:52px;border-radius:50%;border:none;cursor:pointer;
+  background:var(--text);color:var(--canvas);
+  font-size:28px;font-weight:300;line-height:1;
+  box-shadow:0 4px 14px rgba(0,0,0,.22);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform var(--dur-fast) var(--ease-out);
+}
+.nl-mnav .dock-fab:active{transform:scale(0.94)}
+.nl-mnav .dock-fab.on{transform:rotate(45deg)}
+.app-sheet-overlay{
+  position:fixed;inset:0;z-index:1500;background:rgba(10,10,8,.45);
+  display:none;align-items:flex-end;justify-content:center;
+  backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+}
+.app-sheet-overlay.on{display:flex}
+.app-sheet-panel{
+  width:100%;max-width:480px;background:var(--canvas-2);
+  border-radius:18px 18px 0 0;padding:12px 16px calc(20px + env(safe-area-inset-bottom,0px));
+  max-height:min(70vh,520px);overflow-y:auto;
+  animation:modalSlideUp var(--dur-panel) var(--ease-out);
+}
+.app-sheet-handle{width:36px;height:4px;border-radius:2px;background:var(--border-l);margin:0 auto 16px}
+.app-sheet-title{font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);margin:0 0 10px}
+.app-sheet-row{
+  display:block;width:100%;text-align:left;padding:14px 12px;margin:0 0 6px;
+  background:var(--canvas-3);border:1px solid var(--border);border-radius:12px;cursor:pointer;
+  font-family:'Familjen Grotesk',sans-serif;
+}
+.app-sheet-row:hover{border-color:var(--border-l)}
+.app-sheet-row b{display:block;font-size:15px;font-weight:600;color:var(--text)}
+.app-sheet-row span{display:block;font-size:12px;color:var(--text-m);margin-top:3px;line-height:1.4}
+.app-sheet-sep{border-top:1px solid var(--border);margin:12px 0 8px}
+.app-sheet-item{
+  display:flex;align-items:center;gap:12px;width:100%;padding:12px 10px;
+  background:transparent;border:none;border-radius:10px;cursor:pointer;
+  font-family:'Familjen Grotesk',sans-serif;font-size:14px;color:var(--text-d);text-align:left;
+}
+.app-sheet-item:hover{background:var(--canvas-3);color:var(--text)}
+.app-sheet-item .app-sheet-ic{width:22px;text-align:center;flex-shrink:0;color:var(--text-m)}
+@media print{.nl-mnav,.nl-mtopbar,.app-sheet-overlay{display:none!important}}
+@media (prefers-reduced-motion:reduce){
+  .app-sheet-panel{animation:none!important}
+  .nl-mnav .dock-fab{transition:none}
+}
+
 /* ── MAIN TABS ── */
 .mtabs{display:none} /* tabs moved into header */
 .mtabs::-webkit-scrollbar{display:none}
@@ -1023,7 +1114,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
   .hnav{padding:6px 7px;font-size:11px}
 }
 /* APE-39: floating back-to-top button (appears once you scroll down) */
-.scroll-top-btn{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:120;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--canvas-2);color:var(--text);box-shadow:0 6px 18px rgba(0,0,0,.18);cursor:pointer;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(10px) scale(.9);pointer-events:none;transition:opacity .2s ease,transform .2s ease,border-color .18s,color .18s}
+.scroll-top-btn{position:fixed;right:16px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:120;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--canvas-2);color:var(--text);box-shadow:0 6px 18px rgba(0,0,0,.18);cursor:pointer;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(10px) scale(.9);pointer-events:none;transition:opacity .2s ease,transform .2s ease,border-color .18s,color .18s}
 .scroll-top-btn.on{opacity:.96;transform:none;pointer-events:auto}
 .ci-menu-btn{position:relative;z-index:2;flex-shrink:0}
 .scroll-top-btn:hover{border-color:var(--amber);color:var(--amber-d)}
@@ -1246,7 +1337,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
     {sel:['.journey-scroll'],eyebrow:'1 of 4',title:'The journey',body:'Every trip moves through stages, from planning to packing to camp to home. NeverLeft keeps the right things in front of you at each one.'},
     {sel:['.consumable-prep'],eyebrow:'2 of 4',title:'What to buy',body:'It works out which consumables to top up, comparing what this trip needs with what you already have in stock.'},
     {sel:['.cprog','.cprog-pack-main','.checklist-toolbar'],eyebrow:'3 of 4',title:'A list that builds itself',body:'This packing list assembled itself from your Kit, scaled to the nights and people on the trip. Tick things off as you pack.'},
-    {sel:['#navKitBtn'],eyebrow:'4 of 4',title:'It all comes from your Kit',body:'Your Camping Kit is the one place you keep what you own. Every trip list is drawn from it, which is why we start you off with one.'}
+    {sel:['#dockKitBtn'],eyebrow:'4 of 4',title:'It all comes from your Kit',body:'Your Camping Kit is the one place you keep what you own. Every trip list is drawn from it, which is why we start you off with one.'}
   ];
   var idx=0, order=[], catchEl, spot, pop, built=false;
   function build(){
@@ -1310,54 +1401,45 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 
 <button id="scrollTopBtn" class="scroll-top-btn" type="button" aria-label="Back to top" title="Back to top" onclick="scrollToTop()">↑</button>
 
-<header class="hdr">
-  <div class="hdr-inner">
-  <div class="logo"><div class="logo-mark">N</div><span class="logo-text">NeverLeft</span></div>
-  <div class="hdr-nav" id="hdrNav">
-    <button class="hnav on" onclick="setTab('trips',this)" id="tripsBtn">Trips</button>
-    <button class="hnav" id="navKitBtn" onclick="setTab('inv',this)">Camping Kit</button>
-    <button class="hnav" onclick="setTab('wishlist',this)" id="wishBtn">Want list</button>
-    <button class="hnav" id="navSettingsBtn" onclick="setTab('settings',this)">Settings</button>
-  </div>
-  <div class="hdr-r" id="hdrR">
-    <div class="hdr-desktop-cluster" id="hdrDesktopCluster">
-      <button type="button" class="hdr-btn hdr-btn-plain" id="shopListBtn" onclick="openShoppingList()" style="display:none">Shopping list</button>
-      <button type="button" class="hdr-btn hdr-btn-ic" id="searchHdrBtn" onclick="openSearchPanel()" aria-label="Search" title="Search"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></button>
-      <button type="button" class="hdr-btn hdr-btn-ic" id="lightBtn" onclick="toggleLightMode()" aria-label="Switch theme"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
-      <div class="hdr-dd" style="position:relative">
-        <button type="button" class="hdr-btn hdr-btn-plain" id="backupMenuBtn" onclick="toggleBackupMenu(event)" aria-expanded="false" aria-haspopup="true">Backup ▾</button>
-        <div id="backupMenu" class="hdr-dd-menu" role="menu" style="display:none">
-          <button type="button" class="umenu-item" onclick="closeBackupMenu();exportData()">Download backup</button>
-          <button type="button" class="umenu-item" onclick="closeBackupMenu();shareBackup()">Share backup</button>
-          <label class="umenu-item" for="fileImport" style="cursor:pointer;margin:0" onclick="closeBackupMenu()">Restore backup</label>
-        </div>
-      </div>
-      <button type="button" class="hdr-btn" id="addGroupBtn" onclick="openNewGroupModal()" style="flex-shrink:0">+ New group</button>
-      <button type="button" class="hdr-btn hdr-primary" id="addItemBtn" onclick="openAddItemModal()" style="background:var(--text);color:var(--canvas);border:none;font-weight:500;flex-shrink:0">+ Add item</button>
+<header class="nl-mtopbar" id="nlMtopbar">
+  <div class="nl-mtopbar-inner">
+    <div class="nl-mtopbar-brand" id="mtopbarBrand">
+      <div class="logo"><div class="logo-mark">N</div><span class="logo-text">NeverLeft</span></div>
     </div>
-    <div class="hdr-mobile-cluster" id="hdrMobileCluster" style="position:relative">
-      <button type="button" class="hdr-btn" id="utilMenuBtn" onclick="toggleUtilMenu(event)" aria-label="Menu" aria-expanded="false" aria-haspopup="true" style="padding:0 12px;letter-spacing:.05em">···</button>
-      <div id="utilMenu" class="hdr-dd-menu" style="display:none">
-        <button type="button" class="umenu-item" onclick="closeUtilMenu();setTab('settings', document.getElementById('navSettingsBtn'))">Settings</button>
-        <button type="button" class="umenu-item" onclick="closeUtilMenu();replayOnboarding()">Replay intro</button>
-        <button type="button" class="umenu-item" onclick="closeUtilMenu();nlTourLaunch()">Show me around</button>
-        <button type="button" class="umenu-item" id="mobileShopListBtn" onclick="closeUtilMenu();openShoppingList()" style="display:none">Shopping list</button>
-        <button type="button" class="umenu-item" onclick="closeUtilMenu();openSearchPanel()"><span class="umenu-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span><span>Search</span></button>
-        <button type="button" class="umenu-item" id="mobileLightBtn" onclick="closeUtilMenu();toggleLightMode()"><span class="umenu-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span><span>Dark mode</span></button>
-        <div class="hdr-menu-sep" role="presentation"></div>
-        <div class="hdr-menu-subhd">Backup</div>
-        <button type="button" class="umenu-item" onclick="closeUtilMenu();exportData()">Download backup</button>
-        <button type="button" class="umenu-item" onclick="closeUtilMenu();shareBackup()">Share backup</button>
-        <label class="umenu-item" for="fileImport" style="cursor:pointer;margin:0" onclick="closeUtilMenu()">Restore backup</label>
-        <div class="hdr-menu-sep" role="presentation"></div>
-        <button type="button" class="umenu-item" onclick="closeUtilMenu();openAddItemModal()" style="font-weight:600">+ Add item</button>
-        <button type="button" class="umenu-item" onclick="closeUtilMenu();openNewGroupModal()" style="font-weight:600">+ New group</button>
-      </div>
+    <button type="button" class="nl-mtopbar-back" id="mtopbarBack" onclick="closeTrip()">← Trips</button>
+    <div class="nl-mtopbar-actions">
+      <button type="button" class="hdr-btn hdr-btn-ic" onclick="openSearchPanel()" aria-label="Search" title="Search"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></button>
     </div>
-    <input type="file" id="fileImport" accept=".json" style="position:absolute;width:1px;height:1px;opacity:0.01;top:0;left:0">
-  </div>
   </div>
 </header>
+<input type="file" id="fileImport" accept=".json" style="position:absolute;width:1px;height:1px;opacity:0.01;top:0;left:0">
+
+<nav class="nl-mnav" id="nlMnav" aria-label="Main">
+  <button type="button" class="dock-tab on" id="dockTripsBtn" onclick="dockSelectTab('trips')"><span class="dock-ic" aria-hidden="true">⛺</span><span>Trips</span></button>
+  <button type="button" class="dock-tab" id="dockKitBtn" onclick="dockSelectTab('inv')"><span class="dock-ic" aria-hidden="true">📦</span><span>Kit</span></button>
+  <div class="dock-fab-wrap"><button type="button" class="dock-fab" id="dockFabBtn" aria-label="Add" onclick="toggleCreateSheet()">+</button></div>
+  <button type="button" class="dock-tab" id="dockWishBtn" onclick="dockSelectTab('wishlist')"><span class="dock-ic" aria-hidden="true">★</span><span>Want</span></button>
+  <button type="button" class="dock-tab" id="dockMoreBtn" aria-expanded="false" onclick="toggleUtilSheet()"><span class="dock-ic" aria-hidden="true">···</span><span>More</span></button>
+</nav>
+
+<div id="appSheetOverlay" class="app-sheet-overlay" onclick="if(event.target===this)closeAppSheets()" role="presentation">
+  <div id="createSheetPanel" class="app-sheet-panel" style="display:none" onclick="event.stopPropagation()" role="dialog" aria-labelledby="createSheetTitle"></div>
+  <div id="utilSheetPanel" class="app-sheet-panel" style="display:none" onclick="event.stopPropagation()" role="dialog" aria-label="More options">
+    <div class="app-sheet-handle" aria-hidden="true"></div>
+    <p class="app-sheet-title">More</p>
+    <button type="button" class="app-sheet-item" onclick="utilSheetGoSettings()"><span class="app-sheet-ic" aria-hidden="true">⚙</span><span>Settings</span></button>
+    <button type="button" class="app-sheet-item" id="utilSheetLightBtn" onclick="utilSheetToggleTheme()"><span class="app-sheet-ic" aria-hidden="true">◐</span><span id="utilSheetLightLabel">Dark mode</span></button>
+    <div class="app-sheet-sep" role="presentation"></div>
+    <p class="app-sheet-title">Backup</p>
+    <button type="button" class="app-sheet-item" onclick="utilSheetExport()"><span class="app-sheet-ic" aria-hidden="true">↓</span><span>Download backup</span></button>
+    <button type="button" class="app-sheet-item" onclick="utilSheetShare()"><span class="app-sheet-ic" aria-hidden="true">↗</span><span>Share backup</span></button>
+    <label class="app-sheet-item" for="fileImport" style="cursor:pointer;margin:0"><span class="app-sheet-ic" aria-hidden="true">↑</span><span>Restore backup</span></label>
+    <div class="app-sheet-sep" role="presentation"></div>
+    <button type="button" class="app-sheet-item" id="utilSheetShopBtn" onclick="utilSheetShopping()" style="display:none"><span class="app-sheet-ic" aria-hidden="true">🛒</span><span>Shopping list</span></button>
+    <button type="button" class="app-sheet-item" onclick="utilSheetReplayIntro()"><span class="app-sheet-ic" aria-hidden="true">↺</span><span>Replay intro</span></button>
+    <button type="button" class="app-sheet-item" onclick="utilSheetTour()"><span class="app-sheet-ic" aria-hidden="true">?</span><span>Show me around</span></button>
+  </div>
+</div>
 
 <!-- nav moved into header -->
 
@@ -2768,8 +2850,7 @@ function toggleFeaturedTrip(tripId){
 }
 
 function openKitTab(){
-  const btn=document.getElementById('navKitBtn');
-  setTab('inv',btn||null);
+  setTab('inv', document.getElementById('dockKitBtn'));
 }
 
 function showKitFiltersPanel(){
@@ -2959,21 +3040,10 @@ function tripKitStatsRowHtml(trip, opts){
 function refreshNavBadges(){
   const rc=itemsNeedingRestock().length;
   const wc=wishItems().length;
-  // badges — restockBtn removed from nav, show restock count on My Kit filter toggle
   const rb=document.getElementById('restockBtn');
   if(rb){ rb.querySelectorAll('.tbadge').forEach(b=>b.remove()); if(rc>0) rb.innerHTML+=`<span class="tbadge">${rc}</span>`; }
-  // Update shopping list badge button
-  const slb=document.getElementById('shopListBtn');
-  if(slb){
-    slb.style.display=rc>0?'':'none';
-    slb.innerHTML=rc>0?`🛒 <span style="font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:700">${rc}</span>`:'';
-  }
-  const msb=document.getElementById('mobileShopListBtn');
-  if(msb&&slb){
-    msb.style.display=slb.style.display;
-    msb.innerHTML=slb.innerHTML||'Shopping list';
-  }
-  // Show restock count on filter toggle button in My Kit
+  const utilShop=document.getElementById('utilSheetShopBtn');
+  if(utilShop) utilShop.style.display=rc>0?'':'none';
   const ftb=document.getElementById('filterToggleBtn');
   if(ftb){
     ftb.querySelectorAll('.tbadge').forEach(b=>b.remove());
@@ -2985,8 +3055,28 @@ function refreshNavBadges(){
       ftb.innerHTML=html;
     } else ftb.textContent='⚙ Filter';
   }
-  const wb=document.getElementById('wishBtn');
-  if(wb){ wb.querySelectorAll('.tbadge').forEach(b=>b.remove()); if(wc>0) wb.innerHTML=`Want list <span class="tbadge" style="background:var(--gold)">${wc}</span>`; }
+  const dockWish=document.getElementById('dockWishBtn');
+  if(dockWish){
+    dockWish.querySelectorAll('.dock-badge').forEach(b=>b.remove());
+    if(wc>0){
+      const b=document.createElement('span');
+      b.className='dock-badge';
+      b.style.background='var(--gold)';
+      b.textContent=wc>9?'9+':String(wc);
+      dockWish.appendChild(b);
+    }
+  }
+  const dockTrips=document.getElementById('dockTripsBtn');
+  if(dockTrips){
+    dockTrips.querySelectorAll('.dock-badge').forEach(b=>b.remove());
+    const tc=(S.trips||[]).length;
+    if(tc>0){
+      const b=document.createElement('span');
+      b.className='dock-badge';
+      b.textContent=tc>9?'9+':String(tc);
+      dockTrips.appendChild(b);
+    }
+  }
 }
 
 // ══════════════════════════════════════════════════
@@ -5491,13 +5581,23 @@ function openTrip(id){
   expandedPackedChecklistGroups.clear();
   checklistLocFilter='all'; checklistPersonFilter='all';
   checklistSort='location'; checklistHidePacked=false; checklistFiltersOpen=false;
-  // Open the right view for the current journey stage
   const trip=S.trips.find(t=>t.id===id);
   activeTripTab=trip?tripStageDefaultTab(trip.status):'checklist';
-  renderTrips();
+  if(mainTab!=='trips') setTab('trips', document.getElementById('dockTripsBtn'));
+  else renderTrips();
+  refreshAppChrome();
   try{ window.scrollTo(0,0); }catch(e){}
 }
-function closeTrip(){ activeTripId=null; clearTripTodoFocus(); checklistSearch=''; expandedPackedChecklistGroups.clear(); expandedChecklistGroups.clear(); experiencePanelDismissed=false; renderTrips(); }
+function closeTrip(){
+  activeTripId=null;
+  clearTripTodoFocus();
+  checklistSearch='';
+  expandedPackedChecklistGroups.clear();
+  expandedChecklistGroups.clear();
+  experiencePanelDismissed=false;
+  renderTrips();
+  refreshAppChrome();
+}
 function tripMainTab(trip){
   if(activeTripTab==='actions'||activeTripTab==='notes') return tripStageDefaultTab(trip.status);
   return activeTripTab;
@@ -6136,8 +6236,7 @@ function focusKitItemAfterSave(itemId, isNew){
     if(srchEl) srchEl.value='';
     updateSwClear('srch');
   }
-  const navBtn=document.getElementById('navKitBtn');
-  if(mainTab!=='inv') setTab('inv', navBtn);
+  if(mainTab!=='inv') setTab('inv', document.getElementById('dockKitBtn'));
   else renderInv();
   requestAnimationFrame(()=>{
     requestAnimationFrame(()=>{
@@ -7153,8 +7252,7 @@ function openSearchPanel(){
 function navigateGlobalSearchItem(itemId){
   const item=S.items.find(i=>i.id===itemId);
   closeSearchDrawer();
-  const btn=document.getElementById('navKitBtn');
-  setTab('inv', btn);
+  setTab('inv', document.getElementById('dockKitBtn'));
   const srch=document.getElementById('srch');
   if(srch&&item) srch.value=item.name||'';
   updateSwClear('srch');
@@ -7163,8 +7261,7 @@ function navigateGlobalSearchItem(itemId){
 
 function navigateGlobalSearchTrip(tripId){
   closeSearchDrawer();
-  const btn=document.getElementById('tripsBtn');
-  setTab('trips', btn);
+  setTab('trips', document.getElementById('dockTripsBtn'));
   openTrip(tripId);
 }
 
@@ -7181,8 +7278,7 @@ function navigateGlobalSearchTripChecklist(tripId,itemId){
   activeTripId=tripId;
   activeTripTab='checklist';
   _gsearchRevealChecklist={tripId,itemId};
-  const btn=document.getElementById('tripsBtn');
-  setTab('trips', btn);
+  setTab('trips', document.getElementById('dockTripsBtn'));
   setTimeout(()=>{
     _gsearchRevealChecklist=null;
     const el=document.getElementById('clitem-'+tripId+'-'+itemId);
@@ -7196,8 +7292,7 @@ function navigateGlobalSearchTripChecklist(tripId,itemId){
 
 function navigateGlobalSearchPerson(personId){
   closeSearchDrawer();
-  const btn=document.getElementById('navSettingsBtn');
-  setTab('settings', btn);
+  setTab('settings', document.getElementById('dockMoreBtn'));
   setTimeout(()=>{
     const el=document.getElementById('settingsPeopleSection');
     if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
@@ -7205,10 +7300,129 @@ function navigateGlobalSearchPerson(personId){
 }
 
 // ══════════════════════════════════════════════════
+// APP SHELL (dock, sheets, top bar)
+// ══════════════════════════════════════════════════
+function dockTabButton(tab){
+  if(tab==='trips') return document.getElementById('dockTripsBtn');
+  if(tab==='inv') return document.getElementById('dockKitBtn');
+  if(tab==='wishlist') return document.getElementById('dockWishBtn');
+  if(tab==='settings') return document.getElementById('dockMoreBtn');
+  return null;
+}
+
+function dockSelectTab(tab){
+  closeAppSheets();
+  setTab(tab, dockTabButton(tab));
+}
+
+function refreshAppChrome(){
+  const brand=document.getElementById('mtopbarBrand');
+  const back=document.getElementById('mtopbarBack');
+  if(brand) brand.style.display=activeTripId?'none':'flex';
+  if(back) back.style.display=activeTripId&&mainTab==='trips'?'inline-block':'none';
+  document.querySelectorAll('.dock-tab').forEach(b=>b.classList.remove('on'));
+  const dockMap={trips:'dockTripsBtn',inv:'dockKitBtn',wishlist:'dockWishBtn',settings:'dockMoreBtn'};
+  const dockId=dockMap[mainTab];
+  if(dockId){ const el=document.getElementById(dockId); if(el) el.classList.add('on'); }
+}
+
+function getCreateSheetActions(){
+  if(mainTab==='trips'&&activeTripId){
+    return [
+      {label:'Quick add to trip', sub:'Add an item to this packing list', fn:()=>openQuickAddModal(activeTripId)},
+      {label:'New trip', sub:'Plan another trip', fn:()=>openNewTripModal()},
+    ];
+  }
+  if(mainTab==='trips'){
+    return [{label:'New trip', sub:'Plan a camping trip', fn:()=>openNewTripModal()}];
+  }
+  if(mainTab==='inv'){
+    return [
+      {label:'Add item', sub:'To your Camping Kit', fn:()=>openAddItemModal()},
+      {label:'New group', sub:'Bundle gear that packs together', fn:()=>openNewGroupModal()},
+    ];
+  }
+  if(mainTab==='wishlist'){
+    return [{label:'Add want list item', sub:'Gear you are thinking about buying', fn:()=>openAddWishModal()}];
+  }
+  if(mainTab==='settings'){
+    return [
+      {label:'New trip', sub:'', fn:()=>openNewTripModal()},
+      {label:'Add item', sub:'', fn:()=>openAddItemModal()},
+      {label:'Add want list item', sub:'', fn:()=>openAddWishModal()},
+    ];
+  }
+  return [];
+}
+
+function renderCreateSheet(){
+  const panel=document.getElementById('createSheetPanel');
+  if(!panel) return;
+  const actions=getCreateSheetActions();
+  if(!actions.length){
+    panel.innerHTML='<div class="app-sheet-handle" aria-hidden="true"></div><p class="app-sheet-title" id="createSheetTitle">Add</p><p style="font-size:13px;color:var(--text-m);margin:4px 8px 0">Switch to Trips, Kit, or Want to add something.</p>';
+    return;
+  }
+  panel.innerHTML='<div class="app-sheet-handle" aria-hidden="true"></div><p class="app-sheet-title" id="createSheetTitle">Add</p>'+
+    actions.map((a,i)=>`<button type="button" class="app-sheet-row" data-ci="${i}"><b>${esc(a.label)}</b>${a.sub?`<span>${esc(a.sub)}</span>`:''}</button>`).join('');
+  panel.querySelectorAll('[data-ci]').forEach(btn=>{
+    const i=+btn.dataset.ci;
+    btn.onclick=()=>{ closeAppSheets(); actions[i].fn(); };
+  });
+}
+
+function closeAppSheets(){
+  const ov=document.getElementById('appSheetOverlay');
+  const create=document.getElementById('createSheetPanel');
+  const util=document.getElementById('utilSheetPanel');
+  if(ov) ov.classList.remove('on');
+  if(create) create.style.display='none';
+  if(util) util.style.display='none';
+  document.getElementById('dockFabBtn')?.classList.remove('on');
+  document.getElementById('dockMoreBtn')?.setAttribute('aria-expanded','false');
+}
+
+function toggleCreateSheet(){
+  const ov=document.getElementById('appSheetOverlay');
+  const create=document.getElementById('createSheetPanel');
+  const util=document.getElementById('utilSheetPanel');
+  if(!ov||!create) return;
+  if(ov.classList.contains('on')&&create.style.display!=='none'){ closeAppSheets(); return; }
+  if(util) util.style.display='none';
+  renderCreateSheet();
+  create.style.display='block';
+  ov.classList.add('on');
+  document.getElementById('dockFabBtn')?.classList.add('on');
+  document.getElementById('dockMoreBtn')?.setAttribute('aria-expanded','false');
+}
+
+function toggleUtilSheet(){
+  const ov=document.getElementById('appSheetOverlay');
+  const create=document.getElementById('createSheetPanel');
+  const util=document.getElementById('utilSheetPanel');
+  if(!ov||!util) return;
+  if(ov.classList.contains('on')&&util.style.display!=='none'){ closeAppSheets(); return; }
+  if(create) create.style.display='none';
+  util.style.display='block';
+  ov.classList.add('on');
+  document.getElementById('dockFabBtn')?.classList.remove('on');
+  document.getElementById('dockMoreBtn')?.setAttribute('aria-expanded','true');
+}
+
+function utilSheetGoSettings(){ closeAppSheets(); setTab('settings', document.getElementById('dockMoreBtn')); }
+function utilSheetToggleTheme(){ closeAppSheets(); toggleLightMode(); }
+function utilSheetExport(){ closeAppSheets(); exportData(); }
+function utilSheetShare(){ closeAppSheets(); shareBackup(); }
+function utilSheetShopping(){ closeAppSheets(); openShoppingList(); }
+function utilSheetReplayIntro(){ closeAppSheets(); replayOnboarding(); }
+function utilSheetTour(){ closeAppSheets(); nlTourLaunch(); }
+
+// ══════════════════════════════════════════════════
 // NAV
 // ══════════════════════════════════════════════════
 function setTab(tab,btn){
   if(tab==='people') tab='settings'; // People moved into Settings
+  closeAppSheets();
   mainTab=tab;
   document.querySelectorAll('.hnav,.mtab').forEach(b=>b.classList.remove('on'));
   if(btn) btn.classList.add('on');
@@ -7229,6 +7443,7 @@ function setTab(tab,btn){
     }
   });
   window.scrollTo({top:0}); // APE-31: land at the top when switching screens
+  refreshAppChrome();
   if(typeof updateScrollTopBtn==='function') updateScrollTopBtn();
   if(tab==='trips') renderTrips();
   if(tab==='inv') renderInv();
@@ -9099,7 +9314,7 @@ function postTripLearningsHtml(trip,allItems){
         <button type="button" class="btn btn-o btn-sm" onclick="reopenForgotEntry('${trip.id}','${e.id}')">Undo</button>
         ${res==='kit'&&e.resolvedItemId?`<button type="button" class="btn btn-p btn-sm" onclick="includeForgotOnNextTrip('${trip.id}','${e.id}')">Add to next trip</button>`:''}
         ${res==='kit'&&e.resolvedItemId?`<button type="button" class="btn btn-o btn-sm" onclick="openEditItemModal('${e.resolvedItemId}')">Edit item</button>`:''}
-        ${res==='wishlist'&&e.resolvedItemId?`<button type="button" class="btn btn-o btn-sm" onclick="setTab('wishlist',document.getElementById('wishBtn'))">View want list</button>`:''}
+        ${res==='wishlist'&&e.resolvedItemId?`<button type="button" class="btn btn-o btn-sm" onclick="setTab('wishlist',document.getElementById('dockWishBtn'))">View want list</button>`:''}
       </div>`;
     return `<div class="pt-learn-row${res!=='pending'?' pt-learn-row--resolved':''}">
       <div style="flex:1;min-width:0">
@@ -10732,6 +10947,7 @@ window.addEventListener('scroll',updateScrollTopBtn,{passive:true});
 
 function renderAll(){
   refreshNavBadges();
+  refreshAppChrome();
   updatePersonFilterSelect();
   if(mainTab==='trips') renderTrips();
   else if(mainTab==='inv') renderInv();
@@ -10742,7 +10958,7 @@ function renderAll(){
 }
 
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){ closeM('itemModal'); closeM('tripModal'); closeSearchDrawer(); closeOrphanAssignmentsModal(); closeInvTripModal(); closeLinkForgotModal(); closeCampLogSheet(); }
+  if(e.key==='Escape'){ closeAppSheets(); closeM('itemModal'); closeM('tripModal'); closeSearchDrawer(); closeOrphanAssignmentsModal(); closeInvTripModal(); closeLinkForgotModal(); closeCampLogSheet(); }
   if(e.key==='Enter'&&e.target.id==='iActionLabel'){ e.preventDefault(); addItemAction(); }
   const sm=document.getElementById('searchModal');
   if(sm?.classList.contains('on')&&e.key==='Tab'){
@@ -10776,8 +10992,52 @@ function seed(){
   return demoData().items;
 }
 
+/** Sample trip title + notes from device timezone / locale (no GPS). */
+function demoTripPlaceProfile(){
+  let tz='', loc='';
+  try{ tz=(Intl.DateTimeFormat().resolvedOptions().timeZone||'').toLowerCase(); }catch(e){}
+  try{ loc=(navigator.language||'').toLowerCase(); }catch(e){}
+  if(tz.indexOf('argentina')>=0||loc.indexOf('es-ar')===0)
+    return {name:'Weekend away — Patagonia',notes:'Campsite: Vilches, near Bariloche. Booking ref: FC-2847. Lakeside walks and mountain views. Dogs welcome.'};
+  if(tz.indexOf('chile')>=0||loc.indexOf('es-cl')===0)
+    return {name:'Weekend away — Lake District (Chile)',notes:'Campsite: Lago Ranco area. Booking ref: FC-2847. Good walking and fishing. Dogs welcome.'};
+  if(tz.indexOf('australia')>=0||loc.indexOf('en-au')===0)
+    return {name:'Weekend away — Blue Mountains',notes:'Campsite: Blackheath Glen. Booking ref: FC-2847. Bush walks and lookouts. Dogs welcome.'};
+  if(tz.indexOf('auckland')>=0||tz.indexOf('wellington')>=0||loc.indexOf('en-nz')===0)
+    return {name:'Weekend away — Queenstown',notes:'Campsite: Twelve Mile Delta. Booking ref: FC-2847. Lake and trail day trips. Dogs welcome.'};
+  if(tz.indexOf('america/')===0){
+    if(tz.indexOf('los_angeles')>=0||tz.indexOf('phoenix')>=0||tz.indexOf('denver')>=0)
+      return {name:'Weekend away — Yosemite area',notes:'Campsite: Upper Pines (sample). Booking ref: FC-2847. Trailheads nearby. Check park rules for dogs.'};
+    if(tz.indexOf('new_york')>=0||tz.indexOf('chicago')>=0||tz.indexOf('toronto')>=0)
+      return {name:'Weekend away — Great Smoky Mountains',notes:'Campsite: Elkmont (sample). Booking ref: FC-2847. Forest walks and streams. Dogs welcome in campground.'};
+    if(tz.indexOf('sao_paulo')>=0||loc.indexOf('pt-br')===0)
+      return {name:'Weekend away — Serra da Canastra',notes:'Campsite: São Roque de Minas area. Booking ref: FC-2847. Waterfalls and hiking. Dogs welcome.'};
+    if(tz.indexOf('mexico')>=0||loc.indexOf('es-mx')===0)
+      return {name:'Weekend away — Valle de Bravo',notes:'Campsite: Presa Miguel Alemán. Booking ref: FC-2847. Lake and hill walks. Dogs welcome.'};
+    return {name:'Weekend away — national park',notes:'Campsite: sample campground. Booking ref: FC-2847. Swap in your real park and site. Dogs welcome.'};
+  }
+  if(tz.indexOf('europe/')===0){
+    if(tz.indexOf('london')>=0||tz.indexOf('dublin')>=0||tz.indexOf('edinburgh')>=0||loc.indexOf('en-gb')===0||loc.indexOf('en-ie')===0)
+      return {name:'Weekend away — Lake District',notes:'Campsite: Great Langdale. Booking ref: FC-2847. Fells and lake walks. Dogs welcome.'};
+    if(tz.indexOf('berlin')>=0||tz.indexOf('vienna')>=0||tz.indexOf('zurich')>=0||/^de(-|$)/.test(loc))
+      return {name:'Weekend away — Bavarian Alps',notes:'Campsite: Garmisch area. Booking ref: FC-2847. Valley walks and views. Check local dog rules.'};
+    if(tz.indexOf('paris')>=0||tz.indexOf('madrid')>=0||tz.indexOf('rome')>=0)
+      return {name:'Weekend away — regional park',notes:'Campsite: sample rural site. Booking ref: FC-2847. Day hikes nearby. Dogs welcome.'};
+  }
+  if(tz.indexOf('asia/')===0){
+    if(tz.indexOf('tokyo')>=0||loc.indexOf('ja')===0)
+      return {name:'Weekend away — Fuji Five Lakes',notes:'Campsite: Kawaguchiko area. Booking ref: FC-2847. Lakeside walks. Check campsite pet rules.'};
+    if(tz.indexOf('singapore')>=0||tz.indexOf('kuala')>=0)
+      return {name:'Weekend away — coastal park',notes:'Campsite: sample coastal campground. Booking ref: FC-2847. Easy trails. Check pet rules.'};
+  }
+  if(tz.indexOf('africa/')===0)
+    return {name:'Weekend away — Drakensberg',notes:'Campsite: sample mountain camp. Booking ref: FC-2847. Day walks and views. Dogs welcome.'};
+  return {name:'Weekend away — camping trip',notes:'Sample campsite. Booking ref: FC-2847. Replace with your real site, dates and notes. Dogs welcome.'};
+}
+
 function demoData(){
   const u=uid;
+  const place=demoTripPlaceProfile();
 
   // ── PEOPLE ──
   const dadId=u(), mumId=u(), kid1Id=u(), kid2Id=u(), dogId=u();
@@ -10901,7 +11161,7 @@ function demoData(){
 
   const tripBase={
     id:uid(),
-    name:'Easter Weekend — Peak District',
+    name:place.name,
     date: (() => {
       const d=new Date(); d.setDate(d.getDate()+14);
       return d.toISOString().slice(0,10);
@@ -10912,7 +11172,7 @@ function demoData(){
     extraPeople:0,
     distance:'regional',
     activities:['hiking'],
-    notes:'Campsite: Fieldhead Campsite, Edale. Booking ref: FC-2847. Near Kinder Scout — great walking. Dogs welcome.',
+    notes:place.notes,
     status:'packing',
     actionStates,
     packUpStates:{},
@@ -10960,6 +11220,7 @@ function syncLightModeBtnLabels(){
   const aria=isLight?'Switch to dark mode':'Switch to light mode';
   const desk=document.getElementById('lightBtn');
   const mob=document.getElementById('mobileLightBtn');
+  const utilLbl=document.getElementById('utilSheetLightLabel');
   if(desk){
     desk.innerHTML=isLight?HDR_IC_MOON:HDR_IC_SUN;
     desk.setAttribute('aria-label',aria);
@@ -10970,6 +11231,7 @@ function syncLightModeBtnLabels(){
     mob.innerHTML='<span class="umenu-ic" aria-hidden="true">'+ic+'</span><span>'+actionLabel+'</span>';
     mob.setAttribute('aria-label',aria);
   }
+  if(utilLbl) utilLbl.textContent=actionLabel;
 }
 
 function clearHdrDropdownMenuStyles(menu){
