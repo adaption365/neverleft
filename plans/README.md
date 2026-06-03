@@ -53,6 +53,14 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [APE-78](https://linear.app/aperturegraph/issue/APE-78) | index_claude_merge… | Step 3 — Skip backup reminder in demo mode — Done |
 | [APE-79](https://linear.app/aperturegraph/issue/APE-79) | index_claude_merge… | Step 4 — Item modal More options — Done |
 | [APE-80](https://linear.app/aperturegraph/issue/APE-80) | index_claude_merge… | Step 5 — First-visit intro overlay — Done |
+| [APE-81](https://linear.app/aperturegraph/issue/APE-81) | index_claude_merge… | Post-epic — Em dash → comma user copy — Done |
+
+| [APE-82](https://linear.app/aperturegraph/issue/APE-82) | index_claude_v2_merge… | **Epic** — Onboarding v2 (`index_claude_v2` → `index.html`) — Ready for testing |
+| [APE-83](https://linear.app/aperturegraph/issue/APE-83) | index_claude_v2_merge… | Step 2 — Spotlight tour — Ready for testing |
+| [APE-84](https://linear.app/aperturegraph/issue/APE-84) | index_claude_v2_merge… | Step 1 — Orientation overlay — Ready for testing |
+| [APE-85](https://linear.app/aperturegraph/issue/APE-85) | index_claude_v2_merge… | Step 4 — Starting kit demo copy — Ready for testing |
+| [APE-86](https://linear.app/aperturegraph/issue/APE-86) | index_claude_v2_merge… | Step 5 — Polish (scroll, labels) — Ready for testing |
+| [APE-87](https://linear.app/aperturegraph/issue/APE-87) | index_claude_v2_merge… | Step 3 — Replay intro & tour entry points — Ready for testing |
 
 **Active epic:** [packing_calm_ux](packing_calm_ux.plan.md) — calm packing as core product philosophy ([APE-73](https://linear.app/aperturegraph/issue/APE-73)); **APE-52**, **APE-70**, **APE-74** ready for testing (commit `5bb3c40`); next **APE-72 → 69 → 71** after sign-off.
 
@@ -90,7 +98,8 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [trip_todo_print.plan.md](trip_todo_print.plan.md) | Ready for testing | Print to-dos per step (APE-64); inline packing to-dos restore (APE-62); future APE-63/65/66 |
 | [packing_calm_ux_discovery.md](packing_calm_ux_discovery.md) | Discovery | Why packing feels busy; north star; personas; disclosure model |
 | [packing_calm_ux.plan.md](packing_calm_ux.plan.md) | Ready for testing | Pack/Full (APE-70), journey bar (APE-52), to-do focus flow (APE-74); `5bb3c40`; phases 72/69/71 backlog |
-| [index_claude_merge.plan.md](index_claude_merge.plan.md) | Done | Phased cherry-pick from `index_claude.html` (APE-75); Steps 1–5 shipped in `index.html` |
+| [index_claude_merge.plan.md](index_claude_merge.plan.md) | Done | Phased merge (APE-75); Steps 1–5 + APE-81 copy pass shipped in `index.html` |
+| [index_claude_v2_merge.plan.md](index_claude_v2_merge.plan.md) | Ready for testing | Onboarding v2 — APE-82 epic; steps APE-83–87 shipped in `index.html` |
 
 **Suggested build order** (from feature plan): demo graduation + backup gate → trip experience polish → Camp mode → qty rules.
 

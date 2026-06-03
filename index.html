@@ -1128,22 +1128,185 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
     </div>
   </div>
 </main>
+<main class="nl-intro" id="nlOrient" style="display:none" role="region" aria-label="How NeverLeft works">
+  <div class="nl-intro__inner">
+    <div class="nl-intro__brand">
+      <div class="nl-intro__mark" aria-hidden="true">N</div>
+      <div class="nl-intro__wordmark">NeverLeft</div>
+    </div>
+    <section class="nl-intro__hero">
+      <p class="nl-intro__eyebrow">Before you dive in</p>
+      <h1 class="nl-intro__headline" style="font-size:clamp(1.9rem,8vw,2.7rem)">Welcome in.<br><em>This one&rsquo;s already yours.</em></h1>
+      <p class="nl-intro__sub">No sign-up, no account. NeverLeft lives in your browser, on this device. So:</p>
+      <ul class="nl-intro__points">
+        <li class="nl-intro__point">
+          <svg class="nl-intro__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6z"/></svg>
+          <div><b>It&rsquo;s private</b><span>Only you can see this. Not other people, not us.</span></div>
+        </li>
+        <li class="nl-intro__point">
+          <svg class="nl-intro__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+          <div><b>It&rsquo;s yours to change</b><span>We&rsquo;ve set you up with a starting kit and a sample trip. Edit, rename or delete anything. You can&rsquo;t break it, and nothing is shared.</span></div>
+        </li>
+        <li class="nl-intro__point">
+          <svg class="nl-intro__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+          <div><b>It saves itself here</b><span>To keep it safe or move it to your phone, you&rsquo;ll make a backup later.</span></div>
+        </li>
+      </ul>
+      <details style="margin-top:16px">
+        <summary style="cursor:pointer;font-family:var(--nl-mono);font-size:12px;letter-spacing:.04em;color:var(--rust);list-style:none">How is this private?</summary>
+        <p class="nl-intro__sub" style="margin-top:10px;font-size:.95rem">NeverLeft runs entirely in your browser. There&rsquo;s no account and no server holding your things. Your kit and trips live on this device only. That makes it completely private, it works offline, and it&rsquo;s instant. The trade-off: your data is tied to this browser, so if you clear it or switch devices it won&rsquo;t follow you on its own. That&rsquo;s what a backup is for. A small file you save or send to yourself, to restore anywhere.</p>
+      </details>
+    </section>
+    <div class="nl-intro__actions">
+      <button class="nl-intro__cta" type="button" onclick="nlFinishOrient(true)">
+        Show me how it works
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </button>
+      <p class="nl-intro__returning">
+        <button type="button" onclick="nlFinishOrient(false)">I&rsquo;ll explore on my own</button>
+      </p>
+    </div>
+  </div>
+</main>
 <script>
   function nlEnterApp(){
     try{ localStorage.setItem('basecamp_introSeen','1'); }catch(e){}
     var el=document.getElementById('nlIntro');
-    if(!el) return;
-    el.style.opacity='0'; el.style.pointerEvents='none';
-    setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 360);
+    if(el){
+      el.style.opacity='0'; el.style.pointerEvents='none';
+      setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 360);
+    }
+    try{
+      if(localStorage.getItem('basecamp_orientSeen')!=='1'){
+        var o=document.getElementById('nlOrient'); if(o) o.style.display='flex';
+      }
+    }catch(e){}
+  }
+  function nlFinishOrient(showPayoff){
+    try{ localStorage.setItem('basecamp_orientSeen','1'); }catch(e){}
+    var o=document.getElementById('nlOrient');
+    if(o){
+      o.style.opacity='0'; o.style.pointerEvents='none';
+      setTimeout(function(){ if(o.parentNode) o.parentNode.removeChild(o); }, 360);
+    }
+    if(showPayoff){
+      setTimeout(function(){
+        try{
+          if(typeof S!=='undefined' && S.trips && S.trips.length && typeof openTrip==='function'){
+            openTrip(S.trips[0].id);
+            if(typeof nlTourMaybeAuto==='function') nlTourMaybeAuto();
+          }
+        }catch(e){}
+      }, 420);
+    }
+  }
+  function replayOnboarding(){
+    try{
+      localStorage.removeItem('basecamp_introSeen');
+      localStorage.removeItem('basecamp_orientSeen');
+      localStorage.removeItem('basecamp_tourSeen');
+    }catch(e){}
+    location.reload();
   }
   (function(){
     try{
-      var el=document.getElementById('nlIntro');
-      if(el && localStorage.getItem('basecamp_introSeen')==='1'){ el.parentNode.removeChild(el); }
+      var introDone=localStorage.getItem('basecamp_introSeen')==='1';
+      var orientDone=localStorage.getItem('basecamp_orientSeen')==='1';
+      var i=document.getElementById('nlIntro');
+      if(i && introDone){ i.parentNode.removeChild(i); }
+      var o=document.getElementById('nlOrient');
+      if(o){
+        if(orientDone){ o.parentNode.removeChild(o); }
+        else if(introDone){ o.style.display='flex'; }
+      }
     }catch(e){}
   })();
 </script>
 <!-- ============ end landing layer ============ -->
+
+<!-- ============ contextual walkthrough (spotlight tour) ============ -->
+<style>
+  .nlt-catch{position:fixed;inset:0;z-index:100020;background:transparent;cursor:pointer}
+  .nlt-spot{position:fixed;z-index:100021;border-radius:12px;pointer-events:none;box-shadow:0 0 0 9999px rgba(18,28,22,.62),0 0 0 2px var(--gold);transition:all .28s cubic-bezier(.4,0,.2,1)}
+  .nlt-pop{position:fixed;z-index:100022;width:min(330px,calc(100vw - 24px));background:var(--canvas-2);color:var(--text);border:1px solid var(--border);border-radius:14px;padding:16px 16px 14px;box-shadow:0 18px 40px -16px rgba(0,0,0,.5);font-family:'Familjen Grotesk',sans-serif;transition:top .28s ease,left .28s ease}
+  .nlt-pop__eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--rust);margin:0 0 6px}
+  .nlt-pop__title{font-family:'Newsreader',Georgia,serif;font-size:1.15rem;font-weight:600;margin:0 0 6px;line-height:1.2}
+  .nlt-pop__body{font-size:.9rem;line-height:1.5;color:var(--text-m);margin:0 0 14px}
+  .nlt-pop__row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .nlt-pop__dots{display:flex;gap:5px}
+  .nlt-pop__dot{width:6px;height:6px;border-radius:50%;background:var(--border)}
+  .nlt-pop__dot--on{background:var(--sage)}
+  .nlt-pop__skip{appearance:none;border:none;background:none;font:inherit;font-size:.82rem;color:var(--text-m);cursor:pointer;padding:6px}
+  .nlt-pop__next{appearance:none;border:none;cursor:pointer;font-family:inherit;font-weight:600;font-size:.9rem;color:var(--canvas);background:var(--sage);border-radius:10px;padding:9px 16px}
+  @media (prefers-reduced-motion:reduce){.nlt-spot,.nlt-pop{transition:none}}
+</style>
+<script>
+(function(){
+  var steps=[
+    {sel:['.journey-scroll'],eyebrow:'1 of 4',title:'The journey',body:'Every trip moves through stages, from planning to packing to camp to home. NeverLeft keeps the right things in front of you at each one.'},
+    {sel:['.consumable-prep'],eyebrow:'2 of 4',title:'What to buy',body:'It works out which consumables to top up, comparing what this trip needs with what you already have in stock.'},
+    {sel:['.cprog','.cprog-pack-main','.checklist-toolbar'],eyebrow:'3 of 4',title:'A list that builds itself',body:'This packing list assembled itself from your Kit, scaled to the nights and people on the trip. Tick things off as you pack.'},
+    {sel:['#navKitBtn'],eyebrow:'4 of 4',title:'It all comes from your Kit',body:'Your Camping Kit is the one place you keep what you own. Every trip list is drawn from it, which is why we start you off with one.'}
+  ];
+  var idx=0, order=[], catchEl, spot, pop, built=false;
+  function build(){
+    if(built) return;
+    catchEl=document.createElement('div'); catchEl.className='nlt-catch'; catchEl.addEventListener('click',next);
+    spot=document.createElement('div'); spot.className='nlt-spot';
+    pop=document.createElement('div'); pop.className='nlt-pop';
+    document.body.appendChild(catchEl); document.body.appendChild(spot); document.body.appendChild(pop);
+    built=true;
+  }
+  function findTarget(step){
+    for(var i=0;i<step.sel.length;i++){ var e=document.querySelector(step.sel[i]); if(e && e.getClientRects().length) return e; }
+    return null;
+  }
+  function place(t){
+    var r=t.getBoundingClientRect(), pad=8;
+    spot.style.left=(r.left-pad)+'px'; spot.style.top=(r.top-pad)+'px';
+    spot.style.width=(r.width+pad*2)+'px'; spot.style.height=(r.height+pad*2)+'px';
+    var pw=pop.offsetWidth, ph=pop.offsetHeight, vw=window.innerWidth, vh=window.innerHeight, top, left;
+    if(r.bottom+14+ph<vh) top=r.bottom+14; else if(r.top-14-ph>12) top=r.top-14-ph; else top=Math.max(12,vh-ph-12);
+    left=Math.min(Math.max(12, r.left+r.width/2-pw/2), vw-pw-12);
+    pop.style.top=top+'px'; pop.style.left=left+'px';
+  }
+  function render(){
+    var step=order[idx], t=findTarget(step);
+    if(!t){ if(idx<order.length-1){ idx++; return render(); } return end(); }
+    var last=idx===order.length-1;
+    var dots=order.map(function(_,i){return '<span class="nlt-pop__dot'+(i===idx?' nlt-pop__dot--on':'')+'"></span>';}).join('');
+    pop.innerHTML='<p class="nlt-pop__eyebrow">'+step.eyebrow+'</p><h3 class="nlt-pop__title">'+step.title+'</h3><p class="nlt-pop__body">'+step.body+'</p><div class="nlt-pop__row"><div class="nlt-pop__dots">'+dots+'</div><div style="display:flex;align-items:center;gap:4px"><button type="button" class="nlt-pop__skip">Skip</button><button type="button" class="nlt-pop__next">'+(last?'Done':'Next')+'</button></div></div>';
+    pop.querySelector('.nlt-pop__skip').addEventListener('click',function(ev){ev.stopPropagation();end();});
+    pop.querySelector('.nlt-pop__next').addEventListener('click',function(ev){ev.stopPropagation();next();});
+    try{ t.scrollIntoView({block:'center',behavior:'smooth'}); }catch(e){ t.scrollIntoView(); }
+    setTimeout(function(){ place(t); }, 360);
+  }
+  function next(){ if(idx<order.length-1){ idx++; render(); } else end(); }
+  function end(){
+    try{ localStorage.setItem('basecamp_tourSeen','1'); }catch(e){}
+    if(catchEl) catchEl.style.display='none';
+    if(spot) spot.style.display='none';
+    if(pop) pop.style.display='none';
+  }
+  function start(){
+    build(); order=steps.slice(); idx=0;
+    catchEl.style.display='block'; spot.style.display='block'; pop.style.display='block';
+    render();
+  }
+  window.nlTourStart=start;
+  window.nlTourLaunch=function(){
+    try{
+      if(typeof S==='undefined'||!S.trips||!S.trips.length) return;
+      if(typeof activeTripId!=='undefined' && activeTripId){ start(); }
+      else if(typeof openTrip==='function'){ openTrip(S.trips[0].id); setTimeout(start,520); }
+    }catch(e){}
+  };
+  window.nlTourMaybeAuto=function(){
+    try{ if(localStorage.getItem('basecamp_tourSeen')!=='1') setTimeout(start,650); }catch(e){}
+  };
+})();
+</script>
+<!-- ============ end walkthrough ============ -->
 
 <button id="scrollTopBtn" class="scroll-top-btn" type="button" aria-label="Back to top" title="Back to top" onclick="scrollToTop()">↑</button>
 
@@ -1176,6 +1339,8 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
       <button type="button" class="hdr-btn" id="utilMenuBtn" onclick="toggleUtilMenu(event)" aria-label="Menu" aria-expanded="false" aria-haspopup="true" style="padding:0 12px;letter-spacing:.05em">···</button>
       <div id="utilMenu" class="hdr-dd-menu" style="display:none">
         <button type="button" class="umenu-item" onclick="closeUtilMenu();setTab('settings', document.getElementById('navSettingsBtn'))">Settings</button>
+        <button type="button" class="umenu-item" onclick="closeUtilMenu();replayOnboarding()">Replay intro</button>
+        <button type="button" class="umenu-item" onclick="closeUtilMenu();nlTourLaunch()">Show me around</button>
         <button type="button" class="umenu-item" id="mobileShopListBtn" onclick="closeUtilMenu();openShoppingList()" style="display:none">Shopping list</button>
         <button type="button" class="umenu-item" onclick="closeUtilMenu();openSearchPanel()"><span class="umenu-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span><span>Search</span></button>
         <button type="button" class="umenu-item" id="mobileLightBtn" onclick="closeUtilMenu();toggleLightMode()"><span class="umenu-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span><span>Dark mode</span></button>
@@ -1200,12 +1365,12 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 <div id="demoBanner" style="display:none;background:linear-gradient(135deg,#d4902a,#9a6820);color:#1a1a14;padding:10px 18px;align-items:center;gap:12px;flex-wrap:wrap">
   <span style="font-size:16px">🏕</span>
   <div style="flex:1;min-width:0">
-    <div style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Sample Camping Kit</div>
-    <div style="font-size:11px;opacity:.85;line-height:1.45">Explore or edit anything. When you&rsquo;re ready, use it as your Camping Kit &mdash; nothing is deleted.</div>
+    <div style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Your starting kit</div>
+    <div style="font-size:11px;opacity:.85;line-height:1.45">We&rsquo;ve started you off so you can see how it works. Make it yours, or start from scratch.</div>
   </div>
   <div style="display:flex;gap:7px;flex-shrink:0;flex-wrap:wrap;align-items:center">
-    <button class="btn" style="background:#1a1a14;color:#faf0e4;font-size:11px;font-weight:600;border:none;padding:7px 14px" onclick="graduateFromDemo()">Use as my Camping Kit</button>
-    <button class="btn" style="background:rgba(0,0,0,.12);color:#1a1a14;font-size:10px;border:1px solid rgba(0,0,0,.18)" onclick="requestResetAllData()">Start empty</button>
+    <button class="btn" style="background:#1a1a14;color:#faf0e4;font-size:11px;font-weight:600;border:none;padding:7px 14px" onclick="graduateFromDemo()">Make this mine</button>
+    <button class="btn" style="background:rgba(0,0,0,.12);color:#1a1a14;font-size:10px;border:1px solid rgba(0,0,0,.18)" onclick="requestResetAllData()">Start from scratch</button>
     <button class="btn" style="background:transparent;color:#1a1a14;font-size:16px;border:none;padding:2px 6px;line-height:1" onclick="dismissDemoBanner()" title="Hide for now">✕</button>
   </div>
 </div>
@@ -1297,7 +1462,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
     <div class="fg"><label class="fl">Type *</label>
       <select class="fs" id="iType" onchange="updateItemQtyLabel();updateQtyRuleSummary()">
         <option value="always">Always packed</option>
-        <option value="house">From House</option>
+        <option value="house">Bring from home</option>
         <option value="consumable">Consumable</option>
         <option value="seasonal">Seasonal</option>
         <option value="wishlist">Want list</option>
@@ -1322,12 +1487,12 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
   <div class="fg" id="iQtyRuleBlock">
     <label class="fl">Trip quantity</label>
     <div class="qtyrule-summary">
-      <span id="iQtyRuleSummaryText">Fixed — uses Quantity above</span>
+      <span id="iQtyRuleSummaryText">Fixed, uses Quantity above</span>
       <button type="button" class="qtyrule-toggle" id="iQtyRuleToggle" onclick="toggleQtyRuleEditor()">Scale for trip…</button>
     </div>
     <div class="qtyrule-editor" id="iQtyRuleEditor" style="display:none">
       <select class="fs" id="iQtyKind" onchange="onQtyKindChange()">
-        <option value="fixed">Fixed — use Quantity</option>
+        <option value="fixed">Fixed: use Quantity</option>
         <option value="perNight">Per night</option>
         <option value="perPersonPerNight">Per person, per night</option>
       </select>
@@ -1358,7 +1523,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
   <div class="fg">
     <label class="fl">Packs into (optional)</label>
     <select class="fs" id="iPacksInto">
-      <option value="">— Same as storage location —</option>
+      <option value="">Same as storage location</option>
     </select>
     <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:3px">Where this item ends up when packed for a trip (e.g. Shed → Duffle Bag)</div>
   </div>
@@ -1371,7 +1536,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
   </div>
   <div class="fg"><label class="fl">Notes</label><textarea class="fta" id="iNotes" placeholder="e.g. Check gas level, stored in blue bin…"></textarea></div>
   <div class="fg" id="iActionsGroup">
-    <label class="fl">Actions <span style="font-weight:400;color:var(--text-m);text-transform:none;letter-spacing:0">— tasks to do at each stage</span></label>
+    <label class="fl">Actions <span style="font-weight:400;color:var(--text-m);text-transform:none;letter-spacing:0">, tasks to do at each stage</span></label>
     <div id="iActionsList" style="margin-bottom:6px"></div>
     <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
       <input class="fi" id="iActionLabel" placeholder="e.g. Charge batteries" style="flex:1;min-width:120px">
@@ -1392,12 +1557,12 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
  </div>
 </div>
 
-<!-- ═══ GROUP MODAL — a bundle, not an item ═══ -->
+<!-- ═══ GROUP MODAL, a bundle, not an item ═══ -->
 <div class="mover" id="groupModal" onclick="closeMOver(event,'groupModal')">
  <div class="modal">
   <div class="mtitle" id="gmt">New group</div>
   <div class="fg"><label class="fl">Name *</label><input class="fi" id="gName" placeholder="e.g. Sleep kit, Biscuit's bag, Kitchen box"></div>
-  <div class="qtyrule-hint" style="margin:-2px 0 12px">A group is just a bundle of things you pack together — name it, then add what goes inside.</div>
+  <div class="qtyrule-hint" style="margin:-2px 0 12px">A group is just a bundle of things you pack together, name it, then add what goes inside.</div>
   <div class="frow">
     <div class="fg"><label class="fl">Category</label><select class="fs" id="gCat"></select></div>
     <div class="fg"><label class="fl">Where it lives (optional)</label><select class="fs" id="gLoc"></select></div>
@@ -1423,7 +1588,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
   </div>
 
   <div id="twFork" class="tw-pane">
-    <p class="tw-lead">No pressure — just tell us where you are in the journey.</p>
+    <p class="tw-lead">No pressure, just tell us where you are in the journey.</p>
     <div class="tw-choices">
       <button type="button" class="tw-choice" onclick="chooseTripWizardPath('booked')">
         <span class="tw-choice-title">A booked trip</span>
@@ -1440,7 +1605,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
   </div>
 
   <div id="twBooked1" class="tw-pane" hidden>
-    <p class="tw-lead">The essentials — enough to start planning calmly.</p>
+    <p class="tw-lead">The essentials, enough to start planning calmly.</p>
     <div class="fg"><label class="fl">What should we call this trip?</label><input class="fi" id="tName" placeholder="e.g. Lake District May bank holiday"></div>
     <div class="frow">
       <div class="fg"><label class="fl">When do you leave?</label><input class="fi" id="tDate" type="date"></div>
@@ -1448,7 +1613,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
     </div>
     <div class="fg">
       <label class="fl">Who&rsquo;s coming?</label>
-      <div class="tw-hint" style="margin-top:0;margin-bottom:6px">Leave everyone ticked if the whole crew is going — or pick just who&rsquo;s on this trip.</div>
+      <div class="tw-hint" style="margin-top:0;margin-bottom:6px">Leave everyone ticked if the whole crew is going, or pick just who&rsquo;s on this trip.</div>
       <div class="agrid" id="tAttendeeGrid"></div>
     </div>
     <div class="tw-actions">
@@ -1462,14 +1627,14 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
     <p class="tw-lead">These help NeverLeft suggest the right Camping Kit. You can skip this and change it later.</p>
     <div class="frow">
       <div class="fg"><label class="fl">What weather are you expecting?</label>
-        <select class="fs" id="tSeason"><option value="summer">Summer — warm &amp; sunny</option><option value="shoulder">Spring / autumn — mixed</option><option value="winter">Winter — cold nights</option></select>
+        <select class="fs" id="tSeason"><option value="summer">Summer: warm &amp; sunny</option><option value="shoulder">Spring / autumn: mixed</option><option value="winter">Winter: cold nights</option></select>
       </div>
       <div class="fg"><label class="fl">What type of site?</label>
         <select class="fs" id="tSite"><option value="hookup">Full hookup</option><option value="basic">Basic pitch</option><option value="wild">Wild / off-grid</option></select>
       </div>
     </div>
     <div class="fg"><label class="fl">How far from home?</label>
-      <select class="fs" id="tDist"><option value="local">Local — under an hour</option><option value="regional">Regional — a couple of hours</option><option value="remote">Remote — proper road trip</option></select>
+      <select class="fs" id="tDist"><option value="local">Local: under an hour</option><option value="regional">Regional: a couple of hours</option><option value="remote">Remote: proper road trip</option></select>
     </div>
     <div class="fg"><label class="fl">What might you get up to?</label>
       <div class="tw-hint" style="margin-top:0;margin-bottom:6px">Tick anything that might affect what you pack.</div>
@@ -1483,17 +1648,17 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
   </div>
 
   <div id="twBooked3" class="tw-pane" hidden>
-    <p class="tw-lead">Handy when you&rsquo;re offline or packing in a rush — all optional, add what you have.</p>
+    <p class="tw-lead">Handy when you&rsquo;re offline or packing in a rush, all optional, add what you have.</p>
     <div class="fg"><label class="fl">Campsite or place</label><input class="fi" id="tVenueName" placeholder="e.g. Great Langdale NT" oninput="refreshTripTravelLinkPreview()"></div>
     <div class="fg"><label class="fl">Location for maps &amp; forecast</label><input class="fi" id="tVenueAddress" placeholder="Postcode is best (e.g. LA22 9SE)" oninput="refreshTripTravelLinkPreview()"></div>
-    <div class="fg"><label class="fl">Booking reference</label><input class="fi" id="tBookingRef" placeholder="Confirmation number — if you have it"></div>
+    <div class="fg"><label class="fl">Booking reference</label><input class="fi" id="tBookingRef" placeholder="Confirmation number, if you have it"></div>
     <div class="frow">
       <div class="fg"><label class="fl">Check-in from</label><input class="fi" id="tCheckIn" type="time"></div>
       <div class="fg"><label class="fl">Check-out by</label><input class="fi" id="tCheckOut" type="time"></div>
     </div>
     <div class="fg tw-pane-site-rules">
       <label class="fl">Site rules</label>
-      <div class="tw-hint" style="margin-top:0;margin-bottom:6px">Tap any that apply — helps on the trip page at a glance.</div>
+      <div class="tw-hint" style="margin-top:0;margin-bottom:6px">Tap any that apply, helps on the trip page at a glance.</div>
       <div id="tSiteRulesStandard" class="site-rule-picker"></div>
       <div id="tSiteRulesTripCustom" class="site-rule-custom-list"></div>
       <div class="site-rule-add-row">
@@ -1519,7 +1684,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
   </div>
 
   <div id="twBooked4" class="tw-pane" hidden>
-    <p class="tw-lead">Anything you&rsquo;ll want to see before you leave — all optional.</p>
+    <p class="tw-lead">Anything you&rsquo;ll want to see before you leave, all optional.</p>
     <div class="fg"><label class="fl">Before-you-go notes</label><textarea class="fta" id="tNotes" rows="3" placeholder="Shopping, charge batteries, tell the neighbours…"></textarea></div>
     <div class="fg"><label class="fl">Travel</label>
       <div class="fg" style="margin-top:0"><label class="fl" style="font-size:10px;color:var(--text-m)">Leave from (optional)</label><input class="fi" id="tLeaveFrom" placeholder="Home postcode or address" oninput="refreshTripTravelLinkPreview()"></div>
@@ -1550,16 +1715,16 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
   </div>
 
   <div id="twIdea1" class="tw-pane" hidden>
-    <p class="tw-lead">Capture the dream — you can firm up dates when you&rsquo;re ready.</p>
+    <p class="tw-lead">Capture the dream, you can firm up dates when you&rsquo;re ready.</p>
     <div class="fg"><label class="fl">What might you call this trip?</label><input class="fi" id="tIdeaName" placeholder="e.g. Cornwall coast someday"></div>
     <div class="fg">
       <label class="fl">Who might come?</label>
-      <div class="tw-hint" style="margin-top:0;margin-bottom:6px">Optional — helps when you start packing later.</div>
+      <div class="tw-hint" style="margin-top:0;margin-bottom:6px">Optional, helps when you start packing later.</div>
       <div class="agrid" id="tIdeaAttendeeGrid"></div>
     </div>
     <div class="frow">
       <div class="fg"><label class="fl">Rough season</label>
-        <select class="fs" id="tIdeaSeason"><option value="summer">Summer — warm &amp; light</option><option value="shoulder">Spring / autumn — mixed</option><option value="winter">Winter — cold &amp; cosy Camping Kit</option></select>
+        <select class="fs" id="tIdeaSeason"><option value="summer">Summer: warm &amp; light</option><option value="shoulder">Spring / autumn: mixed</option><option value="winter">Winter: cold &amp; cosy Camping Kit</option></select>
       </div>
       <div class="fg"><label class="fl">Rough site type</label>
         <select class="fs" id="tIdeaSite"><option value="hookup">Campsite with hookup</option><option value="basic">Simple pitch</option><option value="wild">Wild / off-grid</option></select>
@@ -1973,7 +2138,7 @@ function save(){
   try{ localStorage.setItem(SK,JSON.stringify(S)); }
   catch(e){
     const full=e&&e.name==='QuotaExceededError';
-    showToast(full?'Could not save — storage is full. Export a backup, then remove items or old trips.':'Could not save — your browser blocked storage.');
+    showToast(full?'Could not save, storage is full. Export a backup, then remove items or old trips.':'Could not save, your browser blocked storage.');
   }
 }
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
@@ -2118,7 +2283,7 @@ function toggleChecklistGroup(tripId, itemId, e){
 function checklistGroupCollapsedHint(visibleCount, totalCount, groupOpen){
   if(groupOpen||!totalCount) return '';
   const inner=visibleCount&&visibleCount<totalCount?visibleCount+' of '+totalCount:String(totalCount);
-  return `<div class="igroup-collapsed-hint">${inner} item${totalCount!==1?'s':''} inside — tap ▼ or title to expand</div>`;
+  return `<div class="igroup-collapsed-hint">${inner} item${totalCount!==1?'s':''} inside, tap ▼ or title to expand</div>`;
 }
 
 function updateSwClear(inputId){
@@ -2392,7 +2557,7 @@ function addShortfallToShoppingList(itemId, tripId, qty){
   item.restock=true;
   item.qtyToBuy=Math.max(Number(item.qtyToBuy)||0, n);
   save(); refreshNavBadges(); renderTrips();
-  showToast('Added '+n+' to shopping list — '+item.name);
+  showToast('Added '+n+' to shopping list, '+item.name);
 }
 
 function dismissConsumablePrepStrip(tripId){
@@ -2413,7 +2578,7 @@ function renderConsumablePrepStrip(trip){
       <span class="consumable-prep-title">Suggested amounts for this trip</span>
       <button type="button" class="consumable-prep-dismiss" onclick="dismissConsumablePrepStrip('${trip.id}')">Dismiss</button>
     </div>
-    <p class="consumable-prep-lead">Consumables you may want to buy — based on this trip&rsquo;s packing list and what you have in stock.</p>
+    <p class="consumable-prep-lead">Consumables you may want to buy, based on this trip&rsquo;s packing list and what you have in stock.</p>
     <div class="consumable-prep-rows">
       ${rows.map(({item,demand,stock,shortfall})=>{
         const listed=item.restock&&(Number(item.qtyToBuy)||0)>=shortfall;
@@ -2564,7 +2729,7 @@ function renderTripListCard(t, variant){
   return `
       <div class="tcard${logbook?' tcard--logbook':''}${idea?' tcard--idea':''}" onclick="openTrip('${t.id}')">
         <div style="display:flex;align-items:flex-start;gap:8px;min-width:0">
-          ${showFeature?`<button type="button" class="trip-feature-btn${feat?' on':''}" title="${feat?'Featured — click to unpin':'Feature this trip'}" aria-label="${feat?'Unpin featured trip':'Feature this trip'}" onclick="event.stopPropagation();toggleFeaturedTrip('${t.id}')">${feat?'★':'☆'}</button>`:''}
+          ${showFeature?`<button type="button" class="trip-feature-btn${feat?' on':''}" title="${feat?'Featured, click to unpin':'Feature this trip'}" aria-label="${feat?'Unpin featured trip':'Feature this trip'}" onclick="event.stopPropagation();toggleFeaturedTrip('${t.id}')">${feat?'★':'☆'}</button>`:''}
           <div style="min-width:0;${showFeature?'':'flex:1'}">
           <div class="tcard-name">${formatTripHeroTitle(t.name)}</div>
           <div class="tcard-meta">${metaParts.join(' · ')}</div>
@@ -2760,7 +2925,7 @@ function renderKitTripBanner(){
   const total=kitItems().length;
   el.style.display='flex';
   el.className='kit-trip-banner';
-  el.innerHTML='<span><strong>Trip Camping Kit:</strong> '+esc(trip.name||'Trip')+' — showing <strong>'+n+'</strong> of '+total+' lines (packing-list rules; not packed state).</span>'
+  el.innerHTML='<span><strong>Trip Camping Kit:</strong> '+esc(trip.name||'Trip')+', showing <strong>'+n+'</strong> of '+total+' lines (packing-list rules; not packed state).</span>'
     +'<span class="kit-trip-banner-actions"><button type="button" class="btn btn-o btn-sm" onclick="openKitAll()">View full Camping Kit</button></span>';
 }
 
@@ -2885,7 +3050,7 @@ function renderKitPageHead(){
     <div class="kit-intro">
       <div class="kit-intro-eyebrow">My Camping Kit</div>
       <h2 class="kit-intro-title">Everything we <em>own</em>.</h2>
-      <p class="kit-intro-lead">Every piece of your Camping Kit, where it lives, and what it's part of. Trips pull from here — your Camping Kit is the single source of truth.</p>
+      <p class="kit-intro-lead">Every piece of your Camping Kit, where it lives, and what it's part of. Trips pull from here, your Camping Kit is the single source of truth.</p>
     </div>
     <div class="kit-stats">
       <div class="kit-stat">
@@ -2898,7 +3063,7 @@ function renderKitPageHead(){
       </div>
       <button type="button" class="kit-stat kit-stat-btn" onclick="openRestockView()" title="Restock by storage location">
         <div class="kit-stat-v${restock?' warn':''}">${restock}</div>
-        <div class="kit-stat-l">${restock?'need restocking':'restock — all good'}</div>
+        <div class="kit-stat-l">${restock?'need restocking':'restock, all good'}</div>
       </button>
     </div>
     <div class="kit-stats kit-stats--layers">
@@ -2952,7 +3117,7 @@ function renderInv(){
     const tripHint=kitTripFilter!=='all'?' Try “All Camping Kit” or pick another trip.':'';
     const q=String(document.getElementById('srch')?.value||'').trim();
     const createBtn=q?`<button type="button" class="btn btn-p" style="margin-top:12px" onclick="openAddItemFromSearch()">+ Add “${esc(q)}”</button>`:'';
-    el.innerHTML=`<div class="empty">No items match — adjust filters or add one above.${tripHint}${createBtn}</div>`;
+    el.innerHTML=`<div class="empty">No items match, adjust filters or add one above.${tripHint}${createBtn}</div>`;
     return;
   }
 
@@ -3041,7 +3206,7 @@ function itemRow(item, isSub, srch){
   const isWish=item.type==='wishlist';
   const assignedPeople=(S.people||[]).filter(p=>(item.personIds||[]).includes(p.id));
   const personBadges=assignedPeople.map(p=>`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:10px;background:${p.color}22;color:${p.color};border:1px solid ${p.color}55;margin-left:4px">${esc(p.name)}</span>`).join('');
-  const collapsedHint=hasGroup&&!groupOpen?`<div class="igroup-collapsed-hint">${allSubs.length?`${subs.length?subs.length+' of '+allSubs.length:allSubs.length} item${allSubs.length!==1?'s':''} inside — tap to expand`:'Empty group — tap to add the first thing'}</div>`:'';
+  const collapsedHint=hasGroup&&!groupOpen?`<div class="igroup-collapsed-hint">${allSubs.length?`${subs.length?subs.length+' of '+allSubs.length:allSubs.length} item${allSubs.length!==1?'s':''} inside, tap to expand`:'Empty group, tap to add the first thing'}</div>`:'';
   const metaTags=groupOpen||!hasGroup?`
         ${item.activity?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--teal);text-transform:uppercase;letter-spacing:.06em">${esc(item.activity)}</span>`:''}
         ${item.isContainer?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--amber-d);text-transform:uppercase;letter-spacing:.06em">⊞ group</span>`:''}
@@ -3348,7 +3513,7 @@ function tripHeroMetaLine(trip){
   const parts=[];
   if(trip.date){
     const end=tripHeroEndDate(trip);
-    parts.push(end?fmtDate(trip.date)+' — '+fmtDate(end):fmtDate(trip.date));
+    parts.push(end?fmtDate(trip.date)+' to '+fmtDate(end):fmtDate(trip.date));
   }
   if(trip.nights) parts.push(trip.nights+' night'+(trip.nights!==1?'s':''));
   const days=tripLeaveDaysAhead(trip);
@@ -3369,7 +3534,7 @@ function tripHeroWeatherLine(trip){
   if(w.mode==='snapshot'&&w.days?.length)
     return (w.summary||buildWeatherSnapshotSummary(w.days)||'').replace(/\s*\(saved forecast\)\s*$/i,'').trim();
   if(w.mode==='manual'&&(w.summary||'').trim()) return w.summary.trim();
-  const short={summer:'Warm — sun & layers',shoulder:'Mixed — pack layers',winter:'Cold — warm Camping Kit'};
+  const short={summer:'Warm, sun & layers',shoulder:'Mixed, pack layers',winter:'Cold, warm Camping Kit'};
   return short[trip.season]||seasonWeatherHint(trip);
 }
 
@@ -3493,7 +3658,7 @@ function renderTrips(){
       <div style="text-align:center;padding:40px 20px 30px">
         <div style="font-size:52px;margin-bottom:12px;line-height:1">⛺</div>
         <div style="font-family:'Familjen Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:.06em;color:var(--ink,var(--text));margin-bottom:8px">Where are you heading?</div>
-        <div style="font-size:13px;color:var(--text-m);margin-bottom:24px;line-height:1.6;max-width:280px;margin-left:auto;margin-right:auto">Plan a trip and NeverLeft will help you pack everything you need — stress free.</div>
+        <div style="font-size:13px;color:var(--text-m);margin-bottom:24px;line-height:1.6;max-width:280px;margin-left:auto;margin-right:auto">Plan a trip and NeverLeft will help you pack everything you need, stress free.</div>
         <button class="btn btn-p" style="font-size:13px;padding:10px 24px" onclick="openNewTripModal()">Plan my first trip →</button>
       </div>`; return;
   }
@@ -3543,11 +3708,11 @@ function renderTrips(){
   const heroHtml=upcoming?renderTripHeroCard(upcoming, pc, upcomingIsFeatured):' ';
 
   const alsoPlannedIntro=tripsTypeFilter==='ideas'
-    ? 'Trips you\u2019re dreaming about — no dates needed yet.'
+    ? 'Trips you\u2019re dreaming about, no dates needed yet.'
     :upcoming
-    ? 'Other trips still ahead on the calendar — not done yet.'
-    : 'Trips still ahead on the calendar — not marked done.';
-  const logbookIntro='Past trips and ones you\u2019ve marked done — open for notes and reference.';
+    ? 'Other trips still ahead on the calendar, not done yet.'
+    : 'Trips still ahead on the calendar, not marked done.';
+  const logbookIntro='Past trips and ones you\u2019ve marked done, open for notes and reference.';
   const alsoLabel=tripsTypeFilter==='ideas'?'Ideas':tripsTypeFilter==='trips'?'Upcoming trips':'Also planned';
   const alsoPlannedHtml=renderTripsListSection(alsoLabel, alsoPlannedIntro, alsoPlanned, 'planned');
   const logbookHtml=logbook.length&&tripsTypeFilter!=='ideas'
@@ -3556,8 +3721,8 @@ function renderTrips(){
   const restHtml=alsoPlannedHtml+logbookHtml;
   const emptyFilter=!heroHtml.trim()&&!alsoPlanned.length&&!logbookHtml.trim();
   const emptyFilterMsg=tripsTypeFilter==='ideas'
-    ? '<p class="trips-section-intro">No ideas yet — tap <strong>+ New trip</strong> and choose <em>A possible trip</em>.</p>'
-    :'<p class="trips-section-intro">Nothing in this view — try another filter or add a trip.</p>';
+    ? '<p class="trips-section-intro">No ideas yet, tap <strong>+ New trip</strong> and choose <em>A possible trip</em>.</p>'
+    :'<p class="trips-section-intro">Nothing in this view, try another filter or add a trip.</p>';
 
   el.innerHTML=`
     <div class="trips-heading">
@@ -4043,7 +4208,7 @@ function tripDetail(trip){
   const isIdea=trip.status==='idea';
   const packCalm=packingCalmViewActive(trip);
   const ideaBanner=isIdea?`<div class="trip-idea-banner" style="margin-bottom:16px;padding:14px 16px;border-radius:12px;background:rgba(138,106,184,.1);border:1px solid rgba(138,106,184,.25)">
-    <p style="margin:0 0 10px;font-family:'Newsreader',serif;font-style:italic;font-size:14px;line-height:1.5;color:var(--text-d)">Still an idea — no rush. When you&rsquo;ve booked, we&rsquo;ll help with dates and packing.</p>
+    <p style="margin:0 0 10px;font-family:'Newsreader',serif;font-style:italic;font-size:14px;line-height:1.5;color:var(--text-d)">Still an idea, no rush. When you&rsquo;ve booked, we&rsquo;ll help with dates and packing.</p>
     <button type="button" class="btn btn-p btn-sm" onclick="graduateTripIdea('${trip.id}')">We&rsquo;ve booked it →</button>
   </div>`:'';
 
@@ -4106,11 +4271,11 @@ function pressureCountdown(dateStr, nights){
     if(end>=0) return {label:'You\'re there!', sub:'', color:'var(--sage)', pulse:false};
     return null;
   }
-  if(diff===0) return {label:'Today is the day', sub:'Pack the car — you leave today', color:'var(--rust)', pulse:true};
+  if(diff===0) return {label:'Today is the day', sub:'Pack the car, you leave today', color:'var(--rust)', pulse:true};
   if(diff===1) return {label:'Tomorrow', sub:'Everything should be packed tonight', color:'var(--rust)', pulse:false};
   if(diff<=3)  return {label:'Leaving in '+diff+' days', sub:'Time to get organised', color:'var(--amber)', pulse:false};
   if(diff<=7)  return {label:'Leaving in '+diff+' days', sub:'Start thinking about packing', color:'var(--amber-l)', pulse:false};
-  if(diff<=14) return {label:'Leaving in '+diff+' days', sub:'Plenty of time — no rush', color:'var(--sage)', pulse:false};
+  if(diff<=14) return {label:'Leaving in '+diff+' days', sub:'Plenty of time, no rush', color:'var(--sage)', pulse:false};
   return {label:'Leaving in '+diff+' days', sub:'', color:'var(--text-m)', pulse:false};
 }
 
@@ -4124,7 +4289,7 @@ function statusBtn(trip){
   if(trip.status==='packing'){
     const met=tripPackingStageCriteriaMet(trip);
     const hint=tripStageCriteriaHint(trip,'packing');
-    const label=isTripStageComplete(trip,'packing')?'Continue to at camp →':'Packing done — at camp →';
+    const label=isTripStageComplete(trip,'packing')?'Continue to at camp →':'Packing done, at camp →';
     return `<button class="btn btn-p btn-sm" onclick="completeTripStage('${id}')" ${met?'':'disabled'} title="${esc(hint)}">${label}</button>
       <button class="btn btn-o btn-sm" onclick="markAllChecklistPacked('${id}')">Mark all packed</button>
       ${!packCalm&&!met&&hint?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--rust)">${esc(hint)}</span>`:''}`;
@@ -4132,19 +4297,19 @@ function statusBtn(trip){
   if(trip.status==='at-camp'){
     const met=tripStageCriteriaMet(trip,'at-camp');
     const hint=tripStageCriteriaHint(trip,'at-camp');
-    return `<button class="btn btn-p btn-sm" onclick="completeTripStage('${id}')" ${met?'':'disabled'} title="${esc(hint)}">At camp — start packing up →</button>
+    return `<button class="btn btn-p btn-sm" onclick="completeTripStage('${id}')" ${met?'':'disabled'} title="${esc(hint)}">At camp, start packing up →</button>
       ${!met&&hint?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--rust)">${esc(hint)}</span>`:''}`;
   }
   if(trip.status==='pack-up'){
     const met=tripStageCriteriaMet(trip,'pack-up');
     const hint=tripStageCriteriaHint(trip,'pack-up');
-    return `<button class="btn btn-p btn-sm" onclick="completeTripStage('${id}')" ${met?'':'disabled'} title="${esc(hint)}">Packing up done — back home →</button>
+    return `<button class="btn btn-p btn-sm" onclick="completeTripStage('${id}')" ${met?'':'disabled'} title="${esc(hint)}">Packing up done, back home →</button>
       ${hint?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${esc(hint)}</span>`:''}`;
   }
   if(trip.status==='pack-away'){
     const met=tripStageCriteriaMet(trip,'pack-away');
     const hint=tripStageCriteriaHint(trip,'pack-away');
-    return `<button class="btn btn-g btn-sm" onclick="completeTripStage('${id}')" ${met?'':'disabled'} title="${esc(hint)}">Back home — review →</button>
+    return `<button class="btn btn-g btn-sm" onclick="completeTripStage('${id}')" ${met?'':'disabled'} title="${esc(hint)}">Back home, review →</button>
       ${hint?`<span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${esc(hint)}</span>`:''}`;
   }
   if(trip.status==='post-trip'){
@@ -4336,7 +4501,7 @@ function clearTripTodoFocus(){
 function packingViewModeBarHtml(trip){
   const mode=getPackingViewMode();
   const hint=mode==='pack'
-    ?'Focus on what&rsquo;s left — filters and full list tools in Full list.'
+    ?'Focus on what&rsquo;s left, filters and full list tools in Full list.'
     :'Search, sort, and manage everything.';
   return `<div class="pack-mode-bar">
     <div class="pack-seg" role="tablist" aria-label="Packing list view">
@@ -4357,7 +4522,7 @@ function checklistProgressHtml(trip, ready, packed, total, pctR, pctP, hlCount){
     return `<div class="cprog cprog-pack">
       <div class="cprog-pack-main"><span class="cprog-pack-n">${packed} packed</span> · <span class="cprog-pack-ready">${ready} ready</span> · ${remaining} to go</div>
       <div class="pbar-wrap pbar-wrap--pack"><div class="pbar-packed" style="width:${pctPacked}%"></div><div class="pbar-ready" style="width:${pctReadyOnly}%"></div></div>
-      ${pctPacked===100?`<div class="cprog-complete">🎉 Everything packed — you&rsquo;re good to go!</div>`:''}
+      ${pctPacked===100?`<div class="cprog-complete">🎉 Everything packed, you&rsquo;re good to go!</div>`:''}
       ${hlLine}
     </div>`;
   }
@@ -4374,7 +4539,7 @@ function checklistProgressHtml(trip, ready, packed, total, pctR, pctP, hlCount){
         <div class="pbar-ready" style="width:${pbarReadyW}%"></div>
       </div>
       <div class="cprog-hint">Tick each item&rsquo;s to-dos on its row, then: tap = ready · tap again = packed · tap again = reset</div>
-      ${pctP===100?`<div class="cprog-complete">🎉 Everything packed — you're good to go!</div>`:''}
+      ${pctP===100?`<div class="cprog-complete">🎉 Everything packed, you're good to go!</div>`:''}
       ${hlLine}
     </div>`;
 }
@@ -4525,7 +4690,7 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
     : filteredCIs.map(({ci,item})=>ciRow(ci,item,trip,hl)).join('');
 
   const listEmptyHtml=!filteredCIs.length
-    ?`<div class="empty" style="margin:12px 0">No items match — try a different search or clear filters.</div>`
+    ?`<div class="empty" style="margin:12px 0">No items match, try a different search or clear filters.</div>`
     :itemsHtml;
 
   const modeBar=packingViewToggleActive(trip)?packingViewModeBarHtml(trip):'';
@@ -4576,7 +4741,7 @@ function checklistStateNudgeHtml(state){
   };
   const x=map[st];
   if(!x.hint) return `<div class="ci-tap-nudge ci-tap-nudge--${st}"><span class="ci-tap-state">${x.label}</span></div>`;
-  return `<div class="ci-tap-nudge ci-tap-nudge--${st}"><span class="ci-tap-state">${x.label}</span><span class="ci-tap-sep"> — </span><span class="ci-tap-hint">${x.hint}</span></div>`;
+  return `<div class="ci-tap-nudge ci-tap-nudge--${st}"><span class="ci-tap-state">${x.label}</span><span class="ci-tap-sep">, </span><span class="ci-tap-hint">${x.hint}</span></div>`;
 }
 
 function ciRow(ci,item,trip,hl){
@@ -4874,7 +5039,7 @@ function postTripBody(trip){
   return `
     <div class="pt-banner">
       <div class="pt-title">Back home review</div>
-      <div class="pt-sub">Tidy up anything you logged on trip, then check consumables and Camping Kit condition. Take your time — this is for next time, not a scorecard.</div>
+      <div class="pt-sub">Tidy up anything you logged on trip, then check consumables and Camping Kit condition. Take your time, this is for next time, not a scorecard.</div>
     </div>
 
     ${postTripJournalRecapHtml(trip)}
@@ -4914,7 +5079,7 @@ function postTripBody(trip){
     </table>`:''}
 
     <div style="margin-top:14px">
-      <button class="btn btn-g" onclick="finishPostTrip('${trip.id}')">✓ Done — mark trip complete</button>
+      <button class="btn btn-g" onclick="finishPostTrip('${trip.id}')">✓ Done, mark trip complete</button>
     </div>
     ${(()=>{
       const leftItems=Object.keys(trip.leftAtSite||{}).map(id=>S.items.find(i=>i.id===id)).filter(Boolean);
@@ -4935,7 +5100,7 @@ function postTripBody(trip){
 function planningBody(trip){
   const hasCL=!!(trip.checklist&&trip.checklist.length);
   return `${renderConsumablePrepStrip(trip)}
-    <p style="margin:0 0 14px;font-size:13px;line-height:1.55;color:var(--text-m)">Trip details are above. Add <strong>to-dos</strong> and <strong>notes</strong> at the bottom of this page — scroll down or use the links under the journey steps.</p>
+    <p style="margin:0 0 14px;font-size:13px;line-height:1.55;color:var(--text-m)">Trip details are above. Add <strong>to-dos</strong> and <strong>notes</strong> at the bottom of this page, scroll down or use the links under the journey steps.</p>
     ${hasCL
       ?`<p style="font-size:12px;color:var(--text-m);margin:0 0 10px">${trip.checklist.length} line${trip.checklist.length!==1?'s':''} on your packing list.</p>
          <button type="button" class="btn btn-o btn-sm" onclick="goToTripStage('${trip.id}','packing','checklist')">Open packing list →</button>`
@@ -5006,7 +5171,7 @@ function tripStageActionsSection(trip, stagesFilter, heading, showChecklistSumma
   const hint=showChecklistSummaryHint&&!focusBanner
     ?`<p style="margin:0 0 12px;font-size:12px;line-height:1.5;color:var(--text-m)">${packCalm
       ?'Tap a <strong>to-do</strong> chip on a packing line to jump to that item&rsquo;s tasks here.'
-      :'Tick to-dos here or on each packing line above — same tasks, one list.'}</p>`
+      :'Tick to-dos here or on each packing line above, same tasks, one list.'}</p>`
     :'';
   const body=actionsBody(trip, stagesFilter);
   return `<div id="trip-sec-actions" class="trip-stage-sec">
@@ -5069,7 +5234,7 @@ function renderWishlist(){
   if(!items.length){ el.innerHTML=`
     <div class="empty" style="margin-top:0">
       ✦ No wish list items yet.<br>
-      <span style="font-size:11px;margin-top:4px;display:block">Add items you'd love to upgrade to — they stay out of your trip checklists.</span>
+      <span style="font-size:11px;margin-top:4px;display:block">Add items you'd love to upgrade to, they stay out of your trip checklists.</span>
       <button class="btn btn-p btn-sm" style="margin-top:12px" onclick="openAddWishModal()">+ Add Wish Item</button>
     </div>`; return; }
   const g={};
@@ -5149,12 +5314,12 @@ function toastKitSyncedToTrips(results){
   if(results.length===1){
     const r=results[0];
     const trip=r.tripName;
-    if(r.added===1) showToast('Saved — also added "'+r.names[0]+'" to '+trip+' (your packed items are unchanged)');
-    else showToast('Saved — added '+r.added+' items to '+trip+' (packed items unchanged)');
+    if(r.added===1) showToast('Saved, also added "'+r.names[0]+'" to '+trip+' (your packed items are unchanged)');
+    else showToast('Saved, added '+r.added+' items to '+trip+' (packed items unchanged)');
     return;
   }
   const bit=results.map(r=>r.tripName+' ('+r.added+')').join(', ');
-  showToast('Saved — added to Camping Kit: '+bit+' (packed items unchanged)');
+  showToast('Saved, added to Camping Kit: '+bit+' (packed items unchanged)');
 }
 
 // ══════════════════════════════════════════════════
@@ -5200,7 +5365,7 @@ function cycleState(tripId, itemId){
       const tripActions=trip.actionStates||{};
       const incomplete=prePending.filter(a=>!tripActions[item.id+'::'+a.id]);
       if(incomplete.length){
-        showToast('Finish these to-dos first — '+incomplete.map(a=>a.label).join(', '));
+        showToast('Finish these to-dos first, '+incomplete.map(a=>a.label).join(', '));
         if(packingCalmViewActive(trip)) scrollTripTodosForItem(tripId, itemId);
         return;
       }
@@ -5330,6 +5495,7 @@ function openTrip(id){
   const trip=S.trips.find(t=>t.id===id);
   activeTripTab=trip?tripStageDefaultTab(trip.status):'checklist';
   renderTrips();
+  try{ window.scrollTo(0,0); }catch(e){}
 }
 function closeTrip(){ activeTripId=null; clearTripTodoFocus(); checklistSearch=''; expandedPackedChecklistGroups.clear(); expandedChecklistGroups.clear(); experiencePanelDismissed=false; renderTrips(); }
 function tripMainTab(trip){
@@ -5790,7 +5956,7 @@ function duplicateItem(itemId){
   if(subs.length){
     includeSubs=confirm(
       'Include '+subs.length+' item'+(subs.length===1?'':'s')+' in this group?\n\n'+
-      'OK — copy sub-items with the new group\nCancel — duplicate this line only'
+      'OK, copy sub-items with the new group\nCancel, duplicate this line only'
     );
   }
   editItemId=null;
@@ -5847,7 +6013,7 @@ function setItemMoreAuto(){
     const pg=g('iPersonGroup');
     if(pg&&pg.style.display!=='none'){
       const pb=g('iPersonBtns');
-      if(pb&&pb.querySelector('.on')) adv=true;
+      if(pb&&pb.querySelector('.on,.active,.sel,[aria-pressed="true"]')) adv=true;
     }
     setItemMore(adv);
   }catch(e){ setItemMore(false); }
@@ -5875,7 +6041,7 @@ function populateGroupDropdowns(selectedCat, selectedLoc){
   const catSel=document.getElementById('gCat');
   if(catSel) catSel.innerHTML=getCats().map(c=>`<option value="${esc(c.id)}"${c.id===selectedCat?' selected':''}>${c.emoji||''} ${esc(c.label)}</option>`).join('');
   const locSel=document.getElementById('gLoc');
-  if(locSel) locSel.innerHTML=`<option value=""${selectedLoc?'':' selected'}>— No fixed place —</option>`+getStorageLocs().map(l=>`<option value="${esc(l.id)}"${l.id===selectedLoc?' selected':''}>${esc(l.label)}</option>`).join('');
+  if(locSel) locSel.innerHTML=`<option value=""${selectedLoc?'':' selected'}>No fixed place</option>`+getStorageLocs().map(l=>`<option value="${esc(l.id)}"${l.id===selectedLoc?' selected':''}>${esc(l.label)}</option>`).join('');
 }
 
 function populateGroupPersonButtons(selectedIds){
@@ -5942,7 +6108,7 @@ function saveGroup(){
   const kitSyncResults=syncKitChangesToActiveTripChecklists();
   save(); closeM('groupModal');
   if(kitSyncResults.length) toastKitSyncedToTrips(kitSyncResults);
-  if(isNew){ expandedInvGroups.add(savedId); showToast('Group created — add what goes inside'); }
+  if(isNew){ expandedInvGroups.add(savedId); showToast('Group created, add what goes inside'); }
   focusKitItemAfterSave(savedId, isNew);
   if(activeTripId) renderTrips();
 }
@@ -6091,7 +6257,7 @@ function currentQtyRuleFromForm(){
 
 function qtyRuleSummaryText(rule){
   const r=normalizeQtyRule(rule);
-  if(!r) return 'Fixed — uses Quantity above';
+  if(!r) return 'Fixed, uses Quantity above';
   const per=r.kind==='perPersonPerNight'?'per person/night':'per night';
   let s=(r.rate===1?'1':String(r.rate))+' '+per;
   const ex=[];
@@ -6153,7 +6319,7 @@ function populateDynamicDropdowns(selectedCat, selectedLoc, selectedActivity){
   const pitSel=document.getElementById('iPacksInto');
   if(pitSel){
     const curPit=pitSel.value;
-    pitSel.innerHTML=`<option value="">— Same as storage location —</option>`+getPackIntoLocs().map(l=>`<option value="${esc(l.id)}"${l.id===curPit?' selected':''}>${esc(l.label)}</option>`).join('');
+    pitSel.innerHTML=`<option value="">Same as storage location</option>`+getPackIntoLocs().map(l=>`<option value="${esc(l.id)}"${l.id===curPit?' selected':''}>${esc(l.label)}</option>`).join('');
   }
   // Inventory location filter — storage locations only
   const locF=document.getElementById('locF');
@@ -6307,7 +6473,7 @@ function renderParentPickerList(){
     if(!byCat[c.category]) byCat[c.category]=[];
     byCat[c.category].push(c);
   });
-  let html=`<button type="button" class="i-parent-opt${!cur?' on':''}" data-id="" role="option">— Top-level item —</button>`;
+  let html=`<button type="button" class="i-parent-opt${!cur?' on':''}" data-id="" role="option">Top-level item</button>`;
   pinnedRows.forEach(c=>{
     html+=`<button type="button" class="i-parent-opt${cur===c.id?' on':''}" data-id="${c.id}" role="option"><span>${esc(c.name)}</span><span class="i-parent-opt-cat">${esc(c._pin)}</span></button>`;
   });
@@ -6725,7 +6891,7 @@ function finishTripWizard(goTripPage){
   persistTripWizardDraft();
   const tripId=editTripId;
   closeM('tripModal');
-  if(hadCL&&tripWizardPath==='booked'&&confirm('Trip config changed — regenerate checklist?')) genChecklist(tripId);
+  if(hadCL&&tripWizardPath==='booked'&&confirm('Trip config changed, regenerate checklist?')) genChecklist(tripId);
   else{
     save();
     if(goTripPage) activeTripId=tripId;
@@ -6766,7 +6932,7 @@ function saveTripWizard(mode){
     if(tripWizardStep==='twBooked1'&&!validateBookedEssentials()) return;
     persistTripWizardDraft();
     finishTripWizard(true);
-    if(mode==='finish') showToast('Trip setup complete — you\u2019re ready to plan');
+    if(mode==='finish') showToast('Trip setup complete, you\u2019re ready to plan');
     return;
   }
 }
@@ -6819,7 +6985,7 @@ function graduateTripIdea(tripId){
   if(!trip||trip.status!=='idea') return;
   trip.status='planning';
   save();
-  showToast('Brilliant — add your dates when you\u2019re ready');
+  showToast('Brilliant, add your dates when you\u2019re ready');
   openEditTripModal(tripId);
 }
 
@@ -6925,7 +7091,7 @@ function renderGlobalSearchResults(q){
       }catch(e){ meta=TLAB[item.type]||''; }
       html+=`<button type="button" class="gsearch-result-btn" onclick="navigateGlobalSearchItem('${item.id}')"><span class="gsearch-result-main"><span class="gsearch-result-name">${esc(item.name)}</span><span class="gsearch-result-meta">${esc(meta)}</span></span><span class="gsearch-result-arrow">→</span></button>`;
     });
-    if(r.itemsTotal>GSEARCH_MAX) html+=`<div class="gsearch-hint" style="margin-top:4px;margin-bottom:0">${r.itemsTotal-GSEARCH_MAX} more in Camping Kit — narrow your search.</div>`;
+    if(r.itemsTotal>GSEARCH_MAX) html+=`<div class="gsearch-hint" style="margin-top:4px;margin-bottom:0">${r.itemsTotal-GSEARCH_MAX} more in Camping Kit, narrow your search.</div>`;
   }
   if(r.trips.length){
     html+='<div class="gsearch-sec">Trips</div>';
@@ -6933,14 +7099,14 @@ function renderGlobalSearchResults(q){
       const meta=[trip.date?fmtDate(trip.date):'', STLAB[trip.status]||trip.status].filter(Boolean).join(' · ');
       html+=`<button type="button" class="gsearch-result-btn" onclick="navigateGlobalSearchTrip('${trip.id}')"><span class="gsearch-result-main"><span class="gsearch-result-name">${esc(trip.name)}</span><span class="gsearch-result-meta">${esc(meta)}</span></span><span class="gsearch-result-arrow">→</span></button>`;
     });
-    if(r.tripsTotal>GSEARCH_MAX) html+=`<div class="gsearch-hint" style="margin-top:4px;margin-bottom:0">${r.tripsTotal-GSEARCH_MAX} more trips — narrow your search.</div>`;
+    if(r.tripsTotal>GSEARCH_MAX) html+=`<div class="gsearch-hint" style="margin-top:4px;margin-bottom:0">${r.tripsTotal-GSEARCH_MAX} more trips, narrow your search.</div>`;
   }
   if(r.onTrips.length){
     html+='<div class="gsearch-sec">On trips</div>';
     r.onTrips.forEach(({trip,item})=>{
       html+=`<button type="button" class="gsearch-result-btn" onclick="navigateGlobalSearchTripChecklist('${trip.id}','${item.id}')"><span class="gsearch-result-main"><span class="gsearch-result-name">${esc(trip.name)}</span><span class="gsearch-result-meta">${esc(item.name)}</span></span><span class="gsearch-result-arrow">→</span></button>`;
     });
-    if(r.onTripsTotal>GSEARCH_MAX) html+=`<div class="gsearch-hint" style="margin-top:4px;margin-bottom:0">${r.onTripsTotal-GSEARCH_MAX} more on-trip matches — narrow your search.</div>`;
+    if(r.onTripsTotal>GSEARCH_MAX) html+=`<div class="gsearch-hint" style="margin-top:4px;margin-bottom:0">${r.onTripsTotal-GSEARCH_MAX} more on-trip matches, narrow your search.</div>`;
   }
   if(r.people.length){
     html+='<div class="gsearch-sec">People</div>';
@@ -6948,7 +7114,7 @@ function renderGlobalSearchResults(q){
       const meta=p.emoji?String(p.emoji)+' Person':'Person';
       html+=`<button type="button" class="gsearch-result-btn" onclick="navigateGlobalSearchPerson('${p.id}')"><span class="gsearch-result-main"><span class="gsearch-result-name">${esc(p.name)}</span><span class="gsearch-result-meta">${esc(meta)}</span></span><span class="gsearch-result-arrow">→</span></button>`;
     });
-    if(r.peopleTotal>GSEARCH_MAX) html+=`<div class="gsearch-hint" style="margin-top:4px;margin-bottom:0">${r.peopleTotal-GSEARCH_MAX} more people — narrow your search.</div>`;
+    if(r.peopleTotal>GSEARCH_MAX) html+=`<div class="gsearch-hint" style="margin-top:4px;margin-bottom:0">${r.peopleTotal-GSEARCH_MAX} more people, narrow your search.</div>`;
   }
   out.innerHTML=html;
 }
@@ -7422,28 +7588,28 @@ const JOURNAL_PROMPTS=[
   {id:'g5', text:'What are you grateful for at camp today?'},
   {id:'g6', text:'How are you feeling tonight?'},
   {id:'g7', text:'What surprised you today?'},
-  {id:'first1', text:'First day at {place} — how does it feel to arrive?', when:c=>c.isFirst, weight:4},
+  {id:'first1', text:'First day at {place}, how does it feel to arrive?', when:c=>c.isFirst, weight:4},
   {id:'first2', text:'You made it to camp. What\u2019s the first thing you noticed?', when:c=>c.isFirst, weight:3},
-  {id:'last1', text:'Last day — one thing worth remembering?', when:c=>c.isLast&&!c.isFirst, weight:4},
-  {id:'last2', text:'Before you head home — what will you miss?', when:c=>c.isLast&&!c.isFirst, weight:3},
+  {id:'last1', text:'Last day, one thing worth remembering?', when:c=>c.isLast&&!c.isFirst, weight:4},
+  {id:'last2', text:'Before you head home, what will you miss?', when:c=>c.isLast&&!c.isFirst, weight:3},
   {id:'morn1', text:'How did you sleep?', when:c=>c.partOfDay==='morning', weight:3},
   {id:'morn2', text:'How\u2019s the morning at camp?', when:c=>c.partOfDay==='morning', weight:2},
   {id:'eve1', text:'Make the most of the campfire tonight.', when:c=>c.partOfDay==='evening'||c.partOfDay==='night', weight:3},
   {id:'eve2', text:'How was the evening?', when:c=>c.partOfDay==='evening'||c.partOfDay==='night', weight:2},
-  {id:'rain1', text:'Rain at camp — how are spirits holding up?', when:c=>c.weather.wet, weight:3},
+  {id:'rain1', text:'Rain at camp, how are spirits holding up?', when:c=>c.weather.wet, weight:3},
   {id:'rain2', text:'Wet one today. Best rainy-day moment so far?', when:c=>c.weather.wet, weight:2},
-  {id:'cold1', text:'Cold night — how did everyone keep warm?', when:c=>c.weather.cold, weight:3},
+  {id:'cold1', text:'Cold night, how did everyone keep warm?', when:c=>c.weather.cold, weight:3},
   {id:'frost1', text:'Frosty out there. How was the morning chill?', when:c=>c.weather.frost, weight:3},
-  {id:'hot1', text:'Warm one today — how did you make the most of the sun?', when:c=>c.weather.hot, weight:3},
-  {id:'clear1', text:'Clear skies — did you catch the stars last night?', when:c=>c.weather.band==='clear', weight:2},
-  {id:'wind1', text:'Breezy out — is everything still pegged down?', when:c=>c.weather.windy, weight:2},
-  {id:'snow1', text:'Snow at camp — magic or misery?', when:c=>c.weather.band==='snow', weight:3},
+  {id:'hot1', text:'Warm one today, how did you make the most of the sun?', when:c=>c.weather.hot, weight:3},
+  {id:'clear1', text:'Clear skies, did you catch the stars last night?', when:c=>c.weather.band==='clear', weight:2},
+  {id:'wind1', text:'Breezy out, is everything still pegged down?', when:c=>c.weather.windy, weight:2},
+  {id:'snow1', text:'Snow at camp, magic or misery?', when:c=>c.weather.band==='snow', weight:3},
   {id:'dog1', text:'How\u2019s {dog} settling into camp?', when:c=>c.people.hasDog&&c.people.dogName, weight:2},
   {id:'dog2', text:'Did the dog enjoy today?', when:c=>c.people.hasDog&&!c.people.dogName, weight:2},
-  {id:'solo1', text:'A quiet one to yourself — what\u2019s on your mind?', when:c=>c.people.solo, weight:2},
-  {id:'group1', text:'Good crew around the fire — favourite moment together?', when:c=>c.people.group, weight:2},
+  {id:'solo1', text:'A quiet one to yourself, what\u2019s on your mind?', when:c=>c.people.solo, weight:2},
+  {id:'group1', text:'Good crew around the fire, favourite moment together?', when:c=>c.people.group, weight:2},
   {id:'place1', text:'What\u2019s the view like at {place} today?', when:c=>!!c.place, weight:2},
-  {id:'hike1', text:'Big walk planned — how are the legs?', when:c=>c.activities.some(a=>/hik|walk|trek|fell|munro/.test(a)), weight:2},
+  {id:'hike1', text:'Big walk planned, how are the legs?', when:c=>c.activities.some(a=>/hik|walk|trek|fell|munro/.test(a)), weight:2},
   {id:'swim1', text:'Was the water worth it today?', when:c=>c.activities.some(a=>/swim|paddle|kayak|canoe|surf/.test(a)), weight:2},
   {id:'cycle1', text:'How were the trails today?', when:c=>c.activities.some(a=>/cycl|bike|mtb|ride/.test(a)), weight:2},
 ];
@@ -7599,7 +7765,7 @@ function addJournalForgot(tripId, day){
   e.day=day;
   trip.forgotEntries.push(e);
   save(); renderTrips();
-  showToast('Noted — no guilt, just a reminder for next time');
+  showToast('Noted, no guilt, just a reminder for next time');
 }
 
 function addJournalUnused(tripId, day){
@@ -7612,7 +7778,7 @@ function addJournalUnused(tripId, day){
   m.day=day;
   trip.unusedMarks.push(m);
   save(); renderTrips();
-  showToast('Noted — something to leave home next time');
+  showToast('Noted, something to leave home next time');
 }
 
 function addJournalWishlist(tripId, day){
@@ -7683,7 +7849,7 @@ function journalBody(trip){
     <div class="jrnl-note">
       <div class="jrnl-note-txt">${esc(n.text).replace(/\n/g,'<br>')}</div>
       <button type="button" class="btn-ic jrnl-note-x" onclick="removeJournalNote('${trip.id}','${n.id}')" aria-label="Delete note">✕</button>
-    </div>`).join(''):`<p class="jrnl-empty">No notes for this day yet — jot whatever you want to remember.</p>`;
+    </div>`).join(''):`<p class="jrnl-empty">No notes for this day yet, jot whatever you want to remember.</p>`;
 
   const meals=['breakfast','lunch','dinner'].map(s=>journalMealRow(trip,di.index,s)).join('');
 
@@ -7719,7 +7885,7 @@ function journalBody(trip){
 
       <div class="jrnl-sec jrnl-sec--learn">
         <div class="jrnl-sec-hd">For next time</div>
-        <p class="jrnl-sec-sub">No guilt — just quick reminders while it's fresh. Sort it all out in Back home review.</p>
+        <p class="jrnl-sec-sub">No guilt, just quick reminders while it's fresh. Sort it all out in Back home review.</p>
         <div class="jrnl-learn-row">
           <input class="fi" id="jrnlForgotInput" placeholder="Wished we'd brought…" onkeydown="if(event.key==='Enter')addJournalForgot('${trip.id}',${di.index})">
           <button type="button" class="btn btn-o btn-sm" onclick="addJournalForgot('${trip.id}',${di.index})">Add</button>
@@ -7779,9 +7945,9 @@ function normalizeTripExperience(trip){
 
 function seasonWeatherHint(trip){
   const map={
-    summer:'Warm — sun cream and lighter layers.',
-    shoulder:'Mixed — pack layers and a waterproof.',
-    winter:'Cold — warm sleep system and spare dry Camping Kit.',
+    summer:'Warm, sun cream and lighter layers.',
+    shoulder:'Mixed, pack layers and a waterproof.',
+    winter:'Cold, warm sleep system and spare dry Camping Kit.',
   };
   return map[trip?.season]||map.summer;
 }
@@ -7961,7 +8127,7 @@ function tripWeatherStaleHtml(trip){
     label='Forecast saved '+new Date(w.fetchedAt).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
   }catch(e){}
   if(ageH>48&&days!==null&&days>=0&&days<=7)
-    return `<p class="trip-weather-stale">${esc(label)} — worth refreshing before you leave.</p>`;
+    return `<p class="trip-weather-stale">${esc(label)}, worth refreshing before you leave.</p>`;
   return `<p class="trip-experience-muted" style="margin-top:8px">${esc(label)}. Works offline until you refresh.</p>`;
 }
 
@@ -7991,7 +8157,7 @@ function renderTripWeatherBlock(trip){
     body+=tripWeatherStaleHtml(trip);
   }else if(w.mode==='manual'&&(w.summary||'').trim()){
     body+=`<p style="margin:0;font-size:13px;line-height:1.45">${esc(w.summary)}</p>`;
-    body+=`<p class="trip-experience-muted" style="margin-top:8px">Your note — season estimate hidden while this is set.</p>`;
+    body+=`<p class="trip-experience-muted" style="margin-top:8px">Your note, season estimate hidden while this is set.</p>`;
   }else{
     body+=`<p style="margin:0;font-size:13px;line-height:1.45">${esc(seasonWeatherHint(trip))}</p>`;
     body+=`<p class="trip-experience-muted" style="margin-top:8px">Based on trip season. Load a forecast when online for day-by-day detail.</p>`;
@@ -8083,7 +8249,7 @@ async function refreshTripWeatherSnapshot(tripId){
   showToast('Fetching forecast…');
   const coords=await geocodeTripVenue(trip);
   if(!coords){
-    showToast('Could not find that place — try postcode + site name (full street addresses often fail)');
+    showToast('Could not find that place, try postcode + site name (full street addresses often fail)');
     return;
   }
   normalizeTripExperience(trip);
@@ -8125,10 +8291,10 @@ async function refreshTripWeatherSnapshot(tripId){
       days,
     };
     save();
-    showToast('Forecast loaded — works offline until you refresh');
+    showToast('Forecast loaded, works offline until you refresh');
     renderTrips();
   }catch(e){
-    showToast('Could not fetch forecast — try again on Wi‑Fi');
+    showToast('Could not fetch forecast, try again on Wi‑Fi');
   }
 }
 
@@ -8166,7 +8332,7 @@ function paintTripSiteRulesEditor(){
   if(presetEl){
     const presets=getCustomSiteRulePresets().filter(p=>!_tripRulesDraft.custom.some(c=>c.toLowerCase()===p.toLowerCase()));
     presetEl.innerHTML=presets.length
-      ?`<span class="trip-experience-muted" style="width:100%;margin-bottom:4px">Your saved rules — tap to add:</span>`
+      ?`<span class="trip-experience-muted" style="width:100%;margin-bottom:4px">Your saved rules, tap to add:</span>`
         +presets.map((p,i)=>`<button type="button" class="site-rule-chip site-rule-chip--preset" onclick="addPresetSiteRuleToTrip(${i})">${esc(p)}</button>`).join('')
       :'';
     presetEl._presetLabels=presets;
@@ -8328,7 +8494,7 @@ function fillTripExperienceForm(trip){
   if(snapNote){
     if(hasSnap){
       snapNote.style.display='block';
-      snapNote.innerHTML='Saved forecast on this trip (<strong>'+w.days.length+' day'+(w.days.length===1?'':'s')+'</strong>) — refresh on the trip page when online.';
+      snapNote.innerHTML='Saved forecast on this trip (<strong>'+w.days.length+' day'+(w.days.length===1?'':'s')+'</strong>), refresh on the trip page when online.';
     }else{
       snapNote.style.display='none';
       snapNote.textContent='';
@@ -8484,7 +8650,7 @@ function renderTripExperiencePanel(trip){
         }).join('')}
       </div>
     </div>
-    ${!active?`<p class="trip-experience-muted" style="margin:6px 0 0;font-size:10px">Tap a section to expand — tap again to collapse</p>`:''}
+    ${!active?`<p class="trip-experience-muted" style="margin:6px 0 0;font-size:10px">Tap a section to expand, tap again to collapse</p>`:''}
     ${panelHtml?`<div class="trip-exp-panel" role="tabpanel">${panelHtml}</div>`:''}
   </div>`;
 }
@@ -8506,7 +8672,7 @@ function addForgotEntry(tripId,source){
   save();
   if(source==='camp') closeCampLogSheet();
   renderTrips();
-  showToast('Logged — review when you\'re home');
+  showToast('Logged, review when you\'re home');
 }
 
 function removeForgotEntry(tripId,entryId){
@@ -8599,7 +8765,7 @@ function includeForgotOnNextTrip(tripId, entryId){
   const item=itemId?S.items.find(i=>i.id===itemId):null;
   if(!item||item.type==='wishlist'){ showToast('Add it to your Camping Kit first, then include it'); return; }
   const cands=candidateNextTrips(tripId);
-  if(!cands.length){ showToast('No upcoming trips yet — create one and it\'ll be ready to add'); return; }
+  if(!cands.length){ showToast('No upcoming trips yet, create one and it\'ll be ready to add'); return; }
   if(cands.length===1){ doIncludeOnTrip(cands[0].id, itemId); return; }
   openIncludeNextTripChooser(itemId, cands);
 }
@@ -8645,9 +8811,9 @@ function showGroupTypePrompt(parentId){
     <div id="groupTypeOverlay" class="dialog-overlay" style="z-index:1100" onclick="if(event.target===this)closeGroupTypePrompt()">
       <div class="dialog-panel dialog-panel--440" onclick="event.stopPropagation()">
         <div class="mtitle">How does “${esc(parent.name)}” pack?</div>
-        <p style="font-size:14px;line-height:1.5;color:var(--text-d);margin:0 0 16px">You just added an item inside it. Is it a real bag or box you pack — or just a way to group kit?</p>
+        <p style="font-size:14px;line-height:1.5;color:var(--text-d);margin:0 0 16px">You just added an item inside it. Is it a real bag or box you pack, or just a way to group kit?</p>
         <div style="display:flex;flex-direction:column;gap:8px">
-          <button type="button" class="btn btn-p" style="text-align:left" onclick="setGroupType('${parentId}',true)">Just a kit grouping<span style="display:block;font-family:'DM Mono',monospace;font-size:10px;opacity:.85;margin-top:2px">A label like “Sleep kit” — only the items inside get packed</span></button>
+          <button type="button" class="btn btn-p" style="text-align:left" onclick="setGroupType('${parentId}',true)">Just a kit grouping<span style="display:block;font-family:'DM Mono',monospace;font-size:10px;opacity:.85;margin-top:2px">A label like “Sleep kit”, only the items inside get packed</span></button>
           <button type="button" class="btn btn-o" style="text-align:left" onclick="setGroupType('${parentId}',false)">A bag or box I pack<span style="display:block;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);margin-top:2px">Pack the bag itself and track its contents too</span></button>
         </div>
       </div>
@@ -8679,7 +8845,7 @@ function ungroupItem(itemId){
   S.items=S.items.filter(i=>i.id!==itemId);
   expandedInvGroups.delete(itemId);
   save(); renderAll();
-  showToast(kids.length?'Ungrouped — items kept in your kit':'Group removed');
+  showToast(kids.length?'Ungrouped, items kept in your kit':'Group removed');
 }
 function setGroupType(parentId, isContainer){
   const parent=S.items.find(i=>i.id===parentId);
@@ -8711,7 +8877,7 @@ function openMoveToGroupChooser(itemId){
         <div class="mtitle">Move “${esc(item.name)}” to group</div>
         <input class="fi" id="moveGroupSearch" placeholder="Search groups…" style="width:100%;margin:8px 0 12px" oninput="filterMoveToGroup(this.value)">
         ${current}
-        <div id="moveGroupList" style="max-height:320px;overflow:auto">${rows||'<div class="empty" style="margin:8px 0">No groups yet — add an item to another item to create one.</div>'}</div>
+        <div id="moveGroupList" style="max-height:320px;overflow:auto">${rows||'<div class="empty" style="margin:8px 0">No groups yet, add an item to another item to create one.</div>'}</div>
         <button type="button" class="btn btn-o" style="width:100%;margin-top:8px" onclick="closeMoveToGroupChooser()">Cancel</button>
       </div>
     </div>`);
@@ -8762,7 +8928,7 @@ function openCampLogSheet(tripId){
     <div id="campLogOverlay" class="sheet-overlay" style="align-items:flex-end;padding:0" onclick="if(event.target===this)closeCampLogSheet()">
       <div class="sheet-panel sheet-panel--narrow" onclick="event.stopPropagation()">
         <div class="mtitle">Needed on trip</div>
-        <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);line-height:1.45;margin:8px 0 12px">Quick capture only — add to Camping Kit or want list later in Back home review.</p>
+        <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);line-height:1.45;margin:8px 0 12px">Quick capture only, add to Camping Kit or want list later in Back home review.</p>
         <input class="fi" id="campForgotText" placeholder="What did you need?" style="width:100%;margin-bottom:10px" onkeydown="if(event.key==='Enter')addForgotEntry('${tripId}','camp')">
         <button type="button" class="btn btn-p" style="width:100%;margin-bottom:14px" onclick="addForgotEntry('${tripId}','camp')">Save</button>
         ${recent?`<div style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-m);margin-bottom:6px">Recent</div>${recent}`:''}
@@ -8803,12 +8969,12 @@ function openLinkForgotModal(tripId,entryId){
     <div id="linkForgotOverlay" class="dialog-overlay" onclick="if(event.target===this)closeLinkForgotModal()">
       <div class="dialog-panel dialog-panel--400" onclick="event.stopPropagation()">
         <div class="mtitle">Link to packing list</div>
-        <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);line-height:1.45;margin:8px 0 12px">“${esc(entry.text)}” — choose a line from <strong>this trip’s checklist</strong> if it was supposed to be packed, or say it wasn’t on the list.</p>
+        <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m);line-height:1.45;margin:8px 0 12px">“${esc(entry.text)}”, choose a line from <strong>this trip’s checklist</strong> if it was supposed to be packed, or say it wasn’t on the list.</p>
         ${lines.length?`
         <div class="fg">
           <label class="fl">Packing line</label>
           <select class="fs" id="linkForgotPick" style="width:100%">
-            <option value=""${!entry.itemId?' selected':''}>— Not on our packing list —</option>
+            <option value=""${!entry.itemId?' selected':''}>Not on our packing list</option>
             ${opts}
           </select>
         </div>`:`<p style="font-size:12px;color:var(--text-m);margin-bottom:12px">This trip has no checklist lines yet. This note will stay unlinked.</p>`}
@@ -8903,7 +9069,7 @@ function postTripJournalRecapHtml(trip){
   if(!dayBlocks) return '';
   return `<div class="pt-jrnl">
     <div class="pt-jrnl-hdr">Your trip, looking back</div>
-    <div class="pt-jrnl-sub">What you captured on site — the days, the food, the moments.</div>
+    <div class="pt-jrnl-sub">What you captured on site, the days, the food, the moments.</div>
     ${dayBlocks}
   </div>`;
 }
@@ -8943,7 +9109,7 @@ function postTripLearningsHtml(trip,allItems){
       ${pendingActions}
       <button type="button" class="btn btn-o btn-sm" style="color:var(--text-m);align-self:flex-start" onclick="removeForgotEntry('${trip.id}','${e.id}')" aria-label="Remove">✕</button>
     </div>`;
-  }).join(''):'<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--text-m);padding:4px 0">Nothing noted yet — add when you\'re ready.</div>';
+  }).join(''):'<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--text-m);padding:4px 0">Nothing noted yet, add when you\'re ready.</div>';
 
   const unusedRows=unused.length?unused.map(m=>{
     const linked=m.itemId?S.items.find(i=>i.id===m.itemId):null;
@@ -8963,7 +9129,7 @@ function postTripLearningsHtml(trip,allItems){
   return `
     <div class="pt-learn">
       <div class="pt-learn-hdr pt-learn-hdr--forgot">Needed but didn\'t have</div>
-      <div class="pt-learn-sub">${pendingForgotCount?pendingForgotCount+' to sort out — most gaps belong in My Camping Kit or Want list. ':''}No blame, just memory.</div>
+      <div class="pt-learn-sub">${pendingForgotCount?pendingForgotCount+' to sort out, most gaps belong in My Camping Kit or Want list. ':''}No blame, just memory.</div>
       ${forgotRows}
       <div class="pt-learn-add">
         <input class="fi" id="ptForgotText" placeholder="What did you need?" onkeydown="if(event.key==='Enter')addForgotEntry('${trip.id}')">
@@ -8972,7 +9138,7 @@ function postTripLearningsHtml(trip,allItems){
     </div>
     <div class="pt-learn">
       <div class="pt-learn-hdr pt-learn-hdr--unused">Brought but didn\'t use</div>
-      <div class="pt-learn-sub">Refinement for next time — what can stay home?</div>
+      <div class="pt-learn-sub">Refinement for next time, what can stay home?</div>
       ${unusedRows}
       <div class="pt-learn-add">
         ${unusedItemOpts?`<select class="fs" id="ptUnusedItem" style="max-width:180px"><option value="">From this trip…</option>${unusedItemOpts}</select>`:''}
@@ -9154,7 +9320,7 @@ function markAllRestocked(){
 async function shareShoppingList(){
   const items=itemsNeedingRestock().sort((a,b)=>a.name.localeCompare(b.name));
   if(!items.length){ showToast('Nothing to share'); return; }
-  const text='NeverLeft — Shopping List\n\n'+items.map(i=>{
+  const text='NeverLeft, Shopping List\n\n'+items.map(i=>{
     const n=shoppingQtyToBuy(i);
     return '• '+i.name+(n>1?' ×'+n:'');
   }).join('\n');
@@ -9167,7 +9333,7 @@ async function shareShoppingList(){
     await navigator.clipboard.writeText(text);
     showToast('Shopping list copied to clipboard');
   }catch(e){
-    showToast('Could not share — try copying manually');
+    showToast('Could not share, try copying manually');
   }
 }
 
@@ -9193,7 +9359,7 @@ function openQuickAddModal(tripId){
           <div class="fg" style="flex:1"><label class="fl">Type</label>
             <select class="fs" id="qaType">
               <option value="always">Always packed</option>
-              <option value="house">From House</option>
+              <option value="house">Bring from home</option>
               <option value="consumable">Consumable</option>
               <option value="seasonal">Seasonal</option>
             </select>
@@ -9312,15 +9478,17 @@ function saveQuickAdd(tripId){
 function renderSettingsDataSection(){
   const demo=isDemoMode();
   const intro=demo
-    ? 'You\u2019re exploring with a sample Camping Kit. Edit trips and items freely, then use <strong>Use as my Camping Kit</strong> when it feels yours. Start fresh only if you want an empty slate (backup required).'
+    ? 'This is your starting kit. Edit trips and items freely, then tap <strong>Make this mine</strong> when it feels yours. Start from scratch only if you want an empty slate (backup required).'
     : 'Your Camping Kit lives on this device. Export backups from the menu anytime. Reset or reload demo replaces everything (backup required first).';
   return `<div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border)">
       <div style="font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--rust);margin-bottom:8px">Data</div>
       <div style="font-size:12px;color:var(--text-m);margin-bottom:14px;line-height:1.5">${intro}</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        ${demo?`<button class="btn btn-p btn-sm" onclick="graduateFromDemo()">Use as my Camping Kit</button>`:''}
+        ${demo?`<button class="btn btn-p btn-sm" onclick="graduateFromDemo()">Make this mine</button>`:''}
         <button class="btn" style="background:transparent;color:var(--rust);border:1px solid var(--rust);font-size:11px;padding:7px 14px" onclick="requestResetAllData()">Start fresh \u2014 clear all data</button>
         <button class="btn btn-o btn-sm" onclick="requestLoadDemoDataAgain()">Reload demo data</button>
+        <button class="btn btn-o btn-sm" onclick="replayOnboarding()">Replay intro</button>
+        <button class="btn btn-o btn-sm" onclick="nlTourLaunch()">Show me around</button>
       </div>
     </div>`;
 }
@@ -9460,7 +9628,7 @@ function saveCustomSiteRuleModal(){
   if(isEdit) ok=renameCustomSiteRulePreset(customSiteRuleEditIndex,label);
   else ok=addCustomSiteRulePreset(label);
   if(!ok){
-    showToast(isEdit?'Could not rename — check for duplicate names.':'That rule is already saved.');
+    showToast(isEdit?'Could not rename, check for duplicate names.':'That rule is already saved.');
     return;
   }
   closeCustomSiteRuleModal();
@@ -9680,7 +9848,7 @@ async function shareBackup(opts){
     try{
       await navigator.share({
         title:'NeverLeft Backup',
-        text:'NeverLeft camping inventory backup — '+new Date().toLocaleDateString('en-GB')+'. Open with NeverLeft to restore.',
+        text:'NeverLeft camping inventory backup, '+new Date().toLocaleDateString('en-GB')+'. Open with NeverLeft to restore.',
         files:[file]
       });
       localStorage.setItem('basecamp_last_export', new Date().toISOString());
@@ -9917,7 +10085,7 @@ function importData(event){
       sessionStorage.removeItem('basecamp_demo_banner_hidden');
       save(); renderAll();
       initDemoBanner();
-      alert('✓ Restored successfully — '+items.length+' items, '+trips.length+' trips, '+people.length+' people.');
+      alert('✓ Restored successfully, '+items.length+' items, '+trips.length+' trips, '+people.length+' people.');
     }catch(err){
       alert('Could not read file: '+err.message);
     }
@@ -10151,7 +10319,7 @@ function openHtmlPrintPreview(html){
     document.body.appendChild(closeBtn);
   }
   frame.srcdoc=html;
-  showToast('Print preview opened here — use Print this page, or allow pop-ups for a new tab.');
+  showToast('Print preview opened here, use Print this page, or allow pop-ups for a new tab.');
   return true;
 }
 
