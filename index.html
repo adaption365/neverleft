@@ -744,17 +744,59 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 .trip-toolbar .tback{margin-bottom:0}
 
 /* ── JOURNEY BAR (APE-52) ── */
-.journey-scroll{margin-bottom:12px;overflow-x:auto;overflow-y:visible;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.journey-slider{position:relative;margin-bottom:12px}
+.journey-scroll{overflow-x:auto;overflow-y:visible;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:2px 0 6px;scroll-padding-inline:36px}
 .journey-scroll::-webkit-scrollbar{display:none}
-.journey-bar{display:flex;min-width:min(100%,34rem);background:var(--canvas-2);border:1px solid var(--border);border-radius:10px;overflow:visible;position:relative}
-.journey-cell{flex:1 1 0;min-width:4.25rem;position:relative;border-right:1px solid var(--border);overflow:visible}
-.journey-cell:first-child{border-radius:9px 0 0 9px}
-.journey-cell:last-child{border-right:none;border-radius:0 9px 9px 0}
-.journey-cell--viewing{background:rgba(90,154,138,.14);z-index:2}
+.journey-slider--scrollable::before,.journey-slider--scrollable::after{
+  content:'';position:absolute;top:2px;bottom:8px;width:36px;z-index:2;pointer-events:none;border-radius:12px;
+  opacity:1;transition:opacity var(--dur-ui) var(--ease-out);
+}
+.journey-slider--scrollable::before{
+  left:0;background:linear-gradient(90deg,var(--canvas) 12%,color-mix(in srgb,var(--canvas) 70%,transparent) 58%,transparent);
+}
+.journey-slider--scrollable::after{
+  right:0;background:linear-gradient(270deg,var(--canvas) 12%,color-mix(in srgb,var(--canvas) 70%,transparent) 58%,transparent);
+}
+.journey-slider--scrollable.journey-slider--at-start::before,.journey-slider--scrollable.journey-slider--at-end::after{opacity:0}
+.journey-scroll-btn{
+  position:absolute;top:50%;z-index:4;width:30px;height:30px;margin:0;padding:0;border:none;border-radius:50%;
+  display:none;align-items:center;justify-content:center;cursor:pointer;color:var(--text-d);
+  background:color-mix(in srgb,var(--canvas-2) 82%,transparent);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:0 2px 10px rgba(0,0,0,.14),0 0 0 1px color-mix(in srgb,var(--border) 55%,transparent);
+  transform:translateY(-50%);transition:transform var(--dur-fast) var(--ease-out),opacity var(--dur-ui) var(--ease-out),box-shadow var(--dur-ui),color var(--dur-ui);
+}
+.journey-scroll-ic{width:16px;height:16px;display:block;flex-shrink:0}
+.journey-scroll-btn--prev{left:6px}
+.journey-scroll-btn--next{right:6px}
+@media (hover:hover) and (pointer:fine){
+  .journey-scroll-btn:hover:not(:disabled){color:var(--text);box-shadow:0 3px 14px rgba(0,0,0,.18),0 0 0 1px color-mix(in srgb,var(--sage) 35%,var(--border))}
+}
+.journey-scroll-btn:active:not(:disabled){transform:translateY(-50%) scale(0.94)}
+.journey-scroll-btn:disabled{opacity:0;pointer-events:none}
+.journey-slider--scrollable .journey-scroll-btn{display:flex}
+.journey-bar{
+  display:flex;width:max-content;min-width:100%;background:var(--canvas-2);
+  border:1px solid color-mix(in srgb,var(--border) 85%,transparent);border-radius:12px;overflow:visible;position:relative;
+  box-shadow:0 1px 2px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+}
+body.light .journey-bar{box-shadow:0 1px 2px rgba(18,28,22,.05),0 4px 14px rgba(18,28,22,.04)}
+body.light .journey-scroll-btn{
+  background:color-mix(in srgb,var(--canvas-2) 90%,transparent);
+  box-shadow:0 2px 8px rgba(18,28,22,.1),0 0 0 1px color-mix(in srgb,var(--border) 70%,transparent);
+}
+.journey-cell{flex:0 0 4.85rem;width:4.85rem;position:relative;overflow:visible}
+.journey-cell+.journey-cell{border-left:1px solid color-mix(in srgb,var(--border) 45%,transparent)}
+.journey-cell:first-child{border-radius:11px 0 0 11px}
+.journey-cell:last-child{border-radius:0 11px 11px 0}
+.journey-cell--viewing{background:color-mix(in srgb,var(--sage) 11%,var(--canvas-2));z-index:2;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--sage) 22%,transparent)}
+body.light .journey-cell--viewing{background:color-mix(in srgb,var(--sage) 9%,var(--canvas-2))}
 .journey-cell--active{z-index:1}
 .journey-cell--menu-open{z-index:50}
-.journey-seg{width:100%;display:flex;flex-direction:column;align-items:center;padding:12px 6px 14px;border:none;background:transparent;cursor:pointer;font-family:inherit;text-align:center;transition:background var(--dur-ui)}
-.journey-cell:not(.journey-cell--viewing) .journey-seg:hover{background:rgba(0,0,0,.03)}
+.journey-seg{width:100%;display:flex;flex-direction:column;align-items:center;padding:13px 8px 15px;border:none;background:transparent;cursor:pointer;font-family:inherit;text-align:center;transition:background var(--dur-ui)}
+@media (hover:hover) and (pointer:fine){
+  .journey-cell:not(.journey-cell--viewing) .journey-seg:hover{background:color-mix(in srgb,var(--text) 4%,transparent)}
+}
 .journey-seg:focus-visible{outline:2px solid var(--sage-l);outline-offset:-2px}
 .journey-kicker{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-m);line-height:1.2;margin-bottom:10px}
 .journey-cell--viewing .journey-kicker{color:var(--sage)}
@@ -1039,8 +1081,13 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
   .stats{grid-template-columns:repeat(2,1fr);gap:7px}
   .stat{padding:10px 12px}
   .stat-v{font-size:22px}
-  .journey-scroll{margin-bottom:10px}
-  .journey-cell{min-width:3.75rem}
+  .journey-slider{margin-bottom:10px}
+  .journey-scroll-btn{width:28px;height:28px}
+  .journey-scroll-btn--prev{left:4px}
+  .journey-scroll-btn--next{right:4px}
+  .journey-slider--scrollable::before,.journey-slider--scrollable::after{width:28px}
+  .journey-cell{flex:0 0 4.35rem;width:4.35rem}
+  .journey-seg{padding:11px 6px 13px}
   .journey-kicker{font-size:8px;margin-bottom:8px}
   .journey-label{font-size:12px}
   .ttitle{font-size:19px}
@@ -3738,7 +3785,7 @@ function renderTrips(){
   const el=document.getElementById('tripsContent');
   if(activeTripId){
     const trip=S.trips.find(t=>t.id===activeTripId);
-    if(trip){ el.innerHTML=tripDetail(trip); scheduleJourneyMenuPosition(); return; }
+    if(trip){ el.innerHTML=tripDetail(trip); scheduleJourneyMenuPosition(); scheduleJourneyScrollChrome(trip.id); return; }
     activeTripId=null;
   }
 
@@ -4271,7 +4318,73 @@ function renderTripJourneyBar(trip){
         <span class="journey-label">${esc('Complete')}</span>
       </button></div>`;
   }
-  return `<div class="journey-scroll"><nav class="journey-bar" aria-label="Trip journey">${cells}${doneCell}</nav></div>`;
+  const tid=esc(trip.id);
+  const chevL='<svg class="journey-scroll-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6.5 9 12l5.5 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const chevR='<svg class="journey-scroll-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6.5 15 12l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  return `<div class="journey-slider" data-trip-id="${tid}">
+    <div class="journey-scroll" id="journey-scroll-${tid}"><nav class="journey-bar" aria-label="Trip journey">${cells}${doneCell}</nav></div>
+    <button type="button" class="journey-scroll-btn journey-scroll-btn--prev" aria-label="Earlier journey steps" onclick="scrollJourneyBar('${tid}',-1)">${chevL}</button>
+    <button type="button" class="journey-scroll-btn journey-scroll-btn--next" aria-label="Later journey steps" onclick="scrollJourneyBar('${tid}',1)">${chevR}</button>
+  </div>`;
+}
+
+function getJourneySliderEls(tripId){
+  const wrap=document.querySelector('.journey-slider[data-trip-id="'+tripId+'"]');
+  if(!wrap) return null;
+  const sc=wrap.querySelector('.journey-scroll');
+  return sc?{wrap,sc}:null;
+}
+
+function updateJourneyScrollChrome(tripId){
+  const els=getJourneySliderEls(tripId);
+  if(!els) return;
+  const {wrap,sc}=els;
+  const max=Math.max(0, sc.scrollWidth-sc.clientWidth);
+  const canScroll=max>4;
+  const atStart=sc.scrollLeft<=2;
+  const atEnd=sc.scrollLeft>=max-2;
+  wrap.classList.toggle('journey-slider--scrollable', canScroll);
+  wrap.classList.toggle('journey-slider--at-start', !canScroll||atStart);
+  wrap.classList.toggle('journey-slider--at-end', !canScroll||atEnd);
+  const prev=wrap.querySelector('.journey-scroll-btn--prev');
+  const next=wrap.querySelector('.journey-scroll-btn--next');
+  if(prev) prev.disabled=!canScroll||atStart;
+  if(next) next.disabled=!canScroll||atEnd;
+}
+
+function scrollJourneyBar(tripId, dir){
+  const els=getJourneySliderEls(tripId);
+  if(!els) return;
+  const step=Math.max(els.sc.clientWidth*0.72, 100);
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  els.sc.scrollBy({left:dir*step, behavior:reduced?'auto':'smooth'});
+  setTimeout(()=>updateJourneyScrollChrome(tripId), reduced?0:320);
+}
+
+function scrollJourneyStageIntoView(tripId){
+  const els=getJourneySliderEls(tripId);
+  if(!els) return;
+  const viewing=els.sc.querySelector('.journey-cell--viewing');
+  if(viewing){
+    try{ viewing.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}); }
+    catch(e){ viewing.scrollIntoView(true); }
+  }
+  setTimeout(()=>updateJourneyScrollChrome(tripId), 380);
+}
+
+function bindJourneyScrollListeners(tripId){
+  const els=getJourneySliderEls(tripId);
+  if(!els||els.sc.dataset.journeyBound==='1') return;
+  els.sc.dataset.journeyBound='1';
+  els.sc.addEventListener('scroll', ()=>updateJourneyScrollChrome(tripId), {passive:true});
+}
+
+function scheduleJourneyScrollChrome(tripId){
+  requestAnimationFrame(()=>{
+    updateJourneyScrollChrome(tripId);
+    scrollJourneyStageIntoView(tripId);
+    bindJourneyScrollListeners(tripId);
+  });
 }
 
 function tripDetail(trip){
@@ -4318,8 +4431,7 @@ function tripDetail(trip){
 
   return `
     <div class="trip-toolbar">
-      <button class="tback" onclick="closeTrip()">← My Trips</button>
-      <div style="display:flex;gap:5px">
+      <div style="display:flex;gap:5px;margin-left:auto">
         <button class="btn btn-o btn-sm" onclick="toggleFeaturedTrip('${trip.id}')" style="${isFeaturedTrip(trip.id)?'color:var(--amber);border-color:var(--amber-d)':''}">${isFeaturedTrip(trip.id)?'★ Featured':'☆ Feature'}</button>
         <button class="btn btn-o btn-sm" onclick="openEditTripModal('${trip.id}')">Edit</button>
         <button class="btn btn-x" onclick="delTrip('${trip.id}')">Delete</button>
@@ -8867,6 +8979,14 @@ function renderTripExperiencePanel(trip){
     </div>
     ${!active?`<p class="trip-experience-muted" style="margin:6px 0 0;font-size:10px">Tap a section to expand, tap again to collapse</p>`:''}
     ${panelHtml?`<div class="trip-exp-panel" role="tabpanel">${panelHtml}</div>`:''}
+    <p class="trip-experience-muted" style="margin-top:10px;line-height:1.8">
+      <button type="button" class="btn btn-o btn-sm" onclick="openEditTripModal('${trip.id}')">Edit trip setup</button>${trip.status!=='idea'?`<span class="trip-wizard-edit-links">
+        <button type="button" onclick="openEditTripModal('${trip.id}','essentials')">Essentials</button>
+        <button type="button" onclick="openEditTripModal('${trip.id}','kit')">Kit</button>
+        <button type="button" onclick="openEditTripModal('${trip.id}','site')">Site</button>
+        <button type="button" onclick="openEditTripModal('${trip.id}','remember')">Remember</button>
+      </span>`:''}
+    </p>
   </div>`;
 }
 
@@ -11319,6 +11439,7 @@ window.addEventListener('resize',()=>{
   const um=document.getElementById('utilMenu');
   const ub=document.getElementById('utilMenuBtn');
   if(um&&um.style.display==='block'&&ub) pinHdrDropdown(um,ub);
+  if(activeTripId) updateJourneyScrollChrome(activeTripId);
 });
 
 function toggleLightMode(){

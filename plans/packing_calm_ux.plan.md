@@ -1,5 +1,5 @@
 ---
-status: in_progress
+status: ready_for_testing
 linear_epic: APE-73
 phases:
   - id: pack-full-list-mode
@@ -10,7 +10,7 @@ phases:
     status: backlog
   - id: todo-presentation
     linear: APE-74
-    status: backlog
+    status: ready_for_testing
   - id: toolbar-power-overflow
     linear: APE-69
     status: backlog
@@ -19,20 +19,22 @@ phases:
     status: backlog
 resolved_decisions:
   toggle_placement: below progress bar, above list (segmented Pack | Full list)
-  hide_packed_pack_mode: always on, not exposed as toggle in Pack mode
   auto_advance_location: yes when a location group completes in Pack mode
   v1_scope: packing checklist only; pack-up/pack-away later
   todo_surface_pack: A (bottom master list; row chip scrolls to footer)
   todo_surface_full: inline + bottom as today
   user_preference_todos: deferred post-v1 (was option C)
   criteria_gate_banner: only when user taps Packing done and criteria fail
-  progress_pack_mode: single line packed-first e.g. 24 packed · 6 to go
+  progress_pack_mode: single line e.g. 24 packed · 4 ready · 6 to go (sage + amber bar)
+  journey_bar_placement: under title on all trip stages (before trip experience hub)
+  journey_bar_mobile_scroll: arrow buttons + edge fade when stepper overflows (APE-89)
+  hide_packed_pack_mode: optional via Full list toggle; packed rows visible in Pack for feedback
   persist_key: nlPackingViewMode pack|full default pack
 ---
 
 # Packing calm UX (heart of the app)
 
-**Status:** In progress — Phase 1 ([APE-70](https://linear.app/aperturegraph/issue/APE-70)) ready for testing in `index.html`  
+**Status:** Ready for testing — [APE-70](https://linear.app/aperturegraph/issue/APE-70), [APE-52](https://linear.app/aperturegraph/issue/APE-52), [APE-74](https://linear.app/aperturegraph/issue/APE-74) in `index.html` (commit `5bb3c40`)  
 **Discovery doc:** [packing_calm_ux_discovery.md](packing_calm_ux_discovery.md)  
 **Linear epic:** [APE-73](https://linear.app/aperturegraph/issue/APE-73) (In Progress)
 
@@ -58,7 +60,7 @@ Everything on the trip screen **above and around** the list stays — no feature
 |------|----------------------------------|
 | Trip chrome | Back, Edit, title, subtitle, featured |
 | **Trip experience hub** | `renderTripExperiencePanel` — site, booking, weather summary, tabs (Site / Booking / Weather / Travel), links, Load forecast |
-| Journey | Stepper, stage status button, “Mark all packed”, scroll links (Before you go ↓, Notes ↓) |
+| Journey | Segmented journey bar under title on **all** stages; ⋯ on in-progress step; compact hub below bar in Pack |
 | Trip prep | **Consumable / shopping prep strip** (`renderConsumablePrepStrip`) — suggested amounts, shortfall |
 | Footer sections | **Before you go** to-dos (`tripStageFooterHtml`), **Notes** |
 
@@ -66,11 +68,11 @@ Pack mode may **simplify checklist progress + rows + toolbar** and the **trip hu
 
 ### Pack mode only (calmer checklist slice)
 
-- Single progress line (`packed · to go`)
+- Single progress line (`packed · ready · to go`) + dual-segment bar
 - Segmented Pack \| Full list under progress
 - Slim toolbar (+ Add, ⋯)
-- Compact rows, one open location group, hide packed (always)
-- To-do chips on rows → footer master list (no inline to-dos on rows)
+- Compact rows; one open location group deferred (APE-72); packed rows stay visible when marked
+- To-do chips → scroll/highlight that item’s footer tasks + **Back to item** (APE-74)
 
 ### Full list only (parity with today’s checklist body)
 
@@ -103,7 +105,7 @@ Ready for Pack-mode mock in `NeverLeftClaudeDesign.html` and APE-70 implementati
 | To-do surface (Full list) | **Inline + bottom** as shipped (APE-62) | Curators and power users keep both surfaces. |
 | User preference (option C) | **Deferred** post-v1 | Ship one calm default; add Settings later if testing asks for it. |
 | Criteria gate banner | **On “Packing done” attempt only** — not persistent mid-list | Instruction budget: no ambient rust guilt while packing. |
-| Progress (Pack mode) | **One line**, packed-first: e.g. `24 packed · 6 to go` | Momentum over debt; hide ready % / packed % split until Full list. |
+| Progress (Pack mode) | **One line**: `packed · ready · to go` + sage/amber bar | Ready visible so “to go” dropping on tap makes sense. |
 | Persistence | `localStorage` key `nlPackingViewMode`: `pack` \| `full`, default **`pack`** | Per device; new users land calm. |
 
 ## Pack-mode mock brief (next: design file)
@@ -136,7 +138,7 @@ Implement in order; each phase shippable behind Pack mode or feature flag if nee
 
 **Acceptance:** Sunday-night packer can complete a demo trip in Pack mode without opening filters; curator can switch to Full list and use today’s controls.
 
-**Shipped (May 2026, `index.html`):** `nlPackingViewMode` (`pack` default); segmented toggle under progress; Pack progress line; hide packed via `checklistHidePackedForTrip`; filter/sort chrome hidden in Pack; slim toolbar + overflow; to-do chips → `scrollTripSection('actions')` (no inline to-dos in Pack). **Pack trip header:** stepper directly under title/subtitle; compact trip hub (site name + one-line glance + pill tabs, panel on tap); no top “Before you go ↓” row; stage buttons without journey hint line. Full list restores full hub tabs + scroll links. Consumable strip, footer to-dos unchanged. **Deferred to later phases:** compact rows + one open location + auto-advance (APE-72); visual calm / gate timing polish (APE-71); partial overlap with APE-69/74 already in Phase 1 build.
+**Shipped (`index.html`, commits through `5bb3c40`):** `nlPackingViewMode`; Pack progress `packed · ready · to go`; accurate totals with packed rows visible; filter/sort hidden in Pack; slim toolbar; journey bar under title on **all** trip stages ([APE-52](https://linear.app/aperturegraph/issue/APE-52): viewing highlight vs in-progress pulse, ⋯ mark complete); compact trip hub in Pack; to-do chips → focused footer + back/auto-return ([APE-74](https://linear.app/aperturegraph/issue/APE-74)). Full list unchanged parity. **Deferred:** compact rows, one open location, auto-advance (APE-72); toolbar overflow polish (APE-69); visual calm (APE-71).
 
 ### Phase 2 — Disclosure defaults ([APE-72](https://linear.app/aperturegraph/issue/APE-72))
 
@@ -153,9 +155,12 @@ Implement in order; each phase shippable behind Pack mode or feature flag if nee
 
 **Goal:** One default to-do surface in Pack mode; no duplicate visual noise.
 
-- Pack mode default: **bottom master list**; rows show count chip (“2 to-dos”) → scroll/focus footer (per discovery recommendation)
+- Pack mode default: **bottom master list**; rows show count chip → scroll/highlight **that item’s** footer rows + banner “To-dos for [item]” + **↑ Back to item**; auto-return when last to-do ticked
+- Blocked ready/pack tap scrolls to focused footer for that item
 - Full list: retain inline + bottom (or user preference later)
-- Single coaching line for to-dos
+- Pack footer hint when not focused: tap chip on row
+
+**Status:** Ready for testing (`5bb3c40`). Optional later: group footer by item, inline one-liner on row.
 
 **Depends on:** APE-70 (mode gate).  
 **Related:** [APE-62](https://linear.app/aperturegraph/issue/APE-62), [APE-64](https://linear.app/aperturegraph/issue/APE-64) (done / testing).
@@ -181,7 +186,8 @@ Implement in order; each phase shippable behind Pack mode or feature flag if nee
 
 | Topic | Where |
 |-------|--------|
-| Journey stepper / completion anxiety | [APE-52](https://linear.app/aperturegraph/issue/APE-52) — **shipped in `index.html`** (segmented bar, ⋯ menu, no status button row) |
+| Journey stepper / completion anxiety | [APE-52](https://linear.app/aperturegraph/issue/APE-52) — **ready for testing** (`5bb3c40`): bar under title on all stages; viewing vs in-progress; ⋯ menu |
+| Journey bar narrow-screen scroll | [APE-89](https://linear.app/aperturegraph/issue/APE-89) (child of APE-52) — **ready for testing**: ‹ › when overflow; edge fade; active step scrolled into view |
 | Trip detail hub tone | [trip_experience_hub.plan.md](trip_experience_hub.plan.md) |
 | Print | [trip_todo_print.plan.md](trip_todo_print.plan.md) — power layer |
 
