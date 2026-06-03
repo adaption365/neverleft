@@ -1,9 +1,11 @@
 /* NeverLeft service worker — bump SHELL_CACHE after deploy when shell assets change */
-const SHELL_CACHE = 'neverleft-shell-v1';
+const SHELL_CACHE = 'neverleft-shell-v2';
 const FONT_CACHE = 'neverleft-fonts-v1';
 
 const PRECACHE_URLS = [
   '/index.html',
+  '/css/fonts.css',
+  '/css/styles.css',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
@@ -56,25 +58,6 @@ self.addEventListener('fetch', (event) => {
         .catch(() =>
           caches.match('/index.html').then((r) => r || new Response('Offline', { status: 503 }))
         )
-    );
-    return;
-  }
-
-  if (
-    request.method === 'GET' &&
-    (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com')
-  ) {
-    event.respondWith(
-      caches.open(FONT_CACHE).then((cache) =>
-        fetch(request)
-          .then((response) => {
-            if (response.ok) {
-              cache.put(request, response.clone());
-            }
-            return response;
-          })
-          .catch(() => cache.match(request))
-      )
     );
     return;
   }
