@@ -3781,11 +3781,22 @@ function renderTripHeroCard(trip, pc, featured){
 // ══════════════════════════════════════════════════
 // TRIPS
 // ══════════════════════════════════════════════════
-function renderTrips(){
+function renderTrips(opts){
+  opts=opts||{};
   const el=document.getElementById('tripsContent');
   if(activeTripId){
     const trip=S.trips.find(t=>t.id===activeTripId);
-    if(trip){ el.innerHTML=tripDetail(trip); scheduleJourneyMenuPosition(); scheduleJourneyScrollChrome(trip.id); return; }
+    if(trip){
+      const scrollTop=!!opts.scrollTop;
+      const savedY=scrollTop?0:(window.scrollY||document.documentElement.scrollTop||0);
+      el.innerHTML=tripDetail(trip);
+      scheduleJourneyMenuPosition();
+      scheduleJourneyScrollChrome(trip.id, !!opts.scrollJourneyStage);
+      requestAnimationFrame(()=>{
+        try{ window.scrollTo(0, scrollTop?0:savedY); }catch(e){}
+      });
+      return;
+    }
     activeTripId=null;
   }
 
@@ -4078,7 +4089,7 @@ function goToTripStage(tripId, status, tab){
   activeTripTab=tab||tripStageDefaultTab(status);
   if(status==='packing'&&!trip.checklist) genChecklist(tripId);
   tripProgressChanged(tripId);
-  save(); renderTrips();
+  save(); renderTrips({scrollTop:true, scrollJourneyStage:true});
 }
 
 /** Mark a journey step complete (criteria required) and advance. Optional stageId = in-progress step from journey bar. */
@@ -4365,11 +4376,15 @@ function scrollJourneyStageIntoView(tripId){
   const els=getJourneySliderEls(tripId);
   if(!els) return;
   const viewing=els.sc.querySelector('.journey-cell--viewing');
-  if(viewing){
-    try{ viewing.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}); }
-    catch(e){ viewing.scrollIntoView(true); }
-  }
-  setTimeout(()=>updateJourneyScrollChrome(tripId), 380);
+  if(!viewing) return;
+  const sc=els.sc;
+  const vr=viewing.getBoundingClientRect();
+  const sr=sc.getBoundingClientRect();
+  const max=Math.max(0, sc.scrollWidth-sc.clientWidth);
+  const target=sc.scrollLeft+(vr.left-sr.left)-(sc.clientWidth-vr.width)/2;
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  sc.scrollTo({left:Math.min(max,Math.max(0,target)), behavior:reduced?'auto':'smooth'});
+  setTimeout(()=>updateJourneyScrollChrome(tripId), reduced?0:320);
 }
 
 function bindJourneyScrollListeners(tripId){
@@ -4379,10 +4394,10 @@ function bindJourneyScrollListeners(tripId){
   els.sc.addEventListener('scroll', ()=>updateJourneyScrollChrome(tripId), {passive:true});
 }
 
-function scheduleJourneyScrollChrome(tripId){
+function scheduleJourneyScrollChrome(tripId, scrollStageIntoView){
   requestAnimationFrame(()=>{
     updateJourneyScrollChrome(tripId);
-    scrollJourneyStageIntoView(tripId);
+    if(scrollStageIntoView) scrollJourneyStageIntoView(tripId);
     bindJourneyScrollListeners(tripId);
   });
 }
@@ -5696,9 +5711,8 @@ function openTrip(id){
   const trip=S.trips.find(t=>t.id===id);
   activeTripTab=trip?tripStageDefaultTab(trip.status):'checklist';
   if(mainTab!=='trips') setTab('trips', document.getElementById('dockTripsBtn'));
-  else renderTrips();
+  else renderTrips({scrollTop:true, scrollJourneyStage:true});
   refreshAppChrome();
-  try{ window.scrollTo(0,0); }catch(e){}
 }
 function closeTrip(){
   activeTripId=null;

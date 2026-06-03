@@ -19,9 +19,12 @@ steps:
   - id: first-visit-intro
     linear: APE-80
     status: done
-deferred:
+deferred: []
+shipped_after_epic:
   - id: global-copy-punctuation
-    note: Em dash → comma sweep across app; separate editorial pass if wanted
+    linear: APE-81
+    status: done
+    note: User-facing em dash → comma/colon in index.html; comments, trip-name split, empty cells, demo seed unchanged
 ---
 
 # Merge `index_claude.html` → `index.html` (phased)
@@ -86,9 +89,15 @@ Cherry-pick vetted changes from [`index_claude.html`](../index_claude.html) into
 
 ---
 
-## Deferred
+## Post-epic: global copy pass ([APE-81](https://linear.app/aperturegraph/issue/APE-81))
 
-- **Global copy pass** (em dash → comma) — not part of this merge unless requested separately.
+**Change:** User-visible copy in `index.html`: em dash → comma (or colon in dropdown labels). Unchanged: code comments, `split('—')` trip titles, table empty `—`, demo seed strings.
+
+**Test:** Spot-check toasts, trip wizard, item modal, packing nudges; demo trip name uses `—` for hero title split (locale-based place, not fixed Easter/Peak District).
+
+**Status:** Done (signed off).
+
+---
 
 ## Out of scope (separate work)
 
