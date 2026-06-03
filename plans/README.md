@@ -29,7 +29,7 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [APE-25](https://linear.app/aperturegraph/issue/APE-25) | trip_experience_hub | Phase 3 — Met Office / directions (largely superseded by APE-59) |
 | [APE-26](https://linear.app/aperturegraph/issue/APE-26) | trip_experience_hub | Phase 2 — print cover (Done) |
 | [APE-27](https://linear.app/aperturegraph/issue/APE-27) | trip_experience_hub | Phase 2 — custom site rules settings (Done) |
-| [APE-52](https://linear.app/aperturegraph/issue/APE-52) | backlog_batches… | Trip workflow UX revisit (stepper, completion, undo) — discovery |
+| [APE-52](https://linear.app/aperturegraph/issue/APE-52) | packing_calm_ux… / backlog_batches… | Journey bar on trip detail (segmented bar, viewing vs in-progress, ⋯ menu) — Ready for testing (`5bb3c40`) |
 | [APE-55](https://linear.app/aperturegraph/issue/APE-55) | consumable_stock_shortfall… | Consumable stock & shortfall → shopping (Batch K; depends on F) |
 | [APE-56](https://linear.app/aperturegraph/issue/APE-56) | consumable_stock_shortfall… | Count-aware / partial packing for ×N lines (Batch L; companion to K) |
 | [APE-57](https://linear.app/aperturegraph/issue/APE-57) | quick_create_group… | Quick-create a group + child default inheritance (Batch M) — Done |
@@ -44,11 +44,17 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [APE-73](https://linear.app/aperturegraph/issue/APE-73) | packing_calm_ux… | **Epic** — Packing calm UX discovery & philosophy (heart of app) — In Progress |
 | [APE-70](https://linear.app/aperturegraph/issue/APE-70) | packing_calm_ux… | Phase 1 — Pack vs Full list mode — Ready for testing |
 | [APE-72](https://linear.app/aperturegraph/issue/APE-72) | packing_calm_ux… | Phase 2 — Progressive disclosure defaults — Backlog |
-| [APE-74](https://linear.app/aperturegraph/issue/APE-74) | packing_calm_ux… | Phase 3 — Calm to-do presentation — Backlog |
+| [APE-74](https://linear.app/aperturegraph/issue/APE-74) | packing_calm_ux… | Phase 3 — To-do chip → focused footer + back to item (`5bb3c40`) — Ready for testing |
 | [APE-69](https://linear.app/aperturegraph/issue/APE-69) | packing_calm_ux… | Phase 4 — Toolbar primary + overflow — Backlog |
 | [APE-71](https://linear.app/aperturegraph/issue/APE-71) | packing_calm_ux… | Phase 5 — Visual calm pass — Backlog |
+| [APE-75](https://linear.app/aperturegraph/issue/APE-75) | index_claude_merge… | **Epic** — Phased merge from `index_claude.html` → `index.html` — Done |
+| [APE-76](https://linear.app/aperturegraph/issue/APE-76) | index_claude_merge… | Step 1 — Demo banner mobile stack — Done |
+| [APE-77](https://linear.app/aperturegraph/issue/APE-77) | index_claude_merge… | Step 2 — Trip wizard attendees default all ticked — Done |
+| [APE-78](https://linear.app/aperturegraph/issue/APE-78) | index_claude_merge… | Step 3 — Skip backup reminder in demo mode — Done |
+| [APE-79](https://linear.app/aperturegraph/issue/APE-79) | index_claude_merge… | Step 4 — Item modal More options — Done |
+| [APE-80](https://linear.app/aperturegraph/issue/APE-80) | index_claude_merge… | Step 5 — First-visit intro overlay — Done |
 
-**Active epic:** [packing_calm_ux](packing_calm_ux.plan.md) — calm packing as core product philosophy ([APE-73](https://linear.app/aperturegraph/issue/APE-73)); **APE-70** Pack vs Full list ready for testing; next **APE-72 → 74 → 69 → 71** after sign-off.
+**Active epic:** [packing_calm_ux](packing_calm_ux.plan.md) — calm packing as core product philosophy ([APE-73](https://linear.app/aperturegraph/issue/APE-73)); **APE-52**, **APE-70**, **APE-74** ready for testing (commit `5bb3c40`); next **APE-72 → 69 → 71** after sign-off.
 
 **Build order** (Linear priority): demo graduation + backup (APE-12–14, APE-13) → trip experience polish (APE-11, APE-25–27, APE-26) → camp mode (APE-15–17, APE-23) → qty rules (APE-21, APE-18) → kit UX (APE-20, APE-22, APE-24).
 
@@ -83,7 +89,8 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [trip_setup_journey.plan.md](trip_setup_journey.plan.md) | Done | Emotional 4-step trip setup wizard (booked + idea paths) |
 | [trip_todo_print.plan.md](trip_todo_print.plan.md) | Ready for testing | Print to-dos per step (APE-64); inline packing to-dos restore (APE-62); future APE-63/65/66 |
 | [packing_calm_ux_discovery.md](packing_calm_ux_discovery.md) | Discovery | Why packing feels busy; north star; personas; disclosure model |
-| [packing_calm_ux.plan.md](packing_calm_ux.plan.md) | Ready for testing (Phase 1) | Pack vs Full list in `index.html` (APE-70); epic APE-73; phases 72–71 backlog |
+| [packing_calm_ux.plan.md](packing_calm_ux.plan.md) | Ready for testing | Pack/Full (APE-70), journey bar (APE-52), to-do focus flow (APE-74); `5bb3c40`; phases 72/69/71 backlog |
+| [index_claude_merge.plan.md](index_claude_merge.plan.md) | Done | Phased cherry-pick from `index_claude.html` (APE-75); Steps 1–5 shipped in `index.html` |
 
 **Suggested build order** (from feature plan): demo graduation + backup gate → trip experience polish → Camp mode → qty rules.
 

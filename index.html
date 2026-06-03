@@ -66,6 +66,12 @@ body.light {
   --hero-glow: rgba(74,107,58,.14);
 }
 
+/* Mobile: stack sample-kit banner so copy and actions are not crushed */
+@media (max-width:560px){
+  #demoBanner{flex-direction:column;align-items:flex-start!important;gap:10px!important}
+  #demoBanner>div:last-child{width:100%}
+}
+
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Familjen Grotesk',sans-serif;background:var(--canvas);color:var(--text);min-height:100vh;font-size:14px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
@@ -1027,6 +1033,118 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 </head>
 <body>
 
+<!-- ============ NeverLeft first-visit landing layer ============ -->
+<style>
+  .nl-intro{
+    --nl-serif:'Newsreader',Georgia,serif;
+    --nl-sans:'Familjen Grotesk',system-ui,sans-serif;
+    --nl-mono:'DM Mono',ui-monospace,monospace;
+    position:fixed;inset:0;z-index:100000;
+    display:flex;flex-direction:column;overflow-y:auto;
+    color:var(--text);
+    background:
+      radial-gradient(120% 90% at 110% -10%, color-mix(in srgb, var(--sage) 16%, transparent), transparent 55%),
+      radial-gradient(110% 80% at -15% 115%, color-mix(in srgb, var(--rust) 12%, transparent), transparent 50%),
+      var(--canvas);
+    transition:opacity .35s ease;
+  }
+  .nl-intro::before{
+    content:"";position:absolute;inset:-20%;pointer-events:none;transform:rotate(-3deg);
+    background:
+      repeating-radial-gradient(circle at 18% 8%, transparent 0 26px, color-mix(in srgb,var(--sage) 9%,transparent) 26px 27px),
+      repeating-radial-gradient(circle at 88% 96%, transparent 0 34px, color-mix(in srgb,var(--sage) 7%,transparent) 34px 35px);
+    -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 70%,transparent 100%);
+            mask-image:linear-gradient(180deg,#000 0%,#000 70%,transparent 100%);
+  }
+  .nl-intro__inner{position:relative;z-index:1;width:100%;max-width:560px;margin:auto;
+    padding:40px 26px calc(34px + env(safe-area-inset-bottom));display:flex;flex-direction:column;min-height:100%}
+  .nl-intro__brand{display:flex;align-items:center;gap:11px;margin-bottom:auto}
+  .nl-intro__mark{width:38px;height:38px;flex:none;border-radius:11px;background:var(--sage);color:var(--canvas);
+    display:grid;place-items:center;font-family:var(--nl-serif);font-weight:600;font-size:21px}
+  .nl-intro__wordmark{font-family:var(--nl-serif);font-weight:600;font-size:19px;letter-spacing:-.01em}
+  .nl-intro__hero{padding:48px 0 8px}
+  .nl-intro__eyebrow{font-family:var(--nl-mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--rust);margin:0 0 20px;display:flex;align-items:center;gap:9px}
+  .nl-intro__eyebrow::before{content:"";width:22px;height:1px;background:var(--rust);opacity:.6}
+  .nl-intro__headline{font-family:var(--nl-serif);font-weight:500;font-size:clamp(2.45rem,11vw,3.5rem);
+    line-height:1.02;letter-spacing:-.02em;margin:0 0 22px}
+  .nl-intro__headline em{font-style:italic;font-weight:400;color:var(--sage)}
+  .nl-intro__sub{font-size:1.06rem;line-height:1.55;color:var(--text-m);margin:0;max-width:42ch}
+  .nl-intro__points{list-style:none;margin:34px 0 0;padding:22px 0 6px;border-top:1px solid var(--border);display:grid;gap:18px}
+  .nl-intro__point{display:flex;gap:14px;align-items:flex-start}
+  .nl-intro__icon{flex:none;width:30px;height:30px;margin-top:1px;color:var(--sage)}
+  .nl-intro__point b{font-weight:600;font-size:.98rem}
+  .nl-intro__point span{display:block;color:var(--text-m);font-size:.92rem;line-height:1.45;margin-top:2px}
+  .nl-intro__actions{margin-top:38px}
+  .nl-intro__cta{appearance:none;border:none;cursor:pointer;width:100%;font-family:var(--nl-sans);font-weight:600;
+    font-size:1.05rem;color:var(--canvas);background:var(--sage);border-radius:15px;padding:17px 22px;
+    display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .15s ease,opacity .15s ease}
+  .nl-intro__cta:hover{opacity:.92;transform:translateY(-1px)}
+  .nl-intro__cta:active{transform:translateY(0)}
+  .nl-intro__cta svg{transition:transform .2s ease}
+  .nl-intro__cta:hover svg{transform:translateX(3px)}
+  .nl-intro__trust{font-family:var(--nl-mono);font-size:12px;color:var(--text-m);text-align:center;margin:16px 0 0}
+  .nl-intro__returning{text-align:center;margin:22px 0 0;font-size:.9rem;color:var(--text-m)}
+  .nl-intro__returning button{appearance:none;border:none;background:none;font:inherit;cursor:pointer;
+    color:var(--sage);font-weight:600;text-decoration:underline;text-underline-offset:3px;padding:4px}
+  .nl-anim{opacity:0;transform:translateY(14px);animation:nl-rise .7s cubic-bezier(.2,.7,.2,1) forwards}
+  .nl-d1{animation-delay:.05s}.nl-d2{animation-delay:.15s}.nl-d3{animation-delay:.25s}
+  .nl-d4{animation-delay:.36s}.nl-d5{animation-delay:.46s}.nl-d6{animation-delay:.54s}.nl-d7{animation-delay:.62s}
+  @keyframes nl-rise{to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.nl-anim{animation:none;opacity:1;transform:none}}
+</style>
+<main class="nl-intro" id="nlIntro" role="region" aria-label="Welcome to NeverLeft">
+  <div class="nl-intro__inner">
+    <div class="nl-intro__brand nl-anim nl-d1">
+      <div class="nl-intro__mark" aria-hidden="true">N</div>
+      <div class="nl-intro__wordmark">NeverLeft</div>
+    </div>
+    <section class="nl-intro__hero">
+      <p class="nl-intro__eyebrow nl-anim nl-d2">Camping kit &amp; trip planner</p>
+      <h1 class="nl-intro__headline nl-anim nl-d2">Never leave it<br><em>behind again.</em></h1>
+      <p class="nl-intro__sub nl-anim nl-d3">NeverLeft works out exactly what to pack for each trip, from how many nights you&rsquo;re away to who&rsquo;s coming along. It keeps track of the gear you own and tells you what to restock before you go.</p>
+      <ul class="nl-intro__points">
+        <li class="nl-intro__point nl-anim nl-d4">
+          <svg class="nl-intro__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21 12 4l9 17z"/><path d="M8.5 12.5h7"/></svg>
+          <div><b>It knows what you need</b><span>Tell it the trip and your kit scales itself by nights, people and conditions.</span></div>
+        </li>
+        <li class="nl-intro__point nl-anim nl-d5">
+          <svg class="nl-intro__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 12h18"/></svg>
+          <div><b>It packs into your bags</b><span>Organise gear the way you actually load it, from the shed to the duffle.</span></div>
+        </li>
+        <li class="nl-intro__point nl-anim nl-d6">
+          <svg class="nl-intro__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v5l3 2"/><circle cx="12" cy="12" r="9"/></svg>
+          <div><b>It&rsquo;s ready at every stage</b><span>Gentle nudges before you leave, during the trip, and once you&rsquo;re back home.</span></div>
+        </li>
+      </ul>
+    </section>
+    <div class="nl-intro__actions">
+      <button class="nl-intro__cta nl-anim nl-d7" id="nlEnter" type="button" onclick="nlEnterApp()">
+        Take a look around
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </button>
+      <p class="nl-intro__trust nl-anim nl-d7">Free &nbsp;&middot;&nbsp; No account &nbsp;&middot;&nbsp; Stays on your device</p>
+      <p class="nl-intro__returning nl-anim nl-d7">Already set up? <button type="button" id="nlReturning" onclick="nlEnterApp()">Open your kit</button></p>
+    </div>
+  </div>
+</main>
+<script>
+  function nlEnterApp(){
+    try{ localStorage.setItem('basecamp_introSeen','1'); }catch(e){}
+    var el=document.getElementById('nlIntro');
+    if(!el) return;
+    el.style.opacity='0'; el.style.pointerEvents='none';
+    setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 360);
+  }
+  (function(){
+    try{
+      var el=document.getElementById('nlIntro');
+      if(el && localStorage.getItem('basecamp_introSeen')==='1'){ el.parentNode.removeChild(el); }
+    }catch(e){}
+  })();
+</script>
+<!-- ============ end landing layer ============ -->
+
 <button id="scrollTopBtn" class="scroll-top-btn" type="button" aria-label="Back to top" title="Back to top" onclick="scrollToTop()">↑</button>
 
 <header class="hdr">
@@ -1197,6 +1315,10 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
       <div class="qtyrule-hint" id="iQtyStockHint" style="display:none">Trip need is calculated below. This field is stock on hand at home.</div>
     </div>
   </div>
+  <button type="button" id="iMoreToggle" aria-expanded="false" onclick="toggleItemMore()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:6px;background:transparent;border:1px dashed var(--border-l);color:var(--text-d);font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:600;border-radius:10px;padding:9px;margin:4px 0 6px;cursor:pointer">
+    <span class="nl-more-txt">More options</span><span class="nl-more-caret" style="font-size:10px">▾</span>
+  </button>
+  <div id="iMoreFields" style="display:none">
   <div class="fg" id="iQtyRuleBlock">
     <label class="fl">Trip quantity</label>
     <div class="qtyrule-summary">
@@ -1261,6 +1383,7 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
       </select>
       <button class="btn btn-o btn-sm" type="button" onclick="addItemAction()">+ Add</button>
     </div>
+  </div>
   </div>
   <div class="factions">
     <button class="btn btn-o" onclick="closeM('itemModal')">Cancel</button>
@@ -5687,6 +5810,49 @@ function promoteWish(id){
   if(kitSyncResults.length) toastKitSyncedToTrips(kitSyncResults);
 }
 
+function setItemMore(open){
+  const m=document.getElementById('iMoreFields');
+  if(!m) return;
+  m.style.display=open?'block':'none';
+  const b=document.getElementById('iMoreToggle');
+  if(b){
+    b.setAttribute('aria-expanded',open?'true':'false');
+    const c=b.querySelector('.nl-more-caret');
+    if(c) c.textContent=open?'\u25B4':'\u25BE';
+    const t=b.querySelector('.nl-more-txt');
+    if(t) t.textContent=open?'Fewer options':'More options';
+  }
+}
+function toggleItemMore(){
+  const m=document.getElementById('iMoreFields');
+  setItemMore(!(m&&m.style.display!=='none'));
+}
+function setItemMoreAuto(){
+  try{
+    let adv=false;
+    const g=id=>document.getElementById(id);
+    const s=g('iSeason');
+    if(s&&s.value&&s.value!=='all') adv=true;
+    const a=g('iActivity');
+    if(a&&a.value) adv=true;
+    const pk=g('iPacksInto');
+    if(pk&&pk.value) adv=true;
+    const r=g('iRestock');
+    if(r&&r.checked) adv=true;
+    const n=g('iNotes');
+    if(n&&n.value&&n.value.trim()) adv=true;
+    const k=g('iQtyKind');
+    if(k&&k.value&&k.value!=='fixed') adv=true;
+    if(window._itemActions&&window._itemActions.length) adv=true;
+    const pg=g('iPersonGroup');
+    if(pg&&pg.style.display!=='none'){
+      const pb=g('iPersonBtns');
+      if(pb&&pb.querySelector('.on')) adv=true;
+    }
+    setItemMore(adv);
+  }catch(e){ setItemMore(false); }
+}
+
 function openAddItemModal(prefillName){
   editItemId=null;
   window._pendingDupSubs=null;
@@ -6393,7 +6559,7 @@ function populateTripAttendeeGrid(trip,gridId){
   }
   const saved=(trip&&trip.attendeeIds&&trip.attendeeIds.length)?new Set(trip.attendeeIds):null;
   wrap.innerHTML=people.map(p=>{
-    const on=saved&&saved.has(p.id);
+    const on=saved?saved.has(p.id):true;
     return `<label class="ck" style="display:inline-flex;align-items:center;gap:6px;margin:4px 12px 4px 0"><input type="checkbox" name="tAtt" value="${p.id}"${on?' checked':''}><span>${p.emoji||'👤'}</span><span>${esc(p.name)}</span></label>`;
   }).join('');
 }
@@ -6660,7 +6826,7 @@ function graduateTripIdea(tripId){
 // ══════════════════════════════════════════════════
 // MODAL HELPERS
 // ══════════════════════════════════════════════════
-function openM(id){ const m=document.getElementById(id); m.classList.add('on'); const sc=m.querySelector('.modal,.gsearch-panel,.sheet'); if(sc) sc.scrollTop=0; m.scrollTop=0; }
+function openM(id){ const m=document.getElementById(id); m.classList.add('on'); const sc=m.querySelector('.modal,.gsearch-panel,.sheet'); if(sc) sc.scrollTop=0; m.scrollTop=0; if(id==='itemModal'){ try{ setItemMoreAuto(); }catch(e){ setItemMore(false); } } }
 function closeM(id){ document.getElementById(id).classList.remove('on'); if(id==='itemModal'){ editItemId=null; closeDuplicateNameDialog(); closeParentPickerList(); window._parentPickerLocked=false; window._forgotResolve=null; window._pendingDupSubs=null; } }
 function closeMOver(e,id){
   if(e.target!==document.getElementById(id)) return;
@@ -9531,6 +9697,7 @@ async function shareBackup(opts){
 }
 
 function checkBackupReminder(){
+  if(isDemoMode()) return;
   const last=localStorage.getItem('basecamp_last_export');
   if(!last){
     // Never exported — show reminder after a small delay so app loads first
