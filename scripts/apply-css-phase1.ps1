@@ -1,6 +1,7 @@
 $root = Split-Path $PSScriptRoot -Parent
 $indexPath = Join-Path $root 'index.html'
-$allLines = @(Get-Content -LiteralPath $indexPath)
+$utf8 = New-Object System.Text.UTF8Encoding $false
+$allLines = [System.IO.File]::ReadAllLines($indexPath, $utf8)
 
 # Ranges to omit (1-based inclusive) from original index.html
 $omit = @(
@@ -29,5 +30,5 @@ for ($i = 0; $i -lt $allLines.Count; $i++) {
   [void]$out.Add($allLines[$i])
 }
 
-Set-Content -LiteralPath $indexPath -Value $out -Encoding utf8
+[System.IO.File]::WriteAllLines($indexPath, $out, $utf8)
 Write-Host "Updated index.html: $($out.Count) lines (was $($allLines.Count))"

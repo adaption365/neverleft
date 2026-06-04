@@ -1,19 +1,23 @@
 $root = Split-Path $PSScriptRoot -Parent
 $indexPath = Join-Path $root 'index.html'
-$allLines = @(Get-Content -LiteralPath $indexPath)
+$utf8 = New-Object System.Text.UTF8Encoding $false
+$allLines = [System.IO.File]::ReadAllLines($indexPath, $utf8)
 
-# Omit 1-based lines 93-227 (both inline script blocks)
+# After phase 1 on 99bad41 layout: intro script 93-147, tour 151-229 (end walkthrough comment)
+$omitStart = 93
+$omitEnd = 229
+
 $out = New-Object System.Collections.Generic.List[string]
 for ($i = 0; $i -lt $allLines.Count; $i++) {
   $lineNum = $i + 1
-  if ($lineNum -eq 93) {
+  if ($lineNum -eq $omitStart) {
     [void]$out.Add('<script src="/js/tour.js"></script>')
+    [void]$out.Add('<!-- ============ end landing layer + walkthrough (see js/tour.js) ============ -->')
     continue
   }
-  # Drop both inline script blocks (intro + tour)
-  if ($lineNum -ge 94 -and $lineNum -le 227) { continue }
+  if ($lineNum -ge $omitStart -and $lineNum -le $omitEnd) { continue }
   [void]$out.Add($allLines[$i])
 }
 
-Set-Content -LiteralPath $indexPath -Value $out -Encoding utf8
+[System.IO.File]::WriteAllLines($indexPath, $out, $utf8)
 Write-Host "Updated index.html: $($out.Count) lines (was $($allLines.Count))"

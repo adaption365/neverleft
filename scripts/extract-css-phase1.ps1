@@ -3,7 +3,8 @@ $indexPath = Join-Path $root 'index.html'
 $cssDir = Join-Path $root 'css'
 New-Item -ItemType Directory -Force -Path $cssDir | Out-Null
 
-$lines = [System.IO.File]::ReadAllLines($indexPath)
+$utf8 = New-Object System.Text.UTF8Encoding $false
+$lines = [System.IO.File]::ReadAllLines($indexPath, $utf8)
 
 function Get-RangeContent([int]$start, [int]$end) {
   $buf = New-Object System.Collections.Generic.List[string]

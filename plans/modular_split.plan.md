@@ -10,7 +10,7 @@ todos:
     status: completed
   - id: phase-3-state
     content: Extract state.js, storage.js, backup.js
-    status: pending
+    status: completed
   - id: phase-4-domains
     content: Extract kit, trips, settings, etc. (see module map)
     status: pending
@@ -19,6 +19,29 @@ todos:
 # Modular split plan
 
 **Goal:** Reduce fragility of the ~11k-line `index.html` without breaking offline PWA behaviour.
+
+## Phase 3 — state / storage / backup (done)
+
+| Asset | Role |
+|-------|------|
+| [`js/state.js`](../js/state.js) | `SK`, `S`, UI state, constants (`CATS`, journey stages, packing view helpers) |
+| [`js/storage.js`](../js/storage.js) | `load`, `save`, demo mode, `uid` / `esc` / `fmtDate` |
+| [`js/backup.js`](../js/backup.js) | Import/export, backup modals, destructive-action gate |
+| [`index.html`](../index.html) | Settings helpers + domain logic remain inline for now |
+| [`sw.js`](../sw.js) | `neverleft-shell-v4` precaches all three JS files |
+
+**Scripts (Node only — UTF-8, no BOM):** `scripts/extract-phase3.mjs`, `scripts/apply-phase3.mjs`, `scripts/verify-phase3-utf8.mjs`
+
+Settings block (`defaultSettings`, `showToast`, …) stays in `index.html` until phase 4 `settings.js`.
+
+### Phase 3 test plan
+
+1. Hard refresh at http://localhost:3456 — Network: `state.js`, `storage.js`, `backup.js` → 200.
+2. App loads with demo data; dock arrows/emojis render correctly (no mojibake).
+3. Edit item → save → reload — data persists.
+4. **More → Download backup** and **Restore backup** (test file round-trip).
+5. Settings → destructive flows still require backup gate first.
+6. Offline reload: shell v4 serves extracted scripts from cache.
 
 ## Phase 2 — tour.js (done)
 
@@ -36,6 +59,10 @@ todos:
 2. **More → Replay intro** clears keys and reloads.
 3. **More → Show me around** on Trips (trip tour) and Kit tab (kit tour, 3 steps).
 4. Offline reload after visit: `tour.js` served from cache; tours still launch.
+
+### UTF-8
+
+PowerShell `Set-Content -Encoding utf8` (phase 1 apply) corrupted arrows (`→`, `↑`, `←`). Restored via `node scripts/fix-utf8-mojibake.mjs`; apply scripts now write UTF-8 **without BOM**.
 
 ## Phase 1 — CSS (done)
 
