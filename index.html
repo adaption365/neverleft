@@ -1173,6 +1173,30 @@ function getFeaturedTrip(){
   return t;
 }
 
+/** Featured pin can exist on any trip; hero / Next up only uses eligible trips. */
+function featuredTripEligibleForDashboard(trip){
+  if(!trip||trip.status==='idea') return false;
+  return !isTripLogbookEntry(trip);
+}
+
+function getFeaturedTripForHero(){
+  const t=getFeaturedTrip();
+  if(!featuredTripEligibleForDashboard(t)) return null;
+  return t;
+}
+
+/** Clear featured pin when the trip is in the logbook (past date or marked done). */
+function syncFeaturedTripEligibility(){
+  if(!S.featuredTripId) return false;
+  const t=getFeaturedTrip();
+  if(t&&!featuredTripEligibleForDashboard(t)){
+    S.featuredTripId=null;
+    save();
+    return true;
+  }
+  return false;
+}
+
 /** Closest dated active trip on or after today; else best active fallback. */
 function closestFutureTrip(){
   const active=(S.trips||[]).filter(t=>t.status!=='complete'&&t.status!=='idea');
@@ -1187,10 +1211,11 @@ function closestFutureTrip(){
   return sortTripsByFocusPriority(active)[0]||null;
 }
 
-/** Trip NeverLeft focuses on: featured wins, else closest future active trip. */
+/** Trip NeverLeft focuses on: featured wins (if still on the horizon), else closest future active trip. */
 function focusTripForDashboard(){
-  const feat=getFeaturedTrip();
-  if(feat&&feat.status!=='idea') return feat;
+  syncFeaturedTripEligibility();
+  const feat=getFeaturedTripForHero();
+  if(feat) return feat;
   return closestFutureTrip();
 }
 
@@ -1316,8 +1341,13 @@ function isFeaturedTrip(tripId){
 
 function toggleFeaturedTrip(tripId){
   if(!tripId) return;
-  if(S.featuredTripId===tripId) S.featuredTripId=null;
-  else S.featuredTripId=tripId;
+  if(S.featuredTripId===tripId){
+    S.featuredTripId=null;
+  }else{
+    const t=(S.trips||[]).find(x=>x.id===tripId);
+    if(!featuredTripEligibleForDashboard(t)) return;
+    S.featuredTripId=tripId;
+  }
   save();
   refreshNavBadges();
   updateKitTripFilterSelect();
@@ -2018,11 +2048,18 @@ function formatTripHeroTitle(name){
   return esc(parts[0].trim())+' <em>'+esc(parts.slice(1).join('—').trim())+'</em>';
 }
 
+function heroCountdownPulseClass(pc){
+  if(!pc||!pc.pulse) return '';
+  const m=pc.label&&pc.label.match(/^Leaving in (\d+) days?$/i);
+  if(m&&+m[1]>7) return '';
+  return ' trip-hero-countdown--pulse';
+}
+
 function heroCountdownBlock(pc){
   if(!pc) return '';
   const m=pc.label.match(/^Leaving in (\d+) days?$/i);
   if(m){
-    const pulse=pc.pulse?' trip-hero-countdown--pulse':'';
+    const pulse=heroCountdownPulseClass(pc);
     return `<div class="trip-hero-countdown${pulse}">
       <div class="trip-hero-countdown-lbl">Leaves in</div>
       <div class="trip-hero-countdown-num" style="color:${pc.color}">${m[1]}</div>
@@ -2030,7 +2067,7 @@ function heroCountdownBlock(pc){
       ${pc.sub?`<div class="trip-hero-countdown-sub">${esc(pc.sub)}</div>`:''}
     </div>`;
   }
-  const pulse=pc.pulse?' trip-hero-countdown--pulse':'';
+  const pulse=heroCountdownPulseClass(pc);
   return `<div class="trip-hero-countdown trip-hero-countdown--compact${pulse}">
     <div class="trip-hero-countdown-label" style="color:${pc.color||'var(--text)'}">${esc(pc.label)}</div>
     ${pc.sub?`<div class="trip-hero-countdown-sub">${esc(pc.sub)}</div>`:''}
@@ -2106,7 +2143,15 @@ function tripHeroMetaLine(trip){
 
 function tripHeroStatusPill(trip){
   const label=STLAB[trip.status]||trip.status;
-  return `<span class="trip-hero-status-pill">${esc(label)} · on the horizon</span>`;
+  return `<span class="trip-hero-status-pill">${esc(label)}</span>`;
+}
+
+function tripHeroMobileMetricFocus(trip){
+  if(trip.checklist?.length){
+    const {total}=checklistProgressTotals(trip);
+    if(total>0&&(trip.status==='packing'||trip.status==='planning'||trip.status==='at-camp')) return 'progress';
+  }
+  return 'countdown';
 }
 
 function tripHeroWeatherLine(trip){
@@ -2136,15 +2181,14 @@ function tripHeroWeatherIcon(trip){
   return {summer:'☀️',shoulder:'🌦️',winter:'❄️'}[trip.season]||'🌤️';
 }
 
-function tripHeroWeatherChipHtml(trip, placement){
+function tripHeroWeatherChipHtml(trip){
   const line=tripHeroWeatherLine(trip);
   if(!line) return '';
   const w=trip.weather||{};
   const snap=w.mode==='snapshot'&&w.days?.length;
   const title=snap?line+' · saved forecast':line;
   const short=line.length>24?line.slice(0,22)+'…':line;
-  const place=placement?` trip-hero-weather-chip--${placement}`:'';
-  return `<div class="trip-hero-weather-chip${snap?' trip-hero-weather-chip--snap':''}${place}" title="${esc(title)}"><span class="trip-hero-weather-chip-ico" aria-hidden="true">${tripHeroWeatherIcon(trip)}</span><span class="trip-hero-weather-chip-txt">${esc(short)}</span></div>`;
+  return `<div class="trip-hero-weather-chip${snap?' trip-hero-weather-chip--snap':''}" title="${esc(title)}"><span class="trip-hero-weather-chip-ico" aria-hidden="true">${tripHeroWeatherIcon(trip)}</span><span class="trip-hero-weather-chip-txt">${esc(short)}</span></div>`;
 }
 
 function tripHeroTagsHtml(trip){
@@ -2190,23 +2234,22 @@ function heroPackProgressColumn(trip){
   </div>`;
 }
 function renderTripHeroCard(trip, pc, featured){
-  const weatherDesktop=tripHeroWeatherChipHtml(trip,'desktop');
-  const weatherMobile=tripHeroWeatherChipHtml(trip,'mobile');
+  const weatherChip=tripHeroWeatherChipHtml(trip);
+  const metricFocus=tripHeroMobileMetricFocus(trip);
   const actions=`<div class="trip-hero-actions">
         <button class="btn btn-p btn-sm" onclick="event.stopPropagation();openTrip('${trip.id}')">Open trip →</button>
         ${trip.status==='planning'?`<button class="btn btn-o btn-sm" onclick="event.stopPropagation();startPacking('${trip.id}')">Start packing</button>`:''}
-        ${weatherMobile}
       </div>`;
   return `
     <div class="trips-next-label">Next up</div>
-    <div class="trip-hero" onclick="openTrip('${trip.id}')">
-      ${weatherDesktop}
+    <div class="trip-hero trip-hero--focus-${metricFocus}" onclick="openTrip('${trip.id}')">
       <div class="trip-hero-deco" aria-hidden="true">⛺</div>
       <div class="trip-hero-inner">
         <section class="trip-hero-sec trip-hero-sec--trip">
           <div class="trip-hero-trip-head">
             ${tripHeroStatusPill(trip)}
             ${featured?'<span class="trip-featured-pill">★ Featured</span>':''}
+            ${weatherChip}
           </div>
           <h2 class="trip-hero-title">${formatTripHeroTitle(trip.name)}</h2>
           ${tripHeroSiteSubtitleHtml(trip)}

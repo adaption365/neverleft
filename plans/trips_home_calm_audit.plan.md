@@ -4,10 +4,11 @@ parent: packing_calm_ux.plan.md
 linear_epic: APE-110
 related_issues:
   - APE-111
+  - APE-112
 review_source: emil-design-eng + neverleft-ui-polish (May 2026)
 slices:
   mission-hierarchy: ready_for_testing
-  hero-budget: planned
+  hero-budget: ready_for_testing
   list-cards: planned
   hot-motion: planned
   first-run: planned
@@ -155,7 +156,7 @@ flowchart LR
 
 **Shipped (May 2026):** `trips-home-head`, editorial voice guardrails in `tripsEditorialHtml`, CSS hierarchy.
 
-### Slice 2 — Hero instruction budget (~2–3 hours)
+### Slice 2 — Hero instruction budget (~2–3 hours) — **ready for testing**
 
 **Goal:** Hero feels like **one trip card**, not three widgets.
 
@@ -167,6 +168,8 @@ flowchart LR
 | Optional: demote status pill copy (“Planning · on the horizon” → shorter) | `tripHeroStatusPill` | Less label noise |
 
 **Not in slice:** redesign hero grid, remove deco tent.
+
+**Shipped (Jun 2026):** `trip-hero--focus-progress|countdown`, `heroCountdownPulseClass`, single weather chip in trip head, status pill shortened. Featured trip only drives hero when `featuredTripEligibleForDashboard` (not past / logbook). SW `neverleft-shell-v25`. Linear APE-112.
 
 ### Slice 3 — List cards (~2 hours)
 
@@ -238,7 +241,8 @@ flowchart LR
 |------|------------|
 | Epic | [APE-110](https://linear.app/aperturegraph/issue/APE-110) — Trips home calm UX |
 | Slice 1 | [APE-111](https://linear.app/aperturegraph/issue/APE-111) — Ready for testing |
-| Issues | One issue per remaining slice (2–5) — backlog |
+| Slice 2 | [APE-112](https://linear.app/aperturegraph/issue/APE-112) — Ready for testing |
+| Issues | Slices 3–5 — backlog |
 | Plan | This file = source of truth |
 
 Do **not** mark Done until phone + iPad sign-off per slice (same workflow as packing calm).

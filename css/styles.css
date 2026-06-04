@@ -510,7 +510,8 @@ body.light .trip-exp-pill.on{background:rgba(74,107,58,.1);color:var(--sage)}
 .trip-hero-sec--trip{padding-top:18px;padding-bottom:18px;border-bottom:none}
 .trip-hero-metrics{display:flex;flex-direction:column}
 .trip-hero-sec--countdown,.trip-hero-sec--progress{border-bottom:none;border-right:none}
-.trip-hero-trip-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.trip-hero-trip-head{display:flex;align-items:center;justify-content:flex-start;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.trip-hero-trip-head .trip-hero-weather-chip{margin-left:auto}
 .trip-hero-countdown-wrap{display:flex;flex-direction:column;justify-content:center;min-height:100%}
 .trip-hero-sec--countdown .trip-hero-countdown{text-align:left}
 .trip-hero-sec--countdown .trip-hero-countdown-sub{margin-left:0;max-width:16em}
@@ -532,15 +533,28 @@ body.light .trip-hero-tag{background:rgba(255,255,255,.45)}
 .trip-hero-progress-wrap .pbar-wrap{height:8px;margin-top:0}
 .trip-hero-sec--trip{position:relative}
 .trip-hero-weather-chip{position:static;z-index:1;display:inline-flex;align-items:center;gap:5px;max-width:min(100%,14rem);margin-left:auto;padding:6px 11px;border-radius:999px;background:rgba(255,255,255,.06);color:var(--text);font-family:'DM Mono',monospace;font-size:10px;line-height:1.25;letter-spacing:.02em;pointer-events:none;flex:0 1 auto}
-.trip-hero-weather-chip--desktop{display:none}
 body.light .trip-hero-weather-chip{background:rgba(255,255,255,.55)}
 .trip-hero-weather-chip--snap{background:rgba(107,140,90,.12)}
 .trip-hero-weather-chip-ico{flex-shrink:0;font-size:12px;line-height:1}
 .trip-hero-weather-chip-txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .trip-hero-sec--trip .trip-hero-actions{margin-top:16px;padding:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;width:100%}
+@media(max-width:639px){
+  .trip-hero-metrics{display:flex;flex-direction:column}
+  .trip-hero--focus-progress .trip-hero-sec--progress{order:1;padding-top:14px;padding-bottom:14px}
+  .trip-hero--focus-progress .trip-hero-sec--countdown{order:2;padding-top:10px;padding-bottom:12px}
+  .trip-hero--focus-progress .trip-hero-countdown-num{font-size:clamp(22px,6vw,28px)}
+  .trip-hero--focus-progress .trip-hero-countdown-lbl{font-size:8px}
+  .trip-hero--focus-progress .trip-hero-countdown-sub{font-size:8px;margin-top:4px}
+  .trip-hero--focus-countdown .trip-hero-sec--countdown{order:1;padding-top:14px;padding-bottom:14px}
+  .trip-hero--focus-countdown .trip-hero-sec--progress{order:2;padding-top:10px;padding-bottom:12px}
+  .trip-hero--focus-countdown .trip-hero-pressure-frac,
+  .trip-hero--focus-countdown .trip-hero-pressure-sub{display:none}
+  .trip-hero--focus-countdown .trip-hero-pressure-pct{font-size:11px;font-weight:600;color:var(--text-m);margin-bottom:4px}
+  .trip-hero--focus-countdown .trip-hero-progress-wrap .pbar-wrap{height:6px}
+}
 @media(min-width:900px){
-  .trip-hero-weather-chip--desktop{display:inline-flex;position:absolute;top:22px;right:24px;z-index:3;margin-left:0;max-width:min(38%,12rem);flex:none}
-  .trip-hero-weather-chip--mobile{display:none}
+  .trip-hero-trip-head .trip-hero-weather-chip{position:absolute;top:22px;right:24px;z-index:3;margin-left:0;max-width:min(38%,12rem)}
+  .trip-hero-sec--trip{padding-top:22px}
 }
 @media(max-width:899px){
   .trip-hero-sec--trip,.trip-hero-sec--countdown{position:relative}

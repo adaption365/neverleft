@@ -52,6 +52,7 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [APE-108](https://linear.app/aperturegraph/issue/APE-108) | packing_calm_ux… | Journey bar iPad layout (full-width steps, dot clip) — Done |
 | [APE-110](https://linear.app/aperturegraph/issue/APE-110) | trips_home_calm_audit… | **Epic** — Trips home calm UX (first screen) — In Progress |
 | [APE-111](https://linear.app/aperturegraph/issue/APE-111) | trips_home_calm_audit… | Slice 1 — Mission hierarchy + editorial voice — Ready for testing |
+| [APE-112](https://linear.app/aperturegraph/issue/APE-112) | trips_home_calm_audit… | Slice 2 — Hero instruction budget — Ready for testing |
 | [APE-75](https://linear.app/aperturegraph/issue/APE-75) | index_claude_merge… | **Epic** — Phased merge from `index_claude.html` → `index.html` — Done |
 | [APE-76](https://linear.app/aperturegraph/issue/APE-76) | index_claude_merge… | Step 1 — Demo banner mobile stack — Done |
 | [APE-77](https://linear.app/aperturegraph/issue/APE-77) | index_claude_merge… | Step 2 — Trip wizard attendees default all ticked — Done |
@@ -70,7 +71,7 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 
 **Packing calm:** [packing_calm_ux](packing_calm_ux.plan.md) epic [APE-73](https://linear.app/aperturegraph/issue/APE-73) **Done**; execution [packing_calm_design_pass.plan.md](packing_calm_design_pass.plan.md) slices 1–5 shipped (slice 6 optional backlog).
 
-**Trips home calm:** [trips_home_calm_audit.plan.md](trips_home_calm_audit.plan.md) epic [APE-110](https://linear.app/aperturegraph/issue/APE-110); slice 1 [APE-111](https://linear.app/aperturegraph/issue/APE-111) **Ready for testing**; slices 2–5 backlog.
+**Trips home calm:** [trips_home_calm_audit.plan.md](trips_home_calm_audit.plan.md) epic [APE-110](https://linear.app/aperturegraph/issue/APE-110); slices 1–2 ([APE-111](https://linear.app/aperturegraph/issue/APE-111), [APE-112](https://linear.app/aperturegraph/issue/APE-112)) **Ready for testing**; slices 3–5 backlog.
 
 **Build order** (Linear priority): demo graduation + backup (APE-12–14, APE-13) → trip experience polish (APE-11, APE-25–27, APE-26) → camp mode (APE-15–17, APE-23) → qty rules (APE-21, APE-18) → kit UX (APE-20, APE-22, APE-24).
 
