@@ -29,8 +29,8 @@ Linear holds **issues / todos only** — each links back to a plan file here for
 | [APE-25](https://linear.app/aperturegraph/issue/APE-25) | trip_experience_hub | Phase 3 — Met Office / directions (largely superseded by APE-59) |
 | [APE-26](https://linear.app/aperturegraph/issue/APE-26) | trip_experience_hub | Phase 2 — print cover (Done) |
 | [APE-27](https://linear.app/aperturegraph/issue/APE-27) | trip_experience_hub | Phase 2 — custom site rules settings (Done) |
-| [APE-52](https://linear.app/aperturegraph/issue/APE-52) | packing_calm_ux… / backlog_batches… | Journey bar on trip detail (segmented bar, viewing vs in-progress, ⋯ menu) — Ready for testing (`5bb3c40`) |
-| [APE-89](https://linear.app/aperturegraph/issue/APE-89) | packing_calm_ux… | Journey bar ‹ › scroll + edge fade on overflow (child of APE-52) — Ready for testing |
+| [APE-52](https://linear.app/aperturegraph/issue/APE-52) | packing_calm_ux… / backlog_batches… | Journey bar on trip detail (segmented bar, viewing vs in-progress, ⋯ menu) — Done |
+| [APE-89](https://linear.app/aperturegraph/issue/APE-89) | packing_calm_ux… | Journey bar ‹ › scroll + edge fade on overflow (child of APE-52) — Done |
 | [APE-55](https://linear.app/aperturegraph/issue/APE-55) | consumable_stock_shortfall… | Consumable stock & shortfall → shopping (Batch K; depends on F) |
 | [APE-56](https://linear.app/aperturegraph/issue/APE-56) | consumable_stock_shortfall… | Count-aware / partial packing for ×N lines (Batch L; companion to K) |
 | [APE-57](https://linear.app/aperturegraph/issue/APE-57) | quick_create_group… | Quick-create a group + child default inheritance (Batch M) — Done |
