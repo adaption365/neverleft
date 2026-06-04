@@ -1488,7 +1488,16 @@ function renderKitTripBanner(){
 function tripsDateEyebrowHtml(){
   const d=new Date();
   const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  return `<div class="trips-date-eyebrow">${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}</div>`;
+  return `<div class="trips-date-eyebrow trips-date-eyebrow--desktop">${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}</div>`;
+}
+
+function tripEditorialHumanPhrase(pct, heroShowsProgress){
+  if(pct<=0) return 'not started yet';
+  if(pct<=15) return 'just getting started';
+  if(pct<=30) return heroShowsProgress?'warming up':'about a fifth packed';
+  if(pct<=55) return heroShowsProgress?'coming along nicely':`about ${pct}% packed`;
+  if(pct<100) return heroShowsProgress?'nearly there':`${pct}% packed`;
+  return 'fully packed';
 }
 
 function tripKitStatsRowHtml(trip, opts){
@@ -1969,7 +1978,9 @@ function toggleInvLoc(locId){
   renderInv();
 }
 
-function tripsEditorialHtml(upcoming){
+function tripsEditorialHtml(upcoming, opts){
+  opts=opts||{};
+  const heroShowsProgress=!!opts.heroShowsProgress;
   const horizon=S.trips.filter(t=>!isTripLogbookEntry(t));
   const n=horizon.length;
   if(!n) return '';
@@ -1981,13 +1992,7 @@ function tripsEditorialHtml(upcoming){
       const done=packed+ready;
       const pct=Math.round(done/total*100);
       const shortName=(upcoming.name||'').split('—')[0].trim()||(upcoming.name||'Your trip');
-      let fracPhrase;
-      if(pct<=0) fracPhrase='not started yet';
-      else if(pct<=15) fracPhrase='just getting started';
-      else if(pct<=30) fracPhrase='about a fifth packed';
-      else if(pct<=55) fracPhrase=`about ${pct}% packed`;
-      else if(pct<100) fracPhrase=`${pct}% packed`;
-      else fracPhrase='fully packed';
+      const fracPhrase=tripEditorialHumanPhrase(pct, heroShowsProgress);
       detail=` ${esc(shortName)} is ${fracPhrase}.`;
     }
     normalizeTripExperience(upcoming);
@@ -1996,6 +2001,14 @@ function tripsEditorialHtml(upcoming){
       detail=(detail||'')+` <em>Check the forecast before you pack.</em>`;
   }
   return `<div class="trips-editorial"><p>${n} ${tripWord} on the horizon.${detail?` <em>${detail.trim()}</em>`:''}</p></div>`;
+}
+
+function tripsHomeHeadHtml(upcoming, hasHero){
+  const editorial=tripsEditorialHtml(upcoming, {heroShowsProgress: hasHero});
+  const intro=editorial
+    ?`<div class="trips-home-intro"><div class="trips-home-eyebrow">My Trips</div>${editorial}</div>`
+    :`<div class="trips-home-intro"><div class="trips-home-eyebrow">My Trips</div><h2 class="trips-home-title">Your trips</h2></div>`;
+  return `<div class="trips-home-head">${intro}</div>`;
 }
 
 function formatTripHeroTitle(name){
@@ -2315,17 +2328,13 @@ function renderTrips(opts){
   const restHtml=alsoPlannedHtml+logbookHtml;
   const emptyFilter=!heroHtml.trim()&&!alsoPlanned.length&&!logbookHtml.trim();
   const emptyFilterMsg=tripsTypeFilter==='ideas'
-    ? '<p class="trips-section-intro">No ideas yet, tap <strong>+ New trip</strong> and choose <em>A possible trip</em>.</p>'
+    ? '<p class="trips-section-intro">No ideas yet — tap <strong>Add</strong> below and choose <em>A possible trip</em>.</p>'
     :'<p class="trips-section-intro">Nothing in this view, try another filter or add a trip.</p>';
 
   el.innerHTML=`
-    <div class="trips-heading">
-      <span class="trips-heading-title">My Trips</span>
-      <button class="btn btn-p btn-sm" onclick="openNewTripModal()">+ New trip</button>
-    </div>
+    ${tripsHomeHeadHtml(upcoming, !!upcoming)}
     ${renderTripsFilterHtml()}
     ${tripsDateEyebrowHtml()}
-    ${tripsEditorialHtml(upcoming)}
     ${heroHtml}
     ${emptyFilter?emptyFilterMsg:restHtml}`;
 }
