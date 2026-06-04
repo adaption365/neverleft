@@ -1884,6 +1884,9 @@ document.addEventListener('click',e=>{
     closeJourneyStageMenu();
     renderTrips();
   }
+  if(!isPackOverflowClickTarget(e.target)) closePackOverflowMenus();
+  const packMenuBtn=e.target.closest('.pack-overflow-menu button');
+  if(packMenuBtn) closePackOverflowMenus();
   const menu=document.getElementById('_ctxMenu');
   if(menu&&menu.style.display==='block'&&!menu.contains(e.target)){
     hideCtxMenu();
@@ -2218,10 +2221,25 @@ function renderTrips(opts){
       const scrollTop=!!opts.scrollTop;
       const savedY=scrollTop?0:(window.scrollY||document.documentElement.scrollTop||0);
       el.innerHTML=tripDetail(trip);
+      const locScrollPending=_pendingPackLocScroll;
       scheduleJourneyMenuPosition();
       scheduleJourneyScrollChrome(trip.id, !!opts.scrollJourneyStage);
+      if(_pendingPackCelebrate){
+        const p=_pendingPackCelebrate;
+        _pendingPackCelebrate=null;
+        playPackCelebrate(p.tripId, p.itemIds);
+      }
       requestAnimationFrame(()=>{
-        try{ window.scrollTo(0, scrollTop?0:savedY); }catch(e){}
+        if(!locScrollPending&&!scrollTop){
+          try{ window.scrollTo(0, savedY); }catch(e){}
+        }else if(scrollTop){
+          try{ window.scrollTo(0, 0); }catch(e){}
+        }
+        if(locScrollPending){
+          const pending=locScrollPending;
+          _pendingPackLocScroll=null;
+          scrollPackCalmLocGroupIntoView(pending);
+        }
       });
       return;
     }
@@ -2582,6 +2600,7 @@ function markAllChecklistPacked(tripId){
   eachChecklistRowWithSubs(trip, item=>{ ensureChecklistEntry(trip,item.id).state='packed'; });
   tripProgressChanged(tripId);
   save(); renderTrips();
+  if(packingCalmViewActive(trip)) packCelebrateHaptic();
 }
 
 let openJourneyMenuTripId=null;
@@ -2657,6 +2676,7 @@ function toggleJourneyStageMenu(tripId, stageId, ev){
     renderTrips();
     return;
   }
+  closePackOverflowMenus();
   closeJourneyStageMenu();
   openJourneyMenuTripId=tripId;
   openJourneyMenuStageId=stageId;
@@ -2830,6 +2850,70 @@ function scheduleJourneyScrollChrome(tripId, scrollStageIntoView){
   });
 }
 
+function tripOverflowTripItemsHtml(trip){
+  const feat=isFeaturedTrip(trip.id);
+  return `
+          <button type="button" onclick="toggleFeaturedTrip('${trip.id}')">${feat?'★ Unpin featured':'☆ Feature trip'}</button>
+          <button type="button" onclick="openEditTripModal('${trip.id}')">Edit trip</button>`;
+}
+
+function tripOverflowListItemsHtml(trip){
+  return `
+          <button type="button" onclick="openQuickAddModal('${trip.id}')">+ Add item</button>
+          <button type="button" onclick="regenChecklist('${trip.id}')">↺ Rebuild list</button>
+          <button type="button" onclick="uncheckAll('${trip.id}')">Uncheck all</button>
+          <button type="button" onclick="openInventoryToTripModal('${trip.id}')">+ From inventory</button>
+          <button type="button" onclick="printChecklist('${trip.id}','packing')">🖨 Print list</button>
+          <button type="button" onclick="printTripTodos('${trip.id}')">Print to-dos</button>`;
+}
+
+function closePackOverflowMenus(){
+  document.querySelectorAll('details.trip-header-menu.pack-overflow[open]').forEach(d=>{ d.open=false; });
+}
+function isPackOverflowClickTarget(el){
+  return !!(el&&el.closest&&(el.closest('details.trip-header-menu.pack-overflow')||el.closest('.pack-overflow-menu')));
+}
+function onPackOverflowToggle(ev){
+  if(!ev.target.open) return;
+  if(openJourneyMenuTripId){
+    closeJourneyStageMenu();
+    renderTrips();
+  }
+}
+function tripOverflowMenuHtml(trip, {includeListActions=false}={}){
+  const listSection=includeListActions
+    ?`<div class="pack-overflow-menu-section" role="group" aria-labelledby="pack-menu-list-${trip.id}">
+        <div class="pack-overflow-menu-label" id="pack-menu-list-${trip.id}">List</div>
+        ${tripOverflowListItemsHtml(trip)}
+      </div>
+      <div class="pack-overflow-menu-divider" role="separator"></div>`
+    :'';
+  return `<details class="trip-header-menu pack-overflow" ontoggle="onPackOverflowToggle(event)">
+        <summary class="btn btn-o btn-sm overflow-trigger-btn" aria-label="Trip and list options" aria-haspopup="menu">⋯</summary>
+        <div class="pack-overflow-menu" role="menu">
+          ${listSection}
+          <div class="pack-overflow-menu-section" role="group" aria-labelledby="pack-menu-trip-${trip.id}">
+            <div class="pack-overflow-menu-label" id="pack-menu-trip-${trip.id}">Trip</div>
+            ${tripOverflowTripItemsHtml(trip)}
+          </div>
+          <div class="pack-overflow-menu-divider" role="separator"></div>
+          <div class="pack-overflow-menu-section pack-overflow-menu-section--danger">
+            <button type="button" class="trip-header-menu-danger" role="menuitem" onclick="delTrip('${trip.id}')">Delete trip</button>
+          </div>
+        </div>
+      </details>`;
+}
+
+function tripHeaderHtml(trip, subtitle, {includeListActions=false}={}){
+  return `<div class="trip-header">
+    <div class="trip-header-row">
+      <h1 class="ttitle">${esc(trip.name)}</h1>
+      ${tripOverflowMenuHtml(trip, {includeListActions})}
+    </div>
+    <div class="tsubtitle">${subtitle}</div>
+  </div>`;
+}
+
 function tripDetail(trip){
   syncTripStageCompletion(trip);
   const hl=getHL(trip);
@@ -2872,16 +2956,8 @@ function tripDetail(trip){
       crewStr,
     ].filter(Boolean).join(' · ');
 
-  return `
-    <div class="trip-toolbar">
-      <div style="display:flex;gap:5px;margin-left:auto">
-        <button class="btn btn-o btn-sm" onclick="toggleFeaturedTrip('${trip.id}')" style="${isFeaturedTrip(trip.id)?'color:var(--amber);border-color:var(--amber-d)':''}">${isFeaturedTrip(trip.id)?'★ Featured':'☆ Feature'}</button>
-        <button class="btn btn-o btn-sm" onclick="openEditTripModal('${trip.id}')">Edit</button>
-        <button class="btn btn-x" onclick="delTrip('${trip.id}')">Delete</button>
-      </div>
-    </div>
-    <div class="ttitle">${esc(trip.name)}</div>
-    <div class="tsubtitle">${subtitle}</div>
+  return `<div class="trip-detail${packCalm?' trip-detail--pack-calm':''}">
+    ${tripHeaderHtml(trip, subtitle, {includeListActions:packCalm})}
     ${ideaBanner}
     ${journeyBarHtml}${renderTripExperiencePanel(trip)}
     ${packCalm?'':(()=>{
@@ -3123,37 +3199,93 @@ function checklistTodoChipHtml(item, trip){
   return `<button type="button" class="todo-chip" onclick="event.stopPropagation();scrollTripTodosForItem('${trip.id}','${item.id}')" aria-label="Show ${n} to-do${n!==1?'s':''} for ${esc(item.name)}">${n} to-do${n!==1?'s':''}</button>`;
 }
 function scrollTripTodosForItem(tripId, itemId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  const instant=trip&&packingCalmViewActive(trip);
   tripTodoFocusItemId=itemId;
   renderTrips();
   requestAnimationFrame(()=>{
     const row=document.querySelector(`[data-todo-item="${itemId}"]`);
     const sec=document.getElementById('trip-sec-actions');
-    if(row) row.scrollIntoView({behavior:'smooth',block:'center'});
-    else if(sec) sec.scrollIntoView({behavior:'smooth',block:'start'});
+    const scrollOpts={behavior:instant?'auto':'smooth',block:row?'center':'start'};
+    if(row) row.scrollIntoView(scrollOpts);
+    else if(sec) sec.scrollIntoView(scrollOpts);
   });
 }
 function scrollBackToChecklistItem(tripId, itemId){
+  const trip=S.trips.find(t=>t.id===tripId);
+  const instant=trip&&packingCalmViewActive(trip);
   tripTodoFocusItemId=null;
   renderTrips();
   requestAnimationFrame(()=>{
     const el=document.getElementById('clitem-'+tripId+'-'+itemId);
-    if(el) el.scrollIntoView({behavior:'smooth',block:'center'});
+    if(el) el.scrollIntoView({behavior:instant?'auto':'smooth',block:'center'});
   });
 }
 function clearTripTodoFocus(){
   tripTodoFocusItemId=null;
+}
+function packCalmLocationGroupId(sortKey, k){
+  return 'clgrp-'+sortKey+'-'+k;
+}
+function packCalmLocationGroupTotals(trip, entries){
+  let packedCount=0, readyCount=0, totalCount=0;
+  entries.forEach(x=>{
+    const st=packingProgressContributionTotals(trip,x.ci,x.item,'packing');
+    packedCount+=st.packed;
+    readyCount+=st.ready;
+    totalCount+=st.total;
+  });
+  return{packedCount, readyCount, totalCount, allPacked:totalCount>0&&packedCount===totalCount};
+}
+/** Pack calm: first visit opens groups with work left; fully packed groups auto-collapse (multi-open OK). */
+function applyPackCalmLocationDisclosure(trip, groups, groupOrder, sortKey, {srch, checklistReveal}){
+  if(!packingCalmViewActive(trip)||!groupOrder?.length) return;
+  if(srch?.trim()||checklistReveal) return;
+  const keys=groupOrder.filter(k=>groups[k]?.length);
+  let inited=false;
+  try{
+    const raw=localStorage.getItem(PACK_CALM_GROUPS_INIT_KEY);
+    const done=raw?JSON.parse(raw):[];
+    inited=Array.isArray(done)&&done.includes(trip.id);
+    if(!inited){
+      keys.forEach(k=>{
+        if(!packCalmLocationGroupTotals(trip,groups[k]).allPacked){
+          const gid=packCalmLocationGroupId(sortKey,k);
+          collapsedLocs.delete(gid);
+          expandedPackedChecklistGroups.add(gid);
+        }
+      });
+      done.push(trip.id);
+      localStorage.setItem(PACK_CALM_GROUPS_INIT_KEY, JSON.stringify(done));
+    }
+  }catch(e){}
+  keys.forEach(k=>{
+    const gid=packCalmLocationGroupId(sortKey,k);
+    if(packCalmLocationGroupTotals(trip,groups[k]).allPacked&&!expandedPackedChecklistGroups.has(gid))
+      collapsedLocs.add(gid);
+  });
+}
+function packCalmLocationGroupMetaHtml(totals, open, doneCount, totalCount, pct){
+  if(totals.allPacked)
+    return `<span class="cloc-meta cloc-meta--done">All packed</span>`;
+  const left=Math.max(0,totalCount-totals.packedCount);
+  if(!open)
+    return `<span class="cloc-meta cloc-meta--left">${left} to pack</span>`;
+  return `<div class="cloc-progress"><div class="cloc-progress-fill" style="width:${pct}%"></div></div>
+    <span class="cloc-meta cloc-meta--pct">${doneCount}/${totalCount}</span>`;
 }
 function packingViewModeBarHtml(trip){
   const mode=getPackingViewMode();
   const hint=mode==='pack'
     ?'Focus on what&rsquo;s left, filters and full list tools in Full list.'
     :'Search, sort, and manage everything.';
+  const hintHtml=packModeHintSeen()?'':`<p class="pack-mode-hint">${hint}</p>`;
   return `<div class="pack-mode-bar">
     <div class="pack-seg" role="tablist" aria-label="Packing list view">
       <button type="button" role="tab" class="pack-seg-btn ${mode==='pack'?'on':''}" onclick="setPackingViewMode('pack')" aria-selected="${mode==='pack'?'true':'false'}">Pack</button>
       <button type="button" role="tab" class="pack-seg-btn ${mode==='full'?'on':''}" onclick="setPackingViewMode('full')" aria-selected="${mode==='full'?'true':'false'}">Full list</button>
     </div>
-    <p class="pack-mode-hint">${hint}</p>
+    ${hintHtml}
   </div>`;
 }
 function checklistProgressHtml(trip, ready, packed, total, pctR, pctP, hlCount){
@@ -3246,8 +3378,17 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
 
   let filteredCIs=sortFilteredChecklistParents(collectFilteredChecklistParents(trip,'packing'),'packing');
   if(srch) filteredCIs=filteredCIs.filter(({item})=>checklistItemTextMatch(item,trip,srch));
-  const {groupKey,groupOrder,groupLabel}=getChecklistGroupConfig('packing');
-  const groupIcon=checklistSort==='location'?()=>'📍 ':()=>'';
+  const packCalm=packingCalmViewActive(trip);
+  let groupKey, groupOrder, groupLabel;
+  if(packCalm){
+    const locOrder=getStorageLocs().map(l=>l.id);
+    groupKey=item=>checklistLocationKey(item,'packing');
+    groupOrder=locOrder;
+    groupLabel=id=>{ const l=getLocs().find(x=>x.id===id); return l?'\uD83D\uDCCD '+l.label:id; };
+  }else{
+    ({groupKey,groupOrder,groupLabel}=getChecklistGroupConfig('packing'));
+  }
+  const groupIcon=packCalm||checklistSort==='location'?()=>'📍 ':()=>'';
 
   const groups={};
   if(groupKey){
@@ -3259,8 +3400,11 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
   }
 
   const hlCount=Object.keys(hl).length;
-  const packCalm=packingCalmViewActive(trip);
   const showFullListChrome=!packCalm;
+  const packGroupSort=packCalm?'location':checklistSort;
+  const tapNudgeIds=packCalm?packCalmTapNudgeItemIds(trip,filteredCIs,groups,groupOrder,groupKey,packGroupSort):null;
+  const checklistReveal=!!(_gsearchRevealChecklist&&_gsearchRevealChecklist.tripId===trip.id);
+  if(packCalm&&groupKey) applyPackCalmLocationDisclosure(trip,groups,groupOrder,packGroupSort,{srch,checklistReveal});
 
   const hasActiveSort=checklistSort!=='location'||checklistHidePacked||checklistPersonFilter!=='all'||checklistLocFilter!=='all';
   const sortBar=`
@@ -3294,7 +3438,7 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
 
   const itemsHtml=groupKey
     ? (groupOrder||[]).filter(k=>groups[k]?.length).map(k=>{
-        const groupId='clgrp-'+checklistSort+'-'+k;
+        const groupId=packCalmLocationGroupId(packGroupSort,k);
         let packedCount=0, readyCount=0, totalCount=0;
         groups[k].forEach(x=>{
           const st=packCalm?packingProgressContributionTotals(trip,x.ci,x.item,'packing'):packingProgressContribution(trip,x.ci,x.item);
@@ -3305,8 +3449,9 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
         const doneCount=packedCount+readyCount;
         const allPacked=totalCount>0&&packedCount===totalCount;
         let revealInGroup=false;
-        if(_gsearchRevealChecklist&&_gsearchRevealChecklist.tripId===trip.id)
+        if(checklistReveal)
           revealInGroup=groups[k].some(({item})=>item.id===_gsearchRevealChecklist.itemId);
+        const openBefore=!collapsedLocs.has(groupId);
         if(revealInGroup||srch){
           collapsedLocs.delete(groupId);
           expandedPackedChecklistGroups.add(groupId);
@@ -3315,24 +3460,34 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
         else if(allPacked&&!collapsedLocs.has(groupId)&&!revealInGroup&&!srch&&!expandedPackedChecklistGroups.has(groupId))
           collapsedLocs.add(groupId);
         const open=!collapsedLocs.has(groupId);
+        if(packCalm&&openBefore&&!open&&allPacked) _pendingPackLocScroll=groupId;
         const pct=totalCount?Math.round((doneCount/totalCount)*100):0;
-        const hdrHint=allPacked&&!open?'Tap to expand and edit items':'';
-        return `<div class="cloc-group">
-          <div class="cloc-hdr" onclick="toggleLocGroup('${groupId}')"${hdrHint?' title="'+hdrHint+'"':''}>
+        const totals={packedCount,readyCount,totalCount,allPacked};
+        const hdrHint=allPacked&&!open?'Tap to expand and edit items':(!open&&!allPacked?'Tap to expand':'');
+        const groupCls=[
+          packCalm&&allPacked?' cloc-group--done':'',
+          packCalm&&!allPacked&&open?' cloc-group--active':'',
+          packCalm&&!allPacked&&!open?' cloc-group--todo':'',
+        ].join('');
+        const metaHtml=packCalm
+          ?packCalmLocationGroupMetaHtml(totals,open,doneCount,totalCount,pct)
+          :(allPacked
+            ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;color:var(--sage);letter-spacing:.06em">All packed</span>`
+            :`<div class="cloc-progress"><div class="cloc-progress-fill" style="width:${pct}%"></div></div>
+               <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${doneCount}/${totalCount}</span>`);
+        return `<div class="cloc-group${groupCls}">
+          <div class="cloc-hdr" id="clh-${groupId}" onclick="toggleLocGroup('${groupId}')"${hdrHint?' title="'+hdrHint+'"':''}>
             <span class="cg-toggle ${open?'open':'closed'}" style="font-size:9px;color:var(--text-m)">▼</span>
-            ${allPacked?`<span style="font-size:14px;line-height:1;color:var(--sage);flex-shrink:0" aria-hidden="true">✓</span>`:''}
+            ${allPacked?`<span class="cloc-done-ic" aria-hidden="true">✓</span>`:''}
             <span class="cloc-title">${esc(groupLabel(k))}</span>
-            ${allPacked
-              ? `<span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;color:var(--sage);letter-spacing:.06em">All packed</span>`
-              : `<div class="cloc-progress"><div class="cloc-progress-fill" style="width:${pct}%"></div></div>
-                 <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-m)">${doneCount}/${totalCount}</span>`}
+            ${metaHtml}
           </div>
           <div id="clg-${groupId}" style="display:${open?'block':'none'}">
-            ${groups[k].map(({ci,item})=>ciRow(ci,item,trip,hl)).join('')}
+            ${groups[k].map(({ci,item})=>ciRow(ci,item,trip,hl,tapNudgeIds)).join('')}
           </div>
         </div>`;
       }).join('')
-    : filteredCIs.map(({ci,item})=>ciRow(ci,item,trip,hl)).join('');
+    : filteredCIs.map(({ci,item})=>ciRow(ci,item,trip,hl,tapNudgeIds)).join('');
 
   const listEmptyHtml=!filteredCIs.length
     ?`<div class="empty" style="margin:12px 0">No items match, try a different search or clear filters.</div>`
@@ -3350,22 +3505,7 @@ function checklistBody(trip,hl,ready,packed,total,pctR,pctP){
 }
 
 function checklistToolbarHtml(trip){
-  if(packingCalmViewActive(trip)){
-    return `<div class="pack-toolbar">
-      <button type="button" class="btn btn-p btn-sm" onclick="openQuickAddModal('${trip.id}')">+ Add item</button>
-      <span class="pack-toolbar-spacer"></span>
-      <details class="pack-overflow">
-        <summary class="btn btn-o btn-sm" aria-label="More list actions">⋯</summary>
-        <div class="pack-overflow-menu">
-          <button type="button" onclick="regenChecklist('${trip.id}')">↺ Rebuild list</button>
-          <button type="button" onclick="uncheckAll('${trip.id}')">Uncheck all</button>
-          <button type="button" onclick="openInventoryToTripModal('${trip.id}')">+ From inventory</button>
-          <button type="button" onclick="printChecklist('${trip.id}','packing')">🖨 Print list</button>
-          <button type="button" onclick="printTripTodos('${trip.id}')">Print to-dos</button>
-        </div>
-      </details>
-    </div>`;
-  }
+  if(packingCalmViewActive(trip)) return '';
   return `<div class="checklist-toolbar" style="display:flex;gap:7px;margin:12px 0;flex-wrap:wrap">
       <button class="btn btn-o btn-sm" onclick="regenChecklist('${trip.id}')">↺ Rebuild list</button>
       <button class="btn btn-o btn-sm" onclick="uncheckAll('${trip.id}')" title="Clears every checklist row and all action reminder ticks for items on this list">Uncheck all</button>
@@ -3374,6 +3514,60 @@ function checklistToolbarHtml(trip){
       <button class="btn btn-o btn-sm" onclick="printChecklist('${trip.id}','packing')">🖨 Print list</button>
       <button class="btn btn-o btn-sm" onclick="printTripTodos('${trip.id}')">Print to-dos</button>
     </div>`;
+}
+
+/** Pack calm: which rows may show tap nudge (first still-to-pack per open location group + focused item). */
+function packCalmTapNudgeItemIds(trip, filteredCIs, groups, groupOrder, groupKey, sortKey){
+  const ids=new Set();
+  if(tripTodoFocusItemId) ids.add(tripTodoFocusItemId);
+  const cl=trip.checklist||[];
+  function rowState(itemId){
+    const c=cl.find(x=>x.itemId===itemId);
+    return c?.state||'unchecked';
+  }
+  function firstWorkIdInEntries(entries){
+    for(const {ci,item} of entries){
+      if(item.isContainer){
+        const subs=checklistVisibleSubsForRow(trip,item,'packing');
+        for(const sub of subs){
+          if(rowState(sub.id)!=='packed') return sub.id;
+        }
+        if((ci.state||'unchecked')!=='packed') return item.id;
+      }else if((ci.state||'unchecked')!=='packed'){
+        return item.id;
+      }
+    }
+    return null;
+  }
+  if(!groupKey){
+    const id=firstWorkIdInEntries(filteredCIs);
+    if(id) ids.add(id);
+    return ids;
+  }
+  (groupOrder||[]).forEach(k=>{
+    const list=groups[k];
+    if(!list?.length) return;
+    const groupId=packCalmLocationGroupId(sortKey,k);
+    if(collapsedLocs.has(groupId)) return;
+    const id=firstWorkIdInEntries(list);
+    if(id) ids.add(id);
+  });
+  return ids;
+}
+function checklistRowShowsTapNudge(trip, itemId, nudgeIds){
+  if(!packingCalmViewActive(trip)) return true;
+  return !!(nudgeIds&&nudgeIds.has(itemId));
+}
+function checklistRowTodoHintHtml(item, trip, ci){
+  if(packingCalmViewActive(trip)) return '';
+  const prePending=(item.actions||[]).filter(a=>a.stage==='pre-trip');
+  const tripActions=trip.actionStates||{};
+  const incomplete=prePending.filter(a=>!tripActions[item.id+'::'+a.id]);
+  if((ci.state==='packed'||ci.state==='ready')&&incomplete.length)
+    return ` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--rust)">⚡ ${incomplete.length} to-do${incomplete.length!==1?'s':''} on this row</span>`;
+  if(incomplete.length)
+    return ` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--teal)">⚡ ${incomplete.length} to do</span>`;
+  return '';
 }
 
 /** Packing checklist: explicit state label + tap hint on every row */
@@ -3389,12 +3583,13 @@ function checklistStateNudgeHtml(state){
   return `<div class="ci-tap-nudge ci-tap-nudge--${st}"><span class="ci-tap-state">${x.label}</span><span class="ci-tap-sep">, </span><span class="ci-tap-hint">${x.hint}</span></div>`;
 }
 
-function ciRow(ci,item,trip,hl){
+function ciRow(ci,item,trip,hl,tapNudgeIds){
   const isHL=!!hl[item.id];
   const qty=adjQty(item,trip);
   const locMap=labMap(getLocs());
   const cl=trip.checklist||[];
   const packCalm=packingCalmViewActive(trip);
+  const showTapNudge=checklistRowShowsTapNudge(trip,item.id,tapNudgeIds);
 
   // Container items: group header — progress from children (collapsible)
   if(item.isContainer){
@@ -3426,7 +3621,7 @@ function ciRow(ci,item,trip,hl){
         ${groupOpen?visibleSubs.map(sub=>{
           let sci=cl.find(c=>c.itemId===sub.id);
           if(!sci) sci={itemId:sub.id,state:'unchecked'};
-          return ciSubRow(sci,sub,trip,hl,locMap);
+          return ciSubRow(sci,sub,trip,hl,locMap,tapNudgeIds);
         }).join(''):''}
       </div>`;
   }
@@ -3445,23 +3640,14 @@ function ciRow(ci,item,trip,hl){
   const collapsedHint=checklistGroupCollapsedHint(visibleSubs.length,allSubs.length,groupOpen);
 
   const stateCls=ci.state==='packed'?'packed':ci.state==='ready'?'ready':'unchecked';
-  const tapNudge=checklistStateNudgeHtml(ci.state);
+  const tapNudge=showTapNudge?checklistStateNudgeHtml(ci.state):'';
 
   if(!hasGroup){
     return `
     <div class="ci ${ci.state||''} ${isHL?'hl':''}" id="clitem-${trip.id}-${ci.itemId}" style="position:relative" onclick="cycleState('${trip.id}','${ci.itemId}')">
       <div class="ci-state ${stateCls}">${ci.state==='packed'?'✓':''}</div>
       <div class="ci-body">
-        <div class="ci-name ${ci.state||''}">${esc(item.name)}${tripManualExtraBadge(trip,item.id)}${needsRestock?` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--amber)">⚠ low stock</span>`:''}${(()=>{
-          const prePending=(item.actions||[]).filter(a=>a.stage==='pre-trip');
-          const tripActions=(trip.actionStates||{});
-          const incomplete=prePending.filter(a=>!tripActions[item.id+'::'+a.id]);
-          return (ci.state==='packed'||ci.state==='ready')&&incomplete.length
-            ? ` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--rust)">⚡ ${incomplete.length} to-do${incomplete.length!==1?'s':''} on this row</span>`
-            : incomplete.length
-              ? ` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--teal)">⚡ ${incomplete.length} to do</span>`
-              : '';
-        })()}</div>
+        <div class="ci-name ${ci.state||''}">${esc(item.name)}${tripManualExtraBadge(trip,item.id)}${needsRestock?` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--amber)">⚠ low stock</span>`:''}${checklistRowTodoHintHtml(item,trip,ci)}</div>
         ${tapNudge}
         <div class="ci-meta">
           ${qty>1?`<span class="ci-qty"${tripQtyExplain(item,trip)?` title="${esc(tripQtyExplain(item,trip))}"`:''}>×${qty}</span>`:''}
@@ -3487,16 +3673,7 @@ function ciRow(ci,item,trip,hl){
         <div class="ci-state ${stateCls}" onclick="event.stopPropagation();cycleState('${trip.id}','${ci.itemId}')">${ci.state==='packed'?'✓':''}</div>
         <div class="ci-body" onclick="toggleChecklistGroup('${trip.id}','${item.id}',event)">
           <div class="ci-parent-packable-label">Pack this · contents below</div>
-          <div class="ci-name ${ci.state||''}">${esc(item.name)}${tripManualExtraBadge(trip,item.id)}${needsRestock?` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--amber)">⚠ low stock</span>`:''}${(()=>{
-          const prePending=(item.actions||[]).filter(a=>a.stage==='pre-trip');
-          const tripActions=(trip.actionStates||{});
-          const incomplete=prePending.filter(a=>!tripActions[item.id+'::'+a.id]);
-          return (ci.state==='packed'||ci.state==='ready')&&incomplete.length
-            ? ` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--rust)">⚡ ${incomplete.length} to-do${incomplete.length!==1?'s':''} on this row</span>`
-            : incomplete.length
-              ? ` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--teal)">⚡ ${incomplete.length} to do</span>`
-              : '';
-        })()}</div>
+          <div class="ci-name ${ci.state||''}">${esc(item.name)}${tripManualExtraBadge(trip,item.id)}${needsRestock?` <span style="font-family:'Familjen Grotesk',sans-serif;font-size:10px;color:var(--amber)">⚠ low stock</span>`:''}${checklistRowTodoHintHtml(item,trip,ci)}</div>
           ${tapNudge}
           ${collapsedHint}
           <div class="ci-meta">
@@ -3518,20 +3695,21 @@ function ciRow(ci,item,trip,hl){
       ${groupOpen?visibleSubs.map(sub=>{
         let sci=cl.find(c=>c.itemId===sub.id);
         if(!sci) sci={itemId:sub.id,state:'unchecked'};
-        return ciSubRow(sci,sub,trip,hl,locMap);
+        return ciSubRow(sci,sub,trip,hl,locMap,tapNudgeIds);
       }).join(''):''}
     </div>`;
 }
 
-function ciSubRow(sci,sub,trip,hl,locMap){
+function ciSubRow(sci,sub,trip,hl,locMap,tapNudgeIds){
   const packCalm=packingCalmViewActive(trip);
+  const showTapNudge=checklistRowShowsTapNudge(trip,sub.id,tapNudgeIds);
   const isSubHL=!!hl[sub.id];
   const needsRestock=sub.restock||sub.qty===0;
   const packsRoute=sub.packsInto&&sub.packsInto!==sub.location
     ?`<span style="font-family:'Familjen Grotesk',sans-serif;font-size:9px;color:var(--text-m)">${esc(locMap[sub.location]||sub.location)} → ${esc(locMap[sub.packsInto]||sub.packsInto)}</span>`
     :`<span class="lbadge lb-${sub.location}" style="font-size:8px;padding:1px 4px">${esc(locMap[sub.location]||sub.location)}</span>`;
   const subStateCls=sci.state==='packed'?'packed':sci.state==='ready'?'ready':'unchecked';
-  const subTapNudge=checklistStateNudgeHtml(sci.state);
+  const subTapNudge=showTapNudge?checklistStateNudgeHtml(sci.state):'';
   return `<div class="ci sub-ci ${sci.state||''} ${isSubHL?'hl':''}" id="clitem-${trip.id}-${sci.itemId}" style="position:relative" onclick="cycleState('${trip.id}','${sci.itemId}')">
     <div class="ci-state ${subStateCls}">${sci.state==='packed'?'✓':''}</div>
     <div class="ci-body">
@@ -3991,6 +4169,93 @@ function regenChecklist(tripId){
   hardRegenChecklist(tripId);
 }
 
+function packCalmMotionReduced(){
+  try{return window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){return false;}
+}
+function packCelebrateHaptic(){
+  if(packCalmMotionReduced()) return;
+  try{if(navigator.vibrate) navigator.vibrate([10, 35, 14]);}catch(e){}
+}
+let _pendingPackCelebrate=null;
+let _pendingPackLocScroll=null;
+/** Pack: last item packed in an open location — capture layout before re-render collapses the group. */
+function queuePackCalmLocGroupScrollAfterPack(trip, itemId){
+  if(!packingCalmViewActive(trip)) return;
+  const item=S.items.find(i=>i.id===itemId);
+  if(!item) return;
+  const locKey=checklistLocationKey(item,'packing');
+  const groupId=packCalmLocationGroupId('location', locKey);
+  if(collapsedLocs.has(groupId)||expandedPackedChecklistGroups.has(groupId)) return;
+  const parents=sortFilteredChecklistParents(collectFilteredChecklistParents(trip,'packing'),'packing');
+  const entries=parents.filter(({item:i})=>checklistLocationKey(i,'packing')===locKey);
+  if(!packCalmLocationGroupTotals(trip, entries).allPacked) return;
+  const hdr=document.getElementById('clh-'+groupId);
+  const body=document.getElementById('clg-'+groupId);
+  _pendingPackLocScroll={
+    groupId,
+    scrollY:window.scrollY||document.documentElement.scrollTop||0,
+    hdrViewportTop:hdr?hdr.getBoundingClientRect().top:null,
+    bodyHeight:body&&body.offsetHeight?body.offsetHeight:0,
+  };
+}
+/** After a Pack location group collapses, keep its header in view (renderTrips restores scrollY by default). */
+function scrollPackCalmLocGroupIntoView(pending){
+  const groupId=typeof pending==='string'?pending:pending?.groupId;
+  if(!groupId) return;
+  const el=document.getElementById('clh-'+groupId);
+  if(!el) return;
+  if(pending&&typeof pending==='object'&&pending.scrollY!=null){
+    const scrollY=pending.scrollY;
+    const bodyH=pending.bodyHeight||0;
+    if(bodyH>0){
+      const target=Math.max(0, scrollY-bodyH);
+      try{ window.scrollTo(0, target); }catch(e){}
+    }
+    if(pending.hdrViewportTop!=null){
+      const drift=pending.hdrViewportTop-el.getBoundingClientRect().top;
+      if(Math.abs(drift)>4){
+        const y=window.scrollY||document.documentElement.scrollTop||0;
+        try{ window.scrollTo(0, Math.max(0, y-drift)); }catch(e){}
+      }
+    }
+    const r=el.getBoundingClientRect();
+    const margin=80;
+    if(r.top>=margin&&r.bottom<=window.innerHeight-margin) return;
+  }
+  const behavior='auto';
+  try{ el.scrollIntoView({behavior, block:'start'}); }catch(e){ el.scrollIntoView(); }
+}
+/** Pack mode: checkbox pop + haptic when a row becomes packed (runs after renderTrips). */
+function playPackCelebrate(tripId, itemIds){
+  const ids=[].concat(itemIds||[]).filter(Boolean);
+  if(!ids.length||packCalmMotionReduced()) return;
+  let did=false;
+  const easing='cubic-bezier(0.23, 1, 0.32, 1)';
+  ids.forEach(itemId=>{
+    const row=document.getElementById('clitem-'+tripId+'-'+itemId);
+    const stateEl=row?.querySelector('.ci-state');
+    if(!stateEl) return;
+    did=true;
+    stateEl.classList.add('ci-state--pack-pop');
+    const finish=()=>stateEl.classList.remove('ci-state--pack-pop');
+    if(typeof stateEl.animate==='function'){
+      const anim=stateEl.animate([
+        {transform:'scale(0.78)',opacity:0.55,boxShadow:'0 0 0 0 rgba(107,140,90,0)'},
+        {transform:'scale(1.18)',opacity:1,boxShadow:'0 0 0 10px rgba(107,140,90,0.5)'},
+        {transform:'scale(1)',opacity:1,boxShadow:'0 0 0 0 rgba(107,140,90,0)'},
+      ],{duration:240,easing,fill:'both'});
+      anim.onfinish=finish;
+      anim.oncancel=finish;
+    }else{
+      stateEl.classList.remove('ci-state--pack-pop');
+      void stateEl.offsetWidth;
+      stateEl.classList.add('ci-state--pack-pop');
+      stateEl.addEventListener('animationend',finish,{once:true});
+    }
+  });
+  if(did) packCelebrateHaptic();
+}
+
 function cycleState(tripId, itemId){
   const trip=S.trips.find(t=>t.id===tripId);
   if(!trip?.checklist) return;
@@ -4018,9 +4283,14 @@ function cycleState(tripId, itemId){
   }
   const cycle={ unchecked:'ready', ready:'packed', packed:'unchecked' };
   const newState=cycle[currentState]||'ready';
+  const celebratePack=packingCalmViewActive(trip)&&newState==='packed'&&currentState!=='packed';
   ci.state=newState;
   cascadeChecklistPackState(trip, itemId, newState);
   tripProgressChanged(tripId);
+  if(celebratePack){
+    _pendingPackCelebrate={tripId, itemIds:[itemId]};
+    queuePackCalmLocGroupScrollAfterPack(trip, itemId);
+  }
   save(); renderTrips();
 }
 
@@ -4143,6 +4413,8 @@ function openTrip(id){
   refreshAppChrome();
 }
 function closeTrip(){
+  const trip=activeTripId?S.trips.find(t=>t.id===activeTripId):null;
+  if(trip&&trip.status==='packing') markPackModeHintSeen();
   activeTripId=null;
   clearTripTodoFocus();
   checklistSearch='';
@@ -9154,7 +9426,11 @@ function renderAll(){
 }
 
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){ closeAppSheets(); closeM('itemModal'); closeM('tripModal'); closeSearchDrawer(); closeOrphanAssignmentsModal(); closeInvTripModal(); closeLinkForgotModal(); closeCampLogSheet(); }
+  if(e.key==='Escape'){
+    closePackOverflowMenus();
+    if(openJourneyMenuTripId){ closeJourneyStageMenu(); renderTrips(); }
+    closeAppSheets(); closeM('itemModal'); closeM('tripModal'); closeSearchDrawer(); closeOrphanAssignmentsModal(); closeInvTripModal(); closeLinkForgotModal(); closeCampLogSheet();
+  }
   if(e.key==='Enter'&&e.target.id==='iActionLabel'){ e.preventDefault(); addItemAction(); }
   const sm=document.getElementById('searchModal');
   if(sm?.classList.contains('on')&&e.key==='Tab'){

@@ -35,6 +35,7 @@ function getPackingViewMode(){
   try{ return localStorage.getItem(PACKING_VIEW_STORAGE_KEY)==='full'?'full':'pack'; }catch(e){ return 'pack'; }
 }
 function setPackingViewMode(mode){
+  markPackModeHintSeen();
   try{ localStorage.setItem(PACKING_VIEW_STORAGE_KEY, mode==='full'?'full':'pack'); }catch(e){}
   renderTrips();
 }
@@ -49,6 +50,14 @@ function checklistHidePackedForTrip(trip){
 }
 let tripTodoFocusItemId = null;    // pack mode: item whose footer to-dos were opened from row chip
 let _invTripPickTripId = null;     // active trip for “Add from inventory” modal
+const PACK_CALM_GROUPS_INIT_KEY='nlPackCalmGroupsInit';
+const PACK_MODE_HINT_SEEN_KEY='nlPackModeHintSeen';
+function packModeHintSeen(){
+  try{return localStorage.getItem(PACK_MODE_HINT_SEEN_KEY)==='1';}catch(e){return false;}
+}
+function markPackModeHintSeen(){
+  try{localStorage.setItem(PACK_MODE_HINT_SEEN_KEY,'1');}catch(e){}
+}
 
 const CATS    = ['shelter','sleep','kitchen','clothing','hygiene','dog','other'];
 const CLAB    = { shelter:'⛺ Shelter', sleep:'🛌 Sleep', kitchen:'🍳 Kitchen', clothing:'🧥 Clothing', hygiene:'🪥 Hygiene', dog:'🐕 Dog', other:'📦 Other' };

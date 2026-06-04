@@ -13,10 +13,19 @@ phases:
     status: ready_for_testing
   - id: toolbar-power-overflow
     linear: APE-69
-    status: backlog
+    status: partial
+    note: APE-94 shipped unified top ⋯; finish grouping + dismiss in design pass Slice 4
+  - id: trip-actions-menu
+    linear: APE-94
+    status: ready_for_testing
   - id: visual-calm-pass
     linear: APE-71
-    status: backlog
+    status: planned
+    plan: packing_calm_design_pass.plan.md
+  - id: design-pass-execution
+    linear: APE-71
+    status: planned
+    slices: [hot-motion, instruction-budget, menu-cohesion, visual-weight]
 resolved_decisions:
   toggle_placement: below progress bar, above list (segmented Pack | Full list)
   auto_advance_location: yes when a location group completes in Pack mode
@@ -34,8 +43,9 @@ resolved_decisions:
 
 # Packing calm UX (heart of the app)
 
-**Status:** Ready for testing — [APE-70](https://linear.app/aperturegraph/issue/APE-70), [APE-52](https://linear.app/aperturegraph/issue/APE-52), [APE-74](https://linear.app/aperturegraph/issue/APE-74) in `index.html` (commit `5bb3c40`)  
+**Status:** Ready for testing — [APE-70](https://linear.app/aperturegraph/issue/APE-70), [APE-52](https://linear.app/aperturegraph/issue/APE-52), [APE-74](https://linear.app/aperturegraph/issue/APE-74), [APE-94](https://linear.app/aperturegraph/issue/APE-94) in `index.html`  
 **Discovery doc:** [packing_calm_ux_discovery.md](packing_calm_ux_discovery.md)  
+**Design pass (Emil audit + lean slices):** [packing_calm_design_pass.plan.md](packing_calm_design_pass.plan.md)  
 **Linear epic:** [APE-73](https://linear.app/aperturegraph/issue/APE-73) (In Progress)
 
 Embody NeverLeft’s core promise: **reassuring ritual, not inventory panic.** Progressive disclosure on the packing workflow; power tools remain, but quiet.
@@ -58,7 +68,7 @@ Everything on the trip screen **above and around** the list stays — no feature
 
 | Area | Examples (today in `tripDetail`) |
 |------|----------------------------------|
-| Trip chrome | Back, Edit, title, subtitle, featured |
+| Trip chrome | Back, title, subtitle; Feature / Edit / Delete in top **⋯** (APE-94) |
 | **Trip experience hub** | `renderTripExperiencePanel` — site, booking, weather summary, tabs (Site / Booking / Weather / Travel), links, Load forecast |
 | Journey | Segmented journey bar under title on **all** stages; ⋯ on in-progress step; compact hub below bar in Pack |
 | Trip prep | **Consumable / shopping prep strip** (`renderConsumablePrepStrip`) — suggested amounts, shortfall |
@@ -70,7 +80,7 @@ Pack mode may **simplify checklist progress + rows + toolbar** and the **trip hu
 
 - Single progress line (`packed · ready · to go`) + dual-segment bar
 - Segmented Pack \| Full list under progress
-- Slim toolbar (+ Add, ⋯)
+- No list-toolbar row; **+ Add** and list power actions in top **⋯** only (APE-94)
 - Compact rows; one open location group deferred (APE-72); packed rows stay visible when marked
 - To-do chips → scroll/highlight that item’s footer tasks + **Back to item** (APE-74)
 
@@ -165,22 +175,28 @@ Implement in order; each phase shippable behind Pack mode or feature flag if nee
 **Depends on:** APE-70 (mode gate).  
 **Related:** [APE-62](https://linear.app/aperturegraph/issue/APE-62), [APE-64](https://linear.app/aperturegraph/issue/APE-64) (done / testing).
 
-### Phase 4 — Toolbar & power actions ([APE-69](https://linear.app/aperturegraph/issue/APE-69))
+### Phase 4 — Toolbar & power actions ([APE-69](https://linear.app/aperturegraph/issue/APE-69) + [APE-94](https://linear.app/aperturegraph/issue/APE-94))
 
 **Goal:** Primary actions only in Pack mode.
 
-- Pack: **+ Add** primary; **⋯** overflow — Rebuild, Uncheck, From inventory, Print list, Print to-dos
-- Full list: full toolbar (or same overflow with “pin” option later)
-- Revisit [APE-67](https://linear.app/aperturegraph/issue/APE-67) sticky bar **after** toolbar thinning
+- **Shipped (APE-94):** Single top **⋯** (`btn btn-o btn-sm`) beside title — list actions (+ Add, Rebuild, …) + trip actions (Feature, Edit, Delete); no second **⋯** above list in Pack.
+- **Remaining (APE-69):** Menu grouping, click-outside/Escape dismiss, visual alignment with journey **⋯** — see [packing_calm_design_pass.plan.md](packing_calm_design_pass.plan.md) Slice 4.
+- Full list: full toolbar unchanged.
+- Revisit [APE-67](https://linear.app/aperturegraph/issue/APE-67) sticky bar **after** APE-69/71 baseline.
 
-### Phase 5 — Visual calm pass ([APE-71](https://linear.app/aperturegraph/issue/APE-71))
+### Phase 5 — Visual calm & motion ([APE-71](https://linear.app/aperturegraph/issue/APE-71))
 
-**Goal:** Taste and emotional tone.
+**Goal:** Taste and emotional tone without over-building.
 
-- Instruction budget enforced (gate banner timing, row nudges)
-- Progress copy: packed-first, celebrate group completion
-- Reduce ambient amber/rust; section spacing
-- Align with [neverleft-ui-polish](.cursor/skills/neverleft-ui-polish/SKILL.md) / emil-design-eng
+**Do not** treat APE-71 as one big polish PR. Execute **[packing_calm_design_pass.plan.md](packing_calm_design_pass.plan.md)** in order:
+
+1. **Slice 1** — Hot-path motion (row scale, checkSettle, bar)
+2. **Slice 2** — Instruction budget (nudges, single to-do affordance)
+3. **Slice 3** — APE-72 disclosure (one open group, hide packed in Pack)
+4. **Slice 4** — Menu cohesion (APE-69 finish)
+5. **Slice 5** — Visual weight (consumable strip, hint once, flatter rows)
+
+Captured Emil audit tables and guardrails live in that plan. Align with [neverleft-ui-polish](../.cursor/skills/neverleft-ui-polish/SKILL.md).
 
 ## Cross-cutting
 
@@ -193,7 +209,17 @@ Implement in order; each phase shippable behind Pack mode or feature flag if nee
 
 ## Suggested build order
 
-After APE-62/64 sign-off: **APE-70 → APE-72 → APE-74 → APE-69 → APE-71**. APE-67 last (after APE-69).
+**Shipped / testing:** APE-70, APE-52, APE-74, APE-94.
+
+**Next (lean, no big-bang polish):**
+
+1. Sign off **APE-94** (unified top **⋯**).
+2. **[Design pass](packing_calm_design_pass.plan.md)** Slice 1 → 2 (motion + instruction).
+3. **APE-72** (disclosure) — Slice 3 in design pass.
+4. Design pass Slice 4 → 5 (menus + visual weight) = finish **APE-69** + **APE-71**.
+5. **APE-67** sticky bar last.
+
+Do **not** parallel APE-72 and a large APE-71 CSS rewrite in one PR.
 
 ## Test themes (epic)
 

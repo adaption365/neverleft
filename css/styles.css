@@ -631,6 +631,18 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 
 /* ── CHECKLIST GROUP HEADERS — warm, not administrative ── */
 .cloc-group{margin-bottom:18px}
+.cloc-done-ic{font-size:14px;line-height:1;color:var(--sage);flex-shrink:0}
+.cloc-meta{font-family:'Familjen Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:.04em;flex-shrink:0;white-space:nowrap}
+.cloc-meta--done{color:var(--sage);letter-spacing:.06em;text-transform:none}
+.cloc-meta--left{color:var(--amber-d);font-size:11px;letter-spacing:.02em}
+.cloc-meta--pct{font-family:'DM Mono',monospace;font-weight:400;color:var(--text-m)}
+.trip-detail--pack-calm .cloc-group--done .cloc-hdr{opacity:.65}
+.trip-detail--pack-calm .cloc-group--done .cloc-title{color:var(--text-m);font-weight:600}
+.trip-detail--pack-calm .cloc-group--todo .cloc-title{color:var(--text);font-weight:700}
+.trip-detail--pack-calm .cloc-group--todo .cg-toggle{color:var(--amber-d)}
+.trip-detail--pack-calm .cloc-group--active .cloc-hdr{margin-bottom:10px}
+.trip-detail--pack-calm .cloc-group--active{border-left:3px solid var(--amber-d);padding-left:8px;margin-left:-8px}
+.trip-detail--pack-calm .cloc-hdr{scroll-margin-top:max(64px,env(safe-area-inset-top,0px) + 56px)}
 .cloc-hdr{display:flex;align-items:center;gap:10px;padding:6px 2px;background:transparent;border:none;border:none;cursor:pointer;margin-bottom:10px;transition:opacity .15s}
 .cloc-hdr:hover{opacity:.7}
 .cloc-title{font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:700;letter-spacing:-.01em;text-transform:none;flex:1;color:var(--text)}
@@ -655,6 +667,65 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 .cprog-pack .cprog-pack-ready{color:var(--amber-d)}
 .pbar-wrap--pack{display:flex;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
 .pbar-wrap--pack .pbar-packed,.pbar-wrap--pack .pbar-ready{height:100%}
+/* Pack calm — hot-path motion (Slice 1): no whole-row press scale */
+.trip-detail--pack-calm .ci:active{transform:none}
+.trip-detail--pack-calm .ci-state:active{transform:scale(0.97)}
+.trip-detail--pack-calm .ci.packed .ci-state:not(.ci-state--pack-pop){animation:none}
+.trip-detail--pack-calm .pbar-wrap--pack .pbar-packed,
+.trip-detail--pack-calm .pbar-wrap--pack .pbar-ready{transition:width 120ms var(--ease-out)}
+/* Slice 1b — pack reward (CSS fallback if WAAPI unavailable) */
+@keyframes packCheckPop{
+  0%{transform:scale(0.78);opacity:.55;box-shadow:0 0 0 0 rgba(107,140,90,0)}
+  45%{transform:scale(1.18);opacity:1;box-shadow:0 0 0 10px rgba(107,140,90,.5)}
+  100%{transform:scale(1);opacity:1;box-shadow:0 2px 10px rgba(107,140,90,.4)}
+}
+.trip-detail--pack-calm .ci-state.ci-state--pack-pop{
+  animation:packCheckPop 240ms var(--ease-out) both!important;
+  transition:none!important
+}
+.trip-detail--pack-calm .sub-ci .ci-state.ci-state--pack-pop{animation-duration:220ms}
+/* Packed rows recede — done items quiet; reward pop then settle here */
+.trip-detail--pack-calm .ci:not(.packed){
+  padding:11px 12px;border-radius:10px;margin-bottom:6px;
+  border:1px solid color-mix(in srgb,var(--border) 75%,transparent);
+  box-shadow:0 1px 0 rgba(0,0,0,.04);
+  transition:background .22s ease,box-shadow .22s ease,opacity .22s ease,padding .22s var(--ease-out),gap .22s var(--ease-out),margin .22s var(--ease-out),border-color .22s ease
+}
+@media (hover:hover) and (pointer:fine){
+  .trip-detail--pack-calm .ci:not(.packed):hover{box-shadow:0 1px 3px rgba(0,0,0,.06)}
+}
+.trip-detail--pack-calm .ci.ready:not(.packed){
+  border-color:color-mix(in srgb,var(--amber-d) 28%,var(--border));
+  box-shadow:none
+}
+.trip-detail--pack-calm .ci.packed{
+  padding:7px 10px 7px 8px;gap:8px;margin-bottom:4px;
+  background:rgba(107,140,90,.05);border:1px solid rgba(107,140,90,.14);border-radius:8px;box-shadow:none
+}
+.trip-detail--pack-calm .ci.packed .ci-state.packed{
+  width:20px;height:20px;min-width:20px;margin-top:0;border-radius:5px;
+  font-size:10px;line-height:1;font-weight:700;
+  background:rgba(107,140,90,.14);border:1.5px solid rgba(107,140,90,.4);color:var(--sage);box-shadow:none
+}
+.trip-detail--pack-calm .sub-ci.packed{
+  padding:6px 10px 6px 38px;margin-bottom:4px;background:rgba(107,140,90,.04)
+}
+.trip-detail--pack-calm .sub-ci.packed .ci-state.packed{width:18px;height:18px;min-width:18px;font-size:9px;border-radius:4px}
+.trip-detail--pack-calm .ci.packed .ci-name{font-size:13px;font-weight:600;opacity:.42}
+.trip-detail--pack-calm .ci.packed .ci-tap-nudge,
+.trip-detail--pack-calm .ci.packed .ci-meta{display:none}
+.trip-detail--pack-calm .ci.packed .ci-menu-btn .btn-ic{opacity:.35}
+/* Slice 5 — quieter consumable strip above the list */
+.trip-detail--pack-calm .consumable-prep{
+  margin-bottom:12px;padding:10px 12px;border-radius:10px;
+  background:rgba(90,154,138,.04);border:1px solid rgba(90,154,138,.11)
+}
+.trip-detail--pack-calm .consumable-prep-title{font-size:10px;letter-spacing:.08em;color:var(--text-m);font-weight:600}
+.trip-detail--pack-calm .consumable-prep-lead{font-size:11px;margin-bottom:8px;line-height:1.45}
+.trip-detail--pack-calm .consumable-prep-rows{gap:6px}
+.trip-detail--pack-calm .consumable-prep-row{padding:8px 10px;border-radius:8px;box-shadow:none;border:1px solid color-mix(in srgb,var(--border) 80%,transparent)}
+.trip-detail--pack-calm .consumable-prep-name{font-size:12px;font-weight:600}
+.trip-detail--pack-calm .consumable-prep-stats{font-size:9px}
 .pack-mode-bar{margin-bottom:16px}
 .pack-seg{display:flex;max-width:280px;background:var(--canvas-3);border-radius:10px;padding:3px;gap:2px}
 .pack-seg-btn{flex:1;font-family:'Familjen Grotesk',sans-serif;font-size:12px;font-weight:600;padding:8px 12px;border:none;border-radius:8px;background:transparent;color:var(--text-m);cursor:pointer;transition:background var(--dur-ui),color var(--dur-ui),box-shadow var(--dur-ui)}
@@ -668,6 +739,22 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 .pack-overflow-menu{position:absolute;right:0;top:calc(100% + 6px);min-width:200px;background:var(--canvas-2);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:6px;z-index:50}
 .pack-overflow-menu button{display:block;width:100%;text-align:left;padding:9px 12px;border:none;background:transparent;font-family:'Familjen Grotesk',sans-serif;font-size:13px;color:var(--text-d);border-radius:7px;cursor:pointer}
 .pack-overflow-menu button:hover{background:var(--canvas-3);color:var(--text)}
+.pack-overflow-menu button.trip-header-menu-danger{color:var(--rust)}
+.pack-overflow-menu button.trip-header-menu-danger:hover{color:var(--rust);background:rgba(184,92,58,.08)}
+.pack-overflow-menu-divider{height:1px;margin:6px 8px;background:var(--border)}
+.pack-overflow-menu-label{font-family:'Familjen Grotesk',sans-serif;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-m);padding:6px 12px 2px;pointer-events:none;user-select:none}
+.pack-overflow-menu-section--danger .trip-header-menu-danger{margin-top:2px}
+.overflow-trigger-btn{
+  display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;
+  width:36px;height:36px;min-width:36px;max-width:36px;min-height:36px;max-height:36px;
+  padding:0!important;font-size:16px!important;line-height:1;flex:none
+}
+.trip-header{margin-bottom:16px}
+.trip-header-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.trip-header .ttitle{flex:1;min-width:0;margin-bottom:0}
+.trip-header .tsubtitle{margin:6px 0 0}
+.trip-header-menu{flex:0 0 auto;align-self:flex-start;height:auto;margin-top:2px}
+.trip-header-menu>summary.overflow-trigger-btn{margin-top:0}
 .todo-chip{font-family:'Familjen Grotesk',sans-serif;font-size:11px;font-weight:600;color:var(--teal);background:rgba(90,154,138,.1);border:1px solid rgba(90,154,138,.25);padding:3px 9px;border-radius:20px;flex-shrink:0;cursor:pointer}
 .todo-chip:hover{background:rgba(90,154,138,.16)}
 .ci .todo-chip{margin-top:4px}
@@ -733,10 +820,10 @@ body.light .trip-hero{box-shadow:0 6px 28px rgba(74,107,58,.12),0 1px 0 rgba(255
 
 /* ── JOURNEY BAR (APE-52) ── */
 .journey-slider{position:relative;margin-bottom:12px}
-.journey-scroll{overflow-x:auto;overflow-y:visible;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:2px 0 6px;scroll-padding-inline:36px}
+.journey-scroll{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:10px 0 12px;scroll-padding-inline:36px}
 .journey-scroll::-webkit-scrollbar{display:none}
 .journey-slider--scrollable::before,.journey-slider--scrollable::after{
-  content:'';position:absolute;top:2px;bottom:8px;width:36px;z-index:2;pointer-events:none;border-radius:12px;
+  content:'';position:absolute;top:8px;bottom:14px;width:36px;z-index:2;pointer-events:none;border-radius:12px;
   opacity:1;transition:opacity var(--dur-ui) var(--ease-out);
 }
 .journey-slider--scrollable::before{
@@ -774,6 +861,9 @@ body.light .journey-scroll-btn{
   box-shadow:0 2px 8px rgba(18,28,22,.1),0 0 0 1px color-mix(in srgb,var(--border) 70%,transparent);
 }
 .journey-cell{flex:0 0 4.85rem;width:4.85rem;position:relative;overflow:visible}
+/* Tablet/desktop: when all steps fit without scroll, cells grow to fill the bar */
+.journey-slider:not(.journey-slider--scrollable) .journey-bar{width:100%}
+.journey-slider:not(.journey-slider--scrollable) .journey-cell{flex:1 1 0;width:auto;min-width:4.35rem;max-width:none}
 .journey-cell+.journey-cell{border-left:1px solid color-mix(in srgb,var(--border) 45%,transparent)}
 .journey-cell:first-child{border-radius:11px 0 0 11px}
 .journey-cell:last-child{border-radius:0 11px 11px 0}
@@ -794,16 +884,26 @@ body.light .journey-cell--viewing{background:color-mix(in srgb,var(--sage) 9%,va
 @keyframes journey-dot-pulse{0%,100%{box-shadow:0 0 0 4px rgba(90,154,138,.16)}50%{box-shadow:0 0 0 9px rgba(90,154,138,.3)}}
 .journey-cell--active .journey-dot{background:var(--sage);animation:journey-dot-pulse 2.6s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){.journey-cell--active .journey-dot{animation:none;box-shadow:0 0 0 5px rgba(90,154,138,.24)}}
-.journey-cell--todo .journey-dot{background:transparent;border:2.5px dashed var(--amber-l);box-sizing:border-box;width:14px;height:14px}
+.journey-cell--todo .journey-dot{background:transparent;border:2px dashed var(--amber-l);box-sizing:border-box;width:13px;height:13px}
+.journey-cell--active .journey-dot,.journey-cell--todo .journey-dot{margin-top:1px;margin-bottom:11px}
 .journey-label{font-size:13px;font-weight:700;line-height:1.2;color:var(--text-m)}
 .journey-cell--done .journey-label{color:var(--sage);font-style:normal}
 .journey-cell--viewing .journey-label{color:var(--sage);font-weight:700}
 .journey-cell--active .journey-label{font-style:italic}
 .journey-cell--viewing.journey-cell--active .journey-label{font-style:italic;font-weight:700}
 .journey-label em{font-style:italic}
-.journey-more{position:absolute;top:8px;right:6px;z-index:4}
-.journey-more-btn{width:22px;height:22px;padding:0;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--sage);font-size:14px;line-height:1;cursor:pointer;font-family:inherit;opacity:.35;transition:opacity var(--dur-ui),background var(--dur-ui),border-color var(--dur-ui)}
-.journey-cell--active:hover .journey-more-btn,.journey-cell--viewing:hover .journey-more-btn,.journey-more-btn[aria-expanded="true"]{opacity:1;border-color:var(--border);background:rgba(255,255,255,.65)}
+.journey-more{position:absolute;top:5px;right:3px;z-index:4}
+/* Compact ⋯ for ~4.85rem cells — same border/fill language as trip header, not same size */
+.journey-more-btn{
+  display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;
+  width:22px;height:22px;min-width:22px;max-width:22px;min-height:22px;max-height:22px;
+  padding:0;font-size:12px;line-height:1;flex:none;
+  cursor:pointer;font-family:'Familjen Grotesk',sans-serif;
+  border-radius:6px;border:1px solid var(--border);background:var(--canvas-2);color:var(--text-d);
+  opacity:.45;transition:opacity var(--dur-ui),background var(--dur-ui),border-color var(--dur-ui),color var(--dur-ui),transform var(--dur-fast) var(--ease-out)
+}
+.journey-more-btn:active{transform:scale(0.97)}
+.journey-cell--active:hover .journey-more-btn,.journey-cell--viewing:hover .journey-more-btn,.journey-more-btn[aria-expanded="true"]{opacity:1;border-color:var(--amber-d);color:var(--amber);background:var(--canvas-2)}
 .journey-popover{display:none;min-width:12.5rem;max-width:14rem;padding:6px;background:var(--canvas-2);border:1px solid var(--border);border-radius:10px;box-shadow:0 10px 28px rgba(26,31,26,.14);z-index:600}
 .journey-popover.is-open{display:block}
 .journey-popover.is-fixed{position:fixed;top:0;left:0;right:auto}
@@ -1047,7 +1147,7 @@ body.light .journey-cell--viewing{background:color-mix(in srgb,var(--sage) 9%,va
 
 @media (prefers-reduced-motion: reduce){
   .page.page-enter,.mover.on,.modal,.sheet-panel,.dialog-panel,.cprog-complete{animation:none!important}
-  .ci.packed .ci-state{animation:none!important}
+  .ci.packed .ci-state,.trip-detail--pack-calm .ci-state:active,.trip-detail--pack-calm .ci-state.ci-state--pack-pop{animation:none!important;transform:none!important}
   .trip-hero-countdown--pulse .trip-hero-countdown-num{animation:none!important}
   .bc-toast{transition:none!important}
   .sl-row-exit{transition:none!important;opacity:0!important;transform:none!important}
@@ -1079,6 +1179,9 @@ body.light .journey-cell--viewing{background:color-mix(in srgb,var(--sage) 9%,va
   .journey-kicker{font-size:8px;margin-bottom:8px}
   .journey-label{font-size:12px}
   .ttitle{font-size:19px}
+  .trip-header{margin-bottom:14px}
+  .trip-header-row{gap:10px}
+  .overflow-trigger-btn{width:40px;height:40px;min-width:40px;max-width:40px;min-height:40px;max-height:40px}
   .ttab{padding:7px 9px;font-size:11px}
   .cfg-grid{grid-template-columns:1fr}
   /* ── Mobile-first item cards: title (wraps) on its own row, tags/controls below, ⋯ pinned top-right ── */

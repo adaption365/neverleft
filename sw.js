@@ -1,5 +1,5 @@
 /* NeverLeft service worker — bump SHELL_CACHE after deploy when shell assets change */
-const SHELL_CACHE = 'neverleft-shell-v4';
+const SHELL_CACHE = 'neverleft-shell-v20';
 const FONT_CACHE = 'neverleft-fonts-v1';
 
 const PRECACHE_URLS = [
